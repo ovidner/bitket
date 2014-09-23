@@ -87,7 +87,7 @@ SENTRY_REDIS_OPTIONS = {
 ################
 
 # You MUST configure the absolute URI root for Sentry:
-SENTRY_URL_PREFIX = 'http://dale.sof15.se'  # No trailing slash!
+SENTRY_URL_PREFIX = 'http://dale.sof15.se:9000'  # No trailing slash!
 
 # If you're using a reverse proxy, you should enable the X-Forwarded-Proto
 # and X-Forwarded-Host headers, and uncomment the following settings
