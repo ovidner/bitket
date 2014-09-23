@@ -24,6 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         gadget.vm.provision :shell, path: "scripts/rabbitmq.p.sh", privileged: true
         gadget.vm.provision :shell, path: "scripts/redis.p.sh", privileged: true
+        gadget.vm.provision :shell, path: "scripts/redis.dev.p.sh", privileged: true
     end
 
     config.vm.define "chip" do |chip|
