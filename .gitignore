@@ -172,4 +172,7 @@ blasfisk/settings/secret.py
 ### Vagrant ###
 .vagrant/
 
+### Celery ###
+celerybeat-schedule
+
 # ----------------- #
