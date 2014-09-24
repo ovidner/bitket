@@ -27,27 +27,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         gadget.vm.provision :shell, path: "scripts/redis.dev.p.sh", privileged: true
     end
 
-    config.vm.define "chip" do |chip|
-
-        # Chip
-        # ====
-        # Django apps
-        #
-        # Depends on
-        # ----------
-        # Gadget
-
-        chip.vm.box = "ubuntu/trusty64"
-        chip.vm.hostname = "chip"
-        chip.vm.network "private_network", ip: "10.0.10.10"
-
-        chip.vm.provision :shell, path: "scripts/python.p.sh", privileged: true
-        chip.vm.provision :shell, path: "scripts/python.virtualenv.u.sh", privileged: false
-
-        chip.vm.provision :shell, path: "scripts/supervisor.p.sh", privileged: true
-        chip.vm.provision :shell, path: "scripts/memcached.p.sh", privileged: true
-    end
-
     config.vm.define "dale" do |dale|
 
         # Dale
@@ -56,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         #
         # Depends on
         # ----------
-        # Gadget
+        # Gadget (for DB)
 
         dale.vm.box = "ubuntu/trusty64"
         dale.vm.hostname = "dale"
@@ -71,11 +50,38 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         dale.vm.provision :shell, path: "scripts/sentry.dev.u.sh", privileged: false
     end
 
+    config.vm.define "chip" do |chip|
+
+        # Chip
+        # ====
+        # Django apps
+        #
+        # Depends on
+        # ----------
+        # Gadget (for DB)
+        # Dale (for Sentry)
+
+        chip.vm.box = "ubuntu/trusty64"
+        chip.vm.hostname = "chip"
+        chip.vm.network "private_network", ip: "10.0.10.10"
+
+        chip.vm.provision :shell, path: "scripts/python.p.sh", privileged: true
+        chip.vm.provision :shell, path: "scripts/python.virtualenv.u.sh", privileged: false
+
+        chip.vm.provision :shell, path: "scripts/supervisor.p.sh", privileged: true
+        chip.vm.provision :shell, path: "scripts/memcached.p.sh", privileged: true
+    end
+
     config.vm.define "zipper" do |zipper|
 
         # Zipper
         # ======
         # Web endpoint
+        #
+        # Depends on
+        # ----------
+        # Chip (for something to proxy)
+        # Dale (for something to proxy)
 
         zipper.vm.box = "ubuntu/trusty64"
         zipper.vm.hostname = "zipper"
@@ -84,10 +90,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     # Run on every machine
     config.vm.provision :shell, path: "scripts/hosts.dev.p.sh", privileged: true
-
-
-    # config.vm.network "forwarded_port", guest: 9000, host: 9000  # Sentry
-    # config.vm.provision :shell, path: ".vagrant/provision.sh"
-    # config.vm.provision :shell, path: ".vagrant/provision-venv.sh", privileged: false
-    # config.vm.provision :shell, path: "scripts/provision-sentry.dev.sh", privileged: false
 end
