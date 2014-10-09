@@ -8,15 +8,15 @@ source ~/.bash_profile
 mkvirtualenv sentry
 workon sentry
 
-cd /vagrant/sentry/
+cd /vagrant/apps/sentry/
 pip install -Ur requirements.txt
 
-export SENTRY_CONF=/vagrant/sentry/sentry.conf.py
+export SENTRY_CONF=/vagrant/apps/sentry/sentry.conf.py
 
 sentry upgrade
 python setup_dev.py
 sentry repair --owner=admin
 
-sudo ln -f -s /vagrant/sentry/supervisor.conf /etc/supervisor/conf.d/sentry.conf
+sudo ln -f -s /vagrant/apps/sentry/supervisor.conf /etc/supervisor/conf.d/sentry.conf
 
 sudo supervisorctl reload
