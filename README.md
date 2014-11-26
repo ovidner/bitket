@@ -3,6 +3,8 @@ SOF15
 
 Driftmiljön
 -----------
+*Obs! Detta stämmer inte riktigt längre, men får stå kvar ett tag till då Vagrant-miljön ser ut ungefär så här.*
+
 Systemet kommer snurra i en gammal beräkningsserver från NSC som lånas ut av LiTHe Blås. Det finns gott om kraft och 
 minne så därför passar vi på att gödsla med dedicerade virtuella servrar enligt följande struktur:
 
