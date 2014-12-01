@@ -18,6 +18,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         gadget.vm.hostname = "gadget"
         gadget.vm.network "private_network", ip: "10.0.10.12"
 
+        gadget.vm.provision :shell, path: "scripts/apt.update.p.sh", privileged: true
+
         gadget.vm.provision :shell, path: "scripts/postgres.p.sh", privileged: true
         gadget.vm.provision :shell, path: "scripts/postgres.dev.p.sh", privileged: true
         gadget.vm.provision :shell, path: "scripts/postgres.sentry.dev.u.sh", privileged: false
@@ -41,6 +43,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         dale.vm.hostname = "dale"
         dale.vm.network "private_network", ip: "10.0.10.11"
 
+        dale.vm.provision :shell, path: "scripts/apt.update.p.sh", privileged: true
+
         dale.vm.provision :shell, path: "scripts/python.p.sh", privileged: true
         dale.vm.provision :shell, path: "scripts/python.virtualenv.u.sh", privileged: false
 
@@ -48,6 +52,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         dale.vm.provision :shell, path: "scripts/memcached.p.sh", privileged: true
 
         dale.vm.provision :shell, path: "scripts/sentry.dev.u.sh", privileged: false
+
+        dale.vm.provision :shell, path: "scripts/apt.upgrade.p.sh", privileged: true
     end
 
     config.vm.define "chip" do |chip|
@@ -65,11 +71,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         chip.vm.hostname = "chip"
         chip.vm.network "private_network", ip: "10.0.10.10"
 
+        chip.vm.provision :shell, path: "scripts/apt.update.p.sh", privileged: true
+
         chip.vm.provision :shell, path: "scripts/python.p.sh", privileged: true
         chip.vm.provision :shell, path: "scripts/python.virtualenv.u.sh", privileged: false
 
         chip.vm.provision :shell, path: "scripts/supervisor.p.sh", privileged: true
         chip.vm.provision :shell, path: "scripts/memcached.p.sh", privileged: true
+
     end
 
     config.vm.define "zipper" do |zipper|
@@ -86,8 +95,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         zipper.vm.box = "ubuntu/trusty64"
         zipper.vm.hostname = "zipper"
         zipper.vm.network "private_network", ip: "10.0.10.13"
+
+        zipper.vm.provision :shell, path: "scripts/apt.update.p.sh", privileged: true
+
+
+
     end
 
     # Run on every machine
     config.vm.provision :shell, path: "scripts/hosts.dev.p.sh", privileged: true
+
+    config.vm.provision :shell, path: "scripts/apt.upgrade.p.sh", privileged: true
+
 end
