@@ -41,6 +41,16 @@ detta projekt (dvs. katalogen som heter SOF15) och kör i ett skal `vagrant up`.
 skapas fyra stycken virtuella burkar som kör ett gäng olika konfigurationsskript. Det tar sin goda stund så ta en kopp 
 kaffe under tiden. Klart!
 
+### Hosts
+Bra att ha till mycket – ett krav för Sentry.
+
+    sudo su
+    echo "10.0.10.10 chip.sof15.se chip" >> /etc/hosts
+    echo "10.0.10.11 dale.sof15.se dale" >> /etc/hosts
+    echo "10.0.10.12 gadget.sof15.se gadget" >> /etc/hosts
+    echo "10.0.10.13 zipper.sof15.se zipper" >> /etc/hosts
+    exit
+
 ### Några användbara kommandon
 * `vagrant up [chip|dale|gadget|zipper]` Startar alla eller en specifik maskin. Skapar och konfigurerar denna/dessa vid 
   behov.
