@@ -23,7 +23,7 @@ class Person(models.Model):
     id_number = models.CharField(max_length=11, unique=True, verbose_name=_('national identification number'))
     liu_id = models.OneToOneField('liu.LiUID', blank=True, null=True, verbose_name=_('LiU ID'))
 
-    phone = models.CharField(max_length=32, verbose_name=_('phone number'))
+    phone = models.CharField(max_length=32, verbose_name=_('mobile number'))
     address_row_1 = models.CharField(max_length=128)
     address_row_2 = models.CharField(max_length=128, null=True, blank=True)
     postal_code = models.CharField(max_length=8)
@@ -83,7 +83,7 @@ class Holding(models.Model):
 
 @python_2_unicode_compatible
 class Delivery(models.Model):
-    holding = models.ManyToManyField('Holding')
+    holdings = models.ManyToManyField('Holding')
     delivered = models.DateTimeField()
 
     def __str__(self):
