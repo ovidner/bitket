@@ -7,7 +7,6 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tickle', '0006_auto_20141125_0518'),
     ]
 
     operations = [
@@ -24,11 +23,27 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OrchestraMember',
             fields=[
-                ('person_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='tickle.Person')),
-                ('orchestras', models.ManyToManyField(to='orchard.Orchestra')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
             ],
             options={
             },
-            bases=('tickle.person',),
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='OrchestraMembership',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('member', models.ForeignKey(to='orchard.OrchestraMember')),
+                ('orchestra', models.ForeignKey(to='orchard.Orchestra')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='orchestramember',
+            name='orchestras',
+            field=models.ManyToManyField(to='orchard.Orchestra', null=True, through='orchard.OrchestraMembership', blank=True),
+            preserve_default=True,
         ),
     ]
