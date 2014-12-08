@@ -79,6 +79,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         chip.vm.provision :shell, path: "scripts/supervisor.p.sh", privileged: true
         chip.vm.provision :shell, path: "scripts/memcached.p.sh", privileged: true
 
+        chip.vm.provision :shell, path: "scripts/sof15.dev.u.sh", privileged: true
     end
 
     config.vm.define "zipper" do |zipper|

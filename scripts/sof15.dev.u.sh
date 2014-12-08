@@ -11,3 +11,4 @@ workon sof15
 cd /vagrant/apps/sof15/
 pip install -Ur requirements.txt
 
+./manage.py migrate
