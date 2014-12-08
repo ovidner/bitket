@@ -38,6 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'liu.django',
+    'raven.contrib.django.raven_compat',
+
     'tickle',
     'orchard',
     'fungus',
