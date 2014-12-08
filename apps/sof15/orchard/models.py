@@ -40,3 +40,11 @@ class OrchestraMember(models.Model):
 
     def __str__(self):
         return '{0} ({1})'.format(self.person.full_name, self.orchestra.name)
+
+
+@python_2_unicode_compatible
+class OrchestraProduct(models.Model):
+    product = models.OneToOneField('tickle.Product', related_name='orchestra_product')
+
+    def __str__(self):
+        return self.product.name
