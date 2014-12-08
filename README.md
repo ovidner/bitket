@@ -58,3 +58,10 @@ Bra att ha till mycket – ett krav för Sentry.
 * `vagrant halt [chip|dale|gadget|zippr]` Stoppar alla eller en specifik maskin.
 * `vagrant destroy [chip|dale|gadget|zipper]` Raderar alla eller en specifik maskin.
 
+### Administrera Django-appar
+Exempel med migrering av sof15:
+
+    vagrant ssh chip
+    workon sof15
+    cd /vagrant/apps/sof15/
+    ./manage.py migrate
