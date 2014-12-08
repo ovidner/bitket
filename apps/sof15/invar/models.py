@@ -20,6 +20,7 @@ class OtherInvoiceRow(InvoiceRow):
 
 
 class Transaction(models.Model):
+    time = models.DateTimeField()
     invoice = models.ForeignKey('Invoice', null=True, blank=True)
     reference = models.CharField(max_length=512)
     amount = models.DecimalField(max_digits=9, decimal_places=2)
