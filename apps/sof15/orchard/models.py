@@ -19,7 +19,8 @@ class OrchestraMembership(models.Model):
     orchestra = models.ForeignKey('Orchestra')
     member = models.ForeignKey('OrchestraMember')
 
-    # todo: add more fields declaring the relationship to the orchestra
+    primary = models.BooleanField(default=False)
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return '{0}: {1}'.format(self.orchestra, self.person)
@@ -29,7 +30,7 @@ class OrchestraMembership(models.Model):
 class OrchestraMember(models.Model):
     person = models.OneToOneField('tickle.Person', related_name='orchestra_member')
 
-    orchestras = models.ManyToManyField('Orchestra', through='OrchestraMembership', null=True, blank=True)
+    orchestras = models.ManyToManyField('Orchestra', through='OrchestraMembership')
 
     def __str__(self):
         return '{0} ({1})'.format(self.person.full_name, self.orchestra.name)
