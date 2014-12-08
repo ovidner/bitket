@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'liu.django',
+    'guardian',
     'raven.contrib.django.raven_compat',
 
     'tickle',
@@ -62,7 +63,10 @@ WSGI_APPLICATION = 'sof15.wsgi.application'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'liu.django.backends.LiUStudentBackend',
+    'guardian.backends.ObjectPermissionBackend',
 )
+
+ANONYMOUS_USER_ID = -1
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
