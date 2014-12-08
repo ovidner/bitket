@@ -10,6 +10,12 @@ from tickle.models import Person
 class Orchestra(models.Model):
     name = models.CharField(max_length=256)
 
+    class Meta:
+        permissions = (
+            ('approve_members', _('Approve members')),
+            ('approve_invoicing', _('Approve members for invoicing')),
+        )
+
     def __str__(self):
         return self.name
 
