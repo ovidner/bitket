@@ -19,4 +19,4 @@ sentry repair --owner=admin
 
 sudo ln -f -s /vagrant/apps/sentry/supervisor.conf /etc/supervisor/conf.d/sentry.conf
 
-sudo supervisorctl reload
+sudo service supervisor restart
