@@ -91,6 +91,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'sof15', 'templates'),)
+
 LIU_KOBRA_USER = 'sof15'
 LIU_KOBRA_API_KEY = '13bbfc68cacb9119db5a'
 
