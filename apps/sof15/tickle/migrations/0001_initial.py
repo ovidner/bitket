@@ -2,18 +2,35 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.utils.timezone
 import mptt.fields
-from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('auth', '0001_initial'),
         ('liu', '0001_initial'),
     ]
 
     operations = [
+        migrations.CreateModel(
+            name='TickleUser',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('password', models.CharField(max_length=128, verbose_name='password')),
+                ('last_login', models.DateTimeField(default=django.utils.timezone.now, verbose_name='last login')),
+                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
+                ('username', models.CharField(unique=True, max_length=256)),
+                ('is_active', models.BooleanField(default=True)),
+                ('is_admin', models.BooleanField(default=False)),
+                ('groups', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of his/her group.', verbose_name='groups')),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
         migrations.CreateModel(
             name='Delivery',
             fields=[
@@ -56,11 +73,7 @@ class Migration(migrations.Migration):
                 ('first_name', models.CharField(max_length=256, verbose_name='first name')),
                 ('last_name', models.CharField(max_length=256, verbose_name='last name')),
                 ('id_number', models.CharField(unique=True, max_length=11, verbose_name='national identification number')),
-                ('phone', models.CharField(max_length=32, verbose_name='mobile number')),
-                ('address_row_1', models.CharField(max_length=128)),
-                ('address_row_2', models.CharField(max_length=128, null=True, blank=True)),
-                ('postal_code', models.CharField(max_length=8)),
-                ('city', models.CharField(max_length=64)),
+                ('email', models.EmailField(unique=True, max_length=256, verbose_name='email address')),
                 ('liu_id', models.OneToOneField(null=True, blank=True, to='liu.LiUID', verbose_name='LiU ID')),
             ],
             options={
@@ -118,12 +131,6 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='person',
-            name='user',
-            field=models.OneToOneField(null=True, blank=True, to=settings.AUTH_USER_MODEL, verbose_name='user account'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
             model_name='holding',
             name='person',
             field=models.ForeignKey(to='tickle.Person'),
@@ -139,6 +146,18 @@ class Migration(migrations.Migration):
             model_name='delivery',
             name='holdings',
             field=models.ManyToManyField(to='tickle.Holding'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='tickleuser',
+            name='person',
+            field=models.OneToOneField(related_name='user', to='tickle.Person'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='tickleuser',
+            name='user_permissions',
+            field=models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Permission', blank=True, help_text='Specific permissions for this user.', verbose_name='user permissions'),
             preserve_default=True,
         ),
     ]
