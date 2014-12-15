@@ -66,6 +66,8 @@ AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
 )
 
+AUTH_USER_MODEL = 'tickle.TickleUser'
+
 ANONYMOUS_USER_ID = -1
 
 # Database
