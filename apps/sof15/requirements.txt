@@ -1,6 +1,7 @@
 Django==1.7.1
 django-auth-ldap==1.2.3
 django-localflavor==1.0
+django-crispy-forms==1.4.0
 django-mptt==0.6.1
 liu==1.0.0
 pkginfo==1.1

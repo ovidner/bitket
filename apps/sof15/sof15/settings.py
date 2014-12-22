@@ -40,10 +40,12 @@ INSTALLED_APPS = (
     'liu.django',
     'guardian',
     'raven.contrib.django.raven_compat',
+    'crispy_forms',
 
     'tickle',
     'orchard',
     'fungus',
+    'karthago',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -93,13 +95,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'sof15', 'templates'),)
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LIU_KOBRA_USER = 'sof15'
 LIU_KOBRA_API_KEY = '13bbfc68cacb9119db5a'
