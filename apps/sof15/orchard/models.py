@@ -29,8 +29,11 @@ class OrchestraMembership(models.Model):
 
     approved = models.NullBooleanField()
 
+    class Meta:
+        unique_together = (('orchestra', 'member'),)
+
     def __str__(self):
-        return '{0}: {1}'.format(self.orchestra, self.person)
+        return '{0}: {1}'.format(self.orchestra, self.member)
 
 
 @python_2_unicode_compatible
