@@ -10,4 +10,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', TemplateView.as_view(template_name='base.html')),
     url(r'^registration/$', 'orchard.views.registration', name='orchestra_member_registration'),
+    url(r'^kartege/', include('karthago.urls')),
+
 )

@@ -13,7 +13,6 @@ class Orchestra(models.Model):
     class Meta:
         permissions = (
             ('approve_members', _('Approve members')),
-            ('approve_members_for_invoicing', _('Approve members for invoicing')),
         )
 
     def __str__(self):
@@ -29,10 +28,12 @@ class OrchestraMembership(models.Model):
     primary = models.BooleanField(default=False)
 
     approved = models.NullBooleanField()
-    approved_for_invoicing = models.NullBooleanField()
+
+    class Meta:
+        unique_together = (('orchestra', 'member'),)
 
     def __str__(self):
-        return '{0}: {1}'.format(self.orchestra, self.person)
+        return '{0}: {1}'.format(self.orchestra, self.member)
 
 
 @python_2_unicode_compatible
