@@ -37,7 +37,7 @@ RUN /home/sof15/bin/python /home/sof15/app/manage.py collectstatic --noinput
 
 USER sof15
 ENV HOME /home/sof15
-EXPOSE 80
+EXPOSE 8000
 
 # Running gunicorn also enters the virtualenv, so we don't have to do that explicitly
 CMD ["/home/sof15/bin/gunicorn", "sof15.wsgi", "-c", "/home/sof15/app/_conf/gunicorn.py"]
