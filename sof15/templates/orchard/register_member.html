@@ -1,0 +1,55 @@
+{% extends base.html %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Orkestermedlem</h1>
+    </div>
+    <p>Bla bla bla, luftpastejer osv...</p>
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <h2>Personuppgifter</h2>
+
+        <p>Ange dina personuppgifter i respektive fält.</p>
+        {{ person_registration_form.as_p }}
+
+        <h2>Orkestermedlemskap</h2>
+
+        <p>Ange vilka orkestrar du är eller har varit medlem i. Markera dessutom din <em>primära</em> orkester – om du
+            till exempel vet att orkester X betalar din SOF-biljett skall du markera denna som din primära orkester.
+            Annars markerar du den du helst vill spela med under SOF. Varje orkester kommer behöva bekräfta ditt
+            medlemskap, så försök inte med några hyss!</p>
+
+        {{ orchestra_member_registration_formset.management_form }}
+        <table class="table">
+            <tr>
+                <th>Orkester</th>
+                <th>Aktiv Medlem</th>
+                <th>Primär</th>
+            </tr>
+
+            {% for form in orchestra_member_registration_formset %}
+                <tr>
+                    {% for field in form %}
+                        <td>
+                            {{ field.errors }}  <!-- Move somewhere else. -->
+                            {{ field }}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Prylar</h2>
+
+        <p>Köp årets fantastiska SOF-prylar! Du betalar själv för dina prylar men din primära orkester hämtar ut
+            dem.</p>
+
+        <h2>Sittningar</h2>
+
+        <p>Går du på studentorkesterfestival för tionde året i rad eller har du gått på totalt 25 stycken? Markera det
+            här! Ange dessutom om du vill gå på respektive sittning.</p>
+
+        <input type="submit" value="Skicka anmälan" class="btn btn-success">
+    </form>
+{% endblock content %}
