@@ -1,4 +1,4 @@
-Django==1.7.1
+Django==1.7.3
 django-auth-ldap==1.2.3
 django-crispy-forms==1.4.0
 django-guardian==1.2.4
