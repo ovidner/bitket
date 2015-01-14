@@ -9,3 +9,4 @@ threads = 1  # todo: optimize
 
 user = None
 loglevel = 'debug'
+errorlog = '-'  # stderr
