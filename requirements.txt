@@ -1,9 +1,13 @@
 Django==1.7.3
+dj-database-url==0.3.0
+dj-email-url==0.0.2
 django-auth-ldap==1.2.4
+django-cache-url==0.8.0
 django-crispy-forms==1.4.0
 django-guardian==1.2.5
 django-localflavor==1.1
 django-mptt==0.6.1
+django12factor==1.2
 gunicorn==19.1.1
 liu==1.1.0
 pkginfo==1.2.1

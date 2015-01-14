@@ -8,23 +8,27 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
+import django12factor
+d12f = django12factor.factorise(
+    custom_settings=[
+        'KOBRA_USER',
+        'KOBRA_API_KEY',
+    ]
+)
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
+SECRET_KEY = d12f['SECRET_KEY']
+# SECRET_KEY = 'wu*4qyzkc9r5at0j=8qqz&)yjuq&kze_ip71khzdfv0g(^(m-_'
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'wu*4qyzkc9r5at0j=8qqz&)yjuq&kze_ip71khzdfv0g(^(m-_'
+DEBUG = d12f['DEBUG']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+TEMPLATE_DEBUG = DEBUG
 
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = d12f['ALLOWED_HOSTS']
 
 
 # Application definition
@@ -73,12 +77,8 @@ ANONYMOUS_USER_ID = -1
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+DATABASES = d12f['DATABASES']
+CACHES = d12f['CACHES']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
