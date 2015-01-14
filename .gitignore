@@ -163,8 +163,6 @@ $RECYCLE.BIN/
 # KDE directory preferences
 .directory
 
-blasfisk/settings/secret.py
-
 ### Visual Studio ###
 *.suo
 *.sln
