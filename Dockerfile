@@ -30,6 +30,8 @@ RUN /bin/bash -c '. /home/sof15/bin/activate && \
 # Now copy the rest of the code
 COPY . /home/sof15/app
 
+CMD ["/home/sof15/bin/python", "/home/sof15/app/manage.py", "collectstatic", "--noinput"]
+
 EXPOSE 80
 
 # Running gunicorn also enters the virtualenv, so we don't have to do that explicitly
