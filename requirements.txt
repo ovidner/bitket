@@ -11,6 +11,7 @@ django12factor==1.2
 gunicorn==19.1.1
 liu==1.1.0
 pkginfo==1.2.1
+psycopg2==2.5.4
 python-ldap==2.4.19
 raven==5.1.1
 requests==2.5.1
