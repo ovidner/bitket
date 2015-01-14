@@ -26,9 +26,7 @@ RUN virtualenv /home/sof15
 # Copies only the requirements file first so that it can be cached by Docker
 COPY ./requirements.txt /home/sof15/app/requirements.txt
 
-WORKDIR /home/sof15/app
-RUN /bin/bash -c '. /home/sof15/bin/activate && \
-    pip install -r requirements.txt'
+RUN /home/sof15/bin/pip install -r /home/sof15/app/requirements.txt
 
 # Now copy the rest of the code
 COPY . /home/sof15/app
@@ -37,6 +35,8 @@ RUN /home/sof15/bin/python /home/sof15/app/manage.py collectstatic --noinput
 
 USER sof15
 ENV HOME /home/sof15
+WORKDIR /home/sof15/app
+
 EXPOSE 8080
 
 # Running gunicorn also enters the virtualenv, so we don't have to do that explicitly
