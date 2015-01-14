@@ -115,7 +115,7 @@ LOGGING = {
     'disable_existing_loggers': True,
     'root': {
         'level': 'DEBUG',
-        'handlers': ['sentry'],
+        'handlers': ['console'],
         },
     'formatters': {
         'verbose': {
@@ -134,6 +134,11 @@ LOGGING = {
         }
     },
     'loggers': {
+        'django': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': True,
+            },
         'django.db.backends': {
             'level': 'ERROR',
             'handlers': ['console'],
