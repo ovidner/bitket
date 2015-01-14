@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'liu.django',
     'guardian',
     'raven.contrib.django.raven_compat',
+    'crispy_forms',
 
     'tickle',
     'orchard',
