@@ -13,7 +13,8 @@ RUN apt-get update -y && apt-get install -y \
 
 RUN pip install virtualenv
 
-RUN adduser --disabled-password sof15
+# --gecos "" for non-interactive behavior
+RUN adduser --disabled-password --gecos "" sof15
 
 USER sof15
 ENV HOME /home/sof15
