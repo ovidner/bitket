@@ -35,4 +35,4 @@ CMD ["/home/sof15/bin/python", "/home/sof15/app/manage.py", "collectstatic", "--
 EXPOSE 80
 
 # Running gunicorn also enters the virtualenv, so we don't have to do that explicitly
-CMD ["/home/sof15/bin/gunicorn", "sof15.wsgi", "-c", "/home/sof15/app/conf/gunicorn.py"]
+CMD ["/home/sof15/bin/gunicorn", "sof15.wsgi", "-c", "/home/sof15/app/_conf/gunicorn.py"]
