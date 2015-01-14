@@ -103,7 +103,14 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, '_build', 'static')
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'sof15', 'templates'),)
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'sof15', 'static'),
+)
+
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'sof15', 'templates'),
+)
+
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LIU_KOBRA_USER = 'sof15'
