@@ -26,9 +26,6 @@ class Migration(migrations.Migration):
             name='OrchestraMember',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('anniversary_dinner', models.BooleanField(default=False)),
-                ('food', models.BooleanField(default=True)),
-                ('accommodation', models.BooleanField(default=True)),
             ],
             options={
             },
@@ -38,18 +35,9 @@ class Migration(migrations.Migration):
             name='OrchestraMembership',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('active', models.BooleanField(default=False)),
-                ('primary', models.BooleanField(default=False)),
+                ('active', models.BooleanField(default=False, verbose_name='active member')),
+                ('primary', models.BooleanField(default=False, verbose_name='primary orchestra')),
                 ('approved', models.NullBooleanField()),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='OrchestraProduct',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
             ],
             options={
             },

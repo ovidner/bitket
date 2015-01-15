@@ -32,6 +32,16 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='Category',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=256)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Delivery',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -74,8 +84,9 @@ class Migration(migrations.Migration):
                 ('first_name', models.CharField(max_length=256, verbose_name='first name')),
                 ('last_name', models.CharField(max_length=256, verbose_name='last name')),
                 ('id_number', models.CharField(unique=True, max_length=11, verbose_name='national identification number')),
+                ('phone', models.CharField(max_length=24, verbose_name=b'phone number', blank=True)),
                 ('email', models.EmailField(unique=True, max_length=256, verbose_name='email address')),
-                ('notes', models.TextField()),
+                ('notes', models.TextField(blank=True)),
                 ('liu_id', models.OneToOneField(null=True, blank=True, to='liu.LiUID', verbose_name='LiU ID')),
             ],
             options={
@@ -90,6 +101,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(verbose_name='description', blank=True)),
                 ('price', models.DecimalField(verbose_name='price', max_digits=12, decimal_places=2)),
                 ('quantitative', models.BooleanField(default=False, help_text='Can you purchase more than one (1) of this product?')),
+                ('categories', models.ManyToManyField(to='tickle.Category', null=True, blank=True)),
             ],
             options={
             },
@@ -100,6 +112,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('purchased', models.DateTimeField()),
+                ('valid', models.BooleanField(default=True)),
                 ('holdings', models.ManyToManyField(to='tickle.Holding')),
                 ('person', models.ForeignKey(to='tickle.Person')),
             ],
@@ -114,6 +127,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=256)),
             ],
             options={
+                'ordering': ['name'],
             },
             bases=(models.Model,),
         ),
@@ -137,13 +151,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='holding',
             name='person',
-            field=models.ForeignKey(to='tickle.Person'),
+            field=models.ForeignKey(related_name='holdings', to='tickle.Person'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='holding',
             name='product',
-            field=models.ForeignKey(to='tickle.Product'),
+            field=models.ForeignKey(related_name='holdings', to='tickle.Product'),
             preserve_default=True,
         ),
         migrations.AddField(

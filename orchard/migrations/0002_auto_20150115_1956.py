@@ -31,15 +31,9 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='orchestraproduct',
-            name='product',
-            field=models.OneToOneField(related_name='orchestra_product', to='tickle.Product'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
             model_name='orchestramembership',
             name='member',
-            field=models.ForeignKey(related_name='memberships', to='orchard.OrchestraMember'),
+            field=models.ForeignKey(related_name='memberships', to='tickle.Person'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -61,7 +55,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='orchestra',
             name='members',
-            field=models.ManyToManyField(related_name='orchestras', through='orchard.OrchestraMembership', to='orchard.OrchestraMember'),
+            field=models.ManyToManyField(related_name='orchestras', through='orchard.OrchestraMembership', to='tickle.Person'),
             preserve_default=True,
         ),
     ]
