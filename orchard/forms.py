@@ -3,21 +3,30 @@ from django import forms
 from django.utils.safestring import mark_safe
 from django.forms.models import inlineformset_factory
 from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div, HTML, Field
 from crispy_forms.bootstrap import InlineCheckboxes
 
 from tickle.models.people import Person
-from tickle.models.products import Purchase, Holding
+from tickle.models.products import Purchase, Holding, Product
 from orchard.models import Orchestra, OrchestraMember, OrchestraMembership, OrchestraTicketType, get_anniversary_dinner_product
+
+
+class OrchestraStuffForm(forms.ModelForm):
+    product = forms.ModelChoiceField(queryset=Product.objects.exclude(ticket_type__isnull=False), widget=forms.HiddenInput)  # todo: filter this
+
+    class Meta:
+        model = Holding
+        fields = ['product', 'quantity']
 
 
 class RadioInput(forms.CheckboxInput):
     """ Custom hardcoded class for a simple radio button input used in formsets. """
 
     def render(self, name, value, attrs=None):
-        if name.startswith('form-0'):
+        if name.startswith('memberships-0'):
             return mark_safe(u'<input type="radio" name="primary" value="%s" checked />' % name)
         return mark_safe(u'<input type="radio" name="primary" value="%s" />' % name)
 
@@ -48,7 +57,7 @@ class OrchestraMemberRegistrationForm(forms.ModelForm):
     ticket_type = forms.ModelChoiceField(queryset=OrchestraTicketType.objects.all())
     food = forms.BooleanField(widget=forms.CheckboxInput, required=False)
     accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False)
-    anniversary_dinner = forms.BooleanField(widget=forms.CheckboxInput, required=False)
+    anniversary_dinner = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_("I'm entitled to go to the anniversary dinner"), help_text=_('Doing your 10th SOF/STORK in a row or the 25th in all? Go to the party!'))
 
     class Meta:
         model = Purchase
@@ -151,21 +160,9 @@ class OrchestraTicketFormHelper(FormHelper):
         self.form_tag = False
         self.layout = Layout(
             'ticket_type',
-            Div(
-                Div(
-                    'food',
-                    css_class='col-sm-4'
-                ),
-                Div(
-                    'accommodation',
-                    css_class='col-sm-4'
-                ),
-                Div(
-                    'anniversary_dinner',
-                    css_class='col-sm-4'
-                ),
-                css_class='row'
-            ),
+            'food',
+            'accommodation',
+            'anniversary_dinner',
             Div(
                 Div(
                     'id_number',
@@ -183,8 +180,6 @@ class OrchestraTicketFormHelper(FormHelper):
                 ),
                 css_class='row'
             ),
-
-
         )
 
 

@@ -5,6 +5,12 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
 
+@python_2_unicode_compatible
+class Category(models.Model):
+    name = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.name
 
 @python_2_unicode_compatible
 class Event(MPTTModel):
@@ -22,6 +28,8 @@ class Event(MPTTModel):
 class Product(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
     description = models.TextField(blank=True, verbose_name=_('description'))
+
+    categories = models.ManyToManyField('Category', null=True, blank=True)
 
     price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_('price'))
     quantitative = models.BooleanField(default=False, help_text=_('Can you purchase more than one (1) of this product?'))
@@ -41,8 +49,8 @@ class TicketType(models.Model):
 
 @python_2_unicode_compatible
 class Holding(models.Model):
-    person = models.ForeignKey('Person')
-    product = models.ForeignKey('Product')
+    person = models.ForeignKey('Person', related_name='holdings')
+    product = models.ForeignKey('Product', related_name='holdings')
 
     quantity = models.PositiveIntegerField(default=1)  # todo: validate this! base on Product.quantitative
 

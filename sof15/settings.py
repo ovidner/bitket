@@ -48,7 +48,7 @@ INSTALLED_APPS = (
 
     'tickle',
     'orchard',
-    'fungus',
+    #'fungus',
     'karthago',
 )
 

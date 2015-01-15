@@ -7,11 +7,11 @@ from django.views.generic import CreateView, UpdateView
 from django.http.response import HttpResponseRedirect
 
 from orchard.forms import OrchestraMembershipForm, OrchestraMemberForm, ApproveOrchestraMemberForm, \
-    OrchestraMemberFormSet, OrchestraMemberRegistrationForm, InlineFormSetHelper, PersonFormHelper, OrchestraTicketFormHelper
+    OrchestraMemberFormSet, OrchestraMemberRegistrationForm, InlineFormSetHelper, PersonFormHelper, OrchestraTicketFormHelper, OrchestraStuffForm
 from orchard.models import Orchestra, OrchestraMember, OrchestraMembership
 from tickle.forms import PersonForm
 from tickle.models.people import Person
-from tickle.models.products import Holding, Purchase
+from tickle.models.products import Holding, Purchase, Product
 
 
 class ApproveOrchestraMemberView(UpdateView):
@@ -41,10 +41,20 @@ class ApproveOrchestraMemberView(UpdateView):
             return self.render_to_response(self.get_context_data(form=form))
 
 
+
 class RegisterOrchestraMemberView(CreateView):
     form_class = OrchestraMemberRegistrationForm
     template_name = 'orchard/register_member.html'
     model = Purchase
+
+    def get_stuff_queryset(self):
+        return Product.objects.exclude(ticket_type__isnull=False)
+
+    def get_stuff_formset_initial_data(self):
+        data = []
+        for i in self.get_stuff_queryset():
+            data.append({'product_object': i, 'product': i.pk, 'quantity': 0})
+        return data
 
     def get_context_data(self, **kwargs):
         context = super(RegisterOrchestraMemberView, self).get_context_data(**kwargs)
@@ -58,6 +68,14 @@ class RegisterOrchestraMemberView(CreateView):
                                                                         can_delete=False,
                                                                         form=OrchestraMembershipForm,
                                                                         fields=['orchestra', 'active', 'primary'])(self.request.POST or None)
+
+        context['stuff_formset'] = inlineformset_factory(Person,
+                                                         Holding,
+                                                         extra=self.get_stuff_queryset().count(),
+                                                         can_delete=False,
+                                                         form=OrchestraStuffForm,
+                                                         fields=['product', 'quantity'],)(self.request.POST or None,
+                                                                                          initial=self.get_stuff_formset_initial_data())
 
         context['person_form_helper'] = PersonFormHelper()
         context['ticket_form_helper'] = OrchestraTicketFormHelper()

@@ -9,34 +9,58 @@
 
     <form method="post" action="">
         {% csrf_token %}
-        <h2>Personuppgifter</h2>
-        {% crispy person_form person_form_helper %}
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>Personuppgifter</h2>
+                {% crispy person_form person_form_helper %}
 
-        <h2>Biljett, mat och boende</h2>
-        {% crispy form ticket_form_helper %}
 
-        <h2>Orkestermedlemskap</h2>
-        {{ orchestra_membership_formset.management_form }}
-        <table class="table">
-            <tr>
-                <th>Orkester</th>
-                <th>Aktiv medlem</th>
-                <th>Primär orkester</th>
-            </tr>
 
-            {% for form in orchestra_membership_formset %}
-                <tr>
-                    {% for field in form %}
-                        <td>
-                            {{ field.errors }}  <!-- Move somewhere else. -->
-                            {{ field }}
-                        </td>
+                <h2>Orkestermedlemskap</h2>
+                {{ orchestra_membership_formset.management_form }}
+
+                <table class="table table-striped">
+                    <tr>
+                        <th>Orkester</th>
+                        <th>Aktiv medlem</th>
+                        <th>Primär orkester</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+
+                    {% for form in orchestra_membership_formset %}
+                        <tr>
+                            {% for field in form %}
+                                <td>
+                                    {{ field.errors }}  <!-- Move somewhere else. -->
+                                    {{ field }}
+                                </td>
+                            {% endfor %}
+                        </tr>
                     {% endfor %}
-                </tr>
-            {% endfor %}
-        </table>
+                </table></div>
+            <div class="col-sm-6">
+                <h2>Biljett, mat och boende</h2>
+                {% crispy form ticket_form_helper %}
+
+                <h2>Prylar</h2>
+                <div class="list-group">
+                    {{ stuff_formset.management_form }}
+                    {% for form in stuff_formset %}
+                        <div class="list-group-item">
+                            <h3>{{ form.initial.product_object.name }}</h3>
+                            <p>{{ form.initial.product_object.description }}</p>
+                            <p><strong>{{ form.initial.product_object.price }} kr</strong><span class="pull-right">{{ form }}</span></p>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
 
 
-        <input type="submit" value="Skicka anmälan" class="btn btn-success">
+
+        <input type="submit" value="Skicka anmälan" class="btn btn-lg btn-success">
     </form>
 {% endblock content %}
