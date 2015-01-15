@@ -61,6 +61,7 @@ class Migration(migrations.Migration):
             name='Holding',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('quantity', models.PositiveIntegerField(default=1)),
             ],
             options={
             },
@@ -74,6 +75,7 @@ class Migration(migrations.Migration):
                 ('last_name', models.CharField(max_length=256, verbose_name='last name')),
                 ('id_number', models.CharField(unique=True, max_length=11, verbose_name='national identification number')),
                 ('email', models.EmailField(unique=True, max_length=256, verbose_name='email address')),
+                ('notes', models.TextField()),
                 ('liu_id', models.OneToOneField(null=True, blank=True, to='liu.LiUID', verbose_name='LiU ID')),
             ],
             options={
@@ -86,7 +88,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=256, verbose_name='name')),
                 ('description', models.TextField(verbose_name='description', blank=True)),
-                ('price', models.PositiveIntegerField(verbose_name='price')),
+                ('price', models.DecimalField(verbose_name='price', max_digits=12, decimal_places=2)),
+                ('quantitative', models.BooleanField(default=False, help_text='Can you purchase more than one (1) of this product?')),
             ],
             options={
             },
@@ -117,12 +120,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TicketType',
             fields=[
-                ('product_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='tickle.Product')),
-                ('event', models.ForeignKey(verbose_name='event', to='tickle.Event')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('events', models.ManyToManyField(to='tickle.Event', verbose_name='events')),
+                ('product', models.OneToOneField(related_name='ticket_type', to='tickle.Product')),
             ],
             options={
             },
-            bases=('tickle.product',),
+            bases=(models.Model,),
         ),
         migrations.AddField(
             model_name='person',

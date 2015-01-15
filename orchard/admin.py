@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from orchard.models import Orchestra, OrchestraMember, OrchestraMembership
+from orchard.models import Orchestra, OrchestraMember, OrchestraMembership, OrchestraTicketType
 
 
 class OrchestraMembersInline(admin.TabularInline):
@@ -13,6 +13,6 @@ class OrchestraAdmin(admin.ModelAdmin):
     inlines = (OrchestraMembersInline,)
 
 
-@admin.register(OrchestraMember)
-class OrchestraMemberAdmin(admin.ModelAdmin):
-    inlines = (OrchestraMembersInline,)
+@admin.register(OrchestraTicketType)
+class OrchestraTicketTypeAdmin(admin.ModelAdmin):
+    pass

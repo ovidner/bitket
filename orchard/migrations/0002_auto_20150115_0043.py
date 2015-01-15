@@ -13,6 +13,24 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
+            model_name='orchestratickettype',
+            name='accommodation_ticket_type',
+            field=models.ForeignKey(related_name='orchestra_ticket_type_accommodation', blank=True, to='tickle.TicketType', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='orchestratickettype',
+            name='food_ticket_type',
+            field=models.ForeignKey(related_name='orchestra_ticket_type_food', blank=True, to='tickle.TicketType', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='orchestratickettype',
+            name='ticket_type',
+            field=models.OneToOneField(related_name='orchestra_ticket_type', to='tickle.TicketType'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='orchestraproduct',
             name='product',
             field=models.OneToOneField(related_name='orchestra_product', to='tickle.Product'),

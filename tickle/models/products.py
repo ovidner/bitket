@@ -23,18 +23,20 @@ class Product(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
     description = models.TextField(blank=True, verbose_name=_('description'))
 
-    price = models.PositiveIntegerField(verbose_name=_('price'))
+    price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_('price'))
+    quantitative = models.BooleanField(default=False, help_text=_('Can you purchase more than one (1) of this product?'))
 
     def __str__(self):
         return self.name
 
 
 @python_2_unicode_compatible
-class TicketType(Product):
-    event = models.ForeignKey('Event', verbose_name=_('event'))
+class TicketType(models.Model):
+    product = models.OneToOneField('Product', related_name='ticket_type')
+    events = models.ManyToManyField('Event', verbose_name=_('events'))
 
     def __str__(self):
-        return u'{0}, {1}'.format(self.event, self.name)
+        return self.product.name
 
 
 @python_2_unicode_compatible
@@ -42,10 +44,10 @@ class Holding(models.Model):
     person = models.ForeignKey('Person')
     product = models.ForeignKey('Product')
 
-    # todo: add amount
+    quantity = models.PositiveIntegerField(default=1)  # todo: validate this! base on Product.quantitative
 
     def __str__(self):
-        return '{0} {1}'.format(self.product, self.person)
+        return u'{0} {1}'.format(self.product, self.person)
 
 
 @python_2_unicode_compatible
@@ -54,7 +56,7 @@ class Delivery(models.Model):
     delivered = models.DateTimeField()
 
     def __str__(self):
-        return '{0}, {1}'.format(self.holding, self.delivered)
+        return u'{0}, {1}'.format(self.holdings, self.delivered)
 
 
 @python_2_unicode_compatible
@@ -64,5 +66,7 @@ class Purchase(models.Model):
 
     purchased = models.DateTimeField()
 
+    valid = models.BooleanField(default=True)
+
     def __str__(self):
-        return '{0}'.format(self.person)
+        return u'{0}'.format(self.person)

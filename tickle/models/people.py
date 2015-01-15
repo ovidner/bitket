@@ -14,9 +14,12 @@ class Person(models.Model):
     id_number = models.CharField(max_length=11, unique=True, verbose_name=_('national identification number'))
     liu_id = models.OneToOneField('liu.LiUID', blank=True, null=True, verbose_name=_('LiU ID'))
 
+    phone = models.CharField(max_length=24, blank=True, verbose_name=('phone number'))
     email = models.EmailField(max_length=256, unique=True, verbose_name=_('email address'))
 
     special_nutrition = models.ManyToManyField('SpecialNutrition', null=True, blank=True)
+
+    notes = models.TextField(blank=True)
 
     def __str__(self):
         return self.full_name
@@ -37,6 +40,9 @@ class Person(models.Model):
 @python_2_unicode_compatible
 class SpecialNutrition(models.Model):
     name = models.CharField(max_length=256)
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
