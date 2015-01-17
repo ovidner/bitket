@@ -4,6 +4,7 @@ dj-email-url==0.0.2
 django-auth-ldap==1.2.4
 django-cache-url==0.8.0
 django-crispy-forms==1.4.0
+django-debug-toolbar==1.2.2
 django-guardian==1.2.5
 django-localflavor==1.1
 django-mptt==0.6.1
@@ -16,5 +17,6 @@ python-ldap==2.4.19
 raven==5.1.1
 requests==2.5.1
 six==1.9.0
+sqlparse==0.1.14
 whitenoise==1.0.6
 wsgiref==0.1.2
