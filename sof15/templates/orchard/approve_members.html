@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    sdfasdf
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ member_formset.management_form }}
+        {% for form in member_formset %}
+            Blurp
+            {{ form.as_p }}
+        {% endfor %}
+        <input type="submit">
+    </form>
+{% endblock %}

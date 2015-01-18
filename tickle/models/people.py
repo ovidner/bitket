@@ -1,0 +1,128 @@
+# -*- coding: utf-8 -*-
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible
+from django.conf import settings
+
+
+@python_2_unicode_compatible
+class Person(models.Model):
+    first_name = models.CharField(max_length=256, verbose_name=_('first name'))
+    last_name = models.CharField(max_length=256, verbose_name=_('last name'))
+
+    birth_date = models.DateField()
+    pid_code = models.CharField(
+        max_length=4,
+        null=True,  # This is needed for the uniqueness check. (NULL != NULL but '' == '')
+        blank=True,
+        verbose_name=_('national identity suffix'),
+        help_text=_('Last 4 chars in Swedish national identity number.'),
+    )
+    liu_id = models.OneToOneField('liu.LiUID', blank=True, null=True, verbose_name=_('LiU ID'))
+
+    phone = models.CharField(max_length=24, blank=True, verbose_name=('phone number'))
+    email = models.EmailField(max_length=256, unique=True, verbose_name=_('email address'))
+
+    special_nutrition = models.ManyToManyField('SpecialNutrition', null=True, blank=True, verbose_name=_('special nutrition'), help_text=_('Specify any special nutritional needs or habits.'))
+
+    notes = models.TextField(blank=True, verbose_name=_('other information'), help_text=_('Want us to know something else?'))
+    our_notes = models.TextField(blank=True, verbose_name=_('our notes'), help_text=_('Internal notes. Cannot be seen by this person.'))
+
+    class Meta:
+        unique_together = (
+            # If both are specified, the combination must be unique. Two birth dates with NULL as pid_code should pass
+            # as we want it to.
+            ('birth_date', 'pid_code'),
+        )
+
+    def __str__(self):
+        return self.full_name
+
+    def save(self, *args, **kwargs):
+        if hasattr(self, 'user') and not hasattr(self, 'liu_id'):
+            # Set username to email, only if a LiU id doesn't exist.
+            self.user.username = self.email
+            self.user.save()
+
+        super(Person, self).save(*args, **kwargs)
+
+    def clean_pid_code(self):
+        # If pid_code == '' then we should actually save NULL for uniqueness check, see above.
+        return self.cleaned_data['pid_code'] or None
+
+    @property
+    def full_name(self):
+        return '{0} {1}'.format(self.first_name, self.last_name)
+
+
+@python_2_unicode_compatible
+class SpecialNutrition(models.Model):
+    name = models.CharField(max_length=256)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class TickleUserManager(BaseUserManager):
+    def create_user(self, username, password=None):
+        """
+        Creates and saves a User with the given email and password.
+        """
+        if not username:
+            raise ValueError('Users must have a username')
+
+        user = self.model(username=username)
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, password):
+        """
+        Creates and saves a superuser with the given email, date of
+        birth and password.
+        """
+        user = self.create_user(username, password=password)
+        user.is_admin = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
+
+
+@python_2_unicode_compatible
+class TickleUser(AbstractBaseUser, PermissionsMixin):
+    person = models.OneToOneField('Person', related_name='user', null=True, blank=True)
+
+    username = models.CharField(max_length=256, unique=True)
+
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+
+    objects = TickleUserManager()
+
+    USERNAME_FIELD = 'username'
+
+    def __str__(self):
+        return self.get_full_name()
+
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.is_admin
+
+    def get_full_name(self):
+        if self.person:
+            return self.person.full_name
+        else:
+            return self.username
+
+    def get_short_name(self):
+        if self.person:
+            return self.person.full_name
+        else:
+            return self.username
