@@ -14,7 +14,6 @@ RUN apt-get update -y && apt-get install -y \
     libpq-dev \
     libldap2-dev \
     libsasl2-dev \
-    git
 
 RUN pip install virtualenv
 
