@@ -44,8 +44,16 @@ class OrchestraMembershipForm(forms.ModelForm):
         }
 
 
+class OrchestraTicketTypePublicNameModelChoiceField(forms.ModelChoiceField):
+    """
+    At least we're explicit with the class name...
+    """
+    def label_from_instance(self, obj):
+        return obj.ticket_type.public_name
+
+
 class OrchestraMemberRegistrationForm(forms.Form):
-    ticket_type = forms.ModelChoiceField(queryset=OrchestraTicketType.objects.all())
+    ticket_type = OrchestraTicketTypePublicNameModelChoiceField(queryset=OrchestraTicketType.objects.all())
     food = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Food'), help_text=_('Meals as described above.'))
     accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Accommodation'), help_text=_('Place on floor &ndash; bring your own bedroll. Breakfast included.'))
     dinner = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_("10-/25-year dinner"), help_text=_('Doing your 10th SOF/STORK in a row or the 25th in all? Go to the party!'))
