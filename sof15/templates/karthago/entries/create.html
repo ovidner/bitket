@@ -25,6 +25,9 @@
                     (om t.ex. kartong skulle fylla samma funktion som en träskiva är kartong absolut det bättre
                     alternativet).
                 </p>
+                <p>
+                    Tips: träskivorna kommer i standarddimensionen 1200x2400 mm.
+                </p>
                 {% crispy material_formset material_formset_helper %}
 
                 <h3>Andra material</h3>
@@ -34,7 +37,7 @@
                 {% crispy custom_material_formset material_formset_helper %}
             </div>
         </div>
-        <input type="submit" class="btn btn-lg btn-success">
+        <input type="submit" class="btn btn-lg btn-success" value="Skicka ansökan!">
     </form>
 {% endblock content %}
 
