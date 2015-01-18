@@ -58,12 +58,12 @@ class OrchestraTicketType(models.Model):
     ticket_type = models.OneToOneField('tickle.TicketType', related_name='orchestra_ticket_type')
 
     # Which food object will you get when purchasing this ticket with food?
-    food_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True)
+    food_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+')
 
     # Which food object will you get when purchasing this ticket with accommodation?
-    accommodation_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True)
+    accommodation_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+')
 
-    dinner_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True)
+    dinner_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+')
 
     def __str__(self):
         return self.ticket_type.name
