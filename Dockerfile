@@ -31,6 +31,8 @@ RUN /home/sof15/bin/pip install -r /home/sof15/app/requirements.txt
 # Now copy the rest of the code
 COPY . /home/sof15/app
 
+RUN mkdir -p /home/sof15/app/_build/static/
+
 # Django will be sad if we don't set these envs during build.
 ENV DEBUG=true
 ENV SECRET_KEY=build
