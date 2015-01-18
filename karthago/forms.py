@@ -125,7 +125,7 @@ class EntryFormHelper(FormHelper):
 
 
 EntryMaterialFormSet = inlineformset_factory(Entry, EntryMaterial, extra=20, can_delete=False)
-EntryCustomMaterialFormSet = inlineformset_factory(Entry, EntryCustomMaterial, extra=5, can_delete=False)
+EntryCustomMaterialFormSet = inlineformset_factory(Entry, EntryCustomMaterial, extra=10, can_delete=False)
 
 
 class EntryMaterialFormSetHelper(FormHelper):
