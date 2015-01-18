@@ -23,7 +23,7 @@ msgstr "Mat"
 
 #: orchard/forms.py:57
 msgid "Meals as described above."
-msgstr "Måltider enligt ovan"
+msgstr "Måltider enligt ovan."
 
 #: orchard/forms.py:58
 msgid "Accommodation"
