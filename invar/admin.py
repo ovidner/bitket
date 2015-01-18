@@ -1,8 +1,19 @@
 from django.contrib import admin
-from Invar.models import Invoice, InvoiceRow
+from django.db import models
+from invar.models import Invoice, InvoiceRow
+from django.forms import TextInput
 
 # Register your models here.
 
+
+class InvoiceRowInline(admin.TabularInline):
+    model = InvoiceRow
+    extra = 0
+
+
 @admin.register(Invoice)
-class InvoiceAdmin(admin.modelAdmin):
-    pass
+class InvoiceAdmin(admin.ModelAdmin):
+    inlines = (InvoiceRowInline, )
+    formfield_overrides = {
+        models.CharField: {'widget' : TextInput(attrs={'size':20} ) }
+    }
