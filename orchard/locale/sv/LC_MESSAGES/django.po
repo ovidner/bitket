@@ -19,36 +19,36 @@ msgstr ""
 
 #: orchard/forms.py:57
 msgid "Food"
-msgstr ""
+msgstr "Mat"
 
 #: orchard/forms.py:57
 msgid "Meals as described above."
-msgstr ""
+msgstr "Måltider enligt ovan"
 
 #: orchard/forms.py:58
 msgid "Accommodation"
-msgstr ""
+msgstr "Boende"
 
 #: orchard/forms.py:58
 msgid "Place on floor &ndash; bring your own bedroll. Breakfast included."
-msgstr ""
+msgstr "Plats på golv i sovsal &ndash; ta med dig sovsäck och liggunderlag. Frukost ingår."
 
 #: orchard/forms.py:59
 msgid "10-/25-year dinner"
-msgstr ""
+msgstr "10-/25-årsmiddagen"
 
 #: orchard/forms.py:59
 msgid "Doing your 10th SOF/STORK in a row or the 25th in all? Go to the party!"
-msgstr ""
+msgstr "Gör du din tionde studentorkester i följd eller din 25:e totalt? Gå på middagen!"
 
 #: orchard/models.py:20
 msgid "Approve members"
-msgstr ""
+msgstr "Godkänn medlemmar"
 
 #: orchard/models.py:32
 msgid "active member"
-msgstr ""
+msgstr "aktiv medlem"
 
 #: orchard/models.py:33
 msgid "primary orchestra"
-msgstr ""
+msgstr "primär orkester"
