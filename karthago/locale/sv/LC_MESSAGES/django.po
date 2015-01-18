@@ -48,10 +48,8 @@ msgid "description"
 msgstr "beskrivning"
 
 #: karthago/models.py:61
-#, fuzzy
-#| msgid "number of members"
 msgid "max members"
-msgstr "antal deltagare"
+msgstr "maximalt antal deltagare"
 
 #: karthago/models.py:72
 msgid "constellation"
