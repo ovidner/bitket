@@ -6,8 +6,11 @@ from django.utils.encoding import python_2_unicode_compatible
 
 @python_2_unicode_compatible
 class Material(models.Model):
-    name = models.CharField(max_length=256)
-    unit = models.CharField(max_length=16)
+    name = models.CharField(max_length=256, unique=True, verbose_name=_('name'))
+    unit = models.CharField(max_length=16, verbose_name=_('unit'))
+
+    class Meta:
+        ordering = ('name',)
 
     def __str__(self):
         return '%s [%s]' % (self.name, self.unit)
@@ -18,7 +21,7 @@ class Material(models.Model):
 
 @python_2_unicode_compatible
 class MaterialRole(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, verbose_name=_('name'))
 
     def __str__(self):
         return self.name
@@ -26,11 +29,11 @@ class MaterialRole(models.Model):
 
 @python_2_unicode_compatible
 class EntryMaterial(models.Model):
-    entry = models.ForeignKey('Entry')
-    material = models.ForeignKey('Material')
+    entry = models.ForeignKey('Entry', verbose_name=_('entry'))
+    material = models.ForeignKey('Material', verbose_name=_('material'))
 
-    amount = models.DecimalField(max_digits=9, decimal_places=3)
-    role = models.ForeignKey('MaterialRole')
+    amount = models.DecimalField(max_digits=9, decimal_places=3, verbose_name=_('amount'))
+    role = models.ForeignKey('MaterialRole', verbose_name=_('role'))
 
     class Meta:
         ordering = ('entry', 'material', 'role')
@@ -41,21 +44,21 @@ class EntryMaterial(models.Model):
 
 @python_2_unicode_compatible
 class EntryCustomMaterial(models.Model):
-    entry = models.ForeignKey('Entry')
-    material = models.CharField(max_length=256)
+    entry = models.ForeignKey('Entry', verbose_name=_('entry'))
+    material = models.CharField(max_length=256, verbose_name=_('material'))
 
-    amount = models.DecimalField(max_digits=9, decimal_places=3)
-    unit = models.CharField(max_length=8)
-    role = models.ForeignKey('MaterialRole')
+    amount = models.DecimalField(max_digits=9, decimal_places=3, verbose_name=_('amount'))
+    unit = models.CharField(max_length=8, verbose_name=_('unit'))
+    role = models.ForeignKey('MaterialRole', verbose_name=_('role'))
 
     def __str__(self):
         return '%s: %s %s %s (%s)' % (self.entry.name, self.amount, self.unit, self.material, self.role.name)
 
 @python_2_unicode_compatible
 class EntryType(models.Model):
-    name = models.CharField(max_length=256)
-    description = models.CharField(max_length=256)
-    max_members = models.PositiveIntegerField()
+    name = models.CharField(max_length=256, verbose_name=_('name'))
+    description = models.CharField(max_length=256, verbose_name=_('description'))
+    max_members = models.PositiveIntegerField(verbose_name=_('max members'))
 
     class Meta:
         ordering = ('max_members', 'name',)
