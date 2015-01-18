@@ -16,8 +16,8 @@ class Person(models.Model):
         max_length=4,
         null=True,  # This is needed for the uniqueness check. (NULL != NULL but '' == '')
         blank=True,
-        verbose_name=_('national identity suffix'),
-        help_text=_('Last 4 chars in Swedish national identity number.'),
+        verbose_name=_('national identity code'),
+        help_text=_('Last 4 digits in Swedish national identity number.'),
     )
     liu_id = models.OneToOneField('liu.LiUID', blank=True, null=True, verbose_name=_('LiU ID'))
 
@@ -35,6 +35,9 @@ class Person(models.Model):
             # as we want it to.
             ('birth_date', 'pid_code'),
         )
+
+        verbose_name = _('person')
+        verbose_name_plural = _('people')
 
     def __str__(self):
         return self.full_name
@@ -58,10 +61,13 @@ class Person(models.Model):
 
 @python_2_unicode_compatible
 class SpecialNutrition(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, verbose_name=_('name'))
 
     class Meta:
         ordering = ['name']
+
+        verbose_name = _('special nutrition')
+        verbose_name_plural = _('special nutritions')
 
     def __str__(self):
         return self.name
@@ -95,16 +101,20 @@ class TickleUserManager(BaseUserManager):
 
 @python_2_unicode_compatible
 class TickleUser(AbstractBaseUser, PermissionsMixin):
-    person = models.OneToOneField('Person', related_name='user', null=True, blank=True)
+    person = models.OneToOneField('Person', related_name='user', null=True, blank=True, verbose_name=_('person'))
 
-    username = models.CharField(max_length=256, unique=True)
+    username = models.CharField(max_length=256, unique=True, verbose_name=_('username'))
 
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True, verbose_name=_('is active'))
+    is_admin = models.BooleanField(default=False, verbose_name=_('is admin'))
 
     objects = TickleUserManager()
 
     USERNAME_FIELD = 'username'
+
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
 
     def __str__(self):
         return self.get_full_name()

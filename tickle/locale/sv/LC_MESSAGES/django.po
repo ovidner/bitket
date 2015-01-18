@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-18 15:41+0000\n"
+"POT-Creation-Date: 2015-01-18 22:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: tickle/forms.py:46
 msgid "Enter a valid Swedish personal identity number or YYMMDD-0000."
-msgstr ""
+msgstr "Ange ett giltigt svenskt personnummer eller ÅÅMMDD-0000."
 
 #: tickle/forms.py:47
 msgid "Co-ordination numbers are not allowed."
@@ -35,14 +35,16 @@ msgid ""
 "the Swedish Personal Data Act (PUL) and will not share it with any third "
 "parties."
 msgstr ""
+"Vi lagrar dina personuppgifter enligt PUL och kommer inte dela med oss av "
+"dem till någon tredje part."
 
 #: tickle/forms.py:94
 msgid "Phone number"
-msgstr ""
+msgstr "Telefonnummer"
 
 #: tickle/forms.py:95
 msgid "Personal identity number"
-msgstr ""
+msgstr "Personnummer"
 
 #: tickle/forms.py:95
 msgid ""
@@ -50,6 +52,8 @@ msgid ""
 "don't have one, enter <em>YYMMDD-0000</em>, where <em>YYMMDD</em> represents "
 "your birthday."
 msgstr ""
+"Svenskt personnummer i formatet <em>ÅÅMMDD-XXXX</em>. Har du inget – ange "
+"<em>ÅÅMMDD-0000</em> där <em>ÅÅMMDD</em> representerar ditt födelsedatum."
 
 #: tickle/models/people.py:11
 msgid "first name"
@@ -57,63 +61,98 @@ msgstr "förnamn"
 
 #: tickle/models/people.py:12
 msgid "last name"
-msgstr "efternam"
+msgstr "efternamn"
 
 #: tickle/models/people.py:19
-msgid "national identity suffix"
-msgstr ""
+msgid "national identity code"
+msgstr "personnummerkod"
 
 #: tickle/models/people.py:20
-msgid "Last 4 chars in Swedish national identity number."
-msgstr ""
+msgid "Last 4 digits in Swedish national identity number."
+msgstr "Sista 4 siffrorna i personnumret."
 
 #: tickle/models/people.py:22
 msgid "LiU ID"
-msgstr ""
+msgstr "LiU-id"
 
 #: tickle/models/people.py:25
 msgid "email address"
 msgstr "e-postadress"
 
-#: tickle/models/people.py:27
+#: tickle/models/people.py:27 tickle/models/people.py:69
 msgid "special nutrition"
 msgstr "speciella kostvanor"
 
 #: tickle/models/people.py:27
 msgid "Specify any special nutritional needs or habits."
-msgstr ""
+msgstr "Ange speciella kostvanor eller -behov"
 
 #: tickle/models/people.py:29
 msgid "other information"
-msgstr ""
+msgstr "annan information"
 
 #: tickle/models/people.py:29
 msgid "Want us to know something else?"
-msgstr ""
+msgstr "Något annat vi behöver veta?"
 
 #: tickle/models/people.py:30
 msgid "our notes"
-msgstr ""
+msgstr "våra anteckningar"
 
 #: tickle/models/people.py:30
 msgid "Internal notes. Cannot be seen by this person."
+msgstr "För internt bruk. Kan endast ses av organisationen."
+
+#: tickle/models/people.py:39 tickle/models/people.py:104
+msgid "person"
+msgstr "person"
+
+#: tickle/models/people.py:40
+msgid "people"
+msgstr "personer"
+
+#: tickle/models/people.py:64 tickle/models/products.py:17
+#: tickle/models/products.py:29
+msgid "name"
+msgstr "namn"
+
+#: tickle/models/people.py:70
+#, fuzzy
+#| msgid "special nutrition"
+msgid "special nutritions"
+msgstr "speciella kostvanor"
+
+#: tickle/models/people.py:106
+msgid "username"
+msgstr "användarnamn"
+
+#: tickle/models/people.py:108
+msgid "is active"
 msgstr ""
 
-#: tickle/models/products.py:17 tickle/models/products.py:29
-msgid "name"
+#: tickle/models/people.py:109
+msgid "is admin"
 msgstr ""
+
+#: tickle/models/people.py:116
+msgid "user"
+msgstr "användarkonto"
+
+#: tickle/models/people.py:117
+msgid "users"
+msgstr "användarkonton"
 
 #: tickle/models/products.py:30
 msgid "public name"
-msgstr ""
+msgstr "publikt namn"
 
 #: tickle/models/products.py:31
 msgid "description"
-msgstr ""
+msgstr "beskrivning"
 
 #: tickle/models/products.py:35
 msgid "price"
-msgstr ""
+msgstr "pris"
 
 #: tickle/models/products.py:36
 msgid "Can you purchase more than one (1) of this product?"
@@ -121,4 +160,4 @@ msgstr ""
 
 #: tickle/models/products.py:49
 msgid "events"
-msgstr ""
+msgstr "evenemang"

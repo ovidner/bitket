@@ -10,7 +10,10 @@ class Material(models.Model):
     unit = models.CharField(max_length=16, verbose_name=_('unit'))
 
     class Meta:
-        ordering = ('name',)
+        verbose_name = _('material')
+        verbose_name_plural = _('materials')
+
+        ordering = ('-name',)
 
     def __str__(self):
         return '%s [%s]' % (self.name, self.unit)
@@ -22,6 +25,10 @@ class Material(models.Model):
 @python_2_unicode_compatible
 class MaterialRole(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
+
+    class Meta:
+        verbose_name = _('material role')
+        verbose_name_plural = _('material roles')
 
     def __str__(self):
         return self.name
@@ -38,6 +45,9 @@ class EntryMaterial(models.Model):
     class Meta:
         ordering = ('entry', 'material', 'role')
 
+        verbose_name = _('entry material')
+        verbose_name_plural = _('entry materials')
+
     def __str__(self):
         return '%s: %s %s %s (%s)' % (self.entry.name, self.amount, self.material.unit, self.material.name, self.role.name)
 
@@ -51,6 +61,10 @@ class EntryCustomMaterial(models.Model):
     unit = models.CharField(max_length=8, verbose_name=_('unit'))
     role = models.ForeignKey('MaterialRole', verbose_name=_('role'))
 
+    class Meta:
+        verbose_name = _('entry custom material')
+        verbose_name_plural = _('entry custom materials')
+
     def __str__(self):
         return '%s: %s %s %s (%s)' % (self.entry.name, self.amount, self.unit, self.material, self.role.name)
 
@@ -62,6 +76,9 @@ class EntryType(models.Model):
 
     class Meta:
         ordering = ('max_members', 'name',)
+
+        verbose_name = _('entry type')
+        verbose_name_plural = _('entry types')
 
     def __str__(self):
         return '%s (%s)' % (self.name, self.description)
