@@ -44,8 +44,8 @@ class Product(models.Model):
 
 
 @python_2_unicode_compatible
-class TicketType(models.Model):
-    product = models.OneToOneField('Product', related_name='ticket_type')
+class TicketType(Product):
+    product = models.OneToOneField('Product', related_name='ticket_type', parent_link=True)
     events = models.ManyToManyField('Event', verbose_name=_('events'))
 
     def __str__(self):
