@@ -1,0 +1,54 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-18 15:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: orchard/forms.py:49
+msgid "Food"
+msgstr ""
+
+#: orchard/forms.py:49
+msgid "Meals as described above."
+msgstr ""
+
+#: orchard/forms.py:50
+msgid "Accommodation"
+msgstr ""
+
+#: orchard/forms.py:50
+msgid "Place on floor &ndash; bring your own bedroll. Breakfast included."
+msgstr ""
+
+#: orchard/forms.py:51
+msgid "10-/25-year dinner"
+msgstr ""
+
+#: orchard/forms.py:51
+msgid "Doing your 10th SOF/STORK in a row or the 25th in all? Go to the party!"
+msgstr ""
+
+#: orchard/models.py:20
+msgid "Approve members"
+msgstr ""
+
+#: orchard/models.py:32
+msgid "active member"
+msgstr ""
+
+#: orchard/models.py:33
+msgid "primary orchestra"
+msgstr ""

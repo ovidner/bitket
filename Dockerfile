@@ -14,7 +14,8 @@ RUN apt-get update -y && apt-get install -y \
     libpq-dev \
     libldap2-dev \
     libsasl2-dev \
-    libncurses5-dev
+    libncurses5-dev \
+    gettext
 
 RUN pip install virtualenv
 
@@ -37,6 +38,7 @@ RUN mkdir -p /home/sof15/app/_build/static/
 ENV DEBUG=true
 ENV SECRET_KEY=build
 RUN /home/sof15/bin/python /home/sof15/app/manage.py collectstatic --noinput
+RUN /home/sof15/bin/python /home/sof15/app/manage.py compilemessages
 # Unset the envs
 ENV SECRET_KEY=
 ENV DEBUG=

@@ -16,6 +16,8 @@ d12f = django12factor.factorise(
     ]
 )
 
+from django.utils.translation import ugettext_lazy as _
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -63,6 +65,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware'
 )
 
 ROOT_URLCONF = 'sof15.urls'
@@ -98,6 +101,17 @@ USE_L10N = True
 
 USE_TZ = True
 
+LANGUAGES = (
+    ('sv', _('Swedish')),
+)
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, '_conf', 'locale'),
+
+    os.path.join(BASE_DIR, 'tickle', 'locale'),
+    os.path.join(BASE_DIR, 'orchard', 'locale'),
+    os.path.join(BASE_DIR, 'karthago', 'locale'),
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/

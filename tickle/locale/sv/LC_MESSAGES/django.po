@@ -1,0 +1,124 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-18 15:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: tickle/forms.py:46
+msgid "Enter a valid Swedish personal identity number or YYMMDD-0000."
+msgstr ""
+
+#: tickle/forms.py:47
+msgid "Co-ordination numbers are not allowed."
+msgstr "Samordningsnummer är inte tillåtna."
+
+#: tickle/forms.py:88
+msgid "I accept that my personal information will be stored"
+msgstr "Jag accepterar att mina personuppgifter lagras"
+
+#: tickle/forms.py:89
+msgid ""
+"We store your personal information according to the regulations specified by "
+"the Swedish Personal Data Act (PUL) and will not share it with any third "
+"parties."
+msgstr ""
+
+#: tickle/forms.py:94
+msgid "Phone number"
+msgstr ""
+
+#: tickle/forms.py:95
+msgid "Personal identity number"
+msgstr ""
+
+#: tickle/forms.py:95
+msgid ""
+"Swedish personal identity number in the format <em>YYMMDD-XXXX</em>. If you "
+"don't have one, enter <em>YYMMDD-0000</em>, where <em>YYMMDD</em> represents "
+"your birthday."
+msgstr ""
+
+#: tickle/models/people.py:11
+msgid "first name"
+msgstr "förnamn"
+
+#: tickle/models/people.py:12
+msgid "last name"
+msgstr "efternam"
+
+#: tickle/models/people.py:19
+msgid "national identity suffix"
+msgstr ""
+
+#: tickle/models/people.py:20
+msgid "Last 4 chars in Swedish national identity number."
+msgstr ""
+
+#: tickle/models/people.py:22
+msgid "LiU ID"
+msgstr ""
+
+#: tickle/models/people.py:25
+msgid "email address"
+msgstr "e-postadress"
+
+#: tickle/models/people.py:27
+msgid "special nutrition"
+msgstr "speciella kostvanor"
+
+#: tickle/models/people.py:27
+msgid "Specify any special nutritional needs or habits."
+msgstr ""
+
+#: tickle/models/people.py:29
+msgid "other information"
+msgstr ""
+
+#: tickle/models/people.py:29
+msgid "Want us to know something else?"
+msgstr ""
+
+#: tickle/models/people.py:30
+msgid "our notes"
+msgstr ""
+
+#: tickle/models/people.py:30
+msgid "Internal notes. Cannot be seen by this person."
+msgstr ""
+
+#: tickle/models/products.py:17 tickle/models/products.py:29
+msgid "name"
+msgstr ""
+
+#: tickle/models/products.py:30
+msgid "public name"
+msgstr ""
+
+#: tickle/models/products.py:31
+msgid "description"
+msgstr ""
+
+#: tickle/models/products.py:35
+msgid "price"
+msgstr ""
+
+#: tickle/models/products.py:36
+msgid "Can you purchase more than one (1) of this product?"
+msgstr ""
+
+#: tickle/models/products.py:49
+msgid "events"
+msgstr ""
