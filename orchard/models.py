@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
 
-from tickle.models.products import Product
+from tickle.models.products import Product, TicketType
 
 
 @python_2_unicode_compatible
@@ -66,11 +66,11 @@ class OrchestraTicketType(models.Model):
     dinner_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True)
 
     def __str__(self):
-        return self.ticket_type.product.name
+        return self.ticket_type.name
 
 class OrchestraProductQuerySet(models.QuerySet):
     def stuff(self):
-        return self.exclude(ticket_type__isnull=False)
+        return self.exclude(pk__in=TicketType.objects.all())
 
 class OrchestraProduct(Product):
     objects = OrchestraProductQuerySet.as_manager()
