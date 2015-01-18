@@ -27,6 +27,7 @@ class Event(MPTTModel):
 @python_2_unicode_compatible
 class Product(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
+    _public_name = models.CharField(max_length=256, null=True, blank=True, verbose_name=_('public name'))
     description = models.TextField(blank=True, verbose_name=_('description'))
 
     categories = models.ManyToManyField('Category', null=True, blank=True)
@@ -36,6 +37,10 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def public_name(self):
+        return self._public_name or self.name
 
 
 @python_2_unicode_compatible
@@ -70,7 +75,7 @@ class Delivery(models.Model):
 @python_2_unicode_compatible
 class Purchase(models.Model):
     person = models.ForeignKey('Person')
-    holdings = models.ManyToManyField('Holding')
+    holdings = models.ManyToManyField('Holding', null=True)
 
     purchased = models.DateTimeField()
 

@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from orchard.models import Orchestra, OrchestraMember, OrchestraMembership, OrchestraTicketType
+from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType
 
 
-class OrchestraMembersInline(admin.TabularInline):
+class OrchestraMembershipInline(admin.TabularInline):
     model = OrchestraMembership
     extra = 0
 
 
 @admin.register(Orchestra)
 class OrchestraAdmin(admin.ModelAdmin):
-    inlines = (OrchestraMembersInline,)
+    inlines = (OrchestraMembershipInline,)
 
 
 @admin.register(OrchestraTicketType)

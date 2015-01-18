@@ -3,21 +3,24 @@
 
 {% block content %}
     <div class="page-header">
-        <h1>Orkestermedlem</h1>
+        <h1>Orkestermedlemsanmälan</h1>
     </div>
-    <p>Bla bla bla, luftpastejer osv...</p>
+    <p>Kul att du vill gå på SOF! Fyll i formuläret här nedan. Hör gärna av dig till orkesteransvarig på <a href="mailto:orkester@sof15.se">orkester@sof15.se</a> om du har några funderingar.</p>
 
     <form method="post" action="">
         {% csrf_token %}
         <div class="row">
             <div class="col-sm-6">
                 <h2>Personuppgifter</h2>
-                {% crispy person_form person_form_helper %}
-
-
+                {% crispy form person_form_helper %}
 
                 <h2>Orkestermedlemskap</h2>
-                {{ orchestra_membership_formset.management_form }}
+                <p>Ange här vilken eller vilka orkestrar du går på SOF med. Markera en orkester som <em>primär</em> –
+                    det är denna orkester som kommer få faktura på din biljett och dina prylar. Vi försöker schemalägga
+                    spelningar så att du inte ska behöva välja vilka du ska spela med, men vi kan tyvärr inte garantera
+                    något.</p>
+                <p>Alla orkestrar du anger kommer behöva bekräfta ditt medlemskap. </p>
+                {{ membership_formset.management_form }}
 
                 <table class="table table-striped">
                     <tr>
@@ -28,7 +31,7 @@
                         <th></th>
                     </tr>
 
-                    {% for form in orchestra_membership_formset %}
+                    {% for form in membership_formset %}
                         <tr>
                             {% for field in form %}
                                 <td>
@@ -38,17 +41,45 @@
                             {% endfor %}
                         </tr>
                     {% endfor %}
-                </table></div>
+                </table>
+                <h2>Betalning</h2>
+                <p>Din (primära) orkester får en faktura på allt du köper från oss på den här sidan. Vem som betalar i slutändan är sedan upp till din orkester. Därför ser vi gärna att du i första hand vänder dig till din orkester med frågor om betalning.</p>
+            </div>
+
             <div class="col-sm-6">
                 <h2>Biljett, mat och boende</h2>
-                {% crispy form ticket_form_helper %}
+                <p>
+                    Ange under vilka dagar du tänker besöka festivalen samt om du önskar ha mat och/eller boende. Tillvalen har följande pris:
+                    <dl class="dl-horizontal">
+                        <dt>Torsdag - Lördag</dt>
+                        <dd>Mat: 200 kr, Boende: 100 kr</dd>
+                        <dt>Torsdag - Söndag</dt>
+                        <dd>Mat: 200 kr, Boende: 150 kr</dd>
+                        <dt>Fredag - Lördag</dt>
+                        <dd>Mat: 200 kr, Boende: 150 kr</dd>
+                        <dt>Fredag - Söndag</dt>
+                        <dd>Mat: 200 kr, Boende: 150 kr</dd>
+                    </dl>
+                </p>
+                <p>
+                    Följande mål ingår i matpriset för respektive dag:
+                    <dl class="dl-horizontal">
+                        <dt>Torsdag</dt>
+                        <dd>Middag, vickning</dd>
+                        <dt>Fredag</dt>
+                        <dd>Lunch, middag, vickning</dd>
+                        <dt>Lördag</dt>
+                        <dd>Lunch, middag, vickning</dd>
+                    </dl>
+                </p>
+                {% crispy ticket_form ticket_form_helper %}
 
                 <h2>Prylar</h2>
                 <div class="list-group">
                     {{ stuff_formset.management_form }}
                     {% for form in stuff_formset %}
                         <div class="list-group-item">
-                            <h3>{{ form.initial.product_object.name }}</h3>
+                            <h3>{{ form.initial.product_object.public_name }}</h3>
                             <p>{{ form.initial.product_object.description }}</p>
                             <p><strong>{{ form.initial.product_object.price }} kr</strong><span class="pull-right">{{ form }}</span></p>
                         </div>
@@ -58,9 +89,7 @@
 
             </div>
         </div>
-
-
-
+        {% crispy accept_form accept_form_helper %}
         <input type="submit" value="Skicka anmälan" class="btn btn-lg btn-success">
     </form>
 {% endblock content %}

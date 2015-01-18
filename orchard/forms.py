@@ -6,12 +6,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div, HTML, Field
-from crispy_forms.bootstrap import InlineCheckboxes
+from crispy_forms.bootstrap import InlineCheckboxes, AppendedText
 
 from tickle.models.people import Person
 from tickle.models.products import Purchase, Holding, Product
 from tickle.forms import PersonForm, PublicNameModelChoiceField
-from orchard.models import Orchestra, OrchestraMember, OrchestraMembership, OrchestraTicketType
+from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType
 
 
 class OrchestraStuffForm(forms.ModelForm):
@@ -46,8 +46,8 @@ class OrchestraMembershipForm(forms.ModelForm):
 
 class OrchestraMemberRegistrationForm(forms.Form):
     ticket_type = forms.ModelChoiceField(queryset=OrchestraTicketType.objects.all())
-    food = forms.BooleanField(widget=forms.CheckboxInput, required=False)
-    accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False)
+    food = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Food'), help_text=_('Meals as described above.'))
+    accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Accommodation'), help_text=_('Place on floor &ndash; bring your own bedroll. Breakfast included.'))
     dinner = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_("10-/25-year dinner"), help_text=_('Doing your 10th SOF/STORK in a row or the 25th in all? Go to the party!'))
 
 
@@ -57,54 +57,7 @@ class ApproveOrchestraMemberForm(forms.ModelForm):
         fields = []
 
 
-class PersonFormHelper(FormHelper):
-    def __init__(self, *args, **kwargs):
-        super(PersonFormHelper, self).__init__(*args, **kwargs)
 
-        self.form_tag = False
-        self.layout = Layout(
-            Div(
-                Div(
-                    'first_name',
-                    css_class='col-sm-6'
-                ),
-                Div(
-                    'last_name',
-                    css_class='col-sm-6'
-                ),
-                css_class='row'
-            ),
-            Div(
-                Div(
-                    'phone',
-                    css_class='col-sm-6'
-                ),
-                Div(
-                    'email',
-                    css_class='col-sm-6'
-                ),
-                css_class='row'
-            ),
-            Div(
-                Div(
-                    'id_number',
-                    css_class='col-sm-6'
-                ),
-                Div(
-                    css_class='col-sm-6'
-                ),
-                css_class='row'
-            ),
-            Div(
-                Div(
-                    InlineCheckboxes('special_nutrition'),
-                    css_class='col-sm-12'
-                ),
-                css_class='row'
-            ),
-
-            'notes'
-            )
 
 
 class OrchestraTicketFormHelper(FormHelper):
@@ -117,23 +70,6 @@ class OrchestraTicketFormHelper(FormHelper):
             'food',
             'accommodation',
             'dinner',
-            Div(
-                Div(
-                    'id_number',
-                    css_class='col-sm-6'
-                ),
-                Div(
-                    css_class='col-sm-6'
-                ),
-                css_class='row'
-            ),
-            Div(
-                Div(
-                    Field('special_nutrition', ),
-                    css_class='col-sm-12'
-                ),
-                css_class='row'
-            ),
         )
 
 

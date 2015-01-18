@@ -11,15 +11,30 @@ class Person(models.Model):
     first_name = models.CharField(max_length=256, verbose_name=_('first name'))
     last_name = models.CharField(max_length=256, verbose_name=_('last name'))
 
-    id_number = models.CharField(max_length=11, unique=True, verbose_name=_('national identification number'))
+    birth_date = models.DateField()
+    pid_code = models.CharField(
+        max_length=4,
+        null=True,  # This is needed for the uniqueness check. (NULL != NULL but '' == '')
+        blank=True,
+        verbose_name=_('national identity suffix'),
+        help_text=_('Last 4 chars in Swedish national identity number.'),
+    )
     liu_id = models.OneToOneField('liu.LiUID', blank=True, null=True, verbose_name=_('LiU ID'))
 
     phone = models.CharField(max_length=24, blank=True, verbose_name=('phone number'))
     email = models.EmailField(max_length=256, unique=True, verbose_name=_('email address'))
 
-    special_nutrition = models.ManyToManyField('SpecialNutrition', null=True, blank=True)
+    special_nutrition = models.ManyToManyField('SpecialNutrition', null=True, blank=True, verbose_name=_('special nutrition'), help_text=_('Specify any special nutritional needs or habits.'))
 
-    notes = models.TextField(blank=True)
+    notes = models.TextField(blank=True, verbose_name=_('other information'), help_text=_('Want us to know something else?'))
+    our_notes = models.TextField(blank=True, verbose_name=_('our notes'), help_text=_('Internal notes. Cannot be seen by this person.'))
+
+    class Meta:
+        unique_together = (
+            # If both are specified, the combination must be unique. Two birth dates with NULL as pid_code should pass
+            # as we want it to.
+            ('birth_date', 'pid_code'),
+        )
 
     def __str__(self):
         return self.full_name
@@ -31,6 +46,10 @@ class Person(models.Model):
             self.user.save()
 
         super(Person, self).save(*args, **kwargs)
+
+    def clean_pid_code(self):
+        # If pid_code == '' then we should actually save NULL for uniqueness check, see above.
+        return self.cleaned_data['pid_code'] or None
 
     @property
     def full_name(self):
