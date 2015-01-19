@@ -2,9 +2,12 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    sdfasdf
+    <div class="page-header">
+        <h1>Orkestermedlemmar <small>{{ orchestra.name }}</small></h1>
+    </div>
+
     <form action="" method="post">
         {% crispy member_formset member_formset_helper %}
-        <input type="submit" class="btn btn-success" value="Godkänn markerade">
+        <input type="submit" class="btn btn-success" value="Spara">
     </form>
 {% endblock %}
