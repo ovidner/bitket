@@ -28,8 +28,8 @@ class RadioInput(forms.CheckboxInput):
 
     def render(self, name, value, attrs=None):
         if name.startswith('memberships-0'):
-            return mark_safe(u'<input type="radio" name="primary" value="%s" checked />' % name)
-        return mark_safe(u'<input type="radio" name="primary" value="%s" />' % name)
+            return mark_safe(u'<input type="radio" class="input-sm" name="primary" value="%s" checked />' % name)
+        return mark_safe(u'<input type="radio" class="input-sm" name="primary" value="%s" />' % name)
 
     def value_from_datadict(self, data, files, name):
         value = data.get('primary')
