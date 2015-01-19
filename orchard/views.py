@@ -7,25 +7,38 @@ from django.views.generic import CreateView, UpdateView
 from django.http.response import HttpResponseRedirect
 from django.utils.timezone import now
 
+from guardian.mixins import PermissionRequiredMixin
 
 from orchard.forms import (OrchestraMembershipForm, ApproveOrchestraMemberForm,
                            OrchestraMemberRegistrationForm, InlineFormSetHelper,
-                           OrchestraTicketFormHelper, OrchestraStuffForm)
+                           OrchestraTicketFormHelper, OrchestraStuffForm, OrchestraMembershipApprovalForm)
 from orchard.models import Orchestra, OrchestraMembership, OrchestraMemberRegistration, OrchestraProduct
 from tickle.forms import PersonForm, AcceptForm, AcceptFormHelper, PersonFormHelper
 from tickle.models.people import Person
-from tickle.models.products import Holding, Purchase, Product
+from tickle.models.products import Holding, Purchase
 
 
-class ApproveOrchestraMemberView(UpdateView):
+
+class ApproveOrchestraMemberView(PermissionRequiredMixin, UpdateView):
     form_class = ApproveOrchestraMemberForm
     template_name = 'orchard/approve_members.html'
     model = Orchestra
+    context_object_name = 'orchestra'
 
+    permission_required = 'approve_orchestra_members'
+    
     def get_context_data(self, **kwargs):
         context = super(ApproveOrchestraMemberView, self).get_context_data(**kwargs)
 
-        context['member_formset'] = inlineformset_factory(Orchestra, OrchestraMembership, extra=0)(self.request.POST or None, instance=self.object)
+        context['member_formset'] = inlineformset_factory(
+            Orchestra,
+            OrchestraMembership,
+            form=OrchestraMembershipApprovalForm,
+            extra=0,
+            can_delete=False,
+            can_order=False,
+            )(self.request.POST or None, instance=self.object)
+
         context['member_formset_helper'] = InlineFormSetHelper()
 
         return context
@@ -36,7 +49,7 @@ class ApproveOrchestraMemberView(UpdateView):
         member_formset = context['member_formset']
 
         if member_formset.is_valid():
-            member_formset.instance = self.object
+            # member_formset.instance = self.object
             member_formset.save()
 
             return HttpResponseRedirect(self.get_success_url())

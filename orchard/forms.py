@@ -45,6 +45,13 @@ class OrchestraMembershipForm(forms.ModelForm):
         }
 
 
+class OrchestraMembershipApprovalForm(forms.ModelForm):
+    person = forms.CharField(widget=forms.widgets.TextInput(), )
+    class Meta:
+        model = OrchestraMembership
+        fields = ['person', 'active', 'primary', 'approved']
+
+
 class OrchestraTicketTypePublicNameModelChoiceField(forms.ModelChoiceField):
     """
     At least we're explicit with the class name...
