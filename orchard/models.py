@@ -17,7 +17,7 @@ class Orchestra(models.Model):
         ordering = ['name']
 
         permissions = (
-            ('approve_members', _('Approve members')),
+            ('approve_orchestra_members', _('Approve orchestra members')),
         )
 
         verbose_name = _('orchestra')
