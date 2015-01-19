@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.shortcuts import resolve_url
 from django.db import transaction
 from django.forms.models import inlineformset_factory
 from django.views.generic import CreateView, UpdateView
@@ -48,6 +49,9 @@ class RegisterOrchestraMemberView(CreateView):
     form_class = PersonForm
 
     template_name = 'orchard/register_member.html'
+
+    def get_success_url(self):
+        return resolve_url('register_orchestra_member_success')
 
     def get_stuff_queryset(self):
         return OrchestraProduct.objects.stuff()
