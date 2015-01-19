@@ -15,7 +15,7 @@ from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType, 
 
 
 class OrchestraStuffForm(forms.ModelForm):
-    product = PublicNameModelChoiceField(queryset=OrchestraProduct.objects.all(), widget=forms.HiddenInput)  # todo: filter this
+    product = PublicNameModelChoiceField(queryset=OrchestraProduct.objects.all(), widget=forms.HiddenInput, label=_('Product'))  # todo: filter this
 
     class Meta:
         model = Holding
@@ -53,7 +53,7 @@ class OrchestraTicketTypePublicNameModelChoiceField(forms.ModelChoiceField):
 
 
 class OrchestraMemberRegistrationForm(forms.Form):
-    ticket_type = OrchestraTicketTypePublicNameModelChoiceField(queryset=OrchestraTicketType.objects.all())
+    ticket_type = OrchestraTicketTypePublicNameModelChoiceField(queryset=OrchestraTicketType.objects.all(), label=_('Ticket type'))
     food = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Food'), help_text=_('Meals as described above.'))
     accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Accommodation'), help_text=_('Place on floor &ndash; bring your own bedroll. Breakfast included.'))
     dinner = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_("10-/25-year dinner"), help_text=_('Doing your 10th SOF/STORK in a row or the 25th in all? Go to the party!'))
