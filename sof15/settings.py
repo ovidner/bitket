@@ -131,8 +131,8 @@ TEMPLATE_DIRS = (
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-LIU_KOBRA_USER = 'sof15'
-LIU_KOBRA_API_KEY = '13bbfc68cacb9119db5a'
+LIU_KOBRA_USER = d12f['KOBRA_USER']
+LIU_KOBRA_API_KEY = d12f['KOBRA_API_KEY']
 
 # Breaking the 12 factor rules here. Don't have the time.
 # todo: 12factorise
