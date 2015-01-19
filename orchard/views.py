@@ -93,8 +93,6 @@ class RegisterOrchestraMemberView(CreateView):
         context['inline_formset_helper'] = InlineFormSetHelper()
         context['accept_form_helper'] = AcceptFormHelper()
 
-        context['ticket_prices'] = None
-
         return context
 
     def form_valid(self, form):
