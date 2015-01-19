@@ -50,7 +50,7 @@ class OrchestraMemberRegistration(models.Model):
     purchase = models.ForeignKey('tickle.Purchase', related_name='orchestra_member_registrations')
 
     def __str__(self):
-        return self.purchase
+        return self.purchase.__str__()
 
 
 @python_2_unicode_compatible
