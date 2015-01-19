@@ -2,6 +2,7 @@
 from django.shortcuts import resolve_url
 from django.views.generic import CreateView
 from django.http import HttpResponseRedirect
+from django.db import transaction
 
 from .models import Entry, EntryType
 from .forms import EntryForm, EntryMaterialFormSet, EntryFormHelper, EntryMaterialFormSetHelper, EntryCustomMaterialFormSet
@@ -35,13 +36,14 @@ class EntryCreate(CreateView):
         custom_material_formset = context['custom_material_formset']
 
         if material_formset.is_valid():
-            self.object = form.save()
+            with transaction.atomic():
+                self.object = form.save()
 
-            material_formset.instance = self.object
-            material_formset.save()
+                material_formset.instance = self.object
+                material_formset.save()
 
-            custom_material_formset.instance = self.object
-            custom_material_formset.save()
+                custom_material_formset.instance = self.object
+                custom_material_formset.save()
 
             return HttpResponseRedirect(self.get_success_url())
         else:
