@@ -26,6 +26,7 @@ class ApproveOrchestraMemberView(UpdateView):
         context = super(ApproveOrchestraMemberView, self).get_context_data(**kwargs)
 
         context['member_formset'] = inlineformset_factory(Orchestra, OrchestraMembership, extra=0)(self.request.POST or None, instance=self.object)
+        context['member_formset_helper'] = InlineFormSetHelper()
 
         return context
 

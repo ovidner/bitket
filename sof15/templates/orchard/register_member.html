@@ -20,28 +20,9 @@
                     spelningar så att du inte ska behöva välja vilka du ska spela med, men vi kan tyvärr inte garantera
                     något.</p>
                 <p>Alla orkestrar du anger kommer behöva bekräfta ditt medlemskap. </p>
-                {{ membership_formset.management_form }}
 
-                <table class="table table-striped">
-                    <tr>
-                        <th>Orkester</th>
-                        <th>Aktiv medlem</th>
-                        <th>Primär orkester</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
+                {% crispy membership_formset inline_formset_helper %}
 
-                    {% for form in membership_formset %}
-                        <tr>
-                            {% for field in form %}
-                                <td>
-                                    {{ field.errors }}  <!-- Move somewhere else. -->
-                                    {{ field }}
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>
                 <h2>Betalning</h2>
                 <p>Din (primära) orkester får en faktura på allt du köper från oss på den här sidan. Vem som betalar i slutändan är sedan upp till din orkester. Därför ser vi gärna att du i första hand vänder dig till din orkester med frågor om betalning.</p>
             </div>

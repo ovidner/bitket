@@ -1,14 +1,11 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
     sdfasdf
     <form action="" method="post">
         {% csrf_token %}
-        {{ member_formset.management_form }}
-        {% for form in member_formset %}
-            Blurp
-            {{ form.as_p }}
-        {% endfor %}
+        {% crispy member_formset member_formset_helper %}
         <input type="submit">
     </form>
 {% endblock %}
