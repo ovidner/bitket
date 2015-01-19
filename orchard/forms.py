@@ -16,6 +16,7 @@ from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType, 
 
 class OrchestraStuffForm(forms.ModelForm):
     product = PublicNameModelChoiceField(queryset=OrchestraProduct.objects.all(), widget=forms.HiddenInput, label=_('Product'))  # todo: filter this
+    quantity = forms.IntegerField(min_value=0, widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Holding
@@ -63,9 +64,6 @@ class ApproveOrchestraMemberForm(forms.ModelForm):
     class Meta:
         model = Orchestra
         fields = []
-
-
-
 
 
 class OrchestraTicketFormHelper(FormHelper):

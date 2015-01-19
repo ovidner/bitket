@@ -75,13 +75,17 @@
                 {% crispy ticket_form ticket_form_helper %}
 
                 <h2>Prylar</h2>
+                {{ stuff_formset.management_form }}
                 <div class="list-group">
-                    {{ stuff_formset.management_form }}
                     {% for form in stuff_formset %}
                         <div class="list-group-item">
                             <h3>{{ form.initial.product_object.public_name }}</h3>
                             <p>{{ form.initial.product_object.description }}</p>
-                            <p><strong>{{ form.initial.product_object.price }} kr</strong><span class="pull-right">{{ form }}</span></p>
+                            <p>
+                                <strong>{{ form.initial.product_object.price }} kr</strong>
+                                {{ form.id }}{{ form.product }}
+                                <span class="pull-right">{{ form.quantity }}</span>
+                            </p>
                         </div>
                     {% endfor %}
 
