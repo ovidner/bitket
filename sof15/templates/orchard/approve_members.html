@@ -4,8 +4,7 @@
 {% block content %}
     sdfasdf
     <form action="" method="post">
-        {% csrf_token %}
         {% crispy member_formset member_formset_helper %}
-        <input type="submit">
+        <input type="submit" class="btn btn-success" value="Godkänn markerade">
     </form>
 {% endblock %}

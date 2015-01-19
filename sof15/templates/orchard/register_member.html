@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block title %}{{ block.super }} – Orkestermedlemsanmälan{% endblock %}
+
 {% block content %}
     <div class="page-header">
         <h1>Orkestermedlemsanmälan</h1>
     </div>
-    <p>Kul att du vill gå på SOF! Fyll i formuläret här nedan. Hör gärna av dig till orkesteransvarig på <a href="mailto:orkester@sof15.se">orkester@sof15.se</a> om du har några funderingar.</p>
+    <p>Kul att du vill gå på SOF! Fyll i formuläret här nedan. Hör gärna av dig till orkesteransvarig på
+        <a href="mailto:orkester@sof15.se">orkester@sof15.se</a> om du har några funderingar.</p>
 
     <form method="post" action="">
         {% csrf_token %}

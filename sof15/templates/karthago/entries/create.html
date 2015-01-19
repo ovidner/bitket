@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block title %}{{ block.super }} – Kårtegebidragsansökan{% endblock %}
+
+
 {% block content %}
     <div class="page-header">
         <h1>Kårtegebidragsansökan</h1>
@@ -37,7 +40,7 @@
                 {% crispy custom_material_formset material_formset_helper %}
             </div>
         </div>
-        <input type="submit" class="btn btn-lg btn-success" value="Skicka ansökan!">
+        <input type="submit" class="btn btn-lg btn-success" value="Skicka ansökan">
     </form>
 {% endblock content %}
 
