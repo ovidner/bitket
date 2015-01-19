@@ -134,57 +134,37 @@ LIU_KOBRA_USER = 'sof15'
 LIU_KOBRA_API_KEY = '13bbfc68cacb9119db5a'
 
 RAVEN_CONFIG = {
-    'dsn': 'http://84863b989a8b43408184cc6074004fa2:d26e02ebdee549d7ac6aa3b42f83d5d2@dale.sof15.se:9000/2',
+    'dsn': 'https://c2b3bbede63d445c94336de8b0de8419:2b09bb511528494580929f1353e300eb@app.getsentry.com/36275',
 }
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'root': {
         'level': 'DEBUG',
         'handlers': ['console'],
-        },
+    },
     'formatters': {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
         },
-        },
+    },
     'handlers': {
         'sentry': {
-            'level': 'DEBUG',
+            'level': 'ERROR',
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            },
+        },
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         }
     },
     'loggers': {
-        'django': {
+        'root': {
             'level': 'DEBUG',
-            'handlers': ['console'],
+            'handlers': ['console', 'sentry'],
             'propagate': True,
-            },
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-            },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-            },
-        'sentry.errors': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-            },
-        'liu.django': {
-            'level': 'DEBUG',
-            'handlers': ['sentry'],
-            'propagate': False,
-            },
         },
-    }
+    },
+}
