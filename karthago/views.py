@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-
-from django.shortcuts import render
+from django.shortcuts import resolve_url
 from django.views.generic import CreateView
 from django.http import HttpResponseRedirect
 
@@ -11,6 +10,9 @@ from .forms import EntryForm, EntryMaterialFormSet, EntryFormHelper, EntryMateri
 class EntryCreate(CreateView):
     form_class = EntryForm
     template_name = 'karthago/entries/create.html'
+
+    def get_success_url(self):
+        return resolve_url('create_kartege_entry_success')
 
     def get_context_data(self, **kwargs):
         context = super(EntryCreate, self).get_context_data(**kwargs)
