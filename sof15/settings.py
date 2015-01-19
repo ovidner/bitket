@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for sof15 project.
 
@@ -132,6 +133,21 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LIU_KOBRA_USER = 'sof15'
 LIU_KOBRA_API_KEY = '13bbfc68cacb9119db5a'
+
+# Breaking the 12 factor rules here. Don't have the time.
+# todo: 12factorise
+SERVER_EMAIL = 'tickle@sof15.se'
+EMAIL_HOST = 'smtp.mandrillapp.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'olle.vidner@sof15.se'
+EMAIL_HOST_PASSWORD = 'tDpIHwRrlJW5Tg32GZbhmA'
+
+ADMINS = (
+    ('Olle Vidner', 'olle.vidner@sof15.se'),
+    ('Victor Karlsson Sehlin', 'victor.karlsson.sehlin@sof15.se'),
+    ('Gustav Häger', 'hager.gustav@sof15.se'),
+)
 
 RAVEN_CONFIG = {
     'dsn': 'https://c2b3bbede63d445c94336de8b0de8419:2b09bb511528494580929f1353e300eb@app.getsentry.com/36275',
