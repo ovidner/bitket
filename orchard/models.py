@@ -32,7 +32,6 @@ class OrchestraMembership(models.Model):
     orchestra = models.ForeignKey('Orchestra', related_name='memberships', verbose_name=_('orchestra'))
     person = models.ForeignKey('tickle.Person', related_name='orchestra_memberships', verbose_name=_('person'))
 
-    active = models.BooleanField(default=False, verbose_name=_('active member'))
     primary = models.BooleanField(default=False, verbose_name=_('primary orchestra'))
 
     approved = models.NullBooleanField()
