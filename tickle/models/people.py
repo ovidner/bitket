@@ -57,7 +57,7 @@ class Person(models.Model):
     @property
     def pid(self):
         if self.birth_date:
-            return '{0}{1}{2}-{3}'.format(str(self.birth_date.year)[-2:], self.birth_date.month, self.birth_date.day, self.pid_code or '0000')
+            return '{0:02}{1:02}{2:02}-{3}'.format(str(self.birth_date.year)[-2:], self.birth_date.month, self.birth_date.day, self.pid_code or '0000')
         else:
             return None
 
