@@ -89,7 +89,7 @@ class RegisterOrchestraMemberView(CreateView):
             extra=4,
             can_delete=False,
             form=OrchestraMembershipForm,
-            fields=['orchestra', 'active', 'primary'])(self.request.POST or None)
+            fields=['orchestra', 'primary'])(self.request.POST or None)
 
         context['stuff_formset'] = inlineformset_factory(
             Person,

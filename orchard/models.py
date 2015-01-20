@@ -30,7 +30,7 @@ class Orchestra(models.Model):
 @python_2_unicode_compatible
 class OrchestraMembership(models.Model):
     orchestra = models.ForeignKey('Orchestra', related_name='memberships', verbose_name=_('orchestra'))
-    person = models.ForeignKey('tickle.Person', related_name='memberships', verbose_name=_('person'))
+    person = models.ForeignKey('tickle.Person', related_name='orchestra_memberships', verbose_name=_('person'))
 
     active = models.BooleanField(default=False, verbose_name=_('active member'))
     primary = models.BooleanField(default=False, verbose_name=_('primary orchestra'))
@@ -64,12 +64,12 @@ class OrchestraTicketType(models.Model):
     ticket_type = models.OneToOneField('tickle.TicketType', related_name='orchestra_ticket_type', verbose_name=_('ticket type'))
 
     # Which food object will you get when purchasing this ticket with food?
-    food_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', verbose_name=_('food ticket type'))
+    food_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('food ticket type'))
 
     # Which food object will you get when purchasing this ticket with accommodation?
-    accommodation_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', verbose_name=_('accommodation ticket type'))
+    accommodation_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('accommodation ticket type'))
 
-    dinner_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', verbose_name=_('dinner ticket type'))
+    dinner_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('dinner ticket type'))
 
     def __str__(self):
         return self.ticket_type.name
