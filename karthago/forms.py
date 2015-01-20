@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.forms.models import inlineformset_factory
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div, HTML
 
-from .models import Entry, EntryMaterial, EntryCustomMaterial
+from .models import Entry, EntryMaterial, EntryCustomMaterial, EntryType
 
 
 class EntryForm(forms.ModelForm):
@@ -14,7 +16,7 @@ class EntryForm(forms.ModelForm):
         fields = [
             'constellation',
             'name',
-            'type',
+            'entry_type',
             'members',
             'width',
             'length',
@@ -37,6 +39,19 @@ class EntryForm(forms.ModelForm):
             'secondary_contact_email',
         ]
 
+    def clean(self):
+        data = super(EntryForm, self).clean()
+
+        if hasattr(data, 'entry_type'):
+            # These validations break if entry_type isn't defined.
+            if data['members'] > data['entry_type'].max_members:
+                self.add_error('members', ValidationError(_('Too many members for this entry type.')))
+
+            if data['entry_type'].name == "Fribygge" and not (data['width'] and data['length'] and data['height']):
+                self.add_error('entry_type', ValidationError(_('Free build must have specified, valid dimensions.')))
+
+        return data
+
 
 class EntryFormHelper(FormHelper):
     def __init__(self, *args, **kwargs):
@@ -56,7 +71,7 @@ class EntryFormHelper(FormHelper):
                 css_class='row'
             ),
             'members',
-            'type',
+            'entry_type',
             Div(
                 Div(
                     'width',

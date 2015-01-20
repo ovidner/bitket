@@ -88,7 +88,7 @@ class EntryType(models.Model):
 class Entry(models.Model):
     constellation = models.CharField(max_length=256, verbose_name=_('constellation'), help_text=_('E.g. <em>MPiRE</em>, <em>Grabbarna Grus</em>'))
     name = models.CharField(max_length=256, verbose_name=_('entry name'))
-    type = models.ForeignKey('EntryType', related_name='entries', verbose_name=_('entry type'))
+    entry_type = models.ForeignKey('EntryType', related_name='entries', verbose_name=_('entry type'))
     members = models.PositiveIntegerField(default=10, verbose_name=_('number of members'))
 
     # Fult som stryk!
@@ -126,15 +126,3 @@ class Entry(models.Model):
 
     def __str__(self):
         return self.constellation
-
-    def clean(self):
-        errors = []
-
-        if self.members > self.type.max_members:
-            errors.append(ValidationError(_('Too many members for this entry type.')))
-
-        if self.type.name == "Fribygge" and not (self.width and self.length and self.height):
-            errors.append(ValidationError(_('Free build must have specified, valid dimensions.')))
-
-        if errors:
-            raise ValidationError(errors)

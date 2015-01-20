@@ -5,7 +5,6 @@ from django.http import HttpResponseRedirect
 from django.db import transaction
 from django.forms.models import inlineformset_factory
 
-
 from .models import Entry, EntryType, EntryMaterial, EntryCustomMaterial
 from .forms import EntryForm, EntryFormHelper, EntryMaterialFormSetHelper
 
@@ -48,7 +47,7 @@ class EntryCreate(CreateView):
         material_formset = context['material_formset']
         custom_material_formset = context['custom_material_formset']
 
-        if material_formset.is_valid():
+        if material_formset.is_valid() and custom_material_formset.is_valid():
             with transaction.atomic():
                 self.object = form.save()
 

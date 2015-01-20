@@ -52,10 +52,10 @@
             // todo: better.
 
             // Don't hide if free build is selected (happens on validation errors etc.)
-            if ($('#id_type').val() != {{ free_build_pk }}){
+            if ($('#id_entry_type').val() != {{ free_build_pk }}){
                 $('#dimensions').hide();
             }
-            $('#id_type').change(function() {
+            $('#id_entry_type').change(function() {
                 if ($(this).val() == {{ free_build_pk }}){
                     $('#dimensions').show();
                 }
