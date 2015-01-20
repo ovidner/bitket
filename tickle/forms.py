@@ -106,8 +106,20 @@ class PersonForm(forms.ModelForm):
 
         self.instance.birth_date = birth_date
         self.instance.pid_code = pid_code
-        
+
         return super(PersonForm, self).save(commit=commit)
+
+    def clean(self):
+        data = super(PersonForm, self).clean()
+
+        birth_date, pid_code = self.cleaned_data['pid']
+
+        # Checks for PID collision
+        if birth_date and pid_code and self._meta.model.objects.filter(birth_date=birth_date, pid_code=pid_code).exists():
+            self.add_error('pid', forms.ValidationError(_('This personal identity number is already registered. Please contact us if you think this is a mistake.')))
+
+        return data
+
 
 class PersonFormHelper(FormHelper):
     def __init__(self, *args, **kwargs):
