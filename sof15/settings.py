@@ -146,7 +146,7 @@ EMAIL_HOST_PASSWORD = 'tDpIHwRrlJW5Tg32GZbhmA'
 ADMINS = (
     ('Olle Vidner', 'olle.vidner@sof15.se'),
     ('Victor Karlsson Sehlin', 'victor.karlsson.sehlin@sof15.se'),
-    ('Gustav Häger', 'hager.gustav@sof15.se'),
+    ('Gustav Häger', 'hager.gustav@gmail.com'),
 )
 
 RAVEN_CONFIG = {
