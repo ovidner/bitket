@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-19 00:08+0000\n"
+"POT-Creation-Date: 2015-01-20 22:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: karthago/forms.py:48
+msgid "Too many members for this entry type."
+msgstr "För många deltagare för den här bidragstypen."
+
+#: karthago/forms.py:51
+msgid "Free build must have specified, valid dimensions."
+msgstr "Fribyggen måste ha specifika mått."
 
 #: karthago/models.py:9 karthago/models.py:27 karthago/models.py:73
 #: karthago/models.py:95 karthago/models.py:102
@@ -174,11 +182,3 @@ msgstr "Något mer vi borde veta?"
 #: karthago/models.py:123
 msgid "entries"
 msgstr "bidrag"
-
-#: karthago/models.py:134
-msgid "Too many members for this entry type."
-msgstr "För många deltagare för den här bidragstypen."
-
-#: karthago/models.py:137
-msgid "Free build must have specified, valid dimensions."
-msgstr "Fribyggen måste ha specifika mått."
