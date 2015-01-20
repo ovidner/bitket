@@ -9,7 +9,7 @@ Efternamn: {{ person.last_name }}
 Personnummer/födelsedatum: {{ person.pid }}
 Telefonnummer: {{ person.phone }}
 E-postadress: {{ person.email }}
-Specialkost: {% for j in person.special_nutrition.all %}{{ j.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+Specialkost: {% for i in person.special_nutrition.all %}{{ i.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
 Annan information: {{ person.notes }}
 
 Orkestermedlemskap
@@ -21,7 +21,7 @@ Biljett och prylar
 {% for i in purchase.holdings.all %}{{ i.quantity }}x {{ i.product.public_name }} ({{ i.product.price }} kr/st)
 {% endfor %}
 
-Hör av dig till din orkester om du har frågor kring betalning.
+Svara gärna på det här mailet om du har några frågor kring din anmälan.
 
 Vi ses i maj!
 //SOF-organisationen 2015

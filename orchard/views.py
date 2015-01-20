@@ -117,7 +117,7 @@ class RegisterOrchestraMemberView(CreateView):
         }
 
         plaintext_context = Context(autoescape=False)  # HTML escaping not appropriate in plaintext
-        subject = u'Bekräftelse'
+        subject = render_to_string('orchard/email/register_member_success_subject.txt', template_data, plaintext_context)
         text_body = render_to_string('orchard/email/register_member_success.txt', template_data, plaintext_context)
         html_body = render_to_string('orchard/email/register_member_success.html', template_data)
 
