@@ -65,7 +65,7 @@ class OrchestraMemberRegistrationForm(forms.Form):
     ticket_type = OrchestraTicketTypePublicNameModelChoiceField(queryset=OrchestraTicketType.objects.all(), label=_('Ticket type'))
     food = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Food'), help_text=_('Meals as described above.'))
     accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Accommodation'), help_text=_('Place on floor &ndash; bring your own bedroll. Breakfast included.'))
-    dinner = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_("10-/25-year dinner"), help_text=_('Doing your 10th SOF/STORK in a row or the 25th in all? Go to the party!'))
+    dinner = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Jubilarian'), help_text=_('Will this be your 10th SOF/STORK in a row or the 25th in all?'))
 
     def clean(self):
         data = super(OrchestraMemberRegistrationForm, self).clean()
