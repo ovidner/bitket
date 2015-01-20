@@ -1,0 +1,27 @@
+Anmälningsbekräftelse
+---------------------
+Tack för din anmälan till SOF 2015! Här är en bekräftelse på dina uppgifter.
+
+Personuppgifter
+===============
+Förnamn: {{ person.first_name }}
+Efternamn: {{ person.last_name }}
+Personnummer/födelsedatum: {{ person.pid }}
+Telefonnummer: {{ person.phone }}
+E-postadress: {{ person.email }}
+Specialkost: {% for j in person.special_nutrition.all %}{{ j.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+Annan information: {{ person.notes }}
+
+Orkestermedlemskap
+==================
+{% for i in person.orchestra_memberships.all %}{{ i.orchestra }}{% if i.primary %}, primär orkester{% endif %}
+{% endfor %}
+Biljett och prylar
+==================
+{% for i in purchase.holdings.all %}{{ i.quantity }}x {{ i.product.public_name }} ({{ i.product.price }} kr/st)
+{% endfor %}
+
+Hör av dig till din orkester om du har frågor kring betalning.
+
+Vi ses i maj!
+//SOF-organisationen 2015

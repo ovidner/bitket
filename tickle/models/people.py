@@ -55,6 +55,13 @@ class Person(models.Model):
         return self.cleaned_data['pid_code'] or None
 
     @property
+    def pid(self):
+        if self.birth_date:
+            return '{0}{1}{2}-{3}'.format(str(self.birth_date.year)[-2:], self.birth_date.month, self.birth_date.day, self.pid_code or '0000')
+        else:
+            return None
+
+    @property
     def full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name)
 

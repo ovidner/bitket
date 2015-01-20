@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
-from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
+from mptt.models import MPTTModel, TreeForeignKey
 
 @python_2_unicode_compatible
 class Category(models.Model):
@@ -61,6 +61,10 @@ class Holding(models.Model):
 
     def __str__(self):
         return u'{0} {1}'.format(self.product, self.person)
+
+    @property
+    def total(self):
+        return self.product.price * self.quantity
 
 
 @python_2_unicode_compatible

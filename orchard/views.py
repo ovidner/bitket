@@ -6,6 +6,9 @@ from django.forms.models import inlineformset_factory
 from django.views.generic import CreateView, UpdateView
 from django.http.response import HttpResponseRedirect
 from django.utils.timezone import now
+from django.core.mail import EmailMultiAlternatives
+from django.template import Context
+from django.template.loader import render_to_string
 
 from guardian.mixins import PermissionRequiredMixin
 
@@ -16,7 +19,6 @@ from orchard.models import Orchestra, OrchestraMembership, OrchestraMemberRegist
 from tickle.forms import PersonForm, AcceptForm, AcceptFormHelper, PersonFormHelper
 from tickle.models.people import Person
 from tickle.models.products import Holding, Purchase
-
 
 
 class ApproveOrchestraMemberView(PermissionRequiredMixin, UpdateView):
@@ -108,14 +110,31 @@ class RegisterOrchestraMemberView(CreateView):
 
         return context
 
+    def send_confirmation_email(self, to, person, purchase):
+        template_data = {
+            'person': person,
+            'purchase': purchase,
+        }
+
+        plaintext_context = Context(autoescape=False)  # HTML escaping not appropriate in plaintext
+        subject = u'Bekräftelse'
+        text_body = render_to_string('orchard/email/register_member_success.txt', template_data, plaintext_context)
+        html_body = render_to_string('orchard/email/register_member_success.html', template_data)
+
+        msg = EmailMultiAlternatives(subject=subject, from_email="orkester@sof15.se",
+                                     to=[to], body=text_body)
+        msg.attach_alternative(html_body, "text/html")
+        msg.send()
+
     def form_valid(self, form):
         context = self.get_context_data()
 
         ticket_form = context['ticket_form']
         membership_formset = context['membership_formset']
         stuff_formset = context['stuff_formset']
+        accept_form = context['accept_form']
 
-        if ticket_form.is_valid() and membership_formset.is_valid() and stuff_formset.is_valid():
+        if ticket_form.is_valid() and membership_formset.is_valid() and stuff_formset.is_valid() and accept_form.is_valid():
             with transaction.atomic():
                 person = form.save()
                 holdings = []
@@ -167,7 +186,10 @@ class RegisterOrchestraMemberView(CreateView):
                 # Marks the Purchase object as an orchestra member registration
                 OrchestraMemberRegistration.objects.create(purchase=purchase)
 
+            self.send_confirmation_email(person.email, person, purchase)
+
             return HttpResponseRedirect(self.get_success_url())
 
         else:
             return self.render_to_response(self.get_context_data(form=form))
+
