@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.utils.safestring import mark_safe
+from django.utils.html import escape
 from django.forms.models import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -46,11 +47,47 @@ class OrchestraMembershipForm(forms.ModelForm):
         }
 
 
+class DisplayWidget(forms.Widget):
+    """ Widget for only displaying a value in a form. """
+    def render(self, name, value, attrs=None):
+        # final_attrs = self.build_attrs(attrs, name=name)
+        if hasattr(self, 'initial'):
+            if isinstance(self.initial, bool):
+                value = self.initial and 'Ja' or 'Nej'
+            else:
+                value = self.initial.full_name
+        # return mark_safe("<span %s>%s</span>" % (flatatt(final_attrs), escape(value) or ''))
+        return mark_safe(escape(value) or '')
+
+    def _has_changed(self, initial, data):
+        return False
+
+
+class DisplayField(forms.Field):
+    """ Form field for only displaying a read-only field. """
+    widget = DisplayWidget
+
+    def __init__(self, *args, **kwargs):
+        super(DisplayField, self).__init__(*args, **kwargs)
+        self.widget.initial = self.initial
+
+    def clean(self, value):
+        return self.widget.initial
+
+
 class OrchestraMembershipApprovalForm(forms.ModelForm):
-    person = forms.CharField(widget=forms.widgets.TextInput(), )
+    # approved = forms.ChoiceField(widget=forms.RadioSelect(), choices=((True, 'Ja',), (False, 'Nej')), )
+    approved = forms.BooleanField(label='Godkänd', required=False)
+
     class Meta:
         model = OrchestraMembership
         fields = ['person', 'primary', 'approved']
+
+    def __init__(self, *args, **kwargs):
+        super(OrchestraMembershipApprovalForm, self).__init__(*args, **kwargs)
+        # Set initial values for display fields to the correct instance of OrchestraMembership.
+        self.fields['person'] = DisplayField(initial=self.instance.person, required=False)
+        self.fields['primary'] = DisplayField(initial=self.instance.primary, required=False, label='Primär')
 
 
 class OrchestraTicketTypePublicNameModelChoiceField(forms.ModelChoiceField):
