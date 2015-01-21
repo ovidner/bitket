@@ -5,11 +5,14 @@
 
 {% block content %}
     <div class="page-header">
-        <h1>Orkestermedlemsanmälan</h1>
+       {#  <h1>Orkestermedlemsanmälan</h1> #}
+       <h1> Anmälan är ännu ej öppen!</h1>
     </div>
-    <p>Kul att du vill gå på SOF! Fyll i formuläret här nedan. Hör gärna av dig till orkesteransvarig på
+    {% comment %}
+    <p>Kul att du vill gå på SOF! Fyll i formuläret här nedan. Hör av dig till orkesteransvarig Karl Linderhed på
         <a href="mailto:orkester@sof15.se">orkester@sof15.se</a> om du har några funderingar.</p>
-
+        {% endcomment %}
+        <p> Varje orkester kommer få information när det går bra att anmäla sig. Avvakta tills dess. Frågor ställs till orkesteransvarig Karl Linderhed på <a href="mailto:orkester@sof15.se">orkester@sof15.se</a> </p>
     <form method="post" action="">
         {% csrf_token %}
         <div class="row">
@@ -33,27 +36,27 @@
             <div class="col-sm-6">
                 <h2>Biljett, mat och boende</h2>
                 <p>
-                    Ange under vilka dagar du tänker besöka festivalen samt om du önskar ha mat och/eller boende. Tillvalen har följande pris:
+                    Ange under vilka dagar du vill vara med på festivalen. Notera att du måste aktivt kryssa i om du vill ha mat och/eller sovplats.<br/>
+                    Boendet kostar 50 kr totalt oavsett biljettyp.
+                    Mat kostar följande för respektive biljettyp:
                     <dl class="dl-horizontal">
-                        <dt>Torsdag - Lördag</dt>
-                        <dd>Mat: 200 kr, Boende: 100 kr</dd>
                         <dt>Torsdag - Söndag</dt>
-                        <dd>Mat: 200 kr, Boende: 150 kr</dd>
-                        <dt>Fredag - Lördag</dt>
-                        <dd>Mat: 200 kr, Boende: 150 kr</dd>
+                        <dd>155 kr</dd>
                         <dt>Fredag - Söndag</dt>
-                        <dd>Mat: 200 kr, Boende: 150 kr</dd>
+                        <dd>90 kr</dd>
+                        <dt>Endast Lördag</dt>
+                        <dd>50 kr</dd>
                     </dl>
                 </p>
                 <p>
-                    Följande mål ingår i matpriset för respektive dag:
+                    Följande ingår i matpriset för respektive dag:
                     <dl class="dl-horizontal">
                         <dt>Torsdag</dt>
-                        <dd>Middag, vickning</dd>
+                        <dd>Orkestersittning, en dryck, vickning</dd>
                         <dt>Fredag</dt>
-                        <dd>Lunch, middag, vickning</dd>
+                        <dd>Middag, en dryck, vickning</dd>
                         <dt>Lördag</dt>
-                        <dd>Lunch, middag, vickning</dd>
+                        <dd>Middag, en dryck, vickning</dd>
                     </dl>
                 </p>
                 {% crispy ticket_form ticket_form_helper %}

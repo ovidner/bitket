@@ -26,6 +26,14 @@ class Orchestra(models.Model):
     def __str__(self):
         return self.name
 
+class OrchestraMembershipQuerySet(models.QuerySet):
+    def primary(self):
+        """
+        Convenience method, preferably for returning a person's primary orchestra membership. May raise an exception if
+        multiple memberships are found. This is Django's standard behavior and we want to keep it.
+        """
+        return self.get(primary=True)
+
 
 @python_2_unicode_compatible
 class OrchestraMembership(models.Model):
@@ -35,6 +43,8 @@ class OrchestraMembership(models.Model):
     primary = models.BooleanField(default=False, verbose_name=_('primary orchestra'))
 
     approved = models.NullBooleanField()
+
+    object = OrchestraMembershipQuerySet.as_manager()
 
     class Meta:
         unique_together = (('orchestra', 'person'),)

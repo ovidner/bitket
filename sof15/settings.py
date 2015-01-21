@@ -14,6 +14,7 @@ d12f = django12factor.factorise(
     custom_settings=[
         'KOBRA_USER',
         'KOBRA_API_KEY',
+        'SENTRY_DSN',
     ]
 )
 
@@ -150,7 +151,7 @@ ADMINS = (
 )
 
 RAVEN_CONFIG = {
-    'dsn': 'https://c2b3bbede63d445c94336de8b0de8419:2b09bb511528494580929f1353e300eb@app.getsentry.com/36275',
+    'dsn': d12f['SENTRY_DSN'],
 }
 
 LOGGING = {

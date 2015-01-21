@@ -29,7 +29,7 @@
         </tr>
         <tr>
             <th>Specialkost</th>
-            <td>{% for j in person.special_nutrition.all %}{{ j.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+            <td>{% for i in person.special_nutrition.all %}{{ i.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         </tr>
         <tr>
             <th>Annan information</th>
@@ -59,11 +59,11 @@
     </table>
 
     <p>
-        Hör av dig till din orkester om du har frågor kring betalning.
+        Svara gärna på det här mailet om du har några frågor kring din anmälan.
     </p>
     <p>
-        <strong>Vi ses i maj!</strong><br>
-        //SOF-kommittén 2015
+        <em>Vi ses i maj!</em><br>
+        //SOF-organisationen 2015
     </p>
 </body>
 </html>

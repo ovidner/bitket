@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-19 00:08+0000\n"
+"POT-Creation-Date: 2015-01-20 22:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,41 +17,52 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: orchard/forms.py:18
+#: orchard/forms.py:19
 msgid "Product"
 msgstr "Produkt"
 
-#: orchard/forms.py:67
+#: orchard/forms.py:65
 msgid "Ticket type"
 msgstr "Biljettyp"
 
-#: orchard/forms.py:68
+#: orchard/forms.py:66
 msgid "Food"
 msgstr "Mat"
 
-#: orchard/forms.py:68
+#: orchard/forms.py:66
 msgid "Meals as described above."
 msgstr "Måltider enligt ovan."
 
-#: orchard/forms.py:69
+#: orchard/forms.py:67
 msgid "Accommodation"
 msgstr "Boende"
 
-#: orchard/forms.py:69
+#: orchard/forms.py:67
 msgid "Place on floor &ndash; bring your own bedroll. Breakfast included."
 msgstr ""
 "Plats på golv i sovsal &ndash; ta med dig sovsäck och liggunderlag. Frukost "
 "ingår."
 
-#: orchard/forms.py:70
-msgid "10-/25-year dinner"
-msgstr "10-/25-årsmiddagen"
+#: orchard/forms.py:68
+msgid "Jubilarian"
+msgstr "Jubilar"
 
-#: orchard/forms.py:70
-msgid "Doing your 10th SOF/STORK in a row or the 25th in all? Go to the party!"
+#: orchard/forms.py:68
+msgid "Will this be your 10th SOF/STORK in a row or the 25th in all?"
 msgstr ""
-"Gör du din tionde studentorkester i följd eller din 25:e totalt? Gå på "
-"middagen!"
+"Blir detta din tionde studentorkester i följd eller din 25:e totalt?"
+
+#: orchard/forms.py:74
+msgid "Can't add food to this ticket type."
+msgstr "Mat kan inte väljas till denna biljett."
+
+#: orchard/forms.py:77
+msgid "Can't add accommodation to this ticket type."
+msgstr "Boende kan inte väljas till denna biljett."
+
+#: orchard/forms.py:80
+msgid "Can't add 10-/25-year dinner to this ticket type."
+msgstr "Du kan inte lägga till dig som jubilar med denna biljett."
 
 #: orchard/models.py:12
 msgid "name"
@@ -62,10 +73,10 @@ msgid "members"
 msgstr "medlemmar"
 
 #: orchard/models.py:20
-msgid "Approve members"
-msgstr "Godkänn medlemmar"
+msgid "Approve orchestra members"
+msgstr "Godkänna orkestermedlemmar"
 
-#: orchard/models.py:23 orchard/models.py:32
+#: orchard/models.py:23 orchard/models.py:40
 msgid "orchestra"
 msgstr "orkester"
 
@@ -73,42 +84,38 @@ msgstr "orkester"
 msgid "orchestras"
 msgstr "orkestrar"
 
-#: orchard/models.py:33
+#: orchard/models.py:41
 msgid "person"
 msgstr "person"
 
-#: orchard/models.py:35
-msgid "active member"
-msgstr "aktiv medlem"
-
-#: orchard/models.py:36
+#: orchard/models.py:43
 msgid "primary orchestra"
 msgstr "primär orkester"
 
-#: orchard/models.py:43
+#: orchard/models.py:52
 msgid "orchestra membership"
 msgstr "orkestermedlemskap"
 
-#: orchard/models.py:44
+#: orchard/models.py:53
 msgid "orchestra memberships"
 msgstr "orkestermedlemskap"
 
-#: orchard/models.py:56
+#: orchard/models.py:65
 msgid "purchase"
 msgstr "köp"
 
-#: orchard/models.py:64
+#: orchard/models.py:73
 msgid "ticket type"
 msgstr "biljettyp"
 
-#: orchard/models.py:67
+#: orchard/models.py:76
 msgid "food ticket type"
 msgstr "biljettyp för mat"
 
-#: orchard/models.py:70
+#: orchard/models.py:79
 msgid "accommodation ticket type"
 msgstr "biljettyp för boende"
 
-#: orchard/models.py:72
+#: orchard/models.py:81
 msgid "dinner ticket type"
 msgstr "biljettyp för sittning"
