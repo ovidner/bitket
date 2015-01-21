@@ -101,7 +101,7 @@ msgstr "förening/sällskap"
 
 #: karthago/models.py:89
 msgid "E.g. <em>MPiRE</em>, <em>Grabbarna Grus</em>"
-msgstr "Till exempel <em>3Cant</em> eller <em>Grabbarna Grus</em>"
+msgstr "Till exempel <em>3Cant</em>, <em>Navitas</em> eller <em>Grabbarna Grus</em>"
 
 #: karthago/models.py:90
 msgid "entry name"
