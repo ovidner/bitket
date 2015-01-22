@@ -24,7 +24,7 @@ class LoginView(FormView):
     form_class = AuthenticationForm
     template_name = 'people/login.html'
 
-    _user_pk = None
+    _user = None
 
     def get_success_url(self):
         if hasattr(self.request.GET, 'next'):

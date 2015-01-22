@@ -129,8 +129,8 @@ msgstr "biljettyp för sittning"
 
 #: orchard/models.py:89
 msgid "orchestra ticket type"
-msgstr "biljetpaket för orkester"
+msgstr "biljettpaket för orkestrar"
 
 #: orchard/models.py:90
 msgid "orchestra ticket types"
-msgstr "biljettpaket för orkester"
+msgstr "biljettpaket för orkestrar"
