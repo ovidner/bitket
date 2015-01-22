@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'sof15.wsgi.application'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'liu.django.backends.LiUStudentBackend',
+    # 'liu.django.backends.LiUStudentBackend',  # Temporarily activated until we allow LiU id logins.
     'guardian.backends.ObjectPermissionBackend',
 )
 
