@@ -5,6 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
 
+from guardian.shortcuts import assign_perm
+
 
 @python_2_unicode_compatible
 class Person(models.Model):
@@ -36,6 +38,10 @@ class Person(models.Model):
             ('birth_date', 'pid_code'),
         )
 
+        permissions = (
+            ('view_profile', _('View profile')),
+        )
+
         verbose_name = _('person')
         verbose_name_plural = _('people')
 
@@ -43,7 +49,12 @@ class Person(models.Model):
         return self.full_name
 
     def save(self, *args, **kwargs):
-        if hasattr(self, 'user') and not hasattr(self, 'liu_id'):
+        if self.user:
+            # Everybody must be able to show their own profiles. This way we don't have to write special checks in
+            # the views.
+            assign_perm('view_profile', self.user, self)
+
+        if self.user and not self.liu_id:
             # Set username to email, only if a LiU id doesn't exist.
             self.user.username = self.email
             self.user.save()

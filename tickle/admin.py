@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
+from django.contrib.auth.models import Permission
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, TickleUser
 
 
@@ -46,4 +47,9 @@ class SpecialNutritionAdmin(admin.ModelAdmin):
 
 @admin.register(TickleUser)
 class TickleUserAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Permission)
+class PermissionAdmin(admin.ModelAdmin):
     pass

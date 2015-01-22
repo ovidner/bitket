@@ -186,3 +186,13 @@ class AcceptFormHelper(FormHelper):
         self.layout = Layout(
             'accept'
         )
+
+
+class LoginFormHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super(LoginFormHelper, self).__init__(*args, **kwargs)
+
+        self.form_tag = False
+        self.layout = Layout(
+            'accept'
+        )
