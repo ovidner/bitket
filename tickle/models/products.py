@@ -5,12 +5,14 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from mptt.models import MPTTModel, TreeForeignKey
 
+
 @python_2_unicode_compatible
 class Category(models.Model):
     name = models.CharField(max_length=256)
 
     def __str__(self):
         return self.name
+
 
 @python_2_unicode_compatible
 class Event(MPTTModel):
@@ -33,7 +35,8 @@ class Product(models.Model):
     categories = models.ManyToManyField('Category', null=True, blank=True)
 
     price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_('price'))
-    quantitative = models.BooleanField(default=False, help_text=_('Can you purchase more than one (1) of this product?'))
+    quantitative = models.BooleanField(default=False,
+                                       help_text=_('Can you purchase more than one (1) of this product?'))
 
     def __str__(self):
         return self.name

@@ -43,6 +43,7 @@ class PurchaseAdmin(admin.ModelAdmin):
 class SpecialNutritionAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(TickleUser)
 class TickleUserAdmin(admin.ModelAdmin):
     pass

@@ -26,6 +26,7 @@ class Orchestra(models.Model):
     def __str__(self):
         return self.name
 
+
 class OrchestraMembershipQuerySet(models.QuerySet):
     def primary(self):
         """
