@@ -49,12 +49,13 @@ class Person(models.Model):
         return self.full_name
 
     def save(self, *args, **kwargs):
-        if self.user:
+        if hasattr(self, 'user'):
             # Everybody must be able to show their own profiles. This way we don't have to write special checks in
             # the views.
             assign_perm('view_profile', self.user, self)
 
-        if self.user and not self.liu_id:
+        # Observe that we must check these two relations in different ways.
+        if hasattr(self, 'user') and not self.liu_id:
             # Set username to email, only if a LiU id doesn't exist.
             self.user.username = self.email
             self.user.save()
