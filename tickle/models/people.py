@@ -26,10 +26,24 @@ class Person(models.Model):
     phone = models.CharField(max_length=24, blank=True, verbose_name=('phone number'))
     email = models.EmailField(max_length=256, unique=True, verbose_name=_('email address'))
 
-    special_nutrition = models.ManyToManyField('SpecialNutrition', null=True, blank=True, verbose_name=_('special nutrition'), help_text=_('Specify any special nutritional needs or habits.'))
+    special_nutrition = models.ManyToManyField(
+        'SpecialNutrition',
+        null=True,
+        blank=True,
+        verbose_name=_('special nutrition'),
+        help_text=_('Specify any special nutritional needs or habits.')
+    )
 
-    notes = models.TextField(blank=True, verbose_name=_('other information'), help_text=_('Want us to know something else?'))
-    our_notes = models.TextField(blank=True, verbose_name=_('our notes'), help_text=_('Internal notes. Cannot be seen by this person.'))
+    notes = models.TextField(
+        blank=True,
+        verbose_name=_('other information'),
+        help_text=_('Want us to know something else?')
+    )
+    our_notes = models.TextField(
+        blank=True,
+        verbose_name=_('our notes'),
+        help_text=_('Internal notes. Cannot be seen by this person.')
+    )
 
     class Meta:
         unique_together = (
@@ -127,7 +141,7 @@ class TickleUserManager(BaseUserManager):
 class TickleUser(AbstractBaseUser, PermissionsMixin):
     person = models.OneToOneField('Person', related_name='user', null=True, blank=True, verbose_name=_('person'))
 
-    username = models.CharField(max_length=256, unique=True, verbose_name=_('username'))
+    username = models.CharField(max_length=256, unique=True, verbose_name=_('LiU-ID or email address'))
 
     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
     is_admin = models.BooleanField(default=False, verbose_name=_('is admin'))

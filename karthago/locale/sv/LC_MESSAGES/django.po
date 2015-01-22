@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-20 22:59+0000\n"
+"POT-Creation-Date: 2015-01-22 10:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,7 +101,8 @@ msgstr "förening/sällskap"
 
 #: karthago/models.py:89
 msgid "E.g. <em>MPiRE</em>, <em>Grabbarna Grus</em>"
-msgstr "Till exempel <em>3Cant</em>, <em>Navitas</em> eller <em>Grabbarna Grus</em>"
+msgstr ""
+"Till exempel <em>3Cant</em>, <em>Navitas</em> eller <em>Grabbarna Grus</em>"
 
 #: karthago/models.py:90
 msgid "entry name"
