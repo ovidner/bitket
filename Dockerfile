@@ -39,9 +39,9 @@ ENV DEBUG true
 ENV SECRET_KEY build
 RUN /home/sof15/bin/python /home/sof15/app/manage.py collectstatic --noinput
 RUN /home/sof15/bin/python /home/sof15/app/manage.py compilemessages
-# "Unset" the envs
+# "Unset" the SECRET_KEY, so we can't accidently start with an unsafe, default key
 ENV SECRET_KEY ''
-ENV DEBUG ''
+ENV DEBUG false
 
 USER sof15
 ENV HOME /home/sof15
