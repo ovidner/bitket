@@ -49,7 +49,7 @@ msgstr "Jubilar"
 
 #: orchard/forms.py:105
 msgid "Will this be your 10th SOF/STORK in a row or the 25th in all?"
-msgstr "Blir detta din tionde studentorkester i följd eller din 25:e totalt?"
+msgstr "Blir detta din tionde studentorkesterfestival i följd eller din 25:e totalt?"
 
 #: orchard/forms.py:111
 msgid "Can't add food to this ticket type."
