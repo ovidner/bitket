@@ -35,13 +35,13 @@ COPY . /home/sof15/app
 RUN mkdir -p /home/sof15/app/_build/static/
 
 # Django will be sad if we don't set these envs during build.
-ENV DEBUG=true
-ENV SECRET_KEY=build
+ENV DEBUG true
+ENV SECRET_KEY build
 RUN /home/sof15/bin/python /home/sof15/app/manage.py collectstatic --noinput
 RUN /home/sof15/bin/python /home/sof15/app/manage.py compilemessages
-# Unset the envs
-ENV SECRET_KEY=
-ENV DEBUG=
+# "Unset" the envs
+ENV SECRET_KEY ''
+ENV DEBUG ''
 
 USER sof15
 ENV HOME /home/sof15
