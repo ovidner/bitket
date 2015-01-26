@@ -21,10 +21,11 @@
 <body>
     <div class="container">
         <p><a href="http://sof15.se/">&leftarrow; Tillbaka till sof15.se</a> </p>
+        <div class="page-header">
+            <h1>{% block header %}SOF 2015{% endblock %}</h1>
+        </div>
+
         {% block content %}
-            <div class="page-header">
-                <h1>SOF 2015</h1>
-            </div>
             <ul>
                 <li><a href="{% url 'orchard:register_orchestra_member' %}">Anmälan av orkestermedlem</a></li>
                 <li><a href="{% url 'karthago:create_kartege_entry' %}">Ansökan om kårtegebidrag</a></li>

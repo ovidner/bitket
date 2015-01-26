@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block content %}
-    <div class="page-header">
-        <h1>Orkestermedlemmar <small>{{ orchestra.name }}</small></h1>
-    </div>
+{% block title %}{{ block.super }} – Godkänn orkestermedlemmar{% endblock %}
 
             {% for message in messages %}
                 <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
             {% endfor %}
+{% block header %}Orkestermedlemmar <small>{{ orchestra.name }}</small>{% endblock %}
 
+{% block content %}
     <form action="" method="post">
         {% crispy member_formset member_formset_helper %}
         <input type="submit" class="btn btn-success" value="Spara">
