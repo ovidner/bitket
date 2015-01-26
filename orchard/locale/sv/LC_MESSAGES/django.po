@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-26 17:02+0000\n"
+"POT-Creation-Date: 2015-01-26 17:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,7 +58,8 @@ msgstr "10-årsjubilar"
 #: orchard/forms.py:105
 msgid "Will this be your 10th SOF/STORK in a row?"
 msgstr ""
-"Blir detta din tionde studentorkesterfestival i följd?"
+"Blir detta din tionde studentorkesterfestival i följd? Kryssa inte i detta "
+"om du redan firat detta en gång tidigare."
 
 #: orchard/forms.py:106
 msgid "25th festival"
@@ -66,8 +67,7 @@ msgstr "25-årsjubilar"
 
 #: orchard/forms.py:106
 msgid "Will this be your 25th SOF/STORK in all?"
-msgstr ""
-"Blir detta din 25:e studentorkesterfestival totalt?"
+msgstr "Blir detta din 25:e studentorkesterfestival totalt?"
 
 #: orchard/forms.py:112
 msgid "Can't add food to this ticket type."
