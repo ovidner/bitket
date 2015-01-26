@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
-
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 @python_2_unicode_compatible
 class Person(models.Model):
@@ -43,11 +44,15 @@ class Person(models.Model):
         return self.full_name
 
     def save(self, *args, **kwargs):
-        if hasattr(self, 'user') and not hasattr(self, 'liu_id'):
+        if hasattr(self, 'user'):
             # Set username to email, only if a LiU id doesn't exist.
-            self.user.username = self.email
+            if not self.liu_id:
+                self.user.username = self.email
+            else:
+                self.user.username = self.liu_id
+            if not self.user.password:
+                self.user.password = self.generate_user_password()
             self.user.save()
-
         super(Person, self).save(*args, **kwargs)
 
     def clean_pid_code(self):
@@ -69,6 +74,22 @@ class Person(models.Model):
     @property
     def full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name)
+
+    def generate_user_password(self):
+        password = TickleUser.objects.make_random_password()
+
+        template_data = {
+            'person': self,
+            'url': settings.URL
+        }
+        subject = 'Användarkonto hos SOF'
+        html_body = render_to_string('tickle/email/tickle_user_account_created.html', template_data)
+
+        msg = EmailMultiAlternatives(subject=subject, from_email=settings.SUPPORT_EMAIL, to=[self.email])
+        msg.attach_alternative(html_body, "text/html")
+        msg.send()
+
+        return password
 
 
 @python_2_unicode_compatible
@@ -92,9 +113,10 @@ class TickleUserManager(BaseUserManager):
         """
         if not username:
             raise ValueError('Users must have a username')
+        if not password:
+            raise ValueError('Users must have a password')
 
         user = self.model(username=username)
-
         user.set_password(password)
         user.save(using=self._db)
         return user

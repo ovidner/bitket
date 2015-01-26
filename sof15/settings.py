@@ -138,11 +138,15 @@ LIU_KOBRA_API_KEY = d12f['KOBRA_API_KEY']
 # Breaking the 12 factor rules here. Don't have the time.
 # todo: 12factorise
 SERVER_EMAIL = 'tickle@sof15.se'
+SUPPORT_EMAIL = 'it@sof15.se'
 EMAIL_HOST = 'smtp.mandrillapp.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'olle.vidner@sof15.se'
 EMAIL_HOST_PASSWORD = 'tDpIHwRrlJW5Tg32GZbhmA'
+
+# URL to the system.
+URL = 'tickle.sof15.se/'
 
 ADMINS = (
     ('Olle Vidner', 'olle.vidner@sof15.se'),
