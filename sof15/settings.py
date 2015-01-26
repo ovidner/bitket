@@ -76,13 +76,16 @@ WSGI_APPLICATION = 'sof15.wsgi.application'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'liu.django.backends.LiUStudentBackend',
+    # 'liu.django.backends.LiUStudentBackend',  # Temporarily activated until we allow LiU id logins.
     'guardian.backends.ObjectPermissionBackend',
 )
 
 AUTH_USER_MODEL = 'tickle.TickleUser'
 
 ANONYMOUS_USER_ID = -1
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'profile'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases

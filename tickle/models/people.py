@@ -7,6 +7,9 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
+from guardian.shortcuts import assign_perm
+
+
 @python_2_unicode_compatible
 class Person(models.Model):
     first_name = models.CharField(max_length=256, verbose_name=_('first name'))
@@ -25,16 +28,34 @@ class Person(models.Model):
     phone = models.CharField(max_length=24, blank=True, verbose_name=('phone number'))
     email = models.EmailField(max_length=256, unique=True, verbose_name=_('email address'))
 
-    special_nutrition = models.ManyToManyField('SpecialNutrition', null=True, blank=True, verbose_name=_('special nutrition'), help_text=_('Specify any special nutritional needs or habits.'))
+    special_nutrition = models.ManyToManyField(
+        'SpecialNutrition',
+        null=True,
+        blank=True,
+        verbose_name=_('special nutrition'),
+        help_text=_('Specify any special nutritional needs or habits.')
+    )
 
-    notes = models.TextField(blank=True, verbose_name=_('other information'), help_text=_('Want us to know something else?'))
-    our_notes = models.TextField(blank=True, verbose_name=_('our notes'), help_text=_('Internal notes. Cannot be seen by this person.'))
+    notes = models.TextField(
+        blank=True,
+        verbose_name=_('other information'),
+        help_text=_('Want us to know something else?')
+    )
+    our_notes = models.TextField(
+        blank=True,
+        verbose_name=_('our notes'),
+        help_text=_('Internal notes. Cannot be seen by this person.')
+    )
 
     class Meta:
         unique_together = (
             # If both are specified, the combination must be unique. Two birth dates with NULL as pid_code should pass
             # as we want it to.
             ('birth_date', 'pid_code'),
+        )
+
+        permissions = (
+            ('view_profile', _('View profile')),
         )
 
         verbose_name = _('person')
@@ -45,6 +66,10 @@ class Person(models.Model):
 
     def save(self, *args, **kwargs):
         if hasattr(self, 'user'):
+            # Everybody must be able to show their own profiles. This way we don't have to write special checks in
+            # the views.
+            assign_perm('view_profile', self.user, self)
+            
             # Set username to email, only if a LiU id doesn't exist.
             if not self.liu_id:
                 self.user.username = self.email
@@ -137,7 +162,7 @@ class TickleUserManager(BaseUserManager):
 class TickleUser(AbstractBaseUser, PermissionsMixin):
     person = models.OneToOneField('Person', related_name='user', null=True, blank=True, verbose_name=_('person'))
 
-    username = models.CharField(max_length=256, unique=True, verbose_name=_('username'))
+    username = models.CharField(max_length=256, unique=True, verbose_name=_('LiU-ID or email address'))
 
     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
     is_admin = models.BooleanField(default=False, verbose_name=_('is admin'))

@@ -45,7 +45,7 @@ class SEPersonalIdentityNumberField(forms.CharField):
     default_error_messages = {
         'invalid': _('Enter a valid Swedish personal identity number or YYMMDD-0000.'),
         'coordination_number': _('Co-ordination numbers are not allowed.'),
-        }
+    }
 
     def clean(self, value):
         value = super(SEPersonalIdentityNumberField, self).clean(value)
@@ -86,13 +86,17 @@ class AcceptForm(forms.Form):
         required=True,
         widget=forms.CheckboxInput,
         label=_('I accept that my personal information will be stored'),
-        help_text=_('We store your personal information according to the regulations specified by the Swedish Personal Data Act (PUL) and will not share it with any third parties.')
+        help_text=_(
+            'We store your personal information according to the regulations specified by the Swedish Personal Data '
+            'Act (PUL) and will not share it with any third parties.')
     )
 
 
 class PersonForm(forms.ModelForm):
     phone = forms.CharField(required=True, label=_('Phone number'))
-    pid = SEPersonalIdentityNumberField(coordination_number=True, label=_('Personal identity number'), help_text=_("Swedish personal identity number in the format <em>YYMMDD-XXXX</em>. If you don't have one, enter <em>YYMMDD-0000</em>, where <em>YYMMDD</em> represents your birthday."))
+    pid = SEPersonalIdentityNumberField(coordination_number=True, label=_('Personal identity number'), help_text=_(
+        "Swedish personal identity number in the format <em>YYMMDD-XXXX</em>. If you don't have one, "
+        "enter <em>YYMMDD-0000</em>, where <em>YYMMDD</em> represents your birthday."))
 
     class Meta:
         model = Person
@@ -115,8 +119,11 @@ class PersonForm(forms.ModelForm):
         birth_date, pid_code = self.cleaned_data['pid']
 
         # Checks for PID collision
-        if birth_date and pid_code and self._meta.model.objects.filter(birth_date=birth_date, pid_code=pid_code).exists():
-            self.add_error('pid', forms.ValidationError(_('This personal identity number is already registered. Please contact us if you think this is a mistake.')))
+        if birth_date and pid_code and self._meta.model.objects.filter(birth_date=birth_date,
+                                                                       pid_code=pid_code).exists():
+            self.add_error('pid', forms.ValidationError(_(
+                'This personal identity number is already registered. Please contact us if you think this is a '
+                'mistake.')))
 
         return data
 
@@ -174,6 +181,16 @@ class PersonFormHelper(FormHelper):
 class AcceptFormHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(AcceptFormHelper, self).__init__(*args, **kwargs)
+
+        self.form_tag = False
+        self.layout = Layout(
+            'accept'
+        )
+
+
+class LoginFormHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super(LoginFormHelper, self).__init__(*args, **kwargs)
 
         self.form_tag = False
         self.layout = Layout(

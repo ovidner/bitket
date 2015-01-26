@@ -95,7 +95,7 @@ class OrchestraTicketTypePublicNameModelChoiceField(forms.ModelChoiceField):
     At least we're explicit with the class name...
     """
     def label_from_instance(self, obj):
-        return obj.ticket_type.public_name
+        return u'{0} ({1} kr)'.format(obj.ticket_type.public_name, obj.ticket_type.price)
 
 
 class OrchestraMemberRegistrationForm(forms.Form):

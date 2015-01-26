@@ -26,6 +26,7 @@ class Orchestra(models.Model):
     def __str__(self):
         return self.name
 
+
 class OrchestraMembershipQuerySet(models.QuerySet):
     def primary(self):
         """
@@ -64,6 +65,10 @@ class OrchestraMemberRegistration(models.Model):
     """
     purchase = models.ForeignKey('tickle.Purchase', related_name='orchestra_member_registrations', verbose_name=_('purchase'))
 
+    class Meta:
+        verbose_name = _('orchestra member registration')
+        verbose_name_plural = _('orchestra member registrations')
+
     def __str__(self):
         return self.purchase.__str__()
 
@@ -79,6 +84,10 @@ class OrchestraTicketType(models.Model):
     accommodation_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('accommodation ticket type'))
 
     dinner_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('dinner ticket type'))
+
+    class Meta:
+        verbose_name = _('orchestra ticket type')
+        verbose_name_plural = _('orchestra ticket types')
 
     def __str__(self):
         return self.ticket_type.name

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ block.super }} – Logga in{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Logga in</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-4">
+            <form action="" method="post">
+                {% crispy form form_helper %}
+                <input type="submit" class="btn btn-primary" value="Logga in">
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}

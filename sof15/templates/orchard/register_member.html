@@ -21,16 +21,24 @@
                 {% crispy form person_form_helper %}
 
                 <h2>Orkestermedlemskap</h2>
-                <p>Ange här vilken eller vilka orkestrar du går på SOF med. Markera en orkester som <em>primär</em> –
+                <p>
+                    Ange här vilken eller vilka orkestrar du går på SOF med. Markera en orkester som <em>primär</em> –
                     det är denna orkester som kommer få faktura på din biljett och dina prylar. Vi försöker schemalägga
                     spelningar så att du inte ska behöva välja vilka du ska spela med, men vi kan tyvärr inte garantera
-                    något.</p>
-                <p>Alla orkestrar du anger kommer behöva bekräfta ditt medlemskap. </p>
+                    något.
+                </p>
+                <p>
+                    Alla orkestrar du anger kommer behöva bekräfta ditt medlemskap.
+                </p>
 
                 {% crispy membership_formset inline_formset_helper %}
 
                 <h2>Betalning</h2>
-                <p>Din (primära) orkester får en faktura på allt du köper från oss på den här sidan. Vem som betalar i slutändan är sedan upp till din orkester. Därför ser vi gärna att du i första hand vänder dig till din orkester med frågor om betalning.</p>
+                <p>
+                    Din (primära) orkester får en faktura på allt du köper från oss på den här sidan. Vem som betalar i
+                    slutändan är sedan upp till din orkester. Därför ser vi gärna att du i första hand vänder dig till
+                    din orkester med frågor om betalning.
+                </p>
             </div>
 
             <div class="col-sm-6">

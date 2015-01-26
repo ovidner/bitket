@@ -3,7 +3,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django import forms
 
+from django.contrib.auth.models import Permission
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, TickleUser
+
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
@@ -72,3 +74,8 @@ class TickleUserAdmin(UserAdmin):
     def save_model(self, request, obj, form, change):
         obj.person.save()
         super(TickleUserAdmin, self).save_model(request, obj, form, change)
+
+
+@admin.register(Permission)
+class PermissionAdmin(admin.ModelAdmin):
+    pass

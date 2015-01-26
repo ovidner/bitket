@@ -27,7 +27,9 @@ class ApproveOrchestraMemberView(PermissionRequiredMixin, UpdateView):
     model = Orchestra
     context_object_name = 'orchestra'
 
+    # Guardian settings
     permission_required = 'approve_orchestra_members'
+    accept_global_perms = True
     
     def get_context_data(self, **kwargs):
         context = super(ApproveOrchestraMemberView, self).get_context_data(**kwargs)
