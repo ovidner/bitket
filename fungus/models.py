@@ -26,6 +26,7 @@ class ShiftType(MPTTModel):
         return self.name
 
 
+@python_2_unicode_compatible
 class Shift(models.Model):
     shift_type = TreeForeignKey('ShiftType', related_name='shifts')
 
@@ -37,7 +38,14 @@ class Shift(models.Model):
     max_workers = models.PositiveIntegerField(verbose_name=_('maximum number of workers'))
     public = models.BooleanField(default=True, verbose_name=_('public'), help_text=_("If unchecked, this shift won't be visible or available for registration by public users."))
 
+    def __str__(self):
+        return u'%s %s – %s' % (self.shift_type.name, self.start, self.end)
 
+
+@python_2_unicode_compatible
 class ShiftRegistration(models.Model):
     shift = models.ForeignKey('Shift')
     worker = models.ForeignKey('Worker')
+
+    def __str__(self):
+        return u'%s: %s' % (self.worker, self.shift)
