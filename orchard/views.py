@@ -9,6 +9,8 @@ from django.utils.timezone import now
 from django.core.mail import EmailMultiAlternatives
 from django.template import Context
 from django.template.loader import render_to_string
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 from guardian.mixins import PermissionRequiredMixin
 
@@ -30,6 +32,9 @@ class ApproveOrchestraMemberView(PermissionRequiredMixin, UpdateView):
     # Guardian settings
     permission_required = 'approve_orchestra_members'
     accept_global_perms = True
+
+    def get_success_url(self):
+        return resolve_url('orchard:approve_orchestra_members', self.object.pk)
     
     def get_context_data(self, **kwargs):
         context = super(ApproveOrchestraMemberView, self).get_context_data(**kwargs)
@@ -55,6 +60,8 @@ class ApproveOrchestraMemberView(PermissionRequiredMixin, UpdateView):
         if member_formset.is_valid():
             # member_formset.instance = self.object
             member_formset.save()
+
+            messages.success(self.request, _('The members you selected have been successfully approved.'))
 
             return HttpResponseRedirect(self.get_success_url())
 
