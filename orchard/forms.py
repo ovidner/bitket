@@ -77,7 +77,7 @@ class DisplayField(forms.Field):
 
 class OrchestraMembershipApprovalForm(forms.ModelForm):
     # approved = forms.ChoiceField(widget=forms.RadioSelect(), choices=((True, 'Ja',), (False, 'Nej')), )
-    approved = forms.BooleanField(label='Godkänd', required=False)
+    approved = forms.BooleanField(label=_('Approved'), required=False)
 
     class Meta:
         model = OrchestraMembership
@@ -87,7 +87,7 @@ class OrchestraMembershipApprovalForm(forms.ModelForm):
         super(OrchestraMembershipApprovalForm, self).__init__(*args, **kwargs)
         # Set initial values for display fields to the correct instance of OrchestraMembership.
         self.fields['person'] = DisplayField(initial=self.instance.person, required=False)
-        self.fields['primary'] = DisplayField(initial=self.instance.primary, required=False, label='Primär')
+        self.fields['primary'] = DisplayField(initial=self.instance.primary, required=False, label=_('Primary'))
 
 
 class OrchestraTicketTypePublicNameModelChoiceField(forms.ModelChoiceField):
@@ -102,7 +102,8 @@ class OrchestraMemberRegistrationForm(forms.Form):
     ticket_type = OrchestraTicketTypePublicNameModelChoiceField(queryset=OrchestraTicketType.objects.all(), label=_('Ticket type'))
     food = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Food'), help_text=_('Meals as described above.'))
     accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Accommodation'), help_text=_('Place on floor &ndash; bring your own bedroll. Breakfast included.'))
-    dinner = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Jubilarian'), help_text=_('Will this be your 10th SOF/STORK in a row or the 25th in all?'))
+    jubilarian_10 = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('10th festival in a row'), help_text=_('Will this be your 10th SOF/STORK in a row?'))
+    jubilarian_25 = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('25th festival'), help_text=_('Will this be your 25th SOF/STORK in all?'))
 
     def clean(self):
         data = super(OrchestraMemberRegistrationForm, self).clean()
@@ -113,8 +114,11 @@ class OrchestraMemberRegistrationForm(forms.Form):
         if data['accommodation'] and not data['ticket_type'].accommodation_ticket_type:
             self.add_error('accommodation', ValidationError(_("Can't add accommodation to this ticket type.")))
 
-        if data['dinner'] and not data['ticket_type'].dinner_ticket_type:
-            self.add_error('dinner', ValidationError(_("Can't add 10-/25-year dinner to this ticket type.")))
+        if data['jubilarian_10'] and not data['ticket_type'].jubilarian_10_ticket_type:
+            self.add_error('jubilarian_10', ValidationError(_("Can't choose this with this ticket type.")))
+
+        if data['jubilarian_25'] and not data['ticket_type'].jubilarian_25_ticket_type:
+            self.add_error('jubilarian_25', ValidationError(_("Can't choose this with this ticket type.")))
 
         return data
 
@@ -134,7 +138,11 @@ class OrchestraTicketFormHelper(FormHelper):
             'ticket_type',
             'food',
             'accommodation',
-            'dinner',
+            Div(
+                Div('jubilarian_10', css_class='col-sm-6'),
+                Div('jubilarian_25', css_class='col-sm-6'),
+                css_class='row'
+            ),
         )
 
 

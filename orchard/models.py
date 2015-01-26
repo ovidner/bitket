@@ -30,8 +30,8 @@ class Orchestra(models.Model):
 class OrchestraMembershipQuerySet(models.QuerySet):
     def primary(self):
         """
-        Convenience method, preferably for returning a person's primary orchestra membership. May raise an exception if
-        multiple memberships are found. This is Django's standard behavior and we want to keep it.
+        Convenience method, preferably for returning a person's primary orchestra membership. Will raise an exception if
+        multiple memberships are found. This is Django's standard behavior and we want to keep it – but keep it in mind.
         """
         return self.get(primary=True)
 
@@ -83,7 +83,9 @@ class OrchestraTicketType(models.Model):
     # Which food object will you get when purchasing this ticket with accommodation?
     accommodation_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('accommodation ticket type'))
 
-    dinner_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('dinner ticket type'))
+    jubilarian_10_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('10th festival ticket type'))
+    jubilarian_25_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('25th festival ticket type'))
+
 
     class Meta:
         verbose_name = _('orchestra ticket type')
