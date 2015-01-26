@@ -106,6 +106,7 @@ class Person(models.Model):
 
         template_data = {
             'person': self,
+            'password': password,
             'url': settings.URL
         }
         subject = 'Användarkonto hos SOF'
