@@ -55,7 +55,7 @@ class DisplayWidget(forms.Widget):
             if isinstance(self.initial, bool):
                 value = self.initial and 'Ja' or 'Nej'
             else:
-                value = self.initial.full_name
+                value = u'%s (%s, %s)' % (self.initial.full_name, self.initial.email, self.initial.phone)
         # return mark_safe("<span %s>%s</span>" % (flatatt(final_attrs), escape(value) or ''))
         return mark_safe(escape(value) or '')
 
