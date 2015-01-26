@@ -8,7 +8,7 @@ import mptt.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tickle', '0008_auto_20150126_1900'),
+        ('tickle', '0007_auto_20150126_1652'),
     ]
 
     operations = [
