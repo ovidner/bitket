@@ -3,9 +3,6 @@
 
 {% block title %}{{ block.super }} – Godkänn orkestermedlemmar{% endblock %}
 
-            {% for message in messages %}
-                <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
-            {% endfor %}
 {% block header %}Orkestermedlemmar <small>{{ orchestra.name }}</small>{% endblock %}
 
 {% block content %}

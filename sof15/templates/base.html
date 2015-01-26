@@ -25,6 +25,10 @@
             <h1>{% block header %}SOF 2015{% endblock %}</h1>
         </div>
 
+        {% for message in messages %}
+            <div class="alert{% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+        {% endfor %}
+
         {% block content %}
             <ul>
                 <li><a href="{% url 'orchard:register_orchestra_member' %}">Anmälan av orkestermedlem</a></li>
