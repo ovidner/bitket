@@ -14,6 +14,7 @@ urlpatterns = patterns(
     url(r'^$', TemplateView.as_view(template_name='base.html')),
 
     url(r'^people/login/$', LoginView.as_view(), name='login'),
+    url(r'^people/logout/$', 'django.contrib.auth.views.logout', {'next_page': 'root'}, name='logout'),
     url(r'^people/(?P<pk>\d+)/$', ProfileView.as_view(), name='profile'),
     url(r'^people/me/$', LoginView.as_view(), name='profile_me'),
 

@@ -20,7 +20,16 @@
 </head>
 <body>
     <div class="container">
-        <p><a href="http://sof15.se/">&leftarrow; Tillbaka till sof15.se</a> </p>
+        <p>
+            <a href="http://sof15.se/">&leftarrow; Tillbaka till sof15.se</a>
+
+            {% if user.is_anonymous %}
+                <a href="{% url 'login' %}" class="pull-right">Logga in</a>
+            {% else %}
+                <a href="{% url 'logout' %}" class="pull-right">Logga ut</a>
+            {% endif %}
+        </p>
+
         <div class="page-header">
             <h1>{% block header %}SOF 2015{% endblock %}</h1>
         </div>
