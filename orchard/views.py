@@ -90,7 +90,8 @@ class RegisterOrchestraMemberView(CreateView):
             Person,
             OrchestraMembership,
             min_num=1,
-            extra=4,
+            max_num=3,
+            extra=2,
             can_delete=False,
             form=OrchestraMembershipForm,
             fields=['orchestra', 'primary'])(self.request.POST or None)
@@ -164,11 +165,19 @@ class RegisterOrchestraMemberView(CreateView):
                         )
                     )
 
-                if ticket_form.cleaned_data['dinner']:
+                if ticket_form.cleaned_data['jubilarian_10']:
                     holdings.append(
                         Holding.objects.create(
                             person=person,
-                            product=ticket_form.cleaned_data['ticket_type'].dinner_ticket_type.product
+                            product=ticket_form.cleaned_data['ticket_type'].jubilarian_10_ticket_type.product
+                        )
+                    )
+
+                if ticket_form.cleaned_data['jubilarian_25']:
+                    holdings.append(
+                        Holding.objects.create(
+                            person=person,
+                            product=ticket_form.cleaned_data['ticket_type'].jubilarian_25_ticket_type.product
                         )
                     )
 
