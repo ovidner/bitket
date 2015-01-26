@@ -55,12 +55,19 @@ class TicketType(Product):
         return self.product.name
 
 
+class HoldingQuerySet(models.QuerySet):
+    def tickets(self):
+        return self.filter(product__ticket_type__isnull=False)
+
+
 @python_2_unicode_compatible
 class Holding(models.Model):
     person = models.ForeignKey('Person', related_name='holdings')
     product = models.ForeignKey('Product', related_name='holdings')
 
     quantity = models.PositiveIntegerField(default=1)  # todo: validate this! base on Product.quantitative
+
+    objects = HoldingQuerySet.as_manager()
 
     def __str__(self):
         return u'{0} {1}'.format(self.product, self.person)

@@ -55,7 +55,7 @@ class Person(models.Model):
         )
 
         permissions = (
-            ('view_profile', _('View profile')),
+            ('view_person', _('Can view person')),
         )
 
         verbose_name = _('person')
@@ -77,7 +77,7 @@ class Person(models.Model):
 
             # Everybody must be able to show their own profiles. This way we don't have to write special checks in
             # the views.
-            assign_perm('view_profile', self.user, self)
+            assign_perm('view_person', self.user, self)
 
         super(Person, self).save(*args, **kwargs)
 

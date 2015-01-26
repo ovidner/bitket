@@ -5,6 +5,7 @@ from django.contrib.auth import login
 from django.shortcuts import resolve_url
 
 from guardian.mixins import PermissionRequiredMixin
+from guardian.shortcuts import get_objects_for_user
 
 from tickle.forms import LoginFormHelper
 from tickle.models.people import Person
@@ -16,8 +17,17 @@ class ProfileView(PermissionRequiredMixin, DetailView):
     context_object_name = 'person'
 
     # Guardian settings
-    permission_required = 'tickle.view_profile'
+    permission_required = 'tickle.view_person'
     accept_global_perms = True
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileView, self).get_context_data(**kwargs)
+
+        # For the sake of loose coupling, this probably shouldn't be here.
+        # todo: solve in a more elegant way.
+        context['membership_approvable_orchestras'] = get_objects_for_user(self.object.user, 'orchard.approve_orchestra_members')
+
+        return context
 
 
 class LoginView(FormView):
