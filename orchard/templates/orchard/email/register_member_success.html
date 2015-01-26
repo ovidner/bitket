@@ -52,8 +52,8 @@
         {% for i in purchase.holdings.all %}
             <tr>
                 <th>{{ i.product.name }}</th>
-                <td>{{ i.quantity }}x</td>
-                <td>{{ i.product.price }} kr/st</td>
+                <td>{% if i.product.quantitative %}{{ i.quantity }}x{% endif %}</td>
+                <td>{% if i.product.price != 0 %}{{ i.product.price }} kr{% if i.product.quantitative %}/st{% endif %}{% endif %}</td>
             </tr>
         {% endfor %}
     </table>

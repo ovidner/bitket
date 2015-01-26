@@ -18,7 +18,7 @@ Orkestermedlemskap
 {% endfor %}
 Biljett och prylar
 ==================
-{% for i in purchase.holdings.all %}{{ i.quantity }}x {{ i.product.public_name }} ({{ i.product.price }} kr/st)
+{% for i in purchase.holdings.all %}{% if i.product.quantitative %}{{ i.quantity }}x {% endif %}{{ i.product.public_name }}{% if i.product.price != 0 %} ({{ i.product.price }} kr{% if i.product.quantitative %}/st{% endif %}){% endif %}
 {% endfor %}
 
 Svara gärna på det här mailet om du har några frågor kring din anmälan.
