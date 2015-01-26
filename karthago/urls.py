@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 
@@ -9,5 +8,4 @@ urlpatterns = patterns(
     '',
     url(r'^entries/add/$', EntryCreate.as_view(), name='create_kartege_entry'),
     url(r'^entries/add/success/$', TemplateView.as_view(template_name='karthago/entries/create_success.html'), name='create_kartege_entry_success'),
-    url(r'^materials/$', EntryCreate.as_view()),
 )

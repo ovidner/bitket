@@ -69,7 +69,7 @@ class RegisterOrchestraMemberView(CreateView):
     template_name = 'orchard/register_member.html'
 
     def get_success_url(self):
-        return resolve_url('register_orchestra_member_success')
+        return resolve_url('orchard:register_orchestra_member_success')
 
     def get_stuff_queryset(self):
         return OrchestraProduct.objects.stuff()
