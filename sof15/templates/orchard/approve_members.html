@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ block.super }} – Godkänn orkestermedlemmar{% endblock %}
+
+{% block header %}Orkestermedlemmar <small>{{ orchestra.name }}</small>{% endblock %}
 
 {% block content %}
-    sdfasdf
     <form action="" method="post">
-        {% csrf_token %}
-        {{ member_formset.management_form }}
-        {% for form in member_formset %}
-            Blurp
-            {{ form.as_p }}
-        {% endfor %}
-        <input type="submit">
+        {% crispy member_formset member_formset_helper %}
+        <input type="submit" class="btn btn-success" value="Spara">
     </form>
 {% endblock %}

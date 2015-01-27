@@ -14,7 +14,8 @@ RUN apt-get update -y && apt-get install -y \
     libpq-dev \
     libldap2-dev \
     libsasl2-dev \
-    git
+    libncurses5-dev \
+    gettext
 
 RUN pip install virtualenv
 
@@ -31,13 +32,16 @@ RUN /home/sof15/bin/pip install -r /home/sof15/app/requirements.txt
 # Now copy the rest of the code
 COPY . /home/sof15/app
 
+RUN mkdir -p /home/sof15/app/_build/static/
+
 # Django will be sad if we don't set these envs during build.
-ENV DEBUG=true
-ENV SECRET_KEY=build
+ENV DEBUG true
+ENV SECRET_KEY build
 RUN /home/sof15/bin/python /home/sof15/app/manage.py collectstatic --noinput
-# Unset the envs
-ENV SECRET_KEY=
-ENV DEBUG=
+RUN /home/sof15/bin/python /home/sof15/app/manage.py compilemessages
+# "Unset" the SECRET_KEY, so we can't accidently start with an unsafe, default key
+ENV SECRET_KEY ''
+ENV DEBUG false
 
 USER sof15
 ENV HOME /home/sof15

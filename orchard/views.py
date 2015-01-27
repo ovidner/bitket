@@ -1,30 +1,54 @@
 # -*- coding: utf-8 -*-
 
+from django.shortcuts import resolve_url
 from django.db import transaction
 from django.forms.models import inlineformset_factory
 from django.views.generic import CreateView, UpdateView
 from django.http.response import HttpResponseRedirect
 from django.utils.timezone import now
+from django.core.mail import EmailMultiAlternatives
+from django.template import Context
+from django.template.loader import render_to_string
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
+from guardian.mixins import PermissionRequiredMixin
 
 from orchard.forms import (OrchestraMembershipForm, ApproveOrchestraMemberForm,
                            OrchestraMemberRegistrationForm, InlineFormSetHelper,
-                           OrchestraTicketFormHelper, OrchestraStuffForm)
+                           OrchestraTicketFormHelper, OrchestraStuffForm, OrchestraMembershipApprovalForm)
 from orchard.models import Orchestra, OrchestraMembership, OrchestraMemberRegistration, OrchestraProduct
 from tickle.forms import PersonForm, AcceptForm, AcceptFormHelper, PersonFormHelper
 from tickle.models.people import Person
-from tickle.models.products import Holding, Purchase, Product
+from tickle.models.products import Holding, Purchase
 
 
-class ApproveOrchestraMemberView(UpdateView):
+class ApproveOrchestraMemberView(PermissionRequiredMixin, UpdateView):
     form_class = ApproveOrchestraMemberForm
     template_name = 'orchard/approve_members.html'
     model = Orchestra
+    context_object_name = 'orchestra'
 
+    # Guardian settings
+    permission_required = 'approve_orchestra_members'
+    accept_global_perms = True
+
+    def get_success_url(self):
+        return resolve_url('orchard:approve_orchestra_members', self.object.pk)
+    
     def get_context_data(self, **kwargs):
         context = super(ApproveOrchestraMemberView, self).get_context_data(**kwargs)
 
-        context['member_formset'] = inlineformset_factory(Orchestra, OrchestraMembership, extra=0)(self.request.POST or None, instance=self.object)
+        context['member_formset'] = inlineformset_factory(
+            Orchestra,
+            OrchestraMembership,
+            form=OrchestraMembershipApprovalForm,
+            extra=0,
+            can_delete=False,
+            can_order=False,
+            )(self.request.POST or None, instance=self.object)
+
+        context['member_formset_helper'] = InlineFormSetHelper()
 
         return context
 
@@ -34,8 +58,10 @@ class ApproveOrchestraMemberView(UpdateView):
         member_formset = context['member_formset']
 
         if member_formset.is_valid():
-            member_formset.instance = self.object
+            # member_formset.instance = self.object
             member_formset.save()
+
+            messages.success(self.request, _('The members you selected have been successfully approved.'))
 
             return HttpResponseRedirect(self.get_success_url())
 
@@ -48,6 +74,9 @@ class RegisterOrchestraMemberView(CreateView):
     form_class = PersonForm
 
     template_name = 'orchard/register_member.html'
+
+    def get_success_url(self):
+        return resolve_url('orchard:register_orchestra_member_success')
 
     def get_stuff_queryset(self):
         return OrchestraProduct.objects.stuff()
@@ -68,10 +97,11 @@ class RegisterOrchestraMemberView(CreateView):
             Person,
             OrchestraMembership,
             min_num=1,
-            extra=4,
+            max_num=3,
+            extra=2,
             can_delete=False,
             form=OrchestraMembershipForm,
-            fields=['orchestra', 'active', 'primary'])(self.request.POST or None)
+            fields=['orchestra', 'primary'])(self.request.POST or None)
 
         context['stuff_formset'] = inlineformset_factory(
             Person,
@@ -88,9 +118,23 @@ class RegisterOrchestraMemberView(CreateView):
         context['inline_formset_helper'] = InlineFormSetHelper()
         context['accept_form_helper'] = AcceptFormHelper()
 
-        context['ticket_prices'] = None
-
         return context
+
+    def send_confirmation_email(self, to, person, purchase):
+        template_data = {
+            'person': person,
+            'purchase': purchase,
+        }
+
+        plaintext_context = Context(autoescape=False)  # HTML escaping not appropriate in plaintext
+        subject = render_to_string('orchard/email/register_member_success_subject.txt', template_data, plaintext_context)
+        text_body = render_to_string('orchard/email/register_member_success.txt', template_data, plaintext_context)
+        html_body = render_to_string('orchard/email/register_member_success.html', template_data)
+
+        msg = EmailMultiAlternatives(subject=subject, from_email="orkester@sof15.se",
+                                     to=[to], body=text_body)
+        msg.attach_alternative(html_body, "text/html")
+        msg.send()
 
     def form_valid(self, form):
         context = self.get_context_data()
@@ -98,8 +142,9 @@ class RegisterOrchestraMemberView(CreateView):
         ticket_form = context['ticket_form']
         membership_formset = context['membership_formset']
         stuff_formset = context['stuff_formset']
+        accept_form = context['accept_form']
 
-        if ticket_form.is_valid() and membership_formset.is_valid() and stuff_formset.is_valid():
+        if ticket_form.is_valid() and membership_formset.is_valid() and stuff_formset.is_valid() and accept_form.is_valid():
             with transaction.atomic():
                 person = form.save()
                 holdings = []
@@ -127,11 +172,19 @@ class RegisterOrchestraMemberView(CreateView):
                         )
                     )
 
-                if ticket_form.cleaned_data['dinner']:
+                if ticket_form.cleaned_data['jubilarian_10']:
                     holdings.append(
                         Holding.objects.create(
                             person=person,
-                            product=ticket_form.cleaned_data['ticket_type'].dinner_ticket_type.product
+                            product=ticket_form.cleaned_data['ticket_type'].jubilarian_10_ticket_type.product
+                        )
+                    )
+
+                if ticket_form.cleaned_data['jubilarian_25']:
+                    holdings.append(
+                        Holding.objects.create(
+                            person=person,
+                            product=ticket_form.cleaned_data['ticket_type'].jubilarian_25_ticket_type.product
                         )
                     )
 
@@ -151,7 +204,10 @@ class RegisterOrchestraMemberView(CreateView):
                 # Marks the Purchase object as an orchestra member registration
                 OrchestraMemberRegistration.objects.create(purchase=purchase)
 
+            self.send_confirmation_email(person.email, person, purchase)
+
             return HttpResponseRedirect(self.get_success_url())
 
         else:
             return self.render_to_response(self.get_context_data(form=form))
+

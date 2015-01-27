@@ -177,3 +177,7 @@ blasfisk/settings/secret.py
 celerybeat-schedule
 
 # ----------------- #
+=======
+*.mo
+
+# ----------------- #

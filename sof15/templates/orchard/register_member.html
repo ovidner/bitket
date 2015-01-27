@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block content %}
-    <div class="page-header">
-        <h1>Orkestermedlemsanmälan</h1>
-    </div>
-    <p>Kul att du vill gå på SOF! Fyll i formuläret här nedan. Hör gärna av dig till orkesteransvarig på <a href="mailto:orkester@sof15.se">orkester@sof15.se</a> om du har några funderingar.</p>
+{% block title %}{{ block.super }} – Orkestermedlemsanmälan{% endblock %}
 
+{% block header %}Anmälan är ännu ej öppen! {# Orkestermedlemsanmälan #}{% endblock %}
+
+{% block content %}
+    {% comment %}
+    <p>Kul att du vill gå på SOF! Fyll i formuläret här nedan. Hör av dig till orkesteransvarig Karl Linderhed på
+        <a href="mailto:orkester@sof15.se">orkester@sof15.se</a> om du har några funderingar.</p>
+        {% endcomment %}
+        <p> Varje orkester kommer få information när det går bra att anmäla sig. Avvakta tills dess. Frågor ställs till orkesteransvarig Karl Linderhed på <a href="mailto:orkester@sof15.se">orkester@sof15.se</a> </p>
     <form method="post" action="">
         {% csrf_token %}
         <div class="row">
@@ -15,73 +19,66 @@
                 {% crispy form person_form_helper %}
 
                 <h2>Orkestermedlemskap</h2>
-                <p>Ange här vilken eller vilka orkestrar du går på SOF med. Markera en orkester som <em>primär</em> –
+                <p>
+                    Ange här vilken eller vilka orkestrar du går på SOF med. Markera en orkester som <em>primär</em> –
                     det är denna orkester som kommer få faktura på din biljett och dina prylar. Vi försöker schemalägga
                     spelningar så att du inte ska behöva välja vilka du ska spela med, men vi kan tyvärr inte garantera
-                    något.</p>
-                <p>Alla orkestrar du anger kommer behöva bekräfta ditt medlemskap. </p>
-                {{ membership_formset.management_form }}
+                    något.
+                </p>
+                <p>
+                    Alla orkestrar du anger kommer behöva bekräfta ditt medlemskap.
+                </p>
 
-                <table class="table table-striped">
-                    <tr>
-                        <th>Orkester</th>
-                        <th>Aktiv medlem</th>
-                        <th>Primär orkester</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
+                {% crispy membership_formset inline_formset_helper %}
 
-                    {% for form in membership_formset %}
-                        <tr>
-                            {% for field in form %}
-                                <td>
-                                    {{ field.errors }}  <!-- Move somewhere else. -->
-                                    {{ field }}
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </table>
                 <h2>Betalning</h2>
-                <p>Din (primära) orkester får en faktura på allt du köper från oss på den här sidan. Vem som betalar i slutändan är sedan upp till din orkester. Därför ser vi gärna att du i första hand vänder dig till din orkester med frågor om betalning.</p>
+                <p>
+                    Din (primära) orkester får en faktura på allt du köper från oss på den här sidan. Vem som betalar i
+                    slutändan är sedan upp till din orkester. Därför ser vi gärna att du i första hand vänder dig till
+                    din orkester med frågor om betalning.
+                </p>
             </div>
 
             <div class="col-sm-6">
                 <h2>Biljett, mat och boende</h2>
                 <p>
-                    Ange under vilka dagar du tänker besöka festivalen samt om du önskar ha mat och/eller boende. Tillvalen har följande pris:
+                    Ange under vilka dagar du vill vara med på festivalen. Notera att du måste aktivt kryssa i om du vill ha mat och/eller sovplats.<br/>
+                    Boendet kostar 50 kr totalt oavsett biljettyp.
+                    Mat kostar följande för respektive biljettyp:
                     <dl class="dl-horizontal">
-                        <dt>Torsdag - Lördag</dt>
-                        <dd>Mat: 200 kr, Boende: 100 kr</dd>
-                        <dt>Torsdag - Söndag</dt>
-                        <dd>Mat: 200 kr, Boende: 150 kr</dd>
-                        <dt>Fredag - Lördag</dt>
-                        <dd>Mat: 200 kr, Boende: 150 kr</dd>
-                        <dt>Fredag - Söndag</dt>
-                        <dd>Mat: 200 kr, Boende: 150 kr</dd>
+                        <dt>Torsdag &ndash; söndag</dt>
+                        <dd>155 kr</dd>
+                        <dt>Fredag &ndash; söndag</dt>
+                        <dd>90 kr</dd>
+                        <dt>Endast lördag</dt>
+                        <dd>50 kr</dd>
                     </dl>
                 </p>
                 <p>
-                    Följande mål ingår i matpriset för respektive dag:
+                    Följande ingår i matpriset för respektive dag:
                     <dl class="dl-horizontal">
                         <dt>Torsdag</dt>
-                        <dd>Middag, vickning</dd>
+                        <dd>Orkestersittning, en dryck, vickning</dd>
                         <dt>Fredag</dt>
-                        <dd>Lunch, middag, vickning</dd>
+                        <dd>Middag, en dryck, vickning</dd>
                         <dt>Lördag</dt>
-                        <dd>Lunch, middag, vickning</dd>
+                        <dd>Kårtegemat, middag, en dryck, vickning</dd>
                     </dl>
                 </p>
                 {% crispy ticket_form ticket_form_helper %}
 
                 <h2>Prylar</h2>
+                {{ stuff_formset.management_form }}
                 <div class="list-group">
-                    {{ stuff_formset.management_form }}
                     {% for form in stuff_formset %}
                         <div class="list-group-item">
                             <h3>{{ form.initial.product_object.public_name }}</h3>
                             <p>{{ form.initial.product_object.description }}</p>
-                            <p><strong>{{ form.initial.product_object.price }} kr</strong><span class="pull-right">{{ form }}</span></p>
+                            <p>
+                                <strong>{{ form.initial.product_object.price }} kr</strong>
+                                {{ form.id }}{{ form.product }}
+                                <span class="pull-right">{{ form.quantity }}</span>
+                            </p>
                         </div>
                     {% endfor %}
 

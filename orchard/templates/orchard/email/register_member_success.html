@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family: sans-serif;">
+    <h1>Anmälningsbekräftelse</h1>
+
+    <p>Tack för din anmälan till SOF! Här är en bekräftelse på dina uppgifter.</p>
+
+    <h2>Personuppgifter</h2>
+    <table style="text-align: left">
+        <tr>
+            <th>Förnamn</th>
+            <td>{{ person.first_name }}</td>
+        </tr>
+        <tr>
+            <th>Efternamn</th>
+            <td>{{ person.last_name }}</td>
+        </tr>
+        <tr>
+            <th>Personnummer</th>
+            <td>{{ person.pid }}</td>
+        </tr>
+        <tr>
+            <th>E-postadress</th>
+            <td>{{ person.email }}</td>
+        </tr>
+        <tr>
+            <th>Telefonnummer</th>
+            <td>{{ person.phone }}</td>
+        </tr>
+        <tr>
+            <th>Specialkost</th>
+            <td>{% for i in person.special_nutrition.all %}{{ i.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        </tr>
+        <tr>
+            <th>Annan information</th>
+            <td>{{ person.notes }}</td>
+        </tr>
+    </table>
+
+    <h2>Orkestermedlemskap</h2>
+    <table style="text-align: left">
+        {% for i in person.orchestra_memberships.all %}
+            <tr>
+                <th>{{ i.orchestra }}</th>
+                <td>{% if i.primary %}Primär orkester{% endif %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Biljett och prylar</h2>
+    <table style="text-align: left">
+        {% for i in purchase.holdings.all %}
+            <tr>
+                <th>{{ i.product.name }}</th>
+                <td>{% if i.product.quantitative %}{{ i.quantity }}x{% endif %}</td>
+                <td>{% if i.product.price != 0 %}{{ i.product.price }} kr{% if i.product.quantitative %}/st{% endif %}{% endif %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <p>
+        Svara gärna på det här mailet om du har några frågor kring din anmälan.
+    </p>
+    <p>
+        <em>Vi ses i maj!</em><br>
+        //SOF-organisationen 2015
+    </p>
+</body>
+</html>

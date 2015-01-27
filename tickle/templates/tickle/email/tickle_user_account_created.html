@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family: sans-serif;">
+    <h2>Hej {{ person.full_name }}!</h2>
+    <p>
+        Ett användarkonto hos SOF har skapats åt dig där du kan administrera dina biljetter.<br>
+        Om du är en orkesterrepresentant så kan du även godkänna orkestermedlemar i representerad orkester.
+    </p>
+
+    <p>
+        För att använda ditt användarkonto gå in på <a href="{{ url }}{% url 'login' %}">{{ url }}{% url 'login' %}</a>
+        och logga in med dina användaruppgifter nedan.
+    </p>
+
+    <h3>Användaruppgifter</h3>
+    <p>Nedan finns dina inloggningsuppgifter.</p>
+    <p>
+        Användarnamn: {{ person.user.username }}<br>
+        Lösenord: {{ password }}
+    </p>
+    <p>Vill du byta lösenord så går det enkelt att göra ifrån din inloggning.</p>
+
+    <p>
+        Svara gärna på det här mailet om du har några frågor kring ditt konto.
+    </p>
+    <p>
+        <em>Vi ses i maj!</em><br>
+        //SOF-organisationen 2015
+    </p>
+</body>
+</html>

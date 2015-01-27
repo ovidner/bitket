@@ -3,7 +3,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
-from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
+from mptt.models import MPTTModel, TreeForeignKey
+
 
 @python_2_unicode_compatible
 class Category(models.Model):
@@ -11,6 +12,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
 
 @python_2_unicode_compatible
 class Event(MPTTModel):
@@ -33,7 +35,8 @@ class Product(models.Model):
     categories = models.ManyToManyField('Category', null=True, blank=True)
 
     price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_('price'))
-    quantitative = models.BooleanField(default=False, help_text=_('Can you purchase more than one (1) of this product?'))
+    quantitative = models.BooleanField(default=False,
+                                       help_text=_('Can you purchase more than one (1) of this product?'))
 
     def __str__(self):
         return self.name
@@ -44,12 +47,17 @@ class Product(models.Model):
 
 
 @python_2_unicode_compatible
-class TicketType(models.Model):
-    product = models.OneToOneField('Product', related_name='ticket_type')
+class TicketType(Product):
+    product = models.OneToOneField('Product', related_name='ticket_type', parent_link=True)
     events = models.ManyToManyField('Event', verbose_name=_('events'))
 
     def __str__(self):
         return self.product.name
+
+
+class HoldingQuerySet(models.QuerySet):
+    def tickets(self):
+        return self.filter(product__ticket_type__isnull=False)
 
 
 @python_2_unicode_compatible
@@ -59,8 +67,14 @@ class Holding(models.Model):
 
     quantity = models.PositiveIntegerField(default=1)  # todo: validate this! base on Product.quantitative
 
+    objects = HoldingQuerySet.as_manager()
+
     def __str__(self):
         return u'{0} {1}'.format(self.product, self.person)
+
+    @property
+    def total(self):
+        return self.product.price * self.quantity
 
 
 @python_2_unicode_compatible

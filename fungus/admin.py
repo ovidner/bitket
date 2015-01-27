@@ -9,9 +9,13 @@ class ShiftTypeAdmin(admin.ModelAdmin):
     pass
 
 
+class ShiftRegistrationInline(admin.TabularInline):
+    model = ShiftRegistration
+
+
 @admin.register(Shift)
 class ShiftAdmin(admin.ModelAdmin):
-    pass
+    inlines = (ShiftRegistrationInline,)
 
 
 @admin.register(ShiftRegistration)
@@ -21,4 +25,4 @@ class ShiftRegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(Worker)
 class WorkerAdmin(admin.ModelAdmin):
-    pass
+    inlines = (ShiftRegistrationInline,)

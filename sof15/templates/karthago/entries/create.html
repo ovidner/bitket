@@ -1,16 +1,19 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block title %}{{ block.super }} – Kårtegebidragsansökan{% endblock %}
+
+{% block header %}Kårtegebidragsansökan{% endblock %}
+
 {% block content %}
-    <div class="page-header">
-        <h1>Kårtegebidragsansökan</h1>
-    </div>
     <p>
         Vad roligt att ni vill vara med i Kårtegen! När ni fyller i uppgifterna nedan, tänk på att vara så tydliga och
         förklarande som möjligt så att rätt material kan fixas. Allt för att bidraget ska bli fantastiskt!
     </p>
     <p>
-        <strong>Tänk på att högsta tillåtna höjd på bidragen är 4,5 meter över marken. Lastbilsflaken är cirka 1,6 meter över marken.</strong>
+        <strong>Tänk på att högsta tillåtna höjd på bidragen är 4,5 meter över marken. Lastbilsflaken är cirka 1,6 meter
+            över marken.</strong> Vi ber er även observera att festivalbiljetter inte ingår i kårtegeavgiften – men ni
+        får självklart möjlighet till förköp.
     </p>
     <form action="" method="post">
         <div class="row">
@@ -25,6 +28,9 @@
                     (om t.ex. kartong skulle fylla samma funktion som en träskiva är kartong absolut det bättre
                     alternativet).
                 </p>
+                <p>
+                    Tips: träskivorna kommer i standarddimensionen 1200x2400 mm.
+                </p>
                 {% crispy material_formset material_formset_helper %}
 
                 <h3>Andra material</h3>
@@ -34,7 +40,7 @@
                 {% crispy custom_material_formset material_formset_helper %}
             </div>
         </div>
-        <input type="submit" class="btn btn-lg btn-success">
+        <input type="submit" class="btn btn-lg btn-success" value="Skicka ansökan">
     </form>
 {% endblock content %}
 
@@ -46,10 +52,10 @@
             // todo: better.
 
             // Don't hide if free build is selected (happens on validation errors etc.)
-            if ($('#id_type').val() != {{ free_build_pk }}){
+            if ($('#id_entry_type').val() != {{ free_build_pk }}){
                 $('#dimensions').hide();
             }
-            $('#id_type').change(function() {
+            $('#id_entry_type').change(function() {
                 if ($(this).val() == {{ free_build_pk }}){
                     $('#dimensions').show();
                 }

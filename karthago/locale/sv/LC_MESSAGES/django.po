@@ -1,0 +1,185 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-22 10:33+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: karthago/forms.py:48
+msgid "Too many members for this entry type."
+msgstr "För många deltagare för den här bidragstypen."
+
+#: karthago/forms.py:51
+msgid "Free build must have specified, valid dimensions."
+msgstr "Fribyggen måste ha specifika mått."
+
+#: karthago/models.py:9 karthago/models.py:27 karthago/models.py:73
+#: karthago/models.py:95 karthago/models.py:102
+msgid "name"
+msgstr "namn"
+
+#: karthago/models.py:10 karthago/models.py:61
+msgid "unit"
+msgstr "enhet"
+
+#: karthago/models.py:13 karthago/models.py:40 karthago/models.py:58
+msgid "material"
+msgstr "material"
+
+#: karthago/models.py:14
+msgid "materials"
+msgstr "material"
+
+#: karthago/models.py:30
+msgid "material role"
+msgstr "materialroll"
+
+#: karthago/models.py:31
+msgid "material roles"
+msgstr "materialroller"
+
+#: karthago/models.py:39 karthago/models.py:57 karthago/models.py:122
+msgid "entry"
+msgstr "bidrag"
+
+#: karthago/models.py:42 karthago/models.py:60
+msgid "amount"
+msgstr "mängd"
+
+#: karthago/models.py:43 karthago/models.py:62
+msgid "role"
+msgstr "användningsområde"
+
+#: karthago/models.py:48
+msgid "entry material"
+msgstr "bidragsmaterial"
+
+#: karthago/models.py:49
+msgid "entry materials"
+msgstr "bidragsmaterial"
+
+#: karthago/models.py:65
+msgid "entry custom material"
+msgstr "anpassat bidragsmaterial"
+
+#: karthago/models.py:66
+msgid "entry custom materials"
+msgstr "anpassade bidragsmaterial"
+
+#: karthago/models.py:74 karthago/models.py:113
+msgid "description"
+msgstr "beskrivning"
+
+#: karthago/models.py:75
+msgid "max members"
+msgstr "maximalt antal deltagare"
+
+#: karthago/models.py:80 karthago/models.py:91
+msgid "entry type"
+msgstr "bidragstyp"
+
+#: karthago/models.py:81
+msgid "entry types"
+msgstr "bidragstyper"
+
+#: karthago/models.py:89
+msgid "constellation"
+msgstr "förening/sällskap"
+
+#: karthago/models.py:89
+msgid "E.g. <em>MPiRE</em>, <em>Grabbarna Grus</em>"
+msgstr ""
+"Till exempel <em>3Cant</em>, <em>Navitas</em> eller <em>Grabbarna Grus</em>"
+
+#: karthago/models.py:90
+msgid "entry name"
+msgstr "bidragsnamn"
+
+#: karthago/models.py:92
+msgid "number of members"
+msgstr "antal deltagare"
+
+#: karthago/models.py:96 karthago/models.py:103
+msgid "address"
+msgstr "adress"
+
+#: karthago/models.py:97 karthago/models.py:104
+msgid "postcode"
+msgstr "postnummer"
+
+#: karthago/models.py:98 karthago/models.py:105
+msgid "city"
+msgstr "stad"
+
+#: karthago/models.py:99 karthago/models.py:106
+msgid "phone"
+msgstr "telefonnummer"
+
+#: karthago/models.py:100 karthago/models.py:107
+msgid "email"
+msgstr "e-postadress"
+
+#: karthago/models.py:109
+msgid "width"
+msgstr "bredd"
+
+#: karthago/models.py:109
+msgid "Width in meters, in direction of movement."
+msgstr "Bredd i meter, i färdriktningen."
+
+#: karthago/models.py:110
+msgid "length"
+msgstr "längd"
+
+#: karthago/models.py:110
+msgid "Length in meters, in direction of movement."
+msgstr "Längd i meter, i färdriktningen."
+
+#: karthago/models.py:111
+msgid "height"
+msgstr "höjd"
+
+#: karthago/models.py:111
+msgid "Height in meters."
+msgstr "Höjd i meter."
+
+#: karthago/models.py:113
+msgid "Describe your idea! Maximum 500 words."
+msgstr "Hur ska bidraget se ut? Beskriv er idé! Högst 500 ord."
+
+#: karthago/models.py:114
+msgid "spex description"
+msgstr "spexbeskrivning"
+
+#: karthago/models.py:114
+msgid ""
+"Describe what will happen in, on and around your carriage! Music, theatre or "
+"anything else amusing? Maximum 500 words."
+msgstr ""
+"Vad kommer att hända på/runt ert bidrag? Till exempel dans, sång, teater "
+"eller annat kul! Högst 500 ord."
+
+#: karthago/models.py:115
+msgid "other information"
+msgstr "annan information"
+
+#: karthago/models.py:115
+msgid "Want us to know something else?"
+msgstr "Något mer vi borde veta?"
+
+#: karthago/models.py:123
+msgid "entries"
+msgstr "bidrag"
