@@ -72,7 +72,7 @@ class Person(models.Model):
             else:
                 self.user.username = self.liu_id
             if not self.user.password:
-                self.user.password = self.generate_user_password()
+                self.user.set_password(self.generate_user_password())
             self.user.save()
 
             # Everybody must be able to show their own profiles. This way we don't have to write special checks in
