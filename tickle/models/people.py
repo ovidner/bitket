@@ -55,7 +55,7 @@ class Person(models.Model):
         )
 
         permissions = (
-            ('view_profile', _('View profile')),
+            ('view_person', _('Can view person')),
         )
 
         verbose_name = _('person')
@@ -66,10 +66,6 @@ class Person(models.Model):
 
     def save(self, *args, **kwargs):
         if hasattr(self, 'user'):
-            # Everybody must be able to show their own profiles. This way we don't have to write special checks in
-            # the views.
-            assign_perm('view_profile', self.user, self)
-            
             # Set username to email, only if a LiU id doesn't exist.
             if not self.liu_id:
                 self.user.username = self.email
@@ -78,6 +74,11 @@ class Person(models.Model):
             if not self.user.password:
                 self.user.password = self.generate_user_password()
             self.user.save()
+
+            # Everybody must be able to show their own profiles. This way we don't have to write special checks in
+            # the views.
+            assign_perm('view_person', self.user, self)
+
         super(Person, self).save(*args, **kwargs)
 
     def clean_pid_code(self):

@@ -3,12 +3,74 @@
 
 {% block title %}{{ block.super }} – {{ person.full_name }}{% endblock %}
 
-{% block content %}
-    <div class="page-header">
-        <h1>{{ person.full_name }}</h1>
-    </div>
-    <div class="row">
+{% block header %}{{ person.full_name }}{% endblock %}
 
+{% block content %}
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>Personuppgifter</h2>
+            <dl>
+                <dt>Namn</dt>
+                <dd>{{ person.full_name }}</dd>
+
+                <dt>Personnummer</dt>
+                <dd>{{ person.pid|default_if_none:'&mdash;' }}</dd>
+
+                <dt>LiU-id</dt>
+                <dd>{{ person.liu_id|default:'&mdash;' }}</dd>
+
+                <dt>E-postadress</dt>
+                <dd>{{ person.email }}</dd>
+
+                <dt>Telefonnummer</dt>
+                <dd>{{ person.phone|default:'&mdash;' }}</dd>
+
+                <dt>Specialkost</dt>
+                <dd>
+                    <ul class="list-unstyled">
+                        {% for i in person.special_nutrition.all %}
+                            <li>{{ i }}</li>
+                        {% endfor %}
+                    </ul>
+                </dd>
+            </dl>
+        </div>
+        <div class="col-lg-4">
+            <h2>Biljetter</h2>
+            <p>
+                Kom ihåg att <strong>dina biljetter är personliga</strong>, dvs. du och endast du kan hämta ut dem
+                tillsammans med LiU-kort eller fotolegitimation.
+            </p>
+            {% for ticket in person.holdings.tickets %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ ticket.product.ticket_type }}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <dl>
+                            <dt>Medger entré till</dt>
+                            <dd>
+                                <ul class="list-unstyled">
+                                    {% for event in ticket.product.ticket_type.events.all %}
+                                        <li>{{ event }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-lg-4">
+            {% if membership_approvable_orchestras %}
+            <h2>Verifiering av orkestermedlemmar</h2>
+            <ul>
+                {% for orchestra in membership_approvable_orchestras %}
+                    <li><a href="{% url 'orchard:approve_orchestra_members' pk=orchestra.pk %}">{{ orchestra }}</a></li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
     </div>
 
 {% endblock content %}
