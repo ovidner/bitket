@@ -2,10 +2,10 @@
 from django.db import models
 import datetime
 
+
 class Invoice(models.Model):
     invoice_number = models.IntegerField(unique=True, verbose_name='Fakturanummer')
-    customerFirstname = models.CharField(max_length=255, verbose_name='Förnamn')
-    customerLastname = models.CharField(max_length=255, verbose_name='Efternamn')
+    customerName = models.CharField(max_length=255, verbose_name='Namn', default='')
     customerOrganization = models.CharField(max_length=255, default='', verbose_name='Förening')
     customerPNR = models.CharField(max_length=10, verbose_name='Personnummer')
     customerEmail = models.EmailField(max_length=254, verbose_name='mail')
@@ -14,7 +14,7 @@ class Invoice(models.Model):
 
 
 class InvoiceRow(models.Model):
-    invoice = models.ForeignKey('Invoice')
+    invoice = models.ForeignKey(Invoice)
     itemName = models.CharField(max_length=255, verbose_name='Pryl')
     nrItems = models.IntegerField(default=1, verbose_name='Antal')
     itemCost = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Pris')

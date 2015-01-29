@@ -12,6 +12,9 @@ class Orchestra(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
 
     members = models.ManyToManyField('tickle.Person', related_name='orchestras', through='OrchestraMembership', verbose_name=_('members'))
+    contactName = models.CharField(max_length=256, verbose_name=_('contact_name'), null=True)
+    contactEmail = models.CharField(max_length=256, verbose_name=_('contact_email'), null=True)
+    orgNr = models.CharField(max_length=256, verbose_name=_('org_nr'), default='')
 
     class Meta:
         ordering = ['name']
