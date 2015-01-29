@@ -7,9 +7,14 @@ from django.contrib.auth.models import Permission
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, TickleUser
 
 
+class PurchaseInline(admin.StackedInline):
+    model = Purchase
+    filter_horizontal = ('holdings',)
+
+
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    pass
+    inlines = (PurchaseInline,)
 
 
 @admin.register(Event)
