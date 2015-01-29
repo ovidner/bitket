@@ -54,6 +54,8 @@ class Person(models.Model):
             ('birth_date', 'pid_code'),
         )
 
+        ordering = ('first_name', 'last_name')
+
         permissions = (
             ('view_person', _('Can view person')),
         )
