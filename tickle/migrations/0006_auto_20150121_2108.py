@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterModelOptions(
             name='person',
             options={'verbose_name': 'person', 'verbose_name_plural': 'people',
-                     'permissions': (('view_profile', 'View profile'),)},
+                     'permissions': (('view_person', 'Can view person'),)},
         ),
     ]

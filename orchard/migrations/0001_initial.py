@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'ordering': ['name'],
-                'permissions': (('approve_members', 'Approve members'),),
+                'permissions': (('approve_orchestra_members', 'Approve orchestra members'),),
             },
             bases=(models.Model,),
         ),
