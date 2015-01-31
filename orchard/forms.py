@@ -76,8 +76,8 @@ class OrchestraTicketTypePublicNameModelChoiceField(forms.ModelChoiceField):
 
 class OrchestraMemberRegistrationForm(forms.Form):
     ticket_type = OrchestraTicketTypePublicNameModelChoiceField(queryset=OrchestraTicketType.objects.all(), label=_('Ticket type'))
-    food = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Food'), help_text=_('Meals as described above.'))
-    accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Accommodation'), help_text=_('Place on floor &ndash; bring your own bedroll. Breakfast included.'))
+    food = forms.BooleanField(widget=forms.CheckboxInput, required=False, initial=True, label=_('Food'), help_text=_('Meals as described above.'))
+    accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, initial=True, label=_('Accommodation'), help_text=_('Place on floor &ndash; bring your own bedroll. Breakfast included.'))
     jubilarian_10 = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('10th festival in a row'), help_text=_('Will this be your 10th SOF/STORK in a row?'))
     jubilarian_25 = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('25th festival'), help_text=_('Will this be your 25th SOF/STORK in all?'))
 
