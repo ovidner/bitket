@@ -9,7 +9,7 @@ from tickle.models import Person, Event, Product, Holding, TicketType, Delivery,
 
 class PurchaseInline(admin.StackedInline):
     model = Purchase
-    filter_horizontal = ('holdings',)
+    # filter_horizontal = ('holdings',)
 
 
 @admin.register(Person)

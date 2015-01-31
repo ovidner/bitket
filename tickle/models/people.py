@@ -6,6 +6,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.core.exceptions import ValidationError
 
 from guardian.shortcuts import assign_perm
 
@@ -164,7 +165,7 @@ class TickleUserManager(BaseUserManager):
 
 @python_2_unicode_compatible
 class TickleUser(AbstractBaseUser, PermissionsMixin):
-    person = models.OneToOneField('Person', related_name='user', null=True, blank=True, verbose_name=_('person'))
+    person = models.OneToOneField('Person', related_name='user', verbose_name=_('person'))
 
     username = models.CharField(max_length=256, unique=True, verbose_name=_('LiU-ID or email address'))
 
@@ -182,9 +183,14 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.get_full_name()
 
+    def clean(self):
+        if self.person == 0:
+            raise ValidationError(_('Please specify a valid person.'))
+
+
     @property
     def is_staff(self):
-        "Is the user a member of staff?"
+        """Is the user a member of staff?"""
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
