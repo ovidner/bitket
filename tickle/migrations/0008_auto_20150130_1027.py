@@ -96,7 +96,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='tickleuser',
             name='person',
-            field=models.OneToOneField(related_name='user', default=1, verbose_name='person', to='tickle.Person'),
+            field=models.OneToOneField(related_name='user', default=8, verbose_name='person', to='tickle.Person'),
             preserve_default=False,
         ),
     ]
