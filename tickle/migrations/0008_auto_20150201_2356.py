@@ -12,8 +12,22 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterModelOptions(
+            name='holding',
+            options={'verbose_name': 'holding', 'verbose_name_plural': 'holdings'},
+        ),
+        migrations.AlterModelOptions(
             name='person',
             options={'ordering': ('first_name', 'last_name'), 'verbose_name': 'person', 'verbose_name_plural': 'people', 'permissions': (('view_person', 'Can view person'),)},
+        ),
+        migrations.RemoveField(
+            model_name='purchase',
+            name='holdings',
+        ),
+        migrations.AddField(
+            model_name='holding',
+            name='purchase',
+            field=models.ForeignKey(related_name='holdings', verbose_name='purchase', blank=True, to='tickle.Purchase', null=True),
+            preserve_default=True,
         ),
         migrations.AlterField(
             model_name='category',
@@ -65,12 +79,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='purchase',
-            name='holdings',
-            field=models.ManyToManyField(to='tickle.Holding', null=True, verbose_name='holdings'),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='purchase',
             name='person',
             field=models.ForeignKey(verbose_name='person', to='tickle.Person'),
             preserve_default=True,
@@ -78,7 +86,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='purchase',
             name='purchased',
-            field=models.DateTimeField(verbose_name='holdings'),
+            field=models.DateTimeField(verbose_name='purchased'),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -96,7 +104,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='tickleuser',
             name='person',
-            field=models.OneToOneField(related_name='user', default=8, verbose_name='person', to='tickle.Person'),
-            preserve_default=False,
+            field=models.OneToOneField(related_name='user', verbose_name='person', to='tickle.Person'),
+            preserve_default=True,
         ),
     ]
