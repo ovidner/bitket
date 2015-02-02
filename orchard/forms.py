@@ -84,17 +84,18 @@ class OrchestraMemberRegistrationForm(forms.Form):
     def clean(self):
         data = super(OrchestraMemberRegistrationForm, self).clean()
 
-        if data['food'] and not data['ticket_type'].food_ticket_type:
-            self.add_error('food', ValidationError(_("Can't add food to this ticket type.")))
+        if hasattr(data, 'ticket_type'):
+            if data['food'] and not data['ticket_type'].food_ticket_type:
+                self.add_error('food', ValidationError(_("Can't add food to this ticket type.")))
 
-        if data['accommodation'] and not data['ticket_type'].accommodation_ticket_type:
-            self.add_error('accommodation', ValidationError(_("Can't add accommodation to this ticket type.")))
+            if data['accommodation'] and not data['ticket_type'].accommodation_ticket_type:
+                self.add_error('accommodation', ValidationError(_("Can't add accommodation to this ticket type.")))
 
-        if data['jubilarian_10'] and not data['ticket_type'].jubilarian_10_ticket_type:
-            self.add_error('jubilarian_10', ValidationError(_("Can't choose this with this ticket type.")))
+            if data['jubilarian_10'] and not data['ticket_type'].jubilarian_10_ticket_type:
+                self.add_error('jubilarian_10', ValidationError(_("Can't choose this with this ticket type.")))
 
-        if data['jubilarian_25'] and not data['ticket_type'].jubilarian_25_ticket_type:
-            self.add_error('jubilarian_25', ValidationError(_("Can't choose this with this ticket type.")))
+            if data['jubilarian_25'] and not data['ticket_type'].jubilarian_25_ticket_type:
+                self.add_error('jubilarian_25', ValidationError(_("Can't choose this with this ticket type.")))
 
         return data
 
