@@ -110,7 +110,7 @@ class Person(models.Model):
         template_data = {
             'person': self,
             'password': password,
-            'url': settings.URL
+            'host': settings.PRIMARY_HOST
         }
         subject = 'Användarkonto hos SOF'
         html_body = render_to_string('tickle/email/tickle_user_account_created.html', template_data)

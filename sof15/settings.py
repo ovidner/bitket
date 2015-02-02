@@ -34,6 +34,8 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = d12f['ALLOWED_HOSTS']
 
+# URL to the system.
+PRIMARY_HOST = 'tickle.sof15.se'
 
 # Application definition
 
@@ -148,8 +150,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'olle.vidner@sof15.se'
 EMAIL_HOST_PASSWORD = 'tDpIHwRrlJW5Tg32GZbhmA'
 
-# URL to the system.
-URL = 'tickle.sof15.se/'
+
 
 ADMINS = (
     ('Olle Vidner', 'olle.vidner@sof15.se'),
