@@ -183,11 +183,6 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.get_full_name()
 
-    def clean(self):
-        if self.person == 0:
-            raise ValidationError(_('Please specify a valid person.'))
-
-
     @property
     def is_staff(self):
         """Is the user a member of staff?"""
