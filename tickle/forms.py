@@ -201,9 +201,13 @@ class LoginFormHelper(FormHelper):
         super(LoginFormHelper, self).__init__(*args, **kwargs)
 
         self.form_tag = False
-        self.layout = Layout(
-            'accept'
-        )
+
+
+class ChangePasswordFormHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordFormHelper, self).__init__(*args, **kwargs)
+
+        self.form_tag = False
 
 
 class DisplayWidget(forms.Widget):

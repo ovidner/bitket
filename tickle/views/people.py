@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, DetailView
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login
 from django.shortcuts import resolve_url
+from django.contrib import messages
 
 from guardian.mixins import PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
@@ -56,3 +58,31 @@ class LoginView(FormView):
         self._user = form.get_user()
 
         return super(LoginView, self).form_valid(form)
+
+
+class ChangePasswordView(FormView):
+    form_class = PasswordChangeForm
+    template_name = 'people/change_password.html'
+
+    def get_form(self, form_class):
+        """
+        Returns an instance of the form to be used in this view.
+        """
+        return form_class(user=self.request.user, **self.get_form_kwargs())
+
+    def get_success_url(self):
+        return resolve_url('profile', pk=self.request.user.person.pk)
+
+    def get_context_data(self, **kwargs):
+        context = super(ChangePasswordView, self).get_context_data(**kwargs)
+
+        context['form_helper'] = LoginFormHelper()
+
+        return context
+
+    def form_valid(self, form):
+        form.save()
+
+        messages.success(self.request, _('Your password has been changed. Please log in again.'))
+
+        return super(ChangePasswordView, self).form_valid(form)
