@@ -101,10 +101,4 @@ class Migration(migrations.Migration):
             field=models.OneToOneField(parent_link=True, related_name='ticket_type', primary_key=True, serialize=False, to='tickle.Product', verbose_name='product'),
             preserve_default=True,
         ),
-        migrations.AlterField(
-            model_name='tickleuser',
-            name='person',
-            field=models.OneToOneField(related_name='user', verbose_name='person', to='tickle.Person'),
-            preserve_default=True,
-        ),
     ]

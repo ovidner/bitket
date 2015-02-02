@@ -165,7 +165,7 @@ class TickleUserManager(BaseUserManager):
 
 @python_2_unicode_compatible
 class TickleUser(AbstractBaseUser, PermissionsMixin):
-    person = models.OneToOneField('Person', related_name='user', verbose_name=_('person'))
+    person = models.OneToOneField('Person', related_name='user', null=True, blank=True, verbose_name=_('person'))
 
     username = models.CharField(max_length=256, unique=True, verbose_name=_('LiU-ID or email address'))
 
