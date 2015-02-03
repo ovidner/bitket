@@ -15,6 +15,7 @@ d12f = django12factor.factorise(
         'KOBRA_USER',
         'KOBRA_API_KEY',
         'SENTRY_DSN',
+        'MANDRILL_API_KEY',
     ]
 )
 
@@ -49,11 +50,12 @@ INSTALLED_APPS = (
 
     'django_extensions',
     'debug_toolbar',
-
-    'liu.django',
+    'djrill',
     'guardian',
     'raven.contrib.django.raven_compat',
     'crispy_forms',
+
+    'liu.django',
 
     'tickle',
     'orchard',
@@ -140,16 +142,11 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 LIU_KOBRA_USER = d12f['KOBRA_USER']
 LIU_KOBRA_API_KEY = d12f['KOBRA_API_KEY']
 
-# Breaking the 12 factor rules here. Don't have the time.
-# todo: 12factorise
 SERVER_EMAIL = 'tickle@sof15.se'
 SUPPORT_EMAIL = 'it@sof15.se'
-EMAIL_HOST = 'smtp.mandrillapp.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'olle.vidner@sof15.se'
-EMAIL_HOST_PASSWORD = 'tDpIHwRrlJW5Tg32GZbhmA'
 
+EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+MANDRILL_API_KEY = d12f['MANDRILL_API_KEY']
 
 
 ADMINS = (
