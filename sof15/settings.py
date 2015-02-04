@@ -143,7 +143,7 @@ LIU_KOBRA_USER = d12f['KOBRA_USER']
 LIU_KOBRA_API_KEY = d12f['KOBRA_API_KEY']
 
 SERVER_EMAIL = 'tickle@sof15.se'
-SUPPORT_EMAIL = 'it@sof15.se'
+DEFAULT_FROM_EMAIL = 'Tickle SOF15 <tickle@sof15.se>'
 
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 MANDRILL_API_KEY = d12f['MANDRILL_API_KEY']
