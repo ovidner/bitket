@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-02 01:44+0000\n"
+"POT-Creation-Date: 2015-02-04 01:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,79 +89,79 @@ msgstr "Boende kan inte väljas till denna biljett."
 msgid "Can't choose this with this ticket type."
 msgstr "Kan inte välja detta till denna biljett."
 
-#: orchard/models.py:11
+#: orchard/models.py:13
 msgid "name"
 msgstr "namn"
 
-#: orchard/models.py:13
+#: orchard/models.py:15
 msgid "members"
 msgstr "medlemmar"
 
-#: orchard/models.py:19
+#: orchard/models.py:21
 msgid "Approve orchestra members"
 msgstr "Godkänna orkestermedlemmar"
 
-#: orchard/models.py:22 orchard/models.py:40
+#: orchard/models.py:24 orchard/models.py:42
 msgid "orchestra"
 msgstr "orkester"
 
-#: orchard/models.py:23
+#: orchard/models.py:25
 msgid "orchestras"
 msgstr "orkestrar"
 
-#: orchard/models.py:41
+#: orchard/models.py:43
 msgid "person"
 msgstr "person"
 
-#: orchard/models.py:43
+#: orchard/models.py:45
 msgid "primary orchestra"
 msgstr "primär orkester"
 
-#: orchard/models.py:52
+#: orchard/models.py:54
 msgid "orchestra membership"
 msgstr "orkestermedlemskap"
 
-#: orchard/models.py:53
+#: orchard/models.py:55
 msgid "orchestra memberships"
 msgstr "orkestermedlemskap"
 
-#: orchard/models.py:65
+#: orchard/models.py:67
 msgid "purchase"
 msgstr "köp"
 
-#: orchard/models.py:68
+#: orchard/models.py:70
 msgid "orchestra member registration"
 msgstr "orkestermedlemsregistrering"
 
-#: orchard/models.py:69
+#: orchard/models.py:71
 msgid "orchestra member registrations"
 msgstr "orkestermedlemsregistreringar"
 
-#: orchard/models.py:77
+#: orchard/models.py:79
 msgid "ticket type"
 msgstr "biljettyp"
 
-#: orchard/models.py:80
+#: orchard/models.py:82
 msgid "food ticket type"
 msgstr "biljettyp för mat"
 
-#: orchard/models.py:83
+#: orchard/models.py:85
 msgid "accommodation ticket type"
 msgstr "biljettyp för boende"
 
-#: orchard/models.py:85
+#: orchard/models.py:87
 msgid "10th festival ticket type"
 msgstr "biljettyp för 10-årsjubilarer"
 
-#: orchard/models.py:86
+#: orchard/models.py:88
 msgid "25th festival ticket type"
 msgstr "biljettyp för 25-årsjubilarer"
 
-#: orchard/models.py:89
+#: orchard/models.py:91
 msgid "orchestra ticket type"
 msgstr "biljettpaket för orkestrar"
 
-#: orchard/models.py:90
+#: orchard/models.py:92
 msgid "orchestra ticket types"
 msgstr "biljettpaket för orkestrar"
 
@@ -169,15 +169,15 @@ msgstr "biljettpaket för orkestrar"
 msgid "Orchestra member registration"
 msgstr "Orkestermedlemsregistrering"
 
-#: orchard/templates/orchard/register_member.html:24
+#: orchard/templates/orchard/register_member.html:16
 msgid "Personal information"
 msgstr "Personuppgifter"
 
-#: orchard/templates/orchard/register_member.html:27
+#: orchard/templates/orchard/register_member.html:19
 msgid "Orchestra membership"
 msgstr "Orkestermedlemskap"
 
-#: orchard/templates/orchard/register_member.html:30
+#: orchard/templates/orchard/register_member.html:22
 msgid ""
 "\n"
 "                        Specify the orchestra(s) with which you will attend "
@@ -193,15 +193,15 @@ msgstr ""
 "ska behöva välja vilka du ska spela med, men vi kan tyvärr inte garantera "
 "något."
 
-#: orchard/templates/orchard/register_member.html:38
+#: orchard/templates/orchard/register_member.html:30
 msgid "All the orchestras you specify will have to verify your membership."
 msgstr "Alla orkestrar du anger kommer behöva bekräfta ditt medlemskap."
 
-#: orchard/templates/orchard/register_member.html:44
+#: orchard/templates/orchard/register_member.html:36
 msgid "Payment"
 msgstr "Betalning"
 
-#: orchard/templates/orchard/register_member.html:47
+#: orchard/templates/orchard/register_member.html:39
 msgid ""
 "\n"
 "                        Your primary orchestra will receive an invoice for "
@@ -217,11 +217,11 @@ msgstr ""
 "ser vi gärna att du i första hand vänder dig till din orkester med frågor om "
 "betalning."
 
-#: orchard/templates/orchard/register_member.html:56
+#: orchard/templates/orchard/register_member.html:48
 msgid "Ticket, food and accommodation"
 msgstr "Biljett, mat och boende"
 
-#: orchard/templates/orchard/register_member.html:57
+#: orchard/templates/orchard/register_member.html:49
 msgid ""
 "\n"
 "                    <p>\n"
@@ -280,11 +280,11 @@ msgstr ""
 "dd>                    </dl>\n"
 "                "
 
-#: orchard/templates/orchard/register_member.html:85
+#: orchard/templates/orchard/register_member.html:77
 msgid "Gadgets"
 msgstr "Prylar"
 
-#: orchard/templates/orchard/register_member.html:107
+#: orchard/templates/orchard/register_member.html:99
 msgid "Submit registration"
 msgstr "Skicka anmälan"
 
