@@ -12,9 +12,6 @@ class PurchaseInline(admin.StackedInline):
     # filter_horizontal = ('holdings',)
 
 
-@admin.register(Person)
-class PersonAdmin(admin.ModelAdmin):
-    inlines = (PurchaseInline,)
 
 
 @admin.register(Event)
@@ -75,11 +72,30 @@ class TickleUserAdmin(UserAdmin):
 
     list_display = ('person', 'is_active', 'is_admin')
     list_filter = ('is_admin', 'is_superuser', 'is_active', 'groups')
+    raw_id_fields = ('person',)
 
     def save_model(self, request, obj, form, change):
         obj.person.save()
         super(TickleUserAdmin, self).save_model(request, obj, form, change)
 
+
+class TickleUserInline(admin.StackedInline):
+    model = TickleUser
+    extra = 0
+    max_num = 1
+
+    exclude = ('username', 'password',)
+
+
+@admin.register(Person)
+class PersonAdmin(admin.ModelAdmin):
+    inlines = (TickleUserInline, PurchaseInline,)
+
+    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id')
+    list_display_links = ('first_name', 'last_name', 'pid')
+    list_filter = ('special_nutrition',)
+
+    search_fields = ('first_name', 'last_name', 'email', 'liu_id__liu_id')
 
 @admin.register(Permission)
 class PermissionAdmin(admin.ModelAdmin):
