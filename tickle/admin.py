@@ -74,9 +74,6 @@ class TickleUserAdmin(UserAdmin):
     list_filter = ('is_admin', 'is_superuser', 'is_active', 'groups')
     raw_id_fields = ('person',)
 
-    def save_model(self, request, obj, form, change):
-        obj.person.save()
-        super(TickleUserAdmin, self).save_model(request, obj, form, change)
 
 class AlwaysChangedModelForm(forms.ModelForm):
     def has_changed(self):

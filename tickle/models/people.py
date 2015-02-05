@@ -12,6 +12,8 @@ from django.core.exceptions import ValidationError
 
 from guardian.shortcuts import assign_perm
 
+from tickle.utils.mail import TemplatedEmail
+
 
 @python_2_unicode_compatible
 class Person(models.Model):
@@ -76,8 +78,7 @@ class Person(models.Model):
                 self.user.username = self.email
             else:
                 self.user.username = self.liu_id
-            if not self.user.password:
-                self.user.set_password(self.generate_user_password())
+
             self.user.save()
 
             # Everybody must be able to show their own profiles. This way we don't have to write special checks in
@@ -106,22 +107,9 @@ class Person(models.Model):
     def full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name)
 
-    def generate_user_password(self):
-        password = TickleUser.objects.make_random_password()
-
-        template_data = {
-            'person': self,
-            'password': password,
-            'host': settings.PRIMARY_HOST
-        }
-        subject = 'Användarkonto hos SOF'
-        html_body = render_to_string('tickle/email/tickle_user_account_created.html', template_data)
-
-        msg = EmailMultiAlternatives(subject=subject, from_email=settings.SUPPORT_EMAIL, to=[self.email])
-        msg.attach_alternative(html_body, "text/html")
-        msg.send()
-
-        return password
+    @property
+    def pretty_email(self):
+        return '{0} <{1}>'.format(self.full_name, self.email)
 
 
 @python_2_unicode_compatible
@@ -202,3 +190,21 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
             return self.person.full_name
         else:
             return self.username
+
+    def generate_and_send_password(self):
+        password = TickleUser.objects.make_random_password()
+
+        self.set_password(password)
+
+        msg = TemplatedEmail(
+            subject='Användarkonto hos SOF',
+            to=[self.person.pretty_email],
+            body_template_html='tickle/email/tickle_user_account_created.html',
+            context={
+                'person': self.person,
+                'password': password,
+                'host': settings.PRIMARY_HOST,
+            })
+        msg.send()
+
+        return password
