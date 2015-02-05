@@ -78,9 +78,14 @@ class TickleUserAdmin(UserAdmin):
         obj.person.save()
         super(TickleUserAdmin, self).save_model(request, obj, form, change)
 
+class AlwaysChangedModelForm(forms.ModelForm):
+    def has_changed(self):
+        return True
+
 
 class TickleUserInline(admin.StackedInline):
     model = TickleUser
+    form = AlwaysChangedModelForm  # This way we can just press Add, not change anything and still get an account created
     extra = 0
     max_num = 1
 
