@@ -102,6 +102,10 @@ SECURE_FRAME_DENY = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 
+# WARNING: This setting assumes a correctly set up proxy.
+# See https://docs.djangoproject.com/en/1.7/ref/settings/#secure-proxy-ssl-header
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
