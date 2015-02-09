@@ -21,6 +21,7 @@ liu==1.1.0
 pkginfo==1.2.1
 psycopg2==2.5.4
 python-ldap==2.4.19
+python-memcached==1.53
 raven==5.1.1
 requests==2.5.1
 six==1.9.0
