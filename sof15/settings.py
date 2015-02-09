@@ -65,6 +65,8 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
+
     'djangosecure.middleware.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,8 +75,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware'
+    'django.middleware.locale.LocaleMiddleware',
+
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
+
+# Database backed cache backend.
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 ROOT_URLCONF = 'sof15.urls'
 
