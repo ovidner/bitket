@@ -25,4 +25,4 @@ class ShiftRegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(Worker)
 class WorkerAdmin(admin.ModelAdmin):
-    inlines = (ShiftRegistrationInline,)
+    pass
