@@ -118,6 +118,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = d12f['DATABASES']
+DATABASES['default']['CONN_MAX_AGE'] = 60
+
 CACHES = d12f['CACHES']
 
 # Internationalization
