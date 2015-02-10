@@ -29,11 +29,3 @@ def generate_and_send_password_user(sender, instance, **kwargs):
 def generate_and_send_password_person(sender, instance, **kwargs):
     if hasattr(instance, 'user') and not instance.user.password:
         instance.user.generate_and_send_password()
-
-
-@receiver(post_save)
-def assign_view_person_perm(sender, instance, **kwargs):
-    if isinstance(instance, TickleUser):
-        assign_perm('view_person', instance, instance.person)
-    if isinstance(instance, Person) and hasattr(instance, 'user'):
-        assign_perm('view_person', instance.user, instance)

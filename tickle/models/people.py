@@ -6,11 +6,6 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.core.exceptions import ValidationError
-
-from guardian.shortcuts import assign_perm
 
 from tickle.utils.mail import TemplatedEmail
 
@@ -80,10 +75,6 @@ class Person(models.Model):
                 self.user.username = self.liu_id
 
             self.user.save()
-
-            # Everybody must be able to show their own profiles. This way we don't have to write special checks in
-            # the views.
-            assign_perm('view_person', self.user, self)
 
         super(Person, self).save(*args, **kwargs)
 

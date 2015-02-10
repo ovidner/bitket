@@ -6,14 +6,14 @@ from django.contrib.auth import login
 from django.shortcuts import resolve_url
 from django.contrib import messages
 
-from guardian.mixins import PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
 
 from tickle.forms import LoginFormHelper
 from tickle.models.people import Person
+from tickle.views.mixins import MeOrPermissionRequiredMixin
 
 
-class ProfileView(PermissionRequiredMixin, DetailView):
+class ProfileView(MeOrPermissionRequiredMixin, DetailView):
     model = Person
     template_name = 'people/profile.html'
     context_object_name = 'person'
@@ -21,6 +21,7 @@ class ProfileView(PermissionRequiredMixin, DetailView):
     # Guardian settings
     permission_required = 'tickle.view_person'
     accept_global_perms = True
+    user_attr = 'user'
 
     def get_context_data(self, **kwargs):
         context = super(ProfileView, self).get_context_data(**kwargs)
@@ -39,10 +40,7 @@ class LoginView(FormView):
     _user = None
 
     def get_success_url(self):
-        if hasattr(self.request.GET, 'next'):
-            return self.request.GET['next']
-        return resolve_url('profile', pk=self._user.person.pk)
-
+        return self.request.GET.get('next', resolve_url('profile', pk=self._user.person.pk))
 
     def get_context_data(self, **kwargs):
         context = super(LoginView, self).get_context_data(**kwargs)
