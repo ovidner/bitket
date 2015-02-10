@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
-
 from django.shortcuts import resolve_url
 from django.db import transaction
 from django.forms.models import inlineformset_factory
 from django.views.generic import CreateView, UpdateView
 from django.http.response import HttpResponseRedirect
 from django.utils.timezone import now
-from django.core.mail import EmailMultiAlternatives
-from django.template import Context
-from django.template.loader import render_to_string
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
@@ -21,6 +17,7 @@ from orchard.models import Orchestra, OrchestraMembership, OrchestraMemberRegist
 from tickle.forms import PersonForm, AcceptForm, AcceptFormHelper, PersonFormHelper
 from tickle.models.people import Person
 from tickle.models.products import Holding, Purchase
+from tickle.utils.mail import TemplatedEmail
 
 
 class ApproveOrchestraMemberView(PermissionRequiredMixin, UpdateView):
@@ -120,22 +117,6 @@ class RegisterOrchestraMemberView(CreateView):
 
         return context
 
-    def send_confirmation_email(self, to, person, purchase):
-        template_data = {
-            'person': person,
-            'purchase': purchase,
-        }
-
-        plaintext_context = Context(autoescape=False)  # HTML escaping not appropriate in plaintext
-        subject = render_to_string('orchard/email/register_member_success_subject.txt', template_data, plaintext_context)
-        text_body = render_to_string('orchard/email/register_member_success.txt', template_data, plaintext_context)
-        html_body = render_to_string('orchard/email/register_member_success.html', template_data)
-
-        msg = EmailMultiAlternatives(subject=subject, from_email="orkester@sof15.se",
-                                     to=[to], body=text_body)
-        msg.attach_alternative(html_body, "text/html")
-        msg.send()
-
     def form_valid(self, form):
         context = self.get_context_data()
 
@@ -204,7 +185,18 @@ class RegisterOrchestraMemberView(CreateView):
                 # Marks the Purchase object as an orchestra member registration
                 OrchestraMemberRegistration.objects.create(purchase=purchase)
 
-            self.send_confirmation_email(person.email, person, purchase)
+            msg = TemplatedEmail(
+                to=[person.pretty_email],
+                from_email='Orkesteransvarig SOF15 <orkester@sof15.se>',
+                subject_template='orchard/email/register_member_success_subject.txt',
+                body_template_html='orchard/email/register_member_success.html',
+                context={
+                    'person': person,
+                    'purchase': purchase,
+                },
+                tags=['orchard'])
+
+            msg.send()
 
             return HttpResponseRedirect(self.get_success_url())
 
