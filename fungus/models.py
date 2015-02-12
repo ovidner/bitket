@@ -62,4 +62,4 @@ class ShiftRegistration(models.Model):
     person = models.ForeignKey('tickle.Person', related_name='shift_registrations')
 
     def __str__(self):
-        return u'%s: %s' % (self.worker, self.shift)
+        return u'%s: %s' % (self.person, self.shift)
