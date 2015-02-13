@@ -11,6 +11,10 @@ from mptt.models import MPTTModel, TreeForeignKey
 class Category(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
 
+    class Meta:
+        verbose_name = _('category')
+        verbose_name_plural = _('categories')
+
     def __str__(self):
         return self.name
 
@@ -22,6 +26,8 @@ class Event(MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ['name']
+        verbose_name = _('event')
+        verbose_name_plural = _('events')
 
     def __str__(self):
         return self.name
@@ -40,6 +46,10 @@ class Product(models.Model):
                                        verbose_name=_('quantitative'),
                                        help_text=_('Can you purchase more than one (1) of this product?'))
 
+    class Meta:
+        verbose_name = _('product')
+        verbose_name_plural = _('products')
+
     def __str__(self):
         return self.name
 
@@ -52,6 +62,10 @@ class Product(models.Model):
 class TicketType(Product):
     product = models.OneToOneField('Product', related_name='ticket_type', parent_link=True, verbose_name=_('product'))
     events = models.ManyToManyField('Event', verbose_name=_('events'))
+
+    class Meta:
+        verbose_name = _('ticket type')
+        verbose_name_plural = _('ticket types')
 
     def __str__(self):
         return self.product.name
@@ -94,6 +108,10 @@ class Delivery(models.Model):
     holdings = models.ManyToManyField('Holding', verbose_name=_('holdings'))
     delivered = models.DateTimeField(verbose_name=_('delivered'))
 
+    class Meta:
+        verbose_name = _('delivery')
+        verbose_name_plural = _('deliveries')
+
     def __str__(self):
         return u'{0}, {1}'.format(self.holdings, self.delivered)
 
@@ -106,6 +124,10 @@ class Purchase(models.Model):
     purchased = models.DateTimeField(verbose_name=_('purchased'))
 
     valid = models.BooleanField(default=True, verbose_name=_('valid'))
+
+    class Meta:
+        verbose_name = _('purchase')
+        verbose_name_plural = _('purchases')
 
     def __str__(self):
         return u'{0}'.format(self.person)

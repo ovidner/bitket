@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-04 01:31+0000\n"
+"POT-Creation-Date: 2015-02-13 11:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,21 +18,49 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: sof15/settings.py:111
+#: sof15/settings.py:136
 msgid "Swedish"
 msgstr "Svenska"
 
-#: sof15/settings.py:112
-msgid "English"
-msgstr "Engelska"
+#: sof15/templates/base.html:24
+msgid "Return to sof15.se"
+msgstr "Tillbaka till sof15.se"
 
-#: sof15/templates/base.html:30 sof15/templates/people/change_password.html:4
+#: sof15/templates/base.html:32
+msgid "Toggle navigation"
+msgstr "Växla navigation"
+
+#: sof15/templates/base.html:37
+msgid "SOF 2015 Tickets/Registration"
+msgstr "SOF 2015 Biljetter/Anmälan"
+
+#: sof15/templates/base.html:42
+msgid "Orchestra member"
+msgstr "Orkestermedlem"
+
+#: sof15/templates/base.html:43
+msgid "Kårtege applicant"
+msgstr "Kårtegelag"
+
+#: sof15/templates/base.html:47 sof15/templates/people/login.html:4
+#: sof15/templates/people/login.html:6 sof15/templates/people/login.html:13
+msgid "Log in"
+msgstr "Logga in"
+
+#: sof15/templates/base.html:50
+msgid "Logged in as"
+msgstr "Inloggad som"
+
+#: sof15/templates/base.html:53
+msgid "Administration"
+msgstr "Administration"
+
+#: sof15/templates/base.html:55 sof15/templates/people/change_password.html:4
 #: sof15/templates/people/change_password.html:6
 #: sof15/templates/people/change_password.html:13
 msgid "Change password"
 msgstr "Ändra lösenord"
 
-#: sof15/templates/people/login.html:4 sof15/templates/people/login.html:6
-#: sof15/templates/people/login.html:13
-msgid "Log in"
-msgstr "Logga in"
+#: sof15/templates/base.html:57
+msgid "Log out"
+msgstr "Logga ut"
