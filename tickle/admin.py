@@ -39,9 +39,16 @@ class DeliveryAdmin(admin.ModelAdmin):
     pass
 
 
+class HoldingInline(admin.TabularInline):
+    model = Holding
+    raw_id_fields = ('person',)
+    extra = 1
+
+
 @admin.register(Purchase)
 class PurchaseAdmin(admin.ModelAdmin):
-    pass
+    inlines = (HoldingInline,)
+    list_display = ('person', 'purchased')
 
 
 @admin.register(SpecialNutrition)
