@@ -24,10 +24,12 @@ class Event(MPTTModel):
     name = models.CharField(max_length=256, verbose_name=_('name'))
     parent = TreeForeignKey('self', null=True, blank=True)
 
-    class MPTTMeta:
-        order_insertion_by = ['name']
+    class Meta:
         verbose_name = _('event')
         verbose_name_plural = _('events')
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
     def __str__(self):
         return self.name
