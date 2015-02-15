@@ -136,11 +136,13 @@ LANGUAGES = (
 )
 
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR, '_conf', 'locale'),
+    os.path.join(BASE_DIR, 'sof15', 'locale'),
 
     os.path.join(BASE_DIR, 'tickle', 'locale'),
-    os.path.join(BASE_DIR, 'orchard', 'locale'),
+    os.path.join(BASE_DIR, 'fungus', 'locale'),
+    # os.path.join(BASE_DIR, 'invar', 'locale'),
     os.path.join(BASE_DIR, 'karthago', 'locale'),
+    os.path.join(BASE_DIR, 'orchard', 'locale'),
 )
 
 # Static files (CSS, JavaScript, Images)
