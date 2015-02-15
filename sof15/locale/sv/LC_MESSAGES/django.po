@@ -40,7 +40,7 @@ msgstr "Orkestermedlem"
 
 #: sof15/templates/base.html:43
 msgid "Kårtege applicant"
-msgstr "Kårtegelag"
+msgstr "Kårtegedeltagare"
 
 #: sof15/templates/base.html:47 sof15/templates/people/login.html:4
 #: sof15/templates/people/login.html:6 sof15/templates/people/login.html:13
