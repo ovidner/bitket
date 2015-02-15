@@ -62,7 +62,7 @@ INSTALLED_APPS = (
     'orchard',
     'fungus',
     'karthago',
-    'invar',
+    # 'invar',
 )
 
 MIDDLEWARE_CLASSES = (
