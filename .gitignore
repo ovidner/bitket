@@ -163,6 +163,8 @@ $RECYCLE.BIN/
 # KDE directory preferences
 .directory
 
+blasfisk/settings/secret.py
+
 ### Visual Studio ###
 *.suo
 *.sln
@@ -174,6 +176,8 @@ $RECYCLE.BIN/
 ### Celery ###
 celerybeat-schedule
 
+# ----------------- #
+=======
 *.mo
 
 # ----------------- #
