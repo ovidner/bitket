@@ -163,8 +163,6 @@ $RECYCLE.BIN/
 # KDE directory preferences
 .directory
 
-blasfisk/settings/secret.py
-
 ### Visual Studio ###
 *.suo
 *.sln
@@ -176,13 +174,12 @@ blasfisk/settings/secret.py
 ### Celery ###
 celerybeat-schedule
 
-# ----------------- #
-=======
+### i18n ###
 *.mo
 
-# ----------------- #
-
-# Elastic Beanstalk Files
+### Celery ###
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# ----------------- #
