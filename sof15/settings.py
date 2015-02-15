@@ -35,8 +35,8 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = d12f['ALLOWED_HOSTS']
 
-# URL to the system.
-PRIMARY_HOST = 'tickle.sof15.se'
+# Public URL to the system root, without trailing slash.
+PRIMARY_HOST = 'https://tickle.sof15.se'
 
 # Application definition
 
