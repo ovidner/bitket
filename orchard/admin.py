@@ -36,11 +36,7 @@ def invoice_orchestra(orch_queryset):
                 quantity = thing.quantity
                 total_stuff.append((product, quantity, Person(member.person)))
                 #print(total_stuff)
-        generate_invoice(orch.contactName, orch.contactEmail, orch.name, orch.orgNr, total_stuff)
-
-
-
-
+        generate_invoice(orch.contact.full_name, orch.contact.email, orch.name, orch.organisation_number, total_stuff)
 
 
 class OrchestraMembershipInline(admin.TabularInline):
