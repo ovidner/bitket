@@ -1,0 +1,20 @@
+{% extends "admin/base_site.html" %}
+
+
+{% block content %}
+    <h1>{{ content_type }}</h1>
+    <p>{{ list_description }}</p>
+    <ul>
+    {% for elem in queryset %}
+        <li>{{ elem }}</li>
+    {% endfor %}
+    </ul>
+    <br>
+
+    <p>{{ form_description }}</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Byt arbetspass" />
+    </form>
+{% endblock %}

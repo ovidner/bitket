@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
-
 
 from tickle.models.products import Product, TicketType
 
@@ -89,7 +90,6 @@ class OrchestraTicketType(models.Model):
     jubilarian_10_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('10th festival ticket type'))
     jubilarian_25_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('25th festival ticket type'))
 
-
     class Meta:
         verbose_name = _('orchestra ticket type')
         verbose_name_plural = _('orchestra ticket types')
@@ -97,9 +97,11 @@ class OrchestraTicketType(models.Model):
     def __str__(self):
         return self.ticket_type.name
 
+
 class OrchestraProductQuerySet(models.QuerySet):
     def stuff(self):
         return self.exclude(pk__in=TicketType.objects.all())
+
 
 class OrchestraProduct(Product):
     objects = OrchestraProductQuerySet.as_manager()

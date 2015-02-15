@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
 
-from guardian.shortcuts import assign_perm
+from tickle.utils.mail import TemplatedEmail
 
 
 @python_2_unicode_compatible
@@ -54,6 +54,8 @@ class Person(models.Model):
             ('birth_date', 'pid_code'),
         )
 
+        ordering = ('first_name', 'last_name')
+
         permissions = (
             ('view_person', _('Can view person')),
         )
@@ -71,13 +73,8 @@ class Person(models.Model):
                 self.user.username = self.email
             else:
                 self.user.username = self.liu_id
-            if not self.user.password:
-                self.user.password = self.generate_user_password()
-            self.user.save()
 
-            # Everybody must be able to show their own profiles. This way we don't have to write special checks in
-            # the views.
-            assign_perm('view_person', self.user, self)
+            self.user.save()
 
         super(Person, self).save(*args, **kwargs)
 
@@ -101,22 +98,9 @@ class Person(models.Model):
     def full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name)
 
-    def generate_user_password(self):
-        password = TickleUser.objects.make_random_password()
-
-        template_data = {
-            'person': self,
-            'password': password,
-            'url': settings.URL
-        }
-        subject = 'Användarkonto hos SOF'
-        html_body = render_to_string('tickle/email/tickle_user_account_created.html', template_data)
-
-        msg = EmailMultiAlternatives(subject=subject, from_email=settings.SUPPORT_EMAIL, to=[self.email])
-        msg.attach_alternative(html_body, "text/html")
-        msg.send()
-
-        return password
+    @property
+    def pretty_email(self):
+        return '{0} <{1}>'.format(self.full_name, self.email)
 
 
 @python_2_unicode_compatible
@@ -182,7 +166,7 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_staff(self):
-        "Is the user a member of staff?"
+        """Is the user a member of staff?"""
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
@@ -197,3 +181,21 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
             return self.person.full_name
         else:
             return self.username
+
+    def generate_and_send_password(self):
+        password = TickleUser.objects.make_random_password()
+
+        self.set_password(password)
+
+        msg = TemplatedEmail(
+            subject='Användarkonto hos SOF',
+            to=[self.person.pretty_email],
+            body_template_html='tickle/email/tickle_user_account_created.html',
+            context={
+                'person': self.person,
+                'password': password,
+                'host': settings.PRIMARY_HOST,
+            })
+        msg.send()
+
+        return password

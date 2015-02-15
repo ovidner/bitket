@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.utils.safestring import mark_safe
-from django.utils.html import escape
 from django.forms.models import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -12,7 +11,7 @@ from crispy_forms.bootstrap import InlineCheckboxes, AppendedText
 
 from tickle.models.people import Person
 from tickle.models.products import Purchase, Holding, Product
-from tickle.forms import PersonForm, PublicNameModelChoiceField
+from tickle.forms import PersonForm, PublicNameModelChoiceField, DisplayField
 from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType, OrchestraProduct
 
 
@@ -47,36 +46,7 @@ class OrchestraMembershipForm(forms.ModelForm):
         }
 
 
-class DisplayWidget(forms.Widget):
-    """ Widget for only displaying a value in a form. """
-    def render(self, name, value, attrs=None):
-        # final_attrs = self.build_attrs(attrs, name=name)
-        if hasattr(self, 'initial'):
-            if isinstance(self.initial, bool):
-                value = self.initial and 'Ja' or 'Nej'
-            else:
-                value = u'%s (%s, %s)' % (self.initial.full_name, self.initial.email, self.initial.phone)
-        # return mark_safe("<span %s>%s</span>" % (flatatt(final_attrs), escape(value) or ''))
-        return mark_safe(escape(value) or '')
-
-    def _has_changed(self, initial, data):
-        return False
-
-
-class DisplayField(forms.Field):
-    """ Form field for only displaying a read-only field. """
-    widget = DisplayWidget
-
-    def __init__(self, *args, **kwargs):
-        super(DisplayField, self).__init__(*args, **kwargs)
-        self.widget.initial = self.initial
-
-    def clean(self, value):
-        return self.widget.initial
-
-
 class OrchestraMembershipApprovalForm(forms.ModelForm):
-    # approved = forms.ChoiceField(widget=forms.RadioSelect(), choices=((True, 'Ja',), (False, 'Nej')), )
     approved = forms.BooleanField(label=_('Approved'), required=False)
 
     class Meta:
@@ -86,8 +56,14 @@ class OrchestraMembershipApprovalForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(OrchestraMembershipApprovalForm, self).__init__(*args, **kwargs)
         # Set initial values for display fields to the correct instance of OrchestraMembership.
-        self.fields['person'] = DisplayField(initial=self.instance.person, required=False)
-        self.fields['primary'] = DisplayField(initial=self.instance.primary, required=False, label=_('Primary'))
+        person = self.instance.person
+        primary = self.instance.primary
+        
+        person_display_value = u'%s (%s, %s)' % (person.full_name, person.email, person.phone)
+        primary_display_value = primary and _('Yes') or _('No')
+
+        self.fields['person'] = DisplayField(initial=person, display_value=person_display_value)
+        self.fields['primary'] = DisplayField(initial=primary, label=_('Primary'), display_value=primary_display_value)
 
 
 class OrchestraTicketTypePublicNameModelChoiceField(forms.ModelChoiceField):
@@ -100,25 +76,26 @@ class OrchestraTicketTypePublicNameModelChoiceField(forms.ModelChoiceField):
 
 class OrchestraMemberRegistrationForm(forms.Form):
     ticket_type = OrchestraTicketTypePublicNameModelChoiceField(queryset=OrchestraTicketType.objects.all(), label=_('Ticket type'))
-    food = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Food'), help_text=_('Meals as described above.'))
-    accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('Accommodation'), help_text=_('Place on floor &ndash; bring your own bedroll. Breakfast included.'))
+    food = forms.BooleanField(widget=forms.CheckboxInput, required=False, initial=True, label=_('Food'), help_text=_('Meals as described above.'))
+    accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, initial=True, label=_('Accommodation'), help_text=_('Place on floor &ndash; bring your own bedroll. Breakfast included.'))
     jubilarian_10 = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('10th festival in a row'), help_text=_('Will this be your 10th SOF/STORK in a row?'))
     jubilarian_25 = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('25th festival'), help_text=_('Will this be your 25th SOF/STORK in all?'))
 
     def clean(self):
         data = super(OrchestraMemberRegistrationForm, self).clean()
 
-        if data['food'] and not data['ticket_type'].food_ticket_type:
-            self.add_error('food', ValidationError(_("Can't add food to this ticket type.")))
+        if hasattr(data, 'ticket_type'):
+            if data['food'] and not data['ticket_type'].food_ticket_type:
+                self.add_error('food', ValidationError(_("Can't add food to this ticket type.")))
 
-        if data['accommodation'] and not data['ticket_type'].accommodation_ticket_type:
-            self.add_error('accommodation', ValidationError(_("Can't add accommodation to this ticket type.")))
+            if data['accommodation'] and not data['ticket_type'].accommodation_ticket_type:
+                self.add_error('accommodation', ValidationError(_("Can't add accommodation to this ticket type.")))
 
-        if data['jubilarian_10'] and not data['ticket_type'].jubilarian_10_ticket_type:
-            self.add_error('jubilarian_10', ValidationError(_("Can't choose this with this ticket type.")))
+            if data['jubilarian_10'] and not data['ticket_type'].jubilarian_10_ticket_type:
+                self.add_error('jubilarian_10', ValidationError(_("Can't choose this with this ticket type.")))
 
-        if data['jubilarian_25'] and not data['ticket_type'].jubilarian_25_ticket_type:
-            self.add_error('jubilarian_25', ValidationError(_("Can't choose this with this ticket type.")))
+            if data['jubilarian_25'] and not data['ticket_type'].jubilarian_25_ticket_type:
+                self.add_error('jubilarian_25', ValidationError(_("Can't choose this with this ticket type.")))
 
         return data
 

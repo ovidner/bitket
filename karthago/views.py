@@ -14,7 +14,7 @@ class EntryCreate(CreateView):
     template_name = 'karthago/entries/create.html'
 
     def get_success_url(self):
-        return resolve_url('create_kartege_entry_success')
+        return resolve_url('karthago:create_kartege_entry_success')
 
     def get_context_data(self, **kwargs):
         context = super(EntryCreate, self).get_context_data(**kwargs)

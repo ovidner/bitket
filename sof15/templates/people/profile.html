@@ -35,6 +35,7 @@
                 </dd>
             </dl>
         </div>
+        {% comment %}
         <div class="col-lg-4">
             <h2>Biljetter</h2>
             <p>
@@ -61,14 +62,15 @@
                 </div>
             {% endfor %}
         </div>
+        {% endcomment %}
         <div class="col-lg-4">
             {% if membership_approvable_orchestras %}
-            <h2>Verifiering av orkestermedlemmar</h2>
-            <ul>
-                {% for orchestra in membership_approvable_orchestras %}
-                    <li><a href="{% url 'orchard:approve_orchestra_members' pk=orchestra.pk %}">{{ orchestra }}</a></li>
-                {% endfor %}
-            </ul>
+                <h2>Verifiering av orkestermedlemmar</h2>
+                <ul>
+                    {% for orchestra in membership_approvable_orchestras %}
+                        <li><a href="{% url 'orchard:approve_orchestra_members' pk=orchestra.pk %}">{{ orchestra }}</a></li>
+                    {% endfor %}
+                </ul>
             {% endif %}
         </div>
     </div>

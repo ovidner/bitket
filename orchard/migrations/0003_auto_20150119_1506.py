@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='orchestra',
-            options={'ordering': ['name'], 'verbose_name': 'orchestra', 'verbose_name_plural': 'orchestras', 'permissions': (('approve_members', 'Approve members'),)},
+            options={'ordering': ['name'], 'verbose_name': 'orchestra', 'verbose_name_plural': 'orchestras', 'permissions': (('approve_orchestra_members', 'Approve orchestra members'),)},
         ),
         migrations.AlterModelOptions(
             name='orchestramembership',

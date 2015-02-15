@@ -11,7 +11,7 @@ from tickle.models import Person
 class Worker(models.Model):
     person = models.OneToOneField('tickle.Person', related_name='worker')
 
-    ice_number = models.CharField(max_length=16, verbose_name=_('ICE number'))
+    ice_number = models.CharField(max_length=16, null=True, blank=True, verbose_name=_('ICE number'))
 
     def __str__(self):
         return self.person.full_name
@@ -27,15 +27,29 @@ class ShiftType(MPTTModel):
 
 
 @python_2_unicode_compatible
+class Location(MPTTModel):
+    name = models.CharField(max_length=256)
+    parent = TreeForeignKey('self', related_name='children', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+@python_2_unicode_compatible
 class Shift(models.Model):
     shift_type = TreeForeignKey('ShiftType', related_name='shifts')
 
     start = models.DateTimeField()
     end = models.DateTimeField()
 
-    responsible = models.ForeignKey('tickle.Person', related_name='shift_responsibilities')
-    min_workers = models.PositiveIntegerField(default=1, verbose_name=_('minimum number of workers'), help_text=_('The number of workers needed on this shift for critical operation.'))
-    max_workers = models.PositiveIntegerField(verbose_name=_('maximum number of workers'))
+    location = models.ForeignKey('Location', related_name='shifts', null=True, blank=True)
+
+    responsible = models.ForeignKey('tickle.Person', related_name='shift_responsibilities', null=True, blank=True)
+
+    people_max = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('maximum number of workers'))
+    people_warning = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('warning number of workers'))
+    people_critical = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('critical number of workers'), help_text=_('The number of workers needed on this shift for critical operation.'))
+
     public = models.BooleanField(default=True, verbose_name=_('public'), help_text=_("If unchecked, this shift won't be visible or available for registration by public users."))
 
     def __str__(self):
@@ -44,8 +58,8 @@ class Shift(models.Model):
 
 @python_2_unicode_compatible
 class ShiftRegistration(models.Model):
-    shift = models.ForeignKey('Shift')
-    worker = models.ForeignKey('Worker')
+    shift = models.ForeignKey('Shift', related_name='registrations')
+    person = models.ForeignKey('tickle.Person', related_name='shift_registrations')
 
     def __str__(self):
-        return u'%s: %s' % (self.worker, self.shift)
+        return u'%s: %s' % (self.person, self.shift)

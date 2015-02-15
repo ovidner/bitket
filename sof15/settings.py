@@ -15,6 +15,7 @@ d12f = django12factor.factorise(
         'KOBRA_USER',
         'KOBRA_API_KEY',
         'SENTRY_DSN',
+        'MANDRILL_API_KEY',
     ]
 )
 
@@ -34,6 +35,8 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = d12f['ALLOWED_HOSTS']
 
+# URL to the system.
+PRIMARY_HOST = 'tickle.sof15.se'
 
 # Application definition
 
@@ -46,12 +49,14 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'django_extensions',
+    'djangosecure',
     'debug_toolbar',
-
-    'liu.django',
+    'djrill',
     'guardian',
     'raven.contrib.django.raven_compat',
     'crispy_forms',
+
+    'liu.django',
 
     'tickle',
     'orchard',
@@ -61,6 +66,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'djangosecure.middleware.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -68,8 +74,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware'
+    'django.middleware.locale.LocaleMiddleware',
 )
+
+# Database backed cache backend.
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 ROOT_URLCONF = 'sof15.urls'
 
@@ -88,10 +97,26 @@ ANONYMOUS_USER_ID = -1
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'profile'
 
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+
+SECURE_FRAME_DENY = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+
+# WARNING: This setting assumes a correctly set up proxy.
+# See https://docs.djangoproject.com/en/1.7/ref/settings/#secure-proxy-ssl-header
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = d12f['DATABASES']
+DATABASES['default']['CONN_MAX_AGE'] = 60
+
 CACHES = d12f['CACHES']
 
 # Internationalization
@@ -112,11 +137,13 @@ LANGUAGES = (
 )
 
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR, '_conf', 'locale'),
+    os.path.join(BASE_DIR, 'sof15', 'locale'),
 
     os.path.join(BASE_DIR, 'tickle', 'locale'),
-    os.path.join(BASE_DIR, 'orchard', 'locale'),
+    os.path.join(BASE_DIR, 'fungus', 'locale'),
+    # os.path.join(BASE_DIR, 'invar', 'locale'),
     os.path.join(BASE_DIR, 'karthago', 'locale'),
+    os.path.join(BASE_DIR, 'orchard', 'locale'),
 )
 
 # Static files (CSS, JavaScript, Images)
@@ -139,18 +166,12 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 LIU_KOBRA_USER = d12f['KOBRA_USER']
 LIU_KOBRA_API_KEY = d12f['KOBRA_API_KEY']
 
-# Breaking the 12 factor rules here. Don't have the time.
-# todo: 12factorise
 SERVER_EMAIL = 'tickle@sof15.se'
-SUPPORT_EMAIL = 'it@sof15.se'
-EMAIL_HOST = 'smtp.mandrillapp.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'olle.vidner@sof15.se'
-EMAIL_HOST_PASSWORD = 'tDpIHwRrlJW5Tg32GZbhmA'
+DEFAULT_FROM_EMAIL = 'Tickle SOF15 <tickle@sof15.se>'
 
-# URL to the system.
-URL = 'tickle.sof15.se/'
+EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+MANDRILL_API_KEY = d12f['MANDRILL_API_KEY']
+
 
 ADMINS = (
     ('Olle Vidner', 'olle.vidner@sof15.se'),

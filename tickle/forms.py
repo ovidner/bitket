@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
 from django.core.validators import EMPTY_VALUES
+from django.forms.widgets import flatatt
 
 from localflavor.se.forms import SWEDISH_ID_NUMBER
 from localflavor.se.utils import validate_id_birthday, id_number_checksum
@@ -116,14 +119,19 @@ class PersonForm(forms.ModelForm):
     def clean(self):
         data = super(PersonForm, self).clean()
 
-        birth_date, pid_code = self.cleaned_data['pid']
+        try:
+            # pid consists of None when invalid
+            birth_date, pid_code = data['pid']
 
-        # Checks for PID collision
-        if birth_date and pid_code and self._meta.model.objects.filter(birth_date=birth_date,
-                                                                       pid_code=pid_code).exists():
-            self.add_error('pid', forms.ValidationError(_(
-                'This personal identity number is already registered. Please contact us if you think this is a '
-                'mistake.')))
+            # Checks for PID collision
+            if birth_date and pid_code and self._meta.model.objects.filter(birth_date=birth_date,
+                                                                           pid_code=pid_code).exists():
+                self.add_error('pid', forms.ValidationError(_(
+                    'This personal identity number is already registered. Please contact us if you think this is a '
+                    'mistake.')))
+        except KeyError:
+            # self.add_error('pid', forms.ValidationError(_('Enter a valid Swedish personal identity number.')))
+            pass
 
         return data
 
@@ -193,6 +201,43 @@ class LoginFormHelper(FormHelper):
         super(LoginFormHelper, self).__init__(*args, **kwargs)
 
         self.form_tag = False
-        self.layout = Layout(
-            'accept'
-        )
+
+
+class ChangePasswordFormHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordFormHelper, self).__init__(*args, **kwargs)
+
+        self.form_tag = False
+
+
+class DisplayWidget(forms.Widget):
+    """ Widget for only displaying a value in a form. """
+    def __init__(self, attrs=None):
+        super(DisplayWidget, self).__init__(attrs)
+        self.initial_attrs = self.attrs.copy()
+
+    def render(self, name, value, attrs=None):
+        self.attrs = self.initial_attrs  # Removes crispy forms css, DisplayWidget should not look like form input.
+        final_attrs = self.build_attrs(attrs, name=name)
+        return mark_safe(u'<span %s>%s</span>' % (flatatt(final_attrs), escape(value) or ''))
+
+
+class DisplayField(forms.Field):
+    """ Form field for only displaying a read-only field. """
+    widget = DisplayWidget
+
+    def __init__(self, display_value=None, *args, **kwargs):
+        super(DisplayField, self).__init__(*args, **kwargs)
+        self.required = False
+        self.display_value = display_value
+
+    def prepare_value(self, value):
+        if self.display_value is not None:
+            value = self.display_value
+        return value
+
+    def clean(self, value):
+        return self.initial
+
+    def has_changed(self, initial, data):
+        return False
