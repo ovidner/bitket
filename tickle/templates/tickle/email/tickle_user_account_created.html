@@ -3,10 +3,8 @@
 <body style="font-family: sans-serif;">
     <h2>Hej {{ person.full_name }}!</h2>
     <p>
-        Ett användarkonto hos SOF har skapats åt dig där du kan administrera dina biljetter.<br>
-        Om du är en orkesterrepresentant så kan du även godkänna orkestermedlemar i representerad orkester.
+        Ett användarkonto hos SOF har skapats åt dig där du kan administrera dina biljetter.
     </p>
-
     <p>
         För att använda ditt användarkonto gå in på <a href="{{ host }}{% url 'login' %}">{{ host }}{% url 'login' %}</a>
         och logga in med dina användaruppgifter nedan.
@@ -18,7 +16,7 @@
         Användarnamn: {{ person.user.username }}<br>
         Lösenord: {{ password }}
     </p>
-    <p>Vill du byta lösenord så går det enkelt att göra ifrån din inloggning.</p>
+    <p>Byt gärna ditt lösenord när du loggat in.</p>
 
     <p>
         Svara gärna på det här mailet om du har några frågor kring ditt konto.
