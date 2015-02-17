@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-15 12:17+0000\n"
+"POT-Creation-Date: 2015-02-17 15:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,16 +51,20 @@ msgstr "Logga in"
 msgid "Logged in as"
 msgstr "Inloggad som"
 
-#: sof15/templates/base.html:53
+#: sof15/templates/base.html:52
+msgid "Profile"
+msgstr "Profil"
+
+#: sof15/templates/base.html:54
 msgid "Administration"
 msgstr "Administration"
 
-#: sof15/templates/base.html:55 sof15/templates/people/change_password.html:4
+#: sof15/templates/base.html:56 sof15/templates/people/change_password.html:4
 #: sof15/templates/people/change_password.html:6
 #: sof15/templates/people/change_password.html:13
 msgid "Change password"
 msgstr "Ändra lösenord"
 
-#: sof15/templates/base.html:57
+#: sof15/templates/base.html:58
 msgid "Log out"
 msgstr "Logga ut"

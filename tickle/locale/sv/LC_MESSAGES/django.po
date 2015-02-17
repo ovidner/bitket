@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-13 11:16+0000\n"
+"POT-Creation-Date: 2015-02-17 15:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -114,7 +114,7 @@ msgid "Can view person"
 msgstr "Kan visa person"
 
 #: tickle/models/people.py:63 tickle/models/people.py:149
-#: tickle/models/products.py:81 tickle/models/products.py:121
+#: tickle/models/products.py:83 tickle/models/products.py:123
 msgid "person"
 msgstr "person"
 
@@ -123,7 +123,7 @@ msgid "people"
 msgstr "personer"
 
 #: tickle/models/people.py:108 tickle/models/products.py:12
-#: tickle/models/products.py:24 tickle/models/products.py:38
+#: tickle/models/products.py:24 tickle/models/products.py:40
 msgid "name"
 msgstr "namn"
 
@@ -155,96 +155,96 @@ msgstr "användarkonton"
 msgid "category"
 msgstr "kategori"
 
-#: tickle/models/products.py:16 tickle/models/products.py:42
+#: tickle/models/products.py:16 tickle/models/products.py:44
 msgid "categories"
 msgstr "kategorier"
 
-#: tickle/models/products.py:29
+#: tickle/models/products.py:28
 msgid "event"
 msgstr "evenemang"
 
-#: tickle/models/products.py:30 tickle/models/products.py:64
+#: tickle/models/products.py:29 tickle/models/products.py:66
 msgid "events"
 msgstr "evenemang"
 
-#: tickle/models/products.py:39
+#: tickle/models/products.py:41
 msgid "public name"
 msgstr "publikt namn"
 
-#: tickle/models/products.py:40
+#: tickle/models/products.py:42
 msgid "description"
 msgstr "beskrivning"
 
-#: tickle/models/products.py:44
+#: tickle/models/products.py:46
 msgid "price"
 msgstr "pris"
 
-#: tickle/models/products.py:46
+#: tickle/models/products.py:48
 msgid "quantitative"
 msgstr "kvantitativ"
 
-#: tickle/models/products.py:47
+#: tickle/models/products.py:49
 msgid "Can you purchase more than one (1) of this product?"
 msgstr "Kan man äga fler än en (1) av denna produkt?"
 
-#: tickle/models/products.py:50 tickle/models/products.py:63
-#: tickle/models/products.py:82
+#: tickle/models/products.py:52 tickle/models/products.py:65
+#: tickle/models/products.py:84
 msgid "product"
 msgstr "produkt"
 
-#: tickle/models/products.py:51
+#: tickle/models/products.py:53
 msgid "products"
 msgstr "produkter"
 
-#: tickle/models/products.py:67
+#: tickle/models/products.py:69
 msgid "ticket type"
 msgstr "biljettyp"
 
-#: tickle/models/products.py:68
+#: tickle/models/products.py:70
 msgid "ticket types"
 msgstr "biljettyper"
 
-#: tickle/models/products.py:84 tickle/models/products.py:129
+#: tickle/models/products.py:86 tickle/models/products.py:131
 msgid "purchase"
 msgstr "köp"
 
-#: tickle/models/products.py:86
+#: tickle/models/products.py:88
 msgid "quantity"
 msgstr "kvantitet"
 
-#: tickle/models/products.py:91
+#: tickle/models/products.py:93
 msgid "holding"
 msgstr "ägandeskap"
 
-#: tickle/models/products.py:92 tickle/models/products.py:108
+#: tickle/models/products.py:94 tickle/models/products.py:110
 msgid "holdings"
 msgstr "ägandeskap"
 
-#: tickle/models/products.py:99
+#: tickle/models/products.py:101
 msgid "Quantity must be exactly 1 for un-quantitative products."
 msgstr ""
 
-#: tickle/models/products.py:109
+#: tickle/models/products.py:111
 msgid "delivered"
 msgstr "levererad"
 
-#: tickle/models/products.py:112
+#: tickle/models/products.py:114
 msgid "delivery"
 msgstr "leverans"
 
-#: tickle/models/products.py:113
+#: tickle/models/products.py:115
 msgid "deliveries"
 msgstr "leveranser"
 
-#: tickle/models/products.py:124
+#: tickle/models/products.py:126
 msgid "purchased"
 msgstr "köpt"
 
-#: tickle/models/products.py:126
+#: tickle/models/products.py:128
 msgid "valid"
 msgstr "giltigt"
 
-#: tickle/models/products.py:130
+#: tickle/models/products.py:132
 msgid "purchases"
 msgstr "köp"
 
