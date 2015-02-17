@@ -15,7 +15,7 @@ class MeOrPermissionRequiredMixin(PermissionRequiredMixin):
         return self.get_object()
 
     def check_permissions(self, request):
-        if not request.user.is_anonymous and request.user == self.get_user_obj():
+        if not request.user.is_anonymous() and request.user == self.get_user_obj():
             return None
         else:
             return super(MeOrPermissionRequiredMixin, self).check_permissions(request)
