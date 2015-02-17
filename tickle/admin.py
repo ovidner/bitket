@@ -2,16 +2,17 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django import forms
-
 from django.contrib.auth.models import Permission
+
+from guardian.models import UserObjectPermission, GroupObjectPermission
+from guardian.admin import UserObjectPermissionsForm
+
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, TickleUser
 
 
 class PurchaseInline(admin.StackedInline):
     model = Purchase
     # filter_horizontal = ('holdings',)
-
-
 
 
 @admin.register(Event)
@@ -106,6 +107,29 @@ class PersonAdmin(admin.ModelAdmin):
 
     search_fields = ('first_name', 'last_name', 'email', 'liu_id__liu_id')
 
+
 @admin.register(Permission)
 class PermissionAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(UserObjectPermission)
+class UserObjectPermissionAdmin(admin.ModelAdmin):
+    search_fields = (
+        'user__person__first_name',
+        'user__person__last_name',
+        'user__person__email',
+        'permission__name',
+        'permission__codename'
+    )
+    list_filter = ('content_type',)
+
+
+@admin.register(GroupObjectPermission)
+class GroupObjectPermissionAdmin(admin.ModelAdmin):
+    search_fields = (
+        'group__name',
+        'permission__name',
+        'permission__codename'
+    )
+    list_filter = ('content_type',)
