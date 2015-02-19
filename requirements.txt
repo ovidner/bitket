@@ -22,6 +22,7 @@ pkginfo==1.2.1
 psycopg2==2.5.4
 python-ldap==2.4.19
 python-memcached==1.53
+pytz==2014.10
 raven==5.1.1
 requests==2.5.1
 six==1.9.0

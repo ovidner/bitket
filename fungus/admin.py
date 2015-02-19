@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 
 from fungus.models import ShiftType, Shift, ShiftRegistration, Worker
 
+
 @admin.register(ShiftType)
 class ShiftTypeAdmin(admin.ModelAdmin):
     pass
@@ -16,6 +17,9 @@ class ShiftRegistrationInline(admin.TabularInline):
 @admin.register(Shift)
 class ShiftAdmin(admin.ModelAdmin):
     inlines = (ShiftRegistrationInline,)
+
+    date_hierarchy = 'start'
+    list_filter = ('shift_type', 'responsible', 'public')
 
 
 @admin.register(ShiftRegistration)
