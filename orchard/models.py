@@ -54,7 +54,7 @@ class OrchestraMembership(models.Model):
 
     approved = models.NullBooleanField()
 
-    object = OrchestraMembershipQuerySet.as_manager()
+    objects = OrchestraMembershipQuerySet.as_manager()
 
     class Meta:
         unique_together = (('orchestra', 'person'),)
