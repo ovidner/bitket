@@ -34,12 +34,15 @@ class Orchestra(models.Model):
 
 
 class OrchestraMembershipQuerySet(models.QuerySet):
-    def primary(self):
+    def get_primary(self):
         """
         Convenience method, preferably for returning a person's primary orchestra membership. Will raise an exception if
         multiple memberships are found. This is Django's standard behavior and we want to keep it – but keep it in mind.
         """
         return self.get(primary=True)
+
+    def primary(self):
+        return self.filter(primary=True)
 
 
 @python_2_unicode_compatible
