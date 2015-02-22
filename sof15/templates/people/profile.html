@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
+{% load i18n crispy_forms_tags %}
 
 {% block title %}{{ block.super }} – {{ person.full_name }}{% endblock %}
 
@@ -65,12 +65,14 @@
         {% endcomment %}
         <div class="col-lg-4">
             {% if membership_approvable_orchestras %}
-                <h2>Verifiering av orkestermedlemmar</h2>
-                <ul>
-                    {% for orchestra in membership_approvable_orchestras %}
-                        <li><a href="{% url 'orchard:approve_orchestra_members' pk=orchestra.pk %}">{{ orchestra }}</a></li>
-                    {% endfor %}
-                </ul>
+                <h2>{% trans 'Orchestra representative' %}</h2>
+                {% for orchestra in membership_approvable_orchestras %}
+                    <h3>{{ orchestra }}</h3>
+                    <ul>
+                        <li><a href="{% url 'orchard:approve_orchestra_members' orchestra.pk %}">{% trans 'Approve members' %}</a></li>
+                        <li><a href="{% url 'orchard:view_orchestra_invoice_data' orchestra.pk %}">{% trans 'Review invoice data' %}</a></li>
+                    </ul>
+                {% endfor %}
             {% endif %}
         </div>
     </div>

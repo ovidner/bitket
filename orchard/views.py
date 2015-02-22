@@ -2,10 +2,11 @@
 from django.shortcuts import resolve_url
 from django.db import transaction
 from django.forms.models import inlineformset_factory
-from django.views.generic import CreateView, UpdateView
-from django.http.response import HttpResponseRedirect
+from django.views.generic import CreateView, UpdateView, DetailView
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.utils.timezone import now
 from django.contrib import messages
+from django.utils.translation import ugettext
 from django.utils.translation import ugettext_lazy as _
 
 from guardian.mixins import PermissionRequiredMixin
@@ -64,6 +65,41 @@ class ApproveOrchestraMemberView(PermissionRequiredMixin, UpdateView):
 
         else:
             return self.render_to_response(self.get_context_data(form=form))
+
+
+class ViewOrchestraInvoiceDataView(PermissionRequiredMixin, DetailView):
+    template_name = 'orchard/view_orchestra_invoice_data.html'
+    model = Orchestra
+    context_object_name = 'orchestra'
+
+    # Guardian settings
+    permission_required = 'approve_orchestra_members'
+    accept_global_perms = True
+
+    def get_context_data(self, **kwargs):
+        context = super(ViewOrchestraInvoiceDataView, self).get_context_data(**kwargs)
+
+        context['holdings'] = self.object.memberships.invoicable().purchases().holdings().order_by('person__first_name')
+
+        return context
+
+    def render_to_response(self, context, **response_kwargs):
+        if 'csv' in self.request.GET.get('export', ''):
+            import unicodecsv
+
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="invoice-data.csv"'
+
+            writer = unicodecsv.writer(response)
+
+            # We can't use lazy translation here.
+            writer.writerow((ugettext('Person'), ugettext('Product'), ugettext('Price'), ugettext('Quantity'), ugettext('Total')))
+            for h in context['holdings']:
+                writer.writerow((h.person, h.product, h.product.price, h.quantity, h.total))
+
+            return response
+
+        return super(ViewOrchestraInvoiceDataView, self).render_to_response(context, **response_kwargs)
 
 
 class RegisterOrchestraMemberView(CreateView):

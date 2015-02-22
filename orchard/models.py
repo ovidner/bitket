@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
-from tickle.models.products import Product, TicketType
+from tickle.models import Product, TicketType, Purchase, Person
 
 
 @python_2_unicode_compatible
@@ -43,6 +43,18 @@ class OrchestraMembershipQuerySet(models.QuerySet):
 
     def primary(self):
         return self.filter(primary=True)
+
+    def approved(self):
+        return self.filter(approved=True)
+
+    def invoicable(self):
+        return self.primary().approved()
+
+    def people(self):
+        return Person.objects.filter(orchestra_memberships__in=self)
+
+    def purchases(self):
+        return Purchase.objects.filter(person__in=self.people(), orchestra_member_registration__isnull=False)
 
 
 @python_2_unicode_compatible
