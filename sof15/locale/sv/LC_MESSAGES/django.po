@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-17 15:46+0000\n"
+"POT-Creation-Date: 2015-02-22 22:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: sof15/settings.py:136
+#: sof15/settings.py:137
 msgid "Swedish"
 msgstr "Svenska"
 
@@ -68,3 +68,15 @@ msgstr "Ändra lösenord"
 #: sof15/templates/base.html:58
 msgid "Log out"
 msgstr "Logga ut"
+
+#: sof15/templates/people/profile.html:69
+msgid "Orchestra representative"
+msgstr "Orkesterrepresentant"
+
+#: sof15/templates/people/profile.html:73
+msgid "Approve members"
+msgstr "Godkänn medlemmar"
+
+#: sof15/templates/people/profile.html:74
+msgid "Review invoice data"
+msgstr "Granska fakturaunderlag"

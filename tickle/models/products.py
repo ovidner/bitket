@@ -152,6 +152,11 @@ class Delivery(models.Model):
         return u'{0}, {1}'.format(self.holdings, self.delivered)
 
 
+class PurchaseQuerySet(models.QuerySet):
+    def holdings(self):
+        return Holding.objects.filter(purchase__in=self)
+
+
 @python_2_unicode_compatible
 class Purchase(models.Model):
     person = models.ForeignKey('Person', verbose_name=_('person'))
@@ -160,6 +165,8 @@ class Purchase(models.Model):
     purchased = models.DateTimeField(verbose_name=_('purchased'))
 
     valid = models.BooleanField(default=True, verbose_name=_('valid'))
+
+    objects = PurchaseQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('purchase')

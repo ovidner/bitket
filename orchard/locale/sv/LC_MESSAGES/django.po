@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-17 15:46+0000\n"
+"POT-Creation-Date: 2015-02-22 22:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,75 +17,77 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: orchard/forms.py:19
+#: orchard/forms.py:20
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:18
+#: orchard/views.py:96
 msgid "Product"
 msgstr "Produkt"
 
-#: orchard/forms.py:50
+#: orchard/forms.py:51
 msgid "Approved"
 msgstr "Godkänd"
 
-#: orchard/forms.py:63
+#: orchard/forms.py:64
 msgid "Yes"
 msgstr "Ja"
 
-#: orchard/forms.py:63
+#: orchard/forms.py:64
 msgid "No"
 msgstr "Nej"
 
-#: orchard/forms.py:66
+#: orchard/forms.py:67
 msgid "Primary"
 msgstr "Primär"
 
-#: orchard/forms.py:78
+#: orchard/forms.py:81
 msgid "Ticket type"
 msgstr "Biljettyp"
 
-#: orchard/forms.py:79
+#: orchard/forms.py:82
 msgid "Food"
 msgstr "Mat"
 
-#: orchard/forms.py:79
+#: orchard/forms.py:83
 msgid "Meals as described above."
 msgstr "Måltider enligt ovan."
 
-#: orchard/forms.py:80
+#: orchard/forms.py:85
 msgid "Accommodation"
 msgstr "Boende"
 
-#: orchard/forms.py:80
+#: orchard/forms.py:86
 msgid "Place on floor &ndash; bring your own bedroll. Breakfast included."
 msgstr ""
 "Plats på golv i sovsal &ndash; ta med dig sovsäck och liggunderlag. Frukost "
 "ingår."
 
-#: orchard/forms.py:81
+#: orchard/forms.py:87
 msgid "10th festival in a row"
 msgstr "10-årsjubilar"
 
-#: orchard/forms.py:81
+#: orchard/forms.py:88
 msgid "Will this be your 10th SOF/STORK in a row?"
 msgstr ""
 "Blir detta din tionde studentorkesterfestival i följd? Kryssa inte i detta "
 "om du redan firat detta en gång tidigare."
 
-#: orchard/forms.py:82
+#: orchard/forms.py:89
 msgid "25th festival"
 msgstr "25-årsjubilar"
 
-#: orchard/forms.py:82
+#: orchard/forms.py:90
 msgid "Will this be your 25th SOF/STORK in all?"
 msgstr "Blir detta din 25:e studentorkesterfestival totalt?"
 
-#: orchard/forms.py:89
+#: orchard/forms.py:97
 msgid "Can't add food to this ticket type."
 msgstr "Mat kan inte väljas till denna biljett."
 
-#: orchard/forms.py:92
+#: orchard/forms.py:100
 msgid "Can't add accommodation to this ticket type."
 msgstr "Boende kan inte väljas till denna biljett."
 
-#: orchard/forms.py:95 orchard/forms.py:98
+#: orchard/forms.py:103 orchard/forms.py:106
 msgid "Can't choose this with this ticket type."
 msgstr "Kan inte välja detta till denna biljett."
 
@@ -97,75 +99,75 @@ msgstr "namn"
 msgid "organisation number"
 msgstr "organisationsnummer"
 
-#: orchard/models.py:16
+#: orchard/models.py:17
 msgid "members"
 msgstr "medlemmar"
 
-#: orchard/models.py:24
+#: orchard/models.py:26
 msgid "Approve orchestra members"
 msgstr "Godkänna orkestermedlemmar"
 
-#: orchard/models.py:27 orchard/models.py:45
+#: orchard/models.py:29 orchard/models.py:62
 msgid "orchestra"
 msgstr "orkester"
 
-#: orchard/models.py:28
+#: orchard/models.py:30
 msgid "orchestras"
 msgstr "orkestrar"
 
-#: orchard/models.py:46
+#: orchard/models.py:63
 msgid "person"
 msgstr "person"
 
-#: orchard/models.py:48
+#: orchard/models.py:65
 msgid "primary orchestra"
 msgstr "primär orkester"
 
-#: orchard/models.py:57
+#: orchard/models.py:74
 msgid "orchestra membership"
 msgstr "orkestermedlemskap"
 
-#: orchard/models.py:58
+#: orchard/models.py:75
 msgid "orchestra memberships"
 msgstr "orkestermedlemskap"
 
-#: orchard/models.py:70
+#: orchard/models.py:88
 msgid "purchase"
 msgstr "köp"
 
-#: orchard/models.py:73
+#: orchard/models.py:91
 msgid "orchestra member registration"
 msgstr "orkestermedlemsregistrering"
 
-#: orchard/models.py:74
+#: orchard/models.py:92
 msgid "orchestra member registrations"
 msgstr "orkestermedlemsregistreringar"
 
-#: orchard/models.py:82
+#: orchard/models.py:101
 msgid "ticket type"
 msgstr "biljettyp"
 
-#: orchard/models.py:85
+#: orchard/models.py:105
 msgid "food ticket type"
 msgstr "biljettyp för mat"
 
-#: orchard/models.py:88
+#: orchard/models.py:109
 msgid "accommodation ticket type"
 msgstr "biljettyp för boende"
 
-#: orchard/models.py:90
+#: orchard/models.py:112
 msgid "10th festival ticket type"
 msgstr "biljettyp för 10-årsjubilarer"
 
-#: orchard/models.py:91
+#: orchard/models.py:114
 msgid "25th festival ticket type"
 msgstr "biljettyp för 25-årsjubilarer"
 
-#: orchard/models.py:94
+#: orchard/models.py:117
 msgid "orchestra ticket type"
 msgstr "biljettpaket för orkestrar"
 
-#: orchard/models.py:95
+#: orchard/models.py:118
 msgid "orchestra ticket types"
 msgstr "biljettpaket för orkestrar"
 
@@ -292,6 +294,57 @@ msgstr "Prylar"
 msgid "Submit registration"
 msgstr "Skicka anmälan"
 
-#: orchard/views.py:61
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:4
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:6
+msgid "Invoice data"
+msgstr "Fakturaunderlag"
+
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:10
+msgid "Please note that this invoice data is based only on your"
+msgstr "Vänligen observera att detta underlag baseras enbart på dina"
+
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:10
+msgid "approved members"
+msgstr "godkända medlemmar"
+
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:12
+msgid ""
+"You may download this data in CSV format and import it in an application "
+"like Excel."
+msgstr ""
+"Ladda gärna ned underlaget i CSV-format och importera i till exempel Excel."
+
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:13
+msgid "Download as CSV"
+msgstr "Ladda ned som CSV"
+
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:17
+#: orchard/views.py:96
+msgid "Person"
+msgstr "Person"
+
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:19
+#: orchard/views.py:96
+msgid "Price"
+msgstr "Pris"
+
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:20
+#: orchard/views.py:96
+msgid "Quantity"
+msgstr "Antal"
+
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:21
+#: orchard/views.py:96
+msgid "Total"
+msgstr "Totalt"
+
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:35
+msgid "No members approved."
+msgstr "Inga medlemmar verifierade."
+
+#: orchard/views.py:62
 msgid "The members you selected have been successfully approved."
 msgstr "De medlemmar du valt har verifierats."
+
+#~ msgid "Member"
+#~ msgstr "Medlem"
