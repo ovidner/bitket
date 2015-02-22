@@ -72,8 +72,8 @@ class OrchestraMemberRegistration(models.Model):
     Empty model used to mark Purchase objects as orchestra member registrations so we can fetch them in a deterministic
     way.
     """
-    purchase = models.ForeignKey('tickle.Purchase', related_name='orchestra_member_registrations',
-                                 verbose_name=_('purchase'))
+    purchase = models.OneToOneField('tickle.Purchase', related_name='orchestra_member_registration',
+                                    verbose_name=_('purchase'))
 
     class Meta:
         verbose_name = _('orchestra member registration')
