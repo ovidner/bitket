@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
@@ -12,6 +14,10 @@ class Worker(models.Model):
     person = models.OneToOneField('tickle.Person', related_name='worker')
 
     ice_number = models.CharField(max_length=16, null=True, blank=True, verbose_name=_('ICE number'))
+
+    class Meta:
+        verbose_name = _('worker')
+        verbose_name_plural = _('workers')
 
     def __str__(self):
         return self.person.full_name
@@ -34,6 +40,10 @@ class ShiftType(MPTTModel):
     name = models.CharField(max_length=256)
     parent = TreeForeignKey('self', related_name='children', null=True, blank=True)
 
+    class Meta:
+        verbose_name = _('shift type')
+        verbose_name_plural = _('shift types')
+
     def __str__(self):
         return self.name
 
@@ -42,6 +52,10 @@ class ShiftType(MPTTModel):
 class Location(MPTTModel):
     name = models.CharField(max_length=256)
     parent = TreeForeignKey('self', related_name='children', null=True, blank=True)
+
+    class Meta:
+        verbose_name = _('location')
+        verbose_name_plural = _('locations')
 
     def __str__(self):
         return self.name
@@ -64,6 +78,10 @@ class Shift(models.Model):
 
     public = models.BooleanField(default=True, verbose_name=_('public'), help_text=_("If unchecked, this shift won't be visible or available for registration by public users."))
 
+    class Meta:
+        verbose_name = _('shift')
+        verbose_name_plural = _('shifts')
+
     def __str__(self):
         return u'%s %s – %s' % (self.shift_type.name, self.start, self.end)
 
@@ -72,6 +90,10 @@ class Shift(models.Model):
 class ShiftRegistration(models.Model):
     shift = models.ForeignKey('Shift', related_name='registrations')
     person = models.ForeignKey('tickle.Person', related_name='shift_registrations')
+
+    class Meta:
+        verbose_name = _('shift registration')
+        verbose_name_plural = _('shift registrations')
 
     def __str__(self):
         return u'%s: %s' % (self.person, self.shift)
