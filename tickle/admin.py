@@ -4,10 +4,11 @@ from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.contrib.auth.models import Permission
 
+from gfklookupwidget.widgets import GfkLookupWidget
 from guardian.models import UserObjectPermission, GroupObjectPermission
 from guardian.admin import UserObjectPermissionsForm
 
-from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, TickleUser
+from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, TickleUser, StudentUnionDiscount, ProductDiscount
 
 
 class PurchaseInline(admin.StackedInline):
@@ -20,9 +21,22 @@ class EventAdmin(admin.ModelAdmin):
     pass
 
 
+class ProductDiscountInline(admin.TabularInline):
+    model = ProductDiscount
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'discount_object_id':
+            kwargs['widget'] = GfkLookupWidget(
+                content_type_field_name='discount_content_type',
+                parent_field=ProductDiscount._meta.get_field('discount_content_type'),
+                )
+
+        return super(ProductDiscountInline, self).formfield_for_dbfield(db_field, **kwargs)
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    inlines = (ProductDiscountInline,)
 
 
 @admin.register(Holding)
@@ -133,3 +147,8 @@ class GroupObjectPermissionAdmin(admin.ModelAdmin):
         'permission__codename'
     )
     list_filter = ('content_type',)
+
+
+@admin.register(StudentUnionDiscount)
+class StudentUnionDiscountAdmin(admin.ModelAdmin):
+    pass
