@@ -8,7 +8,9 @@ from gfklookupwidget.widgets import GfkLookupWidget
 from guardian.models import UserObjectPermission, GroupObjectPermission
 from guardian.admin import UserObjectPermissionsForm
 
-from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, TickleUser, StudentUnionDiscount, ProductDiscount
+from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, \
+    TickleUser, \
+    StudentUnionDiscount, ProductDiscount
 
 
 class PurchaseInline(admin.StackedInline):
@@ -29,7 +31,7 @@ class ProductDiscountInline(admin.TabularInline):
             kwargs['widget'] = GfkLookupWidget(
                 content_type_field_name='discount_content_type',
                 parent_field=ProductDiscount._meta.get_field('discount_content_type'),
-                )
+            )
 
         return super(ProductDiscountInline, self).formfield_for_dbfield(db_field, **kwargs)
 
@@ -104,7 +106,8 @@ class AlwaysChangedModelForm(forms.ModelForm):
 
 class TickleUserInline(admin.StackedInline):
     model = TickleUser
-    form = AlwaysChangedModelForm  # This way we can just press Add, not change anything and still get an account created
+    form = AlwaysChangedModelForm  # This way we can just press Add, not change anything and still get an account
+    # created
     extra = 0
     max_num = 1
 

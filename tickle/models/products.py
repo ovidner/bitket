@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from mptt.models import MPTTModel, TreeForeignKey
 from decimal import Decimal
 
+
 @python_2_unicode_compatible
 class Category(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
@@ -172,8 +173,10 @@ class Purchase(models.Model):
 class BaseDiscount(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
 
-    discount_amount = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True, verbose_name=_('amount'))
-    discount_percent = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True, verbose_name=_('percent'))
+    discount_amount = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True,
+                                          verbose_name=_('amount'))
+    discount_percent = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True,
+                                           verbose_name=_('percent'))
 
     class Meta:
         abstract = True

@@ -66,7 +66,7 @@ class SEPersonalIdentityNumberField(forms.CharField):
 
         # compare the calculated value with the checksum
         # if id_number_checksum(gd) != int(gd['checksum']):
-        #     raise forms.ValidationError(self.error_messages['invalid'])
+        # raise forms.ValidationError(self.error_messages['invalid'])
 
         # check for valid birthday
         try:
@@ -212,6 +212,7 @@ class ChangePasswordFormHelper(FormHelper):
 
 class DisplayWidget(forms.Widget):
     """ Widget for only displaying a value in a form. """
+
     def __init__(self, attrs=None):
         super(DisplayWidget, self).__init__(attrs)
         self.initial_attrs = self.attrs.copy()

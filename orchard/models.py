@@ -13,9 +13,11 @@ class Orchestra(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
     organisation_number = models.CharField(max_length=11, blank=True, default='', verbose_name=_('organisation number'))
 
-    members = models.ManyToManyField('tickle.Person', related_name='orchestras', through='OrchestraMembership', verbose_name=_('members'))
+    members = models.ManyToManyField('tickle.Person', related_name='orchestras', through='OrchestraMembership',
+                                     verbose_name=_('members'))
 
-    contact = models.ForeignKey('tickle.Person', related_name='orchestra_contacts', null=True, blank=True, editable=False, verbose_name='contact')
+    contact = models.ForeignKey('tickle.Person', related_name='orchestra_contacts', null=True, blank=True,
+                                editable=False, verbose_name='contact')
 
     class Meta:
         ordering = ['name']
@@ -67,7 +69,8 @@ class OrchestraMemberRegistration(models.Model):
     Empty model used to mark Purchase objects as orchestra member registrations so we can fetch them in a deterministic
     way.
     """
-    purchase = models.ForeignKey('tickle.Purchase', related_name='orchestra_member_registrations', verbose_name=_('purchase'))
+    purchase = models.ForeignKey('tickle.Purchase', related_name='orchestra_member_registrations',
+                                 verbose_name=_('purchase'))
 
     class Meta:
         verbose_name = _('orchestra member registration')
@@ -79,16 +82,21 @@ class OrchestraMemberRegistration(models.Model):
 
 @python_2_unicode_compatible
 class OrchestraTicketType(models.Model):
-    ticket_type = models.OneToOneField('tickle.TicketType', related_name='orchestra_ticket_type', verbose_name=_('ticket type'))
+    ticket_type = models.OneToOneField('tickle.TicketType', related_name='orchestra_ticket_type',
+                                       verbose_name=_('ticket type'))
 
     # Which food object will you get when purchasing this ticket with food?
-    food_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('food ticket type'))
+    food_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True,
+                                         verbose_name=_('food ticket type'))
 
     # Which food object will you get when purchasing this ticket with accommodation?
-    accommodation_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('accommodation ticket type'))
+    accommodation_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True,
+                                                  verbose_name=_('accommodation ticket type'))
 
-    jubilarian_10_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('10th festival ticket type'))
-    jubilarian_25_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True, verbose_name=_('25th festival ticket type'))
+    jubilarian_10_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True,
+                                                  verbose_name=_('10th festival ticket type'))
+    jubilarian_25_ticket_type = models.ForeignKey('tickle.TicketType', related_name='+', null=True, blank=True,
+                                                  verbose_name=_('25th festival ticket type'))
 
     class Meta:
         verbose_name = _('orchestra ticket type')

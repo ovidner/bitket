@@ -16,7 +16,7 @@ class InvoiceRowInline(admin.TabularInline):
 class InvoiceAdmin(admin.ModelAdmin):
     inlines = (InvoiceRowInline, )
     formfield_overrides = {
-        models.CharField: {'widget' : TextInput(attrs={'size':20} ) }
+        models.CharField: {'widget': TextInput(attrs={'size': 20})}
     }
 
     def generate_invoice_view(self, request, extra_content=None):

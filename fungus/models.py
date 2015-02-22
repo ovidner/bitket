@@ -74,9 +74,13 @@ class Shift(models.Model):
 
     people_max = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('maximum number of workers'))
     people_warning = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('warning number of workers'))
-    people_critical = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('critical number of workers'), help_text=_('The number of workers needed on this shift for critical operation.'))
+    people_critical = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('critical number of workers'),
+                                                  help_text=_(
+                                                      'The number of workers needed on this shift for critical '
+                                                      'operation.'))
 
-    public = models.BooleanField(default=True, verbose_name=_('public'), help_text=_("If unchecked, this shift won't be visible or available for registration by public users."))
+    public = models.BooleanField(default=True, verbose_name=_('public'), help_text=_(
+        "If unchecked, this shift won't be visible or available for registration by public users."))
 
     class Meta:
         verbose_name = _('shift')

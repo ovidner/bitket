@@ -29,6 +29,7 @@ class ShiftRegistrationAdmin(admin.ModelAdmin):
     def change_pass_action(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         return HttpResponseRedirect("shifchange/?ids=%s" % ",".join(selected))
+
     change_pass_action.short_description = "Byt markerade arbetspass"
 
 

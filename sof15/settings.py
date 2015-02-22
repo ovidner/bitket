@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
 import django12factor
+
 d12f = django12factor.factorise(
     custom_settings=[
         'KOBRA_USER',
@@ -23,8 +24,8 @@ from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = d12f['SECRET_KEY']
 # SECRET_KEY = 'wu*4qyzkc9r5at0j=8qqz&)yjuq&kze_ip71khzdfv0g(^(m-_'
@@ -171,7 +172,6 @@ DEFAULT_FROM_EMAIL = 'Tickle SOF15 <tickle@sof15.se>'
 
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 MANDRILL_API_KEY = d12f['MANDRILL_API_KEY']
-
 
 ADMINS = (
     ('Olle Vidner', 'olle.vidner@sof15.se'),

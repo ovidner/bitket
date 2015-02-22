@@ -32,7 +32,7 @@ class ApproveOrchestraMemberView(PermissionRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return resolve_url('orchard:approve_orchestra_members', self.object.pk)
-    
+
     def get_context_data(self, **kwargs):
         context = super(ApproveOrchestraMemberView, self).get_context_data(**kwargs)
 
@@ -43,7 +43,7 @@ class ApproveOrchestraMemberView(PermissionRequiredMixin, UpdateView):
             extra=0,
             can_delete=False,
             can_order=False,
-            )(self.request.POST or None, instance=self.object)
+        )(self.request.POST or None, instance=self.object)
 
         context['member_formset_helper'] = InlineFormSetHelper()
 
@@ -125,7 +125,8 @@ class RegisterOrchestraMemberView(CreateView):
         stuff_formset = context['stuff_formset']
         accept_form = context['accept_form']
 
-        if ticket_form.is_valid() and membership_formset.is_valid() and stuff_formset.is_valid() and accept_form.is_valid():
+        if ticket_form.is_valid() and membership_formset.is_valid() and stuff_formset.is_valid() and \
+                accept_form.is_valid():
             with transaction.atomic():
                 person = form.save()
                 holdings = []

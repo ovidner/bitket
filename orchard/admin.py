@@ -26,7 +26,7 @@ def generate_invoice(name, email, orgName, id_nr, stuff):
 def invoice_orchestra(orch_queryset):
     for orch in orch_queryset:
         members = OrchestraMembership.object.filter(approved=True)
-        #get the stuff each member has ordered
+        # get the stuff each member has ordered
         total_stuff = []
         for member in members:
             stuff = Holding.objects.filter(person=member.person)
