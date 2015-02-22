@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from mptt.models import MPTTModel, TreeForeignKey
 
-from tickle.models import Person
+from tickle.models import Person, BaseDiscount
 
 
 @python_2_unicode_compatible
@@ -21,6 +21,18 @@ class Worker(models.Model):
 
     def __str__(self):
         return self.person.full_name
+
+
+class WorkerDiscount(BaseDiscount):
+    shifts = models.PositiveIntegerField(verbose_name=_('shifts'),
+                                         help_text=_('Number of shifts to work to be eligible for this discount.'))
+
+    class Meta:
+        verbose_name = _('worker discount')
+        verbose_name_plural = _('worker discounts')
+
+    def eligible(self, person):
+        return person.shift_registrations.count() == self.shifts
 
 
 @python_2_unicode_compatible
