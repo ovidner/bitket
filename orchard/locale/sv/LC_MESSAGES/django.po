@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-22 22:27+0000\n"
+"POT-Creation-Date: 2015-02-23 12:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -103,7 +103,7 @@ msgstr "organisationsnummer"
 msgid "members"
 msgstr "medlemmar"
 
-#: orchard/models.py:26
+#: orchard/models.py:26 orchard/templates/orchard/approve_members.html:4
 msgid "Approve orchestra members"
 msgstr "Godkänna orkestermedlemmar"
 
@@ -170,6 +170,22 @@ msgstr "biljettpaket för orkestrar"
 #: orchard/models.py:118
 msgid "orchestra ticket types"
 msgstr "biljettpaket för orkestrar"
+
+#: orchard/templates/orchard/approve_members.html:6
+msgid "Orchestra members"
+msgstr "Orkestermedlemmar"
+
+#: orchard/templates/orchard/approve_members.html:9
+msgid "When you have approved your members, you may also review your"
+msgstr "När du godkänt dina medlemmar, ta gärna en titt på ditt"
+
+#: orchard/templates/orchard/approve_members.html:9
+msgid "invoice data"
+msgstr "fakturaunderlag"
+
+#: orchard/templates/orchard/approve_members.html:12
+msgid "Save"
+msgstr "Spara"
 
 #: orchard/templates/orchard/register_member.html:4
 msgid "Orchestra member registration"
@@ -303,7 +319,7 @@ msgstr "Fakturaunderlag"
 msgid "Please note that this invoice data is based only on your"
 msgstr "Vänligen observera att detta underlag baseras enbart på dina"
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:10
+#: orchard/templates/orchard/view_orchestra_invoice_data.html:11
 msgid "approved members"
 msgstr "godkända medlemmar"
 
