@@ -75,7 +75,11 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(related_name='members', verbose_name='student union', blank=True, to='tickle.StudentUnion', null=True),
             preserve_default=True,
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='person',
+            name='liu_id',
+        ),
+        migrations.AddField(
             model_name='person',
             name='liu_id',
             field=models.OneToOneField(null=True, blank=True, to='tickle.LiUID', verbose_name='LiU ID'),
