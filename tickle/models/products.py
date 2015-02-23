@@ -214,7 +214,7 @@ class BaseDiscount(models.Model):
 
 
 class StudentUnionDiscount(BaseDiscount):
-    student_union = models.ForeignKey('liu.StudentUnion', related_name='discounts', verbose_name=_('student union'))
+    student_union = models.ForeignKey('StudentUnion', related_name='discounts', verbose_name=_('student union'))
 
     class Meta:
         verbose_name = _('student union discount')
