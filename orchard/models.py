@@ -5,7 +5,26 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
-from tickle.models import Product, TicketType, Purchase, Person
+from tickle.models import Product, TicketType, Purchase, Person, Holding
+from invar.models import generate_invoice
+
+
+class OrchestraQuerySet(models.QuerySet):
+    def invoice(self):
+        for orch in self:
+            members = orch.memberships.invoicable()
+            # get the stuff each member has ordered
+            total_stuff = []
+            for member in members:
+                stuff = Holding.objects.filter(person=member.person)
+                for thing in stuff:
+                    product = thing.product
+                    # print(product)
+                    quantity = thing.quantity
+                    total_stuff.append((product, quantity, Person(member.person)))
+                    #print(total_stuff)
+            generate_invoice(orch.contact.full_name, orch.contact.email, orch.name, orch.organisation_number,
+                             total_stuff)
 
 
 @python_2_unicode_compatible
@@ -16,8 +35,9 @@ class Orchestra(models.Model):
     members = models.ManyToManyField('tickle.Person', related_name='orchestras', through='OrchestraMembership',
                                      verbose_name=_('members'))
 
-    contact = models.ForeignKey('tickle.Person', related_name='orchestra_contacts', null=True, blank=True,
-                                editable=False, verbose_name='contact')
+    contact = models.ForeignKey('tickle.Person', related_name='orchestra_contacts', null=True, blank=True, verbose_name='contact')
+
+    objects = OrchestraQuerySet.as_manager()
 
     class Meta:
         ordering = ['name']
