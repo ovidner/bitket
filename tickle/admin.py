@@ -9,8 +9,7 @@ from guardian.models import UserObjectPermission, GroupObjectPermission
 from guardian.admin import UserObjectPermissionsForm
 
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, \
-    TickleUser, \
-    StudentUnionDiscount, ProductDiscount
+    TickleUser, StudentUnionDiscount, ProductDiscount
 
 
 class PurchaseInline(admin.StackedInline):
@@ -25,6 +24,7 @@ class EventAdmin(admin.ModelAdmin):
 
 class ProductDiscountInline(admin.TabularInline):
     model = ProductDiscount
+    extra = 0  # Seems like the generic relation hack makes anything else than 0 fail.
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'discount_object_id':
