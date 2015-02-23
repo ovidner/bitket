@@ -90,7 +90,7 @@ class ViewOrchestraInvoiceDataView(PermissionRequiredMixin, DetailView):
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="invoice-data.csv"'
 
-            writer = unicodecsv.writer(response)
+            writer = unicodecsv.writer(response, delimiter=';')
 
             # We can't use lazy translation here.
             writer.writerow((ugettext('Person'), ugettext('Product'), ugettext('Price'), ugettext('Quantity'), ugettext('Total')))
