@@ -7,7 +7,7 @@ django-cache-url==0.8.0
 django-crispy-forms==1.4.0
 django-debug-toolbar==1.2.2
 django-extensions==1.4.9
--e git+https://github.com/UrbanDaddy/django-gfklookupwidget.git@f93ca01dbb4ce0b95c3fd5b67f02ac669f39626a#egg=django_gfklookupwidget-origin\django17
+git+https://github.com/UrbanDaddy/django-gfklookupwidget.git#egg=django-gfklookupwidget
 django-guardian==1.2.5
 django-localflavor==1.1
 django-mptt==0.6.1
