@@ -14,6 +14,7 @@ from tickle.models import Person, Event, Product, Holding, TicketType, Delivery,
 
 class PurchaseInline(admin.StackedInline):
     model = Purchase
+    extra = 0
     # filter_horizontal = ('holdings',)
 
 
