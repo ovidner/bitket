@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
+
 from guardian.admin import GuardedModelAdmin
+
 from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType
 
 
@@ -17,7 +20,7 @@ class OrchestraAdmin(GuardedModelAdmin):
     def generate_invoice(self, request, queryset):
         queryset.invoice()
 
-    generate_invoice.short_description = 'Fakturera orkester'
+    generate_invoice.short_description = _('Invoice orchestra')
 
 
 @admin.register(OrchestraTicketType)
