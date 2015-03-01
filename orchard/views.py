@@ -79,7 +79,7 @@ class ViewOrchestraInvoiceDataView(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(ViewOrchestraInvoiceDataView, self).get_context_data(**kwargs)
 
-        context['holdings'] = self.object.memberships.invoicable().purchases().holdings().order_by('person__first_name')
+        context['holdings'] = self.object.memberships.invoicable().purchases().holdings().order_by('person__first_name', 'person__last_name')
 
         return context
 
