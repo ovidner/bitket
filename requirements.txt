@@ -19,6 +19,7 @@ gunicorn==19.1.1
 ipdb==0.8
 ipython==2.3.1
 liu==1.1.0
+newrelic==2.44.0.36
 pkginfo==1.2.1
 psycopg2==2.5.4
 python-ldap==2.4.19
