@@ -2,6 +2,7 @@
 from django.db import models
 import datetime
 from random import randint
+from tickle.models.products import Holding
 
 
 class Invoice(models.Model):
@@ -19,6 +20,7 @@ class InvoiceRow(models.Model):
     itemName = models.CharField(max_length=255, verbose_name='Pryl')
     nrItems = models.IntegerField(default=1, verbose_name='Antal')
     itemCost = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Pris')
+    holdingBackref = models.ForeignKey(Holding, null=True)
 
 
 def generate_invoice(name, email, orgName, id_nr, stuff):
@@ -30,5 +32,6 @@ def generate_invoice(name, email, orgName, id_nr, stuff):
     bill.save()
 
     for thing in stuff:
-        row = InvoiceRow(invoice=bill, itemName=thing[0].name, nrItems=thing[1], itemCost=thing[0].price)
+        row = InvoiceRow(invoice=bill, itemName=thing[0].name, nrItems=thing[1],
+                         itemCost=thing[0].price, holdingBackref=thing[2])
         row.save()
