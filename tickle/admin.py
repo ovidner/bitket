@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.contrib.auth.models import Permission
+from django.utils.translation import ugettext_lazy as _
+
 
 from gfklookupwidget.widgets import GfkLookupWidget
 from guardian.models import UserObjectPermission, GroupObjectPermission
@@ -39,7 +41,13 @@ class ProductDiscountInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', '_public_name', 'price', 'quantitative', 'total_quantity')
     inlines = (ProductDiscountInline,)
+
+    def total_quantity(self, obj):
+        return obj.holdings.quantity()
+
+    total_quantity.short_description = _('total quantity')
 
 
 @admin.register(Holding)
