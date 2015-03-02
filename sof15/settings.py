@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'guardian',
     'raven.contrib.django.raven_compat',
     'crispy_forms',
+    'rest_framework',
 
     'liu.django',
 
@@ -77,6 +78,16 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.DjangoObjectPermissions',
+    ),
+}
 
 # Database backed cache backend.
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
