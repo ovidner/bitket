@@ -7,6 +7,12 @@ from guardian.admin import GuardedModelAdmin
 from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType, OrchestraProduct
 
 
+@admin.register(OrchestraMembership)
+class OrchestraMembershipAdmin(admin.ModelAdmin):
+    list_display = ('person', 'orchestra', 'primary', 'approved')
+    list_filter = ('orchestra', 'primary', 'approved')
+
+
 class OrchestraMembershipInline(admin.TabularInline):
     model = OrchestraMembership
     extra = 0
