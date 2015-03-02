@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from guardian.admin import GuardedModelAdmin
 
-from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType
+from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType, OrchestraProduct
 
 
 class OrchestraMembershipInline(admin.TabularInline):
@@ -26,3 +26,14 @@ class OrchestraAdmin(GuardedModelAdmin):
 @admin.register(OrchestraTicketType)
 class OrchestraTicketTypeAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(OrchestraProduct)
+class OrchestraProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'invoicable_quantity', 'total_quantity')
+
+    def total_quantity(self, obj):
+        return obj.holdings.quantity()
+
+    def invoicable_quantity(self, obj):
+        return obj.holdings.filter(purchase__person__orchestra_memberships__approved=True, purchase__person__orchestra_memberships__primary=True).distinct().quantity()

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.db.models import Sum
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
@@ -52,6 +53,8 @@ class Product(models.Model):
                                        help_text=_('Can you purchase more than one (1) of this product?'))
 
     class Meta:
+        ordering = ('name',)
+
         verbose_name = _('product')
         verbose_name_plural = _('products')
 
@@ -108,6 +111,9 @@ class TicketType(Product):
 
 
 class HoldingQuerySet(models.QuerySet):
+    def quantity(self):
+        return self.aggregate(Sum('quantity'))['quantity__sum']
+
     def tickets(self):
         return self.filter(product__ticket_type__isnull=False)
 
