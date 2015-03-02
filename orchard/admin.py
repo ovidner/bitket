@@ -35,5 +35,9 @@ class OrchestraProductAdmin(admin.ModelAdmin):
     def total_quantity(self, obj):
         return obj.holdings.quantity()
 
+    total_quantity.short_description = _('total quantity')
+
     def invoicable_quantity(self, obj):
         return obj.holdings.filter(purchase__person__orchestra_memberships__approved=True, purchase__person__orchestra_memberships__primary=True).distinct().quantity()
+
+    invoicable_quantity.short_description = _('invoicable quantity')

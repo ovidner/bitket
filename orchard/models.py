@@ -151,3 +151,6 @@ class OrchestraProduct(Product):
 
     class Meta:
         proxy = True
+
+        verbose_name = _('product')
+        verbose_name_plural = _('products')

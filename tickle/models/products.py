@@ -112,7 +112,7 @@ class TicketType(Product):
 
 class HoldingQuerySet(models.QuerySet):
     def quantity(self):
-        return self.aggregate(Sum('quantity'))['quantity__sum']
+        return self.aggregate(Sum('quantity'))['quantity__sum'] or 0
 
     def tickets(self):
         return self.filter(product__ticket_type__isnull=False)
