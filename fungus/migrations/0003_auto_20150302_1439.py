@@ -37,9 +37,9 @@ class Migration(migrations.Migration):
             fields=[
             ],
             options={
-                'verbose_name': 'person',
+                'verbose_name': 'worker',
                 'proxy': True,
-                'verbose_name_plural': 'people',
+                'verbose_name_plural': 'workers',
             },
             bases=('tickle.person',),
         ),
@@ -51,6 +51,18 @@ class Migration(migrations.Migration):
             model_name='shift',
             name='people_alarming',
             field=models.PositiveIntegerField(help_text='The number of workers where the system will report the status as alarming.', null=True, verbose_name='alarming number of workers', blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='shiftregistration',
+            name='checked_in',
+            field=models.DateTimeField(null=True, blank=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='shiftregistration',
+            name='checked_out',
+            field=models.DateTimeField(null=True, blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(
