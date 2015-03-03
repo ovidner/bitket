@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-26 12:17+0000\n"
+"POT-Creation-Date: 2015-03-03 01:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,9 +17,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: orchard/admin.py:23
+#: orchard/admin.py:29
 msgid "Invoice orchestra"
 msgstr "Fakturera orkester"
+
+#: orchard/admin.py:44
+msgid "invoicable quantity"
+msgstr "fakturerbar kvantitet"
 
 #: orchard/forms.py:20
 #: orchard/templates/orchard/view_orchestra_invoice_data.html:18
@@ -175,6 +179,14 @@ msgstr "biljettpaket för orkestrar"
 msgid "orchestra ticket types"
 msgstr "biljettpaket för orkestrar"
 
+#: orchard/models.py:155
+msgid "product"
+msgstr "produkt"
+
+#: orchard/models.py:156
+msgid "products"
+msgstr "produkter"
+
 #: orchard/templates/orchard/approve_members.html:6
 msgid "Orchestra members"
 msgstr "Orkestermedlemmar"
@@ -192,6 +204,9 @@ msgid "Save"
 msgstr "Spara"
 
 #: orchard/templates/orchard/register_member.html:4
+#: orchard/templates/orchard/register_member.html:6
+#: orchard/templates/orchard/register_member_closed.html:4
+#: orchard/templates/orchard/register_member_closed.html:6
 msgid "Orchestra member registration"
 msgstr "Orkestermedlemsregistrering"
 
@@ -219,15 +234,15 @@ msgstr ""
 "ska behöva välja vilka du ska spela med, men vi kan tyvärr inte garantera "
 "något."
 
-#: orchard/templates/orchard/register_member.html:30
+#: orchard/templates/orchard/register_member.html:29
 msgid "All the orchestras you specify will have to verify your membership."
 msgstr "Alla orkestrar du anger kommer behöva bekräfta ditt medlemskap."
 
-#: orchard/templates/orchard/register_member.html:36
+#: orchard/templates/orchard/register_member.html:34
 msgid "Payment"
 msgstr "Betalning"
 
-#: orchard/templates/orchard/register_member.html:39
+#: orchard/templates/orchard/register_member.html:37
 msgid ""
 "\n"
 "                        Your primary orchestra will receive an invoice for "
@@ -243,11 +258,11 @@ msgstr ""
 "ser vi gärna att du i första hand vänder dig till din orkester med frågor om "
 "betalning."
 
-#: orchard/templates/orchard/register_member.html:48
+#: orchard/templates/orchard/register_member.html:46
 msgid "Ticket, food and accommodation"
 msgstr "Biljett, mat och boende"
 
-#: orchard/templates/orchard/register_member.html:49
+#: orchard/templates/orchard/register_member.html:47
 msgid ""
 "\n"
 "                    <p>\n"
@@ -306,11 +321,15 @@ msgstr ""
 "dd>                    </dl>\n"
 "                "
 
-#: orchard/templates/orchard/register_member.html:77
+#: orchard/templates/orchard/register_member.html:75
 msgid "Gadgets"
 msgstr "Prylar"
 
-#: orchard/templates/orchard/register_member.html:99
+#: orchard/templates/orchard/register_member.html:91
+msgid "Unfortunately, there are no gadgets available."
+msgstr "Tyvärr går det ej att beställa några prylar."
+
+#: orchard/templates/orchard/register_member.html:97
 msgid "Submit registration"
 msgstr "Skicka anmälan"
 
@@ -365,6 +384,3 @@ msgstr "Inga medlemmar verifierade."
 #: orchard/views.py:62
 msgid "The members you selected have been successfully approved."
 msgstr "De medlemmar du valt har verifierats."
-
-#~ msgid "Member"
-#~ msgstr "Medlem"
