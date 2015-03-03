@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} – {% trans 'Orchestra member registration' %}{% endblock %}
+
+{% block header %}{% trans 'Orchestra member registration' %}{% endblock %}
+
+{% block content %}
+    <p class="lead">Anmälan är stängd.</p>
+    <p>Kontakta <a href="mailto:orkester@sof15.se">Orkesteransvarig</a> för att höra om det finns möjlighet till efteranmälan.</p>
+{% endblock content %}

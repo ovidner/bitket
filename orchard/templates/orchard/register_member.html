@@ -3,7 +3,7 @@
 
 {% block title %}{{ block.super }} – {% trans 'Orchestra member registration' %}{% endblock %}
 
-{% block header %}Orkestermedlemsanmälan{% endblock %}
+{% block header %}{% trans 'Orchestra member registration' %}{% endblock %}
 
 {% block content %}
     <p>
@@ -23,12 +23,10 @@
                         Specify the orchestra(s) with which you will attend SOF. Also specify one (1) orchestra as your
                         <em>primary</em>. This orchestra will receive an invoice for your ticket and your gadgets.
                     {% endblocktrans %}
-
                 </p>
 
                 <p>
                     {% trans 'All the orchestras you specify will have to verify your membership.' %}
-
                 </p>
 
                 {% crispy membership_formset inline_formset_helper %}
@@ -89,10 +87,10 @@
                                 <span class="pull-right">{{ form.quantity }}</span>
                             </p>
                         </div>
+                    {% empty %}
+                        <p>{% trans "Unfortunately, there are no gadgets available." %}</p>
                     {% endfor %}
-
                 </div>
-
             </div>
         </div>
         {% crispy accept_form accept_form_helper %}

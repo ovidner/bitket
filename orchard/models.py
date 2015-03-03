@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
-from tickle.models import Product, TicketType, Purchase, Person, Holding
+from tickle.models import Product, TicketType, Purchase, Person, Holding, ProductQuerySet
 from invar.models import generate_invoice
 
 
@@ -141,8 +141,8 @@ class OrchestraTicketType(models.Model):
         return self.ticket_type.name
 
 
-class OrchestraProductQuerySet(models.QuerySet):
-    def stuff(self):
+class OrchestraProductQuerySet(ProductQuerySet):
+    def gadgets(self):
         return self.exclude(pk__in=TicketType.objects.all())
 
 

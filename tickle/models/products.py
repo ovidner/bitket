@@ -39,6 +39,17 @@ class Event(MPTTModel):
         return self.name
 
 
+class ProductQuerySet(models.QuerySet):
+    def published(self):
+        return self.filter(published=True)
+
+    def unpublished(self):
+        return self.filter(published=False)
+
+    def ticket_types(self):
+        return self.filter(ticket_type__isnull=False)
+
+
 @python_2_unicode_compatible
 class Product(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
@@ -51,6 +62,8 @@ class Product(models.Model):
     quantitative = models.BooleanField(default=False,
                                        verbose_name=_('quantitative'),
                                        help_text=_('Can you purchase more than one (1) of this product?'))
+
+    published = models.BooleanField(default=True, verbose_name=_('published'))
 
     class Meta:
         ordering = ('name',)
