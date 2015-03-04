@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
 import django12factor
+
 d12f = django12factor.factorise(
     custom_settings=[
         'KOBRA_USER',
@@ -23,8 +24,8 @@ from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = d12f['SECRET_KEY']
 # SECRET_KEY = 'wu*4qyzkc9r5at0j=8qqz&)yjuq&kze_ip71khzdfv0g(^(m-_'
@@ -55,6 +56,7 @@ INSTALLED_APPS = (
     'guardian',
     'raven.contrib.django.raven_compat',
     'crispy_forms',
+    'rest_framework',
 
     'liu.django',
 
@@ -62,7 +64,7 @@ INSTALLED_APPS = (
     'orchard',
     'fungus',
     'karthago',
-    # 'invar',
+    'invar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -76,6 +78,16 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.DjangoObjectPermissions',
+    ),
+}
 
 # Database backed cache backend.
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -124,7 +136,7 @@ CACHES = d12f['CACHES']
 
 LANGUAGE_CODE = 'sv-se'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Stockholm'
 
 USE_I18N = True
 
@@ -171,7 +183,6 @@ DEFAULT_FROM_EMAIL = 'Tickle SOF15 <tickle@sof15.se>'
 
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 MANDRILL_API_KEY = d12f['MANDRILL_API_KEY']
-
 
 ADMINS = (
     ('Olle Vidner', 'olle.vidner@sof15.se'),

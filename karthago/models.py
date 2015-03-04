@@ -49,7 +49,8 @@ class EntryMaterial(models.Model):
         verbose_name_plural = _('entry materials')
 
     def __str__(self):
-        return '%s: %s %s %s (%s)' % (self.entry.name, self.amount, self.material.unit, self.material.name, self.role.name)
+        return '%s: %s %s %s (%s)' % (
+        self.entry.name, self.amount, self.material.unit, self.material.name, self.role.name)
 
 
 @python_2_unicode_compatible
@@ -67,6 +68,7 @@ class EntryCustomMaterial(models.Model):
 
     def __str__(self):
         return '%s: %s %s %s (%s)' % (self.entry.name, self.amount, self.unit, self.material, self.role.name)
+
 
 @python_2_unicode_compatible
 class EntryType(models.Model):
@@ -86,7 +88,8 @@ class EntryType(models.Model):
 
 @python_2_unicode_compatible
 class Entry(models.Model):
-    constellation = models.CharField(max_length=256, verbose_name=_('constellation'), help_text=_('E.g. <em>MPiRE</em>, <em>Grabbarna Grus</em>'))
+    constellation = models.CharField(max_length=256, verbose_name=_('constellation'),
+                                     help_text=_('E.g. <em>MPiRE</em>, <em>Grabbarna Grus</em>'))
     name = models.CharField(max_length=256, verbose_name=_('entry name'))
     entry_type = models.ForeignKey('EntryType', related_name='entries', verbose_name=_('entry type'))
     members = models.PositiveIntegerField(default=10, verbose_name=_('number of members'))
@@ -106,13 +109,19 @@ class Entry(models.Model):
     secondary_contact_phone = models.CharField(max_length=256, verbose_name=_('phone'))
     secondary_contact_email = models.EmailField(verbose_name=_('email'))
 
-    width = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, verbose_name=_('width'), help_text=_('Width in meters, in direction of movement.'))
-    length = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, verbose_name=_('length'), help_text=_('Length in meters, in direction of movement.'))
-    height = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, verbose_name=_('height'), help_text=_('Height in meters.'))
+    width = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, verbose_name=_('width'),
+                                help_text=_('Width in meters, in direction of movement.'))
+    length = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, verbose_name=_('length'),
+                                 help_text=_('Length in meters, in direction of movement.'))
+    height = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, verbose_name=_('height'),
+                                 help_text=_('Height in meters.'))
 
     description = models.TextField(verbose_name=_('description'), help_text=_('Describe your idea! Maximum 500 words.'))
-    spex_description = models.TextField(verbose_name=_('spex description'), help_text=_('Describe what will happen in, on and around your carriage! Music, theatre or anything else amusing? Maximum 500 words.'))
-    other_information = models.TextField(blank=True, null=True, verbose_name=_('other information'), help_text=_('Want us to know something else?'))
+    spex_description = models.TextField(verbose_name=_('spex description'), help_text=_(
+        'Describe what will happen in, on and around your carriage! Music, theatre or anything else amusing? Maximum '
+        '500 words.'))
+    other_information = models.TextField(blank=True, null=True, verbose_name=_('other information'),
+                                         help_text=_('Want us to know something else?'))
 
     materials = models.ManyToManyField('Material', through='EntryMaterial')
 

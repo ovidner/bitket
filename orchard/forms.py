@@ -16,7 +16,8 @@ from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType, 
 
 
 class OrchestraStuffForm(forms.ModelForm):
-    product = PublicNameModelChoiceField(queryset=OrchestraProduct.objects.all(), widget=forms.HiddenInput, label=_('Product'))  # todo: filter this
+    product = PublicNameModelChoiceField(queryset=OrchestraProduct.objects.all(), widget=forms.HiddenInput,
+                                         label=_('Product'))  # todo: filter this
     quantity = forms.IntegerField(min_value=0, widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     class Meta:
@@ -58,7 +59,7 @@ class OrchestraMembershipApprovalForm(forms.ModelForm):
         # Set initial values for display fields to the correct instance of OrchestraMembership.
         person = self.instance.person
         primary = self.instance.primary
-        
+
         person_display_value = u'%s (%s, %s)' % (person.full_name, person.email, person.phone)
         primary_display_value = primary and _('Yes') or _('No')
 
@@ -70,16 +71,23 @@ class OrchestraTicketTypePublicNameModelChoiceField(forms.ModelChoiceField):
     """
     At least we're explicit with the class name...
     """
+
     def label_from_instance(self, obj):
         return u'{0} ({1} kr)'.format(obj.ticket_type.public_name, obj.ticket_type.price)
 
 
 class OrchestraMemberRegistrationForm(forms.Form):
-    ticket_type = OrchestraTicketTypePublicNameModelChoiceField(queryset=OrchestraTicketType.objects.all(), label=_('Ticket type'))
-    food = forms.BooleanField(widget=forms.CheckboxInput, required=False, initial=True, label=_('Food'), help_text=_('Meals as described above.'))
-    accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, initial=True, label=_('Accommodation'), help_text=_('Place on floor &ndash; bring your own bedroll. Breakfast included.'))
-    jubilarian_10 = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('10th festival in a row'), help_text=_('Will this be your 10th SOF/STORK in a row?'))
-    jubilarian_25 = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('25th festival'), help_text=_('Will this be your 25th SOF/STORK in all?'))
+    ticket_type = OrchestraTicketTypePublicNameModelChoiceField(queryset=OrchestraTicketType.objects.all(),
+                                                                label=_('Ticket type'))
+    food = forms.BooleanField(widget=forms.CheckboxInput, required=False, initial=True, label=_('Food'),
+                              help_text=_('Meals as described above.'))
+    accommodation = forms.BooleanField(widget=forms.CheckboxInput, required=False, initial=True,
+                                       label=_('Accommodation'), help_text=_(
+            'Place on floor &ndash; bring your own bedroll. Breakfast included.'))
+    jubilarian_10 = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('10th festival in a row'),
+                                       help_text=_('Will this be your 10th SOF/STORK in a row?'))
+    jubilarian_25 = forms.BooleanField(widget=forms.CheckboxInput, required=False, label=_('25th festival'),
+                                       help_text=_('Will this be your 25th SOF/STORK in all?'))
 
     def clean(self):
         data = super(OrchestraMemberRegistrationForm, self).clean()

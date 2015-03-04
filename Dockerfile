@@ -15,6 +15,7 @@ RUN apt-get update -y && apt-get install -y \
     libldap2-dev \
     libsasl2-dev \
     libncurses5-dev \
+    git \
     gettext
 
 RUN pip install virtualenv
@@ -50,4 +51,4 @@ WORKDIR /home/sof15/app
 EXPOSE 8080
 
 # Running gunicorn also enters the virtualenv, so we don't have to do that explicitly
-CMD ["/home/sof15/bin/gunicorn", "sof15.wsgi", "-c", "/home/sof15/app/_conf/gunicorn.py"]
+CMD ["/home/sof15/bin/newrelic-admin", "run-program", "/home/sof15/bin/gunicorn", "sof15.wsgi", "-c", "/home/sof15/app/_conf/gunicorn.py"]

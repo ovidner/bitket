@@ -19,6 +19,7 @@ class TemplatedEmail(EmailMultiAlternatives):
         rendered_body_html = render_to_string(body_template_html, context)
 
         super(TemplatedEmail, self).__init__(subject=rendered_subject, from_email=from_email, to=to, cc=cc, bcc=bcc,
-                                             connection=connection, attachments=attachments, headers=headers, alternatives=alternatives)
+                                             connection=connection, attachments=attachments, headers=headers,
+                                             alternatives=alternatives)
         self.attach_alternative(rendered_body_html, 'text/html')
         self.tags = tags

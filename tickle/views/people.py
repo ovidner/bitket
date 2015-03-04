@@ -28,7 +28,8 @@ class ProfileView(MeOrPermissionRequiredMixin, DetailView):
 
         # For the sake of loose coupling, this probably shouldn't be here.
         # todo: solve in a more elegant way.
-        context['membership_approvable_orchestras'] = get_objects_for_user(self.object.user, 'orchard.approve_orchestra_members')
+        context['membership_approvable_orchestras'] = get_objects_for_user(self.object.user,
+                                                                           'orchard.approve_orchestra_members')
 
         return context
 

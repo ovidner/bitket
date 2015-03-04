@@ -1,1 +1,1 @@
-Anmälningsbekräftelse för {{ person.first_name }} {{ person.last_name }} ({{ person.orchestra_memberships.primary.orchestra.name }})
+Anmälningsbekräftelse för {{ person.first_name }} {{ person.last_name }} ({{ person.orchestra_memberships.get_primary.orchestra.name }})

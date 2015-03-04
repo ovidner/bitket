@@ -3,15 +3,20 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.contrib.auth.models import Permission
+from django.utils.translation import ugettext_lazy as _
 
+
+from gfklookupwidget.widgets import GfkLookupWidget
 from guardian.models import UserObjectPermission, GroupObjectPermission
 from guardian.admin import UserObjectPermissionsForm
 
-from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, TickleUser
+from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, \
+    TickleUser, StudentUnionDiscount, ProductDiscount
 
 
 class PurchaseInline(admin.StackedInline):
     model = Purchase
+    extra = 0
     # filter_horizontal = ('holdings',)
 
 
@@ -20,9 +25,29 @@ class EventAdmin(admin.ModelAdmin):
     pass
 
 
+class ProductDiscountInline(admin.TabularInline):
+    model = ProductDiscount
+    extra = 0  # Seems like the generic relation hack makes anything else than 0 fail.
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'discount_object_id':
+            kwargs['widget'] = GfkLookupWidget(
+                content_type_field_name='discount_content_type',
+                parent_field=ProductDiscount._meta.get_field('discount_content_type'),
+            )
+
+        return super(ProductDiscountInline, self).formfield_for_dbfield(db_field, **kwargs)
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', '_public_name', 'price', 'quantitative', 'total_quantity')
+    inlines = (ProductDiscountInline,)
+
+    def total_quantity(self, obj):
+        return obj.holdings.quantity()
+
+    total_quantity.short_description = _('total quantity')
 
 
 @admin.register(Holding)
@@ -90,7 +115,8 @@ class AlwaysChangedModelForm(forms.ModelForm):
 
 class TickleUserInline(admin.StackedInline):
     model = TickleUser
-    form = AlwaysChangedModelForm  # This way we can just press Add, not change anything and still get an account created
+    form = AlwaysChangedModelForm  # This way we can just press Add, not change anything and still get an account
+    # created
     extra = 0
     max_num = 1
 
@@ -133,3 +159,8 @@ class GroupObjectPermissionAdmin(admin.ModelAdmin):
         'permission__codename'
     )
     list_filter = ('content_type',)
+
+
+@admin.register(StudentUnionDiscount)
+class StudentUnionDiscountAdmin(admin.ModelAdmin):
+    pass

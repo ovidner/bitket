@@ -26,4 +26,6 @@ urlpatterns = patterns(
     url(r'^orchard/', include('orchard.urls', namespace='orchard', app_name='orchard')),
     url(r'^fungus/', include('fungus.urls', namespace='fungus', app_name='fungus')),
 
+    url(r'^api/', include('api.urls', namespace='api')),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )
