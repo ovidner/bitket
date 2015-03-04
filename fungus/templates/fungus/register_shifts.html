@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ block.super }} – Funktionärs anmälan{% endblock %}
+
+{% block header %}Funktionärsanmälan{% endblock %}
+
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+
+        {% regroup shifts by shift_type as shift_list %}
+
+        <div class="accordion-group panel-group">
+            {% for shift_type in shift_list %}
+                <div class="panel panel-default">
+                    <div class="accordion-heading panel-heading">
+                        <a class="accordion-toggle panel-title" data-toggle="collapse" href="#c{{ forloop.counter }}">
+                            <strong>&#9662; {{ shift_type.grouper }}</strong>
+                        </a>
+                    </div>
+
+                    <div id="c{{ forloop.counter }}" class="accordion-body panel-collapse collapse">
+                        <ul class="list-group checkbox">
+                            {% for shift in shift_type.list %}
+                                <li class="list-group-item">{{ shift.field }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% crispy form form_helper %}
+        <input value="Submit registration" class="btn btn-default" type="submit">
+    </form>
+{% endblock %}
