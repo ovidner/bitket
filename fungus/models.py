@@ -52,6 +52,7 @@ class WorkerDiscount(BaseDiscount):
 class ShiftType(MPTTModel):
     name = models.CharField(max_length=256)
     parent = TreeForeignKey('self', related_name='children', null=True, blank=True)
+    description = models.TextField(verbose_name='shift description', blank=True, null=True)
 
     class Meta:
         verbose_name = _('shift type')
