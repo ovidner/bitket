@@ -21,6 +21,12 @@ class ShiftRegisterForm(forms.Form):
                                            .order_by('shift_type'))
     accept_terms = forms.BooleanField(label='Jag har förstått bla bla bla...', required=True)
 
+    def clean_shift(self):
+        data = self.cleaned_data['shift']
+        if len(data) == 0:
+            raise forms.ValidationError("You haven't chosen any shifts. You need to select at least one.")
+        return data
+
 
 class ShiftRegisterFormHelper(FormHelper):
     def __init__(self, *args, **kwargs):

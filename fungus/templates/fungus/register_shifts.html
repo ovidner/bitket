@@ -10,6 +10,11 @@
         {% csrf_token %}
 
         <p>Klicka på funktionärs typerna för att se dess pass som går att anmäla sig till. </p>
+
+        {% for error in form.shift.errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+
         {% regroup shifts by shift_type as shift_list %}
 
         <div class="accordion-group panel-group">
