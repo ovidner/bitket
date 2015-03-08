@@ -126,7 +126,7 @@ class ShiftAdmin(admin.ModelAdmin):
     inlines = (ShiftRegistrationInline,)
 
     date_hierarchy = 'start'
-    list_display = ('shift_type', 'start', 'end', 'registrations', 'people_max', 'people_alarming', 'people_critical', 'responsible', 'public')
+    list_display = ('shift_type', 'start', 'end', 'registrations', 'people_critical', 'people_alarming', 'people_max', 'responsible', 'public')
     list_display_links = ('shift_type', 'start', 'end')
     list_editable = ('people_max', 'people_alarming', 'people_critical', 'public')
     list_filter = (ShiftTypeListFilter, ShiftStatusListFilter, 'public', ResponsibleListFilter)
