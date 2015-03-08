@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
+from django.shortcuts import render, resolve_url
 from django.views.generic import FormView
 from django.contrib import messages
 
 from fungus.models import ShiftRegistration
-from fungus.forms import ChangeSelectedShiftsForm
+from fungus.forms import ChangeSelectedShiftsForm, ShiftRegisterForm, ShiftRegisterFormHelper
 
 
 class ShiftChangeView(FormView):
@@ -36,3 +36,32 @@ class ShiftChangeView(FormView):
             model_name = self.model._meta.verbose_name_plural
         messages.add_message(self.request, messages.SUCCESS, u"%s %s ändrades." % (rows_updated, model_name))
         return super(ShiftChangeView, self).form_valid(form)
+
+
+class RegisterShiftsView(FormView):
+    template_name = 'fungus/register_shifts.html'
+    form_class = ShiftRegisterForm
+
+    def get_success_url(self):
+        return resolve_url('fungus:register_shifts_success') + "?"
+
+    def get_context_data(self, **kwargs):
+        context = super(RegisterShiftsView, self).get_context_data(**kwargs)
+        context['form_helper'] = ShiftRegisterFormHelper()
+
+        form = context['form']
+        shifts = []
+        for i in range(len(form['shift'])):
+            shifts.append({'field': form['shift'][i], 'shift_type': form['shift'].field.queryset[i].shift_type})
+        context['shifts'] = shifts
+
+        return context
+
+    def form_valid(self, form):
+        # accepted = form.cleaned_data['accept_terms']
+        selected_shifts = form.cleaned_data['shift']
+
+        for shift in selected_shifts:
+            ShiftRegistration(person=self.request.user.person, shift=shift).save()
+
+        return super(RegisterShiftsView, self).form_valid(form)

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ block.super }} – Funktionärs anmälan{% endblock %}
+
+{% block header %}Funktionärsanmälan{% endblock %}
+
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <p>Klicka på funktionärs typerna för att se dess pass som går att anmäla sig till. </p>
+
+        {% for error in form.shift.errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+
+        {% regroup shifts by shift_type as shift_list %}
+
+        <div class="accordion-group panel-group">
+            {% for shift_type in shift_list %}
+                <div class="panel panel-default">
+                    <div class="accordion-heading panel-heading">
+                        <a class="accordion-toggle panel-title" data-toggle="collapse" href="#c{{ forloop.counter }}">
+                            <h4><span class="glyphicon glyphicon-chevron-down"></span> {{ shift_type.grouper }}</h4>
+                        </a>
+                        {% if shift_type.grouper.description %} {{ shift_type.grouper.description }} {% endif %}
+                    </div>
+
+                    <div id="c{{ forloop.counter }}" class="accordion-body panel-collapse collapse">
+                        <ul class="list-group checkbox">
+                            {% for shift in shift_type.list %}
+                                <li class="bg-success list-group-item">{{ shift.field }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% crispy form form_helper %}
+        <input value="Submit registration" class="btn btn-default" type="submit">
+    </form>
+{% endblock %}
