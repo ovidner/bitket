@@ -112,7 +112,7 @@ class OrchestraMemberRegistration(models.Model):
         verbose_name_plural = _('orchestra member registrations')
 
     def __str__(self):
-        return self.purchase.__str__()
+        return self.purchase.person.full_name
 
 
 @python_2_unicode_compatible

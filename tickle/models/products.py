@@ -192,7 +192,7 @@ class Purchase(models.Model):
         verbose_name_plural = _('purchases')
 
     def __str__(self):
-        return u'{0}'.format(self.person)
+        return u'{0} – {1}'.format(self.person, self.purchased)
 
 
 @python_2_unicode_compatible
