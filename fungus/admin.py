@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.contrib import admin
 from django.utils.translation import ugettext
 from django.utils.translation import ugettext_lazy as _
@@ -195,6 +197,10 @@ class ShiftRegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(Worker)
 class WorkerAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        # We should not add people from here.
+        return False
+
     def get_queryset(self, request):
         """
         Returns the original queryset but filters out only registered workers and people with shift registrations

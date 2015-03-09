@@ -2,10 +2,11 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.db.models import F
+from django.db.models import F, Count
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import now
+from django.core.exceptions import ValidationError
 from mptt.models import MPTTModel, TreeForeignKey
 
 from tickle.models import Person, BaseDiscount
@@ -76,17 +77,20 @@ class Location(MPTTModel):
 
 
 class ShiftQuerySet(models.QuerySet):
+    def annotate_registrations_count(self):
+        return self.annotate(registrations_count=Count('registrations'))
+
     def critical(self):
-        return self.filter(registrations__lte=F('people_critical')).distinct()
+        return self.annotate_registrations_count().exclude(registrations_count__gt=F('people_critical')).distinct()
 
     def alarming(self):
-        return self.filter(registrations__gt=F('people_critical'), registrations__lte=F('people_alarming')).distinct()
+        return self.annotate_registrations_count().exclude(registrations_count__lte=F('people_critical'), registrations__gt=F('people_alarming')).distinct()
 
     def ok(self):
-        return self.filter(registrations__gt=F('people_alarming'), registrations__lte=F('people_max')).distinct()
+        return self.annotate_registrations_count().exclude(registrations_count__lte=F('people_alarming'), registrations__gt=F('people_max')).distinct()
 
     def overstaffed(self):
-        return self.filter(registrations__gt=F('people_max')).distinct()
+        return self.annotate_registrations_count().filter(registrations_count__gt=F('people_max')).distinct()
 
 
 @python_2_unicode_compatible
@@ -100,11 +104,11 @@ class Shift(models.Model):
 
     responsible = models.ForeignKey('tickle.Person', related_name='shift_responsibilities', null=True, blank=True)
 
-    people_max = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('maximum number of workers'),
+    people_max = models.PositiveIntegerField(default=2, verbose_name=_('maximum number of workers'),
                                              help_text=_("The maximum number of workers on this shift. This shift's status will be reported as overstaffed if the number of workers are over this value."))
-    people_alarming = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('alarming number of workers'),
+    people_alarming = models.PositiveIntegerField(default=1, verbose_name=_('alarming number of workers'),
                                                   help_text=_("The number of workers where the system will report the status as alarming."))
-    people_critical = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('critical number of workers'),
+    people_critical = models.PositiveIntegerField(default=0, verbose_name=_('critical number of workers'),
                                                   help_text=_("The number of workers where the system will report the status as critical."))
 
     public = models.BooleanField(default=True, verbose_name=_('public'), help_text=_(
@@ -118,6 +122,17 @@ class Shift(models.Model):
 
     def __str__(self):
         return u'%s, %s – %s' % (self.shift_type.name, self.start, self.end)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.people_critical <= self.people_alarming:
+            raise ValidationError({'people_critical': _('Critical number must be less than or equal to alarming.'),
+                                   'people_alarming': _('Critical number must be less than or equal to alarming.')})
+
+        if not self.people_alarming <= self.people_max:
+            raise ValidationError({'people_alarming': _('Alarming number must be less than or equal to maximum.'),
+                                   'people_max': _('Alarming number must be less than or equal to maximum.')})
+        
+        return super(Shift, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     @property
     def status(self):
