@@ -2,6 +2,7 @@
 from django.shortcuts import render, resolve_url
 from django.views.generic import FormView
 from django.contrib import messages
+from guardian.mixins import LoginRequiredMixin
 
 from fungus.models import ShiftRegistration
 from fungus.forms import ChangeSelectedShiftsForm, ShiftRegisterForm, ShiftRegisterFormHelper
@@ -38,7 +39,7 @@ class ShiftChangeView(FormView):
         return super(ShiftChangeView, self).form_valid(form)
 
 
-class RegisterShiftsView(FormView):
+class RegisterShiftsView(LoginRequiredMixin, FormView):
     template_name = 'fungus/register_shifts.html'
     form_class = ShiftRegisterForm
 
