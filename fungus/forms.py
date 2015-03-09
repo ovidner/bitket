@@ -25,6 +25,11 @@ class ShiftRegisterForm(forms.Form):
         data = self.cleaned_data['shift']
         if len(data) == 0:
             raise forms.ValidationError("You haven't chosen any shifts. You need to select at least one.")
+        elif len(data) > 1:
+            data = data.order_by('start')
+            for i in range(0, len(data) - 1):
+                if (data[i].start <= data[i+1].end) and (data[i].end >= data[i+1].start):
+                    raise forms.ValidationError("You have chosen two shifts that overlap.")
         return data
 
 
