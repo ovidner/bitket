@@ -51,4 +51,3 @@ class OrchestraMemberRegistrationAdmin(admin.ModelAdmin):
 
     def person(self, obj):
         return obj.purchase.person
-    pass
