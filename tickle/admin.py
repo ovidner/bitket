@@ -137,6 +137,7 @@ class PersonAdmin(admin.ModelAdmin):
 
 @admin.register(Permission)
 class PermissionAdmin(admin.ModelAdmin):
+    list_filter = ('content_type',)
     pass
 
 
