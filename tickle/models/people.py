@@ -10,6 +10,7 @@ from django.conf import settings
 from liu.kobra import KOBRAClient
 
 from tickle.utils.mail import TemplatedEmail
+from tickle.fields import SEPersonalIdentityNumberField
 
 
 @python_2_unicode_compatible
@@ -153,17 +154,21 @@ class Person(models.Model):
         # If pid_code == '' then we should actually save NULL for uniqueness check, see above.
         return self.cleaned_data['pid_code'] or None
 
-    @property
-    def pid(self):
+    def _get_pid(self):
         if self.birth_date:
             return '{0:0>2}{1:0>2}{2:0>2}-{3}'.format(
                 str(self.birth_date.year)[-2:],
                 self.birth_date.month,
                 self.birth_date.day,
-                self.pid_code or '0000'
+                self.pid_code or '0000',
             )
         else:
             return None
+
+    def _set_pid(self, value):
+        self.birth_date, self.pid_code = SEPersonalIdentityNumberField().clean(value)
+
+    pid = property(_get_pid, _set_pid)
 
     @property
     def full_name(self):
