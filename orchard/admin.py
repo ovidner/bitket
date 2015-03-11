@@ -18,6 +18,10 @@ class OrchardPersonAdmin(PersonAdmin):
     list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'primary_orchestra')
     list_filter = ('orchestra_memberships__orchestra', 'special_nutrition')
 
+    def has_add_permission(self, request):
+        # We should not add people from here.
+        return False
+
     def get_queryset(self, request):
         return OrchardPerson.objects.exclude(orchestra_memberships__isnull=True)
 
