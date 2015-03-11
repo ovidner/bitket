@@ -121,7 +121,7 @@ msgstr "Kan inte välja detta till denna biljett."
 
 #: orchard/models.py:17
 msgid "orchestra member"
-msgstr "orkestermedlemmar"
+msgstr "orkestermedlem"
 
 #: orchard/models.py:18
 msgid "orchestra members"
