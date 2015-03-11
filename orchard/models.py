@@ -9,16 +9,12 @@ from tickle.models import Product, TicketType, Purchase, Person, Holding, Produc
 from invar.models import generate_invoice
 
 
-@python_2_unicode_compatible
 class OrchardPerson(Person):
     class Meta:
         proxy = True
 
         verbose_name = _('orchestra member')
         verbose_name_plural = _('orchestra members')
-        
-    def __str__(self):
-        return super(OrchardPerson, self).__str__()
 
     @property
     def primary_orchestra(self):
