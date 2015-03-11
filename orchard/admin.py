@@ -38,7 +38,7 @@ class OrchardPersonAdmin(PersonAdmin):
             (ugettext('Name'), ugettext('PID'), ugettext('Primary orchestra'), ugettext('Other orchestras')))
         for p in queryset.select_related('orchestra_memberships'):
             writer.writerow(
-                [p.full_name, p.pid] + [i.orchestra.name for i in p.orchestra_memberships.order_by('primary')])
+                [p.full_name, p.pid] + [i.orchestra.name for i in p.orchestra_memberships.order_by('-primary')])
 
         return response
 
