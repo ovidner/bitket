@@ -36,8 +36,8 @@ class ResponsibleListFilter(admin.SimpleListFilter):
         human-readable name for the option that will appear
         in the right sidebar.
         """
-        people = set([i.responsible for i in model_admin.model.objects.all()])
-        return [(i.id, i.full_name) for i in people]
+        people = set([i.responsible for i in model_admin.model.objects.filter(responsible__isnull=False)])
+        return [(i.pk, i.full_name) for i in people]
 
     def queryset(self, request, queryset):
         """
@@ -46,7 +46,7 @@ class ResponsibleListFilter(admin.SimpleListFilter):
         `self.value()`.
         """
         if self.value():
-            return queryset.filter(responsible__id__exact=self.value())
+            return queryset.filter(responsible__pk__exact=self.value())
         else:
             return queryset
 
