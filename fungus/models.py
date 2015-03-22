@@ -9,13 +9,20 @@ from django.utils.timezone import now
 from django.core.exceptions import ValidationError
 from mptt.models import MPTTModel, TreeForeignKey
 
-from tickle.models import Person, BaseDiscount
+from tickle.models import Person, PersonQuerySet, BaseDiscount
+
+
+class WorkerQuerySet(PersonQuerySet):
+    def workers(self):
+        return self.filter(models.Q(shift_registrations__isnull=False) | models.Q(functionary__isnull=False)).distinct()
 
 
 class Worker(Person):
     """
     Proxy class to tickle.Person so we can add some Fungus specific methods.
     """
+    objects = WorkerQuerySet.as_manager()
+
     class Meta:
         proxy = True
 
@@ -25,9 +32,17 @@ class Worker(Person):
 
 @python_2_unicode_compatible
 class Functionary(models.Model):
-    person = models.OneToOneField('tickle.Person', related_name='functionary')
+    person = models.OneToOneField('tickle.Person', related_name='functionary', verbose_name=_('person'))
+
+    registered = models.DateTimeField(auto_now_add=True, verbose_name=_('registration timestamp'))
 
     ice_number = models.CharField(max_length=16, null=True, blank=True, verbose_name=_('ICE number'))
+    b_driving_license = models.BooleanField(default=False, verbose_name=_('B driving license'))
+
+    signed_contract = models.BooleanField(default=False, verbose_name=_('signed contract'))
+    attended_info_meeting = models.BooleanField(default=False, verbose_name=_('attended info meeting'))
+    pledge_payed = models.DateTimeField(null=True, blank=True, verbose_name=_('pledge payed'))
+    pledge_returned = models.DateTimeField(null=True, blank=True, verbose_name=_('pledge returned'))
 
     class Meta:
         verbose_name = _('functionary')
@@ -51,9 +66,9 @@ class WorkerDiscount(BaseDiscount):
 
 @python_2_unicode_compatible
 class ShiftType(MPTTModel):
-    name = models.CharField(max_length=256)
-    parent = TreeForeignKey('self', related_name='children', null=True, blank=True)
-    description = models.TextField(verbose_name='shift description', blank=True, null=True)
+    name = models.CharField(max_length=256, verbose_name=_('name'))
+    parent = TreeForeignKey('self', related_name='children', null=True, blank=True, verbose_name=_('parent'))
+    description = models.TextField(blank=True, null=True, verbose_name=_('description'))
 
     class Meta:
         verbose_name = _('shift type')
@@ -65,8 +80,8 @@ class ShiftType(MPTTModel):
 
 @python_2_unicode_compatible
 class Location(MPTTModel):
-    name = models.CharField(max_length=256)
-    parent = TreeForeignKey('self', related_name='children', null=True, blank=True)
+    name = models.CharField(max_length=256, verbose_name=_('name'))
+    parent = TreeForeignKey('self', related_name='children', null=True, blank=True, verbose_name=_('parent'))
 
     class Meta:
         verbose_name = _('location')
@@ -95,14 +110,14 @@ class ShiftQuerySet(models.QuerySet):
 
 @python_2_unicode_compatible
 class Shift(models.Model):
-    shift_type = TreeForeignKey('ShiftType', related_name='shifts')
+    shift_type = TreeForeignKey('ShiftType', related_name='shifts', verbose_name=_('shift type'))
 
-    start = models.DateTimeField()
-    end = models.DateTimeField()
+    start = models.DateTimeField(verbose_name=_('start'))
+    end = models.DateTimeField(verbose_name=_('end'))
 
-    location = models.ForeignKey('Location', related_name='shifts', null=True, blank=True)
+    location = models.ForeignKey('Location', related_name='shifts', null=True, blank=True, verbose_name=_('location'))
 
-    responsible = models.ForeignKey('tickle.Person', related_name='shift_responsibilities', null=True, blank=True)
+    responsible = models.ForeignKey('tickle.Person', related_name='shift_responsibilities', null=True, blank=True, verbose_name=_('responsible'))
 
     people_max = models.PositiveIntegerField(default=2, verbose_name=_('maximum number of workers'),
                                              help_text=_("The maximum number of workers on this shift. This shift's status will be reported as overstaffed if the number of workers are over this value."))
@@ -150,11 +165,11 @@ class Shift(models.Model):
 
 @python_2_unicode_compatible
 class ShiftRegistration(models.Model):
-    shift = models.ForeignKey('Shift', related_name='registrations')
-    person = models.ForeignKey('tickle.Person', related_name='shift_registrations')
+    shift = models.ForeignKey('Shift', related_name='registrations', verbose_name=_('shift'))
+    person = models.ForeignKey('tickle.Person', related_name='shift_registrations', verbose_name=_('person'))
 
-    checked_in = models.DateTimeField(null=True, blank=True)
-    checked_out = models.DateTimeField(null=True, blank=True)
+    checked_in = models.DateTimeField(null=True, blank=True, verbose_name=_('checked in'))
+    checked_out = models.DateTimeField(null=True, blank=True, verbose_name=_('checked out'))
 
     class Meta:
         verbose_name = _('shift registration')

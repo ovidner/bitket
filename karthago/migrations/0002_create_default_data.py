@@ -10,7 +10,7 @@ def create_default_data(apps, schema_editor):
 
     EntryType.objects.create(name='Fribygge', description='Max 10 personer, 3000 kr', max_members=10)
     EntryType.objects.create(name='Mikrobygge', description='Max 10 personer, 3500 kr', max_members=10)
-    EntryType.objects.create(name='Makrobygge', description='Max 25 personer, 4500 kr', max_members=10)
+    EntryType.objects.create(name='Makrobygge', description='Max 25 personer, 4500 kr', max_members=25)
 
     MaterialRole.objects.create(name=u'Bärande')
     MaterialRole.objects.create(name=u'Dekorativt')
