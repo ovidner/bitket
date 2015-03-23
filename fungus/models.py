@@ -149,7 +149,11 @@ class Shift(models.Model):
         verbose_name_plural = _('shifts')
 
     def __str__(self):
-        return u'%s, %s – %s' % (self.shift_type.name, self.start, self.end)
+        time_format = "%H:%M"
+        date_format = " %A %d %B"
+        if self.start.date() == self.end.date():
+            return u'%s, %s–%s %s' % (self.shift_type.name, self.start.strftime(time_format), self.end.strftime(time_format), self.start.strftime(date_format))
+        return u'%s, %s – %s' % (self.shift_type.name, self.start.strftime(time_format + date_format), self.end.strftime(time_format + date_format))
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.people_critical <= self.people_alarming:

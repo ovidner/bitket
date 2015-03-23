@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.db.models import Count, F, Q
+from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div
@@ -17,17 +18,18 @@ class ChangeSelectedShiftsForm(forms.Form):
 
 class ShiftForm(forms.Form):
     shifts = forms.ModelMultipleChoiceField(label='', required=False, widget=forms.CheckboxSelectMultiple(),
-                                           queryset=Shift.objects.registerable().order_by('shift_type', 'start'))
+                                            queryset=Shift.objects.registerable().order_by('shift_type', 'start'),
+                                            error_messages={'invalid_choice': 'Passet är tyvärr fullt, välj ett annat.'})
 
-    def clean_shift(self):
+    def clean_shifts(self):
         data = self.cleaned_data['shifts']
         if len(data) == 0:
-            raise forms.ValidationError("You haven't chosen any shifts. You need to select at least one.")
+            raise forms.ValidationError(_("You haven't chosen any shifts. You need to select at least one."))
         elif len(data) > 1:
             data = data.order_by('start')
             for i in range(0, len(data) - 1):
                 if (data[i].start <= data[i + 1].end) and (data[i].end >= data[i + 1].start):
-                    raise forms.ValidationError("You have chosen two shifts that overlap.")
+                    raise forms.ValidationError(_("You have chosen two shifts that overlap."))
         return data
 
 
