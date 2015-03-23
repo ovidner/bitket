@@ -109,10 +109,10 @@ class ShiftQuerySet(models.QuerySet):
         return self.annotate_registrations_count().exclude(registrations_count__gt=F('people_critical')).distinct()
 
     def alarming(self):
-        return self.annotate_registrations_count().exclude(registrations_count__lte=F('people_critical'), registrations__gt=F('people_alarming')).distinct()
+        return self.annotate_registrations_count().exclude(registrations_count__lte=F('people_critical'), registrations_count__gt=F('people_alarming')).distinct()
 
     def ok(self):
-        return self.annotate_registrations_count().exclude(registrations_count__lte=F('people_alarming'), registrations__gt=F('people_max')).distinct()
+        return self.annotate_registrations_count().exclude(registrations_count__lte=F('people_alarming'), registrations_count__gt=F('people_max')).distinct()
 
     def overstaffed(self):
         return self.annotate_registrations_count().filter(registrations_count__gt=F('people_max')).distinct()
