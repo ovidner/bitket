@@ -72,7 +72,7 @@ class RegisterFunctionaryView(FormView):
         if person_form.is_valid() and functionary_form.is_valid() and accept_form.is_valid():
             with atomic():
                 person = person_form.save()
-                functionary_form.instance = person
+                functionary_form.instance.person = person
                 functionary_form.save()
 
                 for shift in form.cleaned_data['shifts']:
