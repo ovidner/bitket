@@ -215,8 +215,13 @@ msgid "shift registration"
 msgstr "passregistrering"
 
 #: fungus/models.py:182
-msgid "shift registrations"
-msgstr "passregistreringar"
 
 #~ msgid "people"
 #~ msgstr "personer"
+
+#: fungus/models.py:182
+msgid "You haven't chosen any shifts. You need to select at least one."
+msgstr "Du har inte valt något arbetspass. Du måste välja minst ett arbetspass."
+
+msgid "You have chosen two shifts that overlap."
+msgstr "Du har valt två arbetspass som är samtidigt."
