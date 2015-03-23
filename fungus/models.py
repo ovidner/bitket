@@ -16,6 +16,9 @@ class WorkerQuerySet(PersonQuerySet):
     def workers(self):
         return self.filter(models.Q(shift_registrations__isnull=False) | models.Q(functionary__isnull=False)).distinct()
 
+    def functionaries(self):
+        return self.filter(functionary__isnull=False)
+
 
 class Worker(Person):
     """
@@ -35,6 +38,7 @@ class Functionary(models.Model):
     person = models.OneToOneField('tickle.Person', related_name='functionary', verbose_name=_('person'))
 
     registered = models.DateTimeField(auto_now_add=True, verbose_name=_('registration timestamp'))
+    registered.editable = True  # Ignored if set during field init
 
     ice_number = models.CharField(max_length=16, null=True, blank=True, verbose_name=_('ICE number'))
     b_driving_license = models.BooleanField(default=False, verbose_name=_('B driving license'), help_text=_('Mandatory for driving missions.'))
@@ -49,7 +53,10 @@ class Functionary(models.Model):
         verbose_name_plural = _('functionaries')
 
     def __str__(self):
-        return self.person.full_name
+        try:
+            return self.person.full_name
+        except models.ObjectDoesNotExist:
+            return '<No person set>'
 
 
 class WorkerDiscount(BaseDiscount):

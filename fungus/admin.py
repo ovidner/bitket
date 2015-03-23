@@ -9,6 +9,7 @@ from django.db.models import Q
 
 from tickle.models import Person
 from fungus.models import ShiftType, Shift, ShiftRegistration, Functionary, Worker
+from tickle.admin import PersonAdmin, TickleUserInline, PurchaseInline
 
 
 @admin.register(ShiftType)
@@ -195,8 +196,17 @@ class ShiftRegistrationAdmin(admin.ModelAdmin):
     change_pass_action.short_description = "Byt markerade arbetspass"
 
 
+class FunctionaryInline(admin.StackedInline):
+    model = Functionary
+    extra = 0
+    max_num = 1
+
+
 @admin.register(Worker)
-class WorkerAdmin(admin.ModelAdmin):
+class WorkerAdmin(PersonAdmin):
+    inlines = (FunctionaryInline, TickleUserInline, PurchaseInline,)
+    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'registration_count', 'functionary_registered', 'functionary_signed_contract', 'functionary_attended_info_meeting', 'functionary_pledge_payed', 'functionary_pledge_returned')
+
     def has_add_permission(self, request):
         # We should not add people from here.
         return False
@@ -206,3 +216,33 @@ class WorkerAdmin(admin.ModelAdmin):
         Returns the original queryset but filters out only registered workers and people with shift registrations
         """
         return super(WorkerAdmin, self).get_queryset(request).workers()
+
+    def functionary_registered(self, obj):
+        return obj.functionary.registered or None
+
+    functionary_registered.short_description = _('functionary registered')
+
+    def functionary_signed_contract(self, obj):
+        return obj.functionary.signed_contract or None
+
+    functionary_signed_contract.short_description = _('signed contract')
+
+    def functionary_attended_info_meeting(self, obj):
+        return obj.functionary.attended_info_meeting or None
+
+    functionary_attended_info_meeting.short_description = _('attended info meeting')
+
+    def functionary_pledge_payed(self, obj):
+        return obj.functionary.pledge_payed or None
+
+    functionary_pledge_payed.short_description = _('pledge payed')
+
+    def functionary_pledge_returned(self, obj):
+        return obj.functionary.pledge_returned or None
+
+    functionary_pledge_returned.short_description = _('pledge returned')
+
+    def registration_count(self, obj):
+        return obj.shift_registrations.count()
+
+    registration_count.short_description = _('shifts')
