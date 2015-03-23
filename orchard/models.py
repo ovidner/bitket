@@ -9,6 +9,22 @@ from tickle.models import Product, TicketType, Purchase, Person, Holding, Produc
 from invar.models import generate_invoice
 
 
+class OrchardPerson(Person):
+    class Meta:
+        proxy = True
+
+        verbose_name = _('orchestra member')
+        verbose_name_plural = _('orchestra members')
+
+    @property
+    def primary_orchestra(self):
+        return self.orchestra_memberships.get_primary().orchestra
+
+    @property
+    def nonprimary_orchestras(self):
+        return self.orchestra_memberships.nonprimary().orchestras()
+
+
 class OrchestraQuerySet(models.QuerySet):
     def invoice(self):
         for orch in self:
@@ -64,6 +80,9 @@ class OrchestraMembershipQuerySet(models.QuerySet):
     def primary(self):
         return self.filter(primary=True)
 
+    def nonprimary(self):
+        return self.exclude(primary=True)
+
     def approved(self):
         return self.filter(approved=True)
 
@@ -71,10 +90,13 @@ class OrchestraMembershipQuerySet(models.QuerySet):
         return self.primary().approved()
 
     def people(self):
-        return Person.objects.filter(orchestra_memberships__in=self)
+        return Person.objects.filter(orchestra_memberships__in=self).distinct()
 
     def purchases(self):
         return Purchase.objects.filter(person__in=self.people(), orchestra_member_registration__isnull=False)
+
+    def orchestras(self):
+        return Orchestra.objects.filter(memberships__in=self).distinct()
 
 
 @python_2_unicode_compatible
@@ -112,7 +134,7 @@ class OrchestraMemberRegistration(models.Model):
         verbose_name_plural = _('orchestra member registrations')
 
     def __str__(self):
-        return self.purchase.__str__()
+        return self.purchase.person.full_name
 
 
 @python_2_unicode_compatible

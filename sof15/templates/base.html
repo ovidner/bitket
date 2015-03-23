@@ -41,7 +41,7 @@
                     <ul class="nav navbar-nav">
                         <li><a href="{% url 'orchard:register_orchestra_member' %}">{% trans 'Orchestra member' %}</a></li>
                         <li><a href="{% url 'karthago:create_kartege_entry' %}">{% trans 'Kårtege applicant' %}</a></li>
-                        <li><a href="{% url 'fungus:register_shifts' %}">{% trans 'Funktionär' %}</a></li>
+                        {# <li><a href="{% url 'fungus:register_shifts' %}">{% trans 'Funktionär' %}</a></li> #}
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_anonymous %}
@@ -77,7 +77,7 @@
             <ul>
                 <li><a href="{% url 'orchard:register_orchestra_member' %}">Anmälan av orkestermedlem</a></li>
                 <li><a href="{% url 'karthago:create_kartege_entry' %}">Ansökan om kårtegebidrag</a></li>
-                <li><a href="{% url 'fungus:register_shifts' %}">Anmälan av funktionär</a></li>
+                {# <li><a href="{% url 'fungus:register_shifts' %}">Anmälan av funktionär</a></li> #}
             </ul>
         {% endblock content %}
     </div>

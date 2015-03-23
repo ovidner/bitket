@@ -7,7 +7,7 @@ from .views import ApproveOrchestraMemberView, RegisterOrchestraMemberView, View
 urlpatterns = patterns(
     '',
 
-    url(r'^oldies/add/$', RegisterOrchestraMemberView.as_view(), name='register_oldie'),
+    url(r'^oldies/add/$', RegisterOrchestraMemberView.as_view(template_name='orchard/register_oldie.html'), name='register_oldie'),
 
     url(r'^orchestras/(?P<pk>\d+)/members/$', ApproveOrchestraMemberView.as_view(),
         name='approve_orchestra_members'),

@@ -75,6 +75,7 @@ class HoldingInline(admin.TabularInline):
 class PurchaseAdmin(admin.ModelAdmin):
     inlines = (HoldingInline,)
     list_display = ('person', 'purchased')
+    date_hierarchy = 'purchased'
 
 
 @admin.register(SpecialNutrition)
@@ -136,6 +137,7 @@ class PersonAdmin(admin.ModelAdmin):
 
 @admin.register(Permission)
 class PermissionAdmin(admin.ModelAdmin):
+    list_filter = ('content_type',)
     pass
 
 

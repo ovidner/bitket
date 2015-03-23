@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.contrib import admin
 from django.utils.translation import ugettext
 from django.utils.translation import ugettext_lazy as _
@@ -34,8 +36,8 @@ class ResponsibleListFilter(admin.SimpleListFilter):
         human-readable name for the option that will appear
         in the right sidebar.
         """
-        people = set([i.responsible for i in model_admin.model.objects.all()])
-        return [(i.id, i.full_name) for i in people]
+        people = set([i.responsible for i in model_admin.model.objects.filter(responsible__isnull=False)])
+        return [(i.pk, i.full_name) for i in people]
 
     def queryset(self, request, queryset):
         """
@@ -44,7 +46,7 @@ class ResponsibleListFilter(admin.SimpleListFilter):
         `self.value()`.
         """
         if self.value():
-            return queryset.filter(responsible__id__exact=self.value())
+            return queryset.filter(responsible__pk__exact=self.value())
         else:
             return queryset
 
@@ -126,7 +128,7 @@ class ShiftAdmin(admin.ModelAdmin):
     inlines = (ShiftRegistrationInline,)
 
     date_hierarchy = 'start'
-    list_display = ('shift_type', 'start', 'end', 'registrations', 'people_max', 'people_alarming', 'people_critical', 'responsible', 'public')
+    list_display = ('shift_type', 'start', 'end', 'registrations', 'people_critical', 'people_alarming', 'people_max', 'responsible', 'public')
     list_display_links = ('shift_type', 'start', 'end')
     list_editable = ('people_max', 'people_alarming', 'people_critical', 'public')
     list_filter = (ShiftTypeListFilter, ShiftStatusListFilter, 'public', ResponsibleListFilter)
@@ -195,6 +197,10 @@ class ShiftRegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(Worker)
 class WorkerAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        # We should not add people from here.
+        return False
+
     def get_queryset(self, request):
         """
         Returns the original queryset but filters out only registered workers and people with shift registrations
