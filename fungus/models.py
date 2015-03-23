@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.db.models import F, Count
+from django.db.models import F, Q, Count
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import now
@@ -95,6 +95,9 @@ class ShiftQuerySet(models.QuerySet):
     def annotate_registrations_count(self):
         return self.annotate(registrations_count=Count('registrations'))
 
+    def public(self):
+        return self.filter(public=True)
+
     def critical(self):
         return self.annotate_registrations_count().exclude(registrations_count__gt=F('people_critical')).distinct()
 
@@ -106,6 +109,9 @@ class ShiftQuerySet(models.QuerySet):
 
     def overstaffed(self):
         return self.annotate_registrations_count().filter(registrations_count__gt=F('people_max')).distinct()
+
+    def registerable(self):
+        return self.public().annotate_registrations_count().filter(registrations_count__lt=F('people_max')).distinct()
 
 
 @python_2_unicode_compatible

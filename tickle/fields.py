@@ -3,13 +3,55 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import EMPTY_VALUES
 
+import re
+
 from localflavor.se.forms import SWEDISH_ID_NUMBER
 from localflavor.se.utils import validate_id_birthday, id_number_checksum
+
+
+LIU_ID = re.compile(r'^(?P<name>[a-z]{5})(?P<code>\d{2,3})$')
 
 
 class PublicNameModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.public_name
+
+
+class LiUIDField(forms.CharField):
+    """
+    A form field that validates input as a LiU id.
+    """
+
+    def __init__(self, employee_id=True, student_id=True, *args, **kwargs):
+        self.employee_id = employee_id
+        self.student_id = student_id
+        super(LiUIDField, self).__init__(*args, **kwargs)
+
+    default_error_messages = {
+        'invalid': _('Enter a valid LiU ID.'),
+        'employee_id': _('Employee LiU IDs are not allowed.'),
+        'student_id': _('Student LiU IDs are not allowed.'),
+        }
+
+    def clean(self, value):
+        value = super(LiUIDField, self).clean(value)
+
+        if value in EMPTY_VALUES:
+            return None
+
+        match = LIU_ID.match(value)
+        if match is None:
+            raise forms.ValidationError(self.error_messages['invalid'])
+
+        gd = match.groupdict()
+
+        if not self.employee_id and len(gd['code']) == 2:
+            raise forms.ValidationError(self.error_messages['employee_id'])
+
+        if not self.student_id and len(gd['code']) == 3:
+            raise forms.ValidationError(self.error_messages['student_id'])
+
+        return value
 
 
 class SEPersonalIdentityNumberField(forms.CharField):

@@ -132,7 +132,7 @@ class PersonAdmin(admin.ModelAdmin):
     list_display_links = ('first_name', 'last_name', 'pid')
     list_filter = ('special_nutrition',)
 
-    search_fields = ('first_name', 'last_name', 'email', 'liu_id__liu_id')
+    search_fields = ('first_name', 'last_name', 'email', 'liu_id')
 
 
 @admin.register(Permission)

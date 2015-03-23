@@ -1,0 +1,1 @@
+Anmälningsbekräftelse för {{ person.first_name }} {{ person.last_name }}

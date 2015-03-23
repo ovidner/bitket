@@ -6,14 +6,11 @@
         Ett användarkonto hos SOF har skapats åt dig där du kan administrera dina biljetter.
     </p>
     <p>
-        För att använda ditt användarkonto gå in på <a href="{{ host }}{% url 'login' %}">{{ host }}{% url 'login' %}</a>
-        och logga in med dina användaruppgifter nedan.
+        För att använda ditt användarkonto, gå in på <a href="{{ host }}{% url 'login' %}">{{ host }}{% url 'login' %}</a>
+        och logga in med dina användaruppgifter nedan. Du loggar in med din e-postadress som användarnamn.
     </p>
-
-    <h3>Användaruppgifter</h3>
-    <p>Nedan finns dina inloggningsuppgifter.</p>
     <p>
-        Användarnamn: {{ person.user.username }}<br>
+        E-postadress: {{ person.email }}<br>
         Lösenord: {{ password }}
     </p>
     <p>Byt gärna ditt lösenord när du loggat in.</p>

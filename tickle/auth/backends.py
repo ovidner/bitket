@@ -25,18 +25,14 @@ class _LiUBaseLDAPBackend(LDAPBackend):
 
         return self._settings
 
-    def _populate_person_data(self, person, ldap_user):
+    def populate_person_data(self, person, ldap_user):
         """
         Feel free to override this in your subclass. You don't have to save the person object, we'll do it later.
         """
         person.first_name = ldap_user.attrs['givenName'][0]
         person.last_name = ldap_user.attrs['sn'][0]
 
-    def _get_or_create_person(self, user, ldap_user):
-        if user.person:
-            # Well then, we're done.
-            return user.person, False
-
+    def get_or_create_person(self, ldap_user):
         liu_id = ldap_user.attrs['cn'][0]
         email = ldap_user.attrs['mail'][0]
 
@@ -45,22 +41,24 @@ class _LiUBaseLDAPBackend(LDAPBackend):
         return person, created
 
     def get_or_create_user(self, username, ldap_user):
-        # Something funny *might* happen on the way, let's make sure we never end up with an inconsistent db state
-        with atomic():
-            user, user_created = super(_LiUBaseLDAPBackend, self).get_or_create_user(username, ldap_user)
+        model = self.get_user_model()
+        username_field = getattr(model, 'USERNAME_FIELD', 'username')
 
-            person, person_created = self._get_or_create_person(user, ldap_user)
+        with atomic():
+            person, person_created = self.get_or_create_person(ldap_user)
 
             # Runs any subclass specific logic for populating the Person object with extra data.
-            self._populate_person_data(person, ldap_user)
+            self.populate_person_data(person, ldap_user)
 
             person.save()
 
-            if not user.person:
-                user.person = person
-                user.save()
+            kwargs = {
+                username_field + '__iexact': username,
+                'defaults': {username_field: username.lower(),
+                             'person': person}
+            }
 
-            return user, user_created
+            return model.objects.get_or_create(**kwargs)
 
 
 class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
@@ -72,7 +70,7 @@ class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
     _settings = LiUStudentLDAPSettings(settings_prefix)
 
     def _populate_person_data(self, person, ldap_user):
-        super(LiUStudentLDAPBackend, self)._populate_person_data(person, ldap_user)
+        super(LiUStudentLDAPBackend, self).populate_person_data(person, ldap_user)
 
         person.fill_kobra_data(save=False, overwrite_name=False)
 

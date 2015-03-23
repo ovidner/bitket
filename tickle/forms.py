@@ -4,13 +4,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
 from django.forms.widgets import flatatt
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from django.db.models import Q
 
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div
 from crispy_forms.bootstrap import InlineCheckboxes
 
 from tickle.models import Person
-from tickle.fields import SEPersonalIdentityNumberField
+from tickle.fields import SEPersonalIdentityNumberField, LiUIDField
 
 
 class AcceptForm(forms.Form):
@@ -22,6 +25,25 @@ class AcceptForm(forms.Form):
             'We store your personal information according to the regulations specified by the Swedish Personal Data '
             'Act (PUL) and will not share it with any third parties.')
     )
+
+
+class LiUIDOrEmailForm(forms.Form):
+    liu_id = LiUIDField(employee_id=True, student_id=True, label=_('LiU ID'))
+    email = forms.EmailField()
+
+    def clean(self):
+        data = super(LiUIDOrEmailForm, self).clean()
+
+        # XOR
+        if bool(data['liu_id']) != bool(data['email']):
+            raise ValidationError(_('Please specify LiU ID <em>or</em> email address.'))
+
+        return data
+
+    def get_existing_person(self):
+        return Person.objects.get(
+            Q(liu_id__exact=self.cleaned_data['liu_id']) |
+            Q(email__exact=self.cleaned_data['email']))
 
 
 class PersonForm(forms.ModelForm):
