@@ -37,7 +37,7 @@ class Functionary(models.Model):
     registered = models.DateTimeField(auto_now_add=True, verbose_name=_('registration timestamp'))
 
     ice_number = models.CharField(max_length=16, null=True, blank=True, verbose_name=_('ICE number'))
-    b_driving_license = models.BooleanField(default=False, verbose_name=_('B driving license'))
+    b_driving_license = models.BooleanField(default=False, verbose_name=_('B driving license'), help_text=_('Mandatory for driving missions.'))
 
     signed_contract = models.BooleanField(default=False, verbose_name=_('signed contract'))
     attended_info_meeting = models.BooleanField(default=False, verbose_name=_('attended info meeting'))

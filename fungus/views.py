@@ -43,7 +43,7 @@ class ShiftChangeView(FormView):
         return super(ShiftChangeView, self).form_valid(form)
 
 
-class RegisterFunctionaryView(LoginRequiredMixin, FormView):
+class RegisterFunctionaryView(FormView):
     template_name = 'fungus/register_functionary.html'
     form_class = ShiftForm
 
@@ -57,7 +57,7 @@ class RegisterFunctionaryView(LoginRequiredMixin, FormView):
         context['shift_form_helper'] = ShiftRegisterFormHelper()
         context['functionary_form_helper'] = FunctionaryFormHelper()
 
-        context['person_form'] = PersonForm(self.request.POST or None, instance=self.request.user.person)
+        context['person_form'] = PersonForm(self.request.POST or None)
         context['functionary_form'] = FunctionaryForm(self.request.POST or None)
         context['accept_form'] = AcceptForm(self.request.POST or None)
 
@@ -72,11 +72,11 @@ class RegisterFunctionaryView(LoginRequiredMixin, FormView):
         if person_form.is_valid() and functionary_form.is_valid() and accept_form.is_valid():
             with atomic():
                 person = person_form.save()
-                functionary_form.person = person
+                functionary_form.instance = person
                 functionary_form.save()
 
                 for shift in form.cleaned_data['shifts']:
-                    ShiftRegistration(person=self.request.user.person, shift=shift).save()
+                    ShiftRegistration(person=person, shift=shift).save()
 
             msg = TemplatedEmail(
                 to=[person.pretty_email],
