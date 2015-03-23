@@ -3,9 +3,13 @@ from django.shortcuts import render, resolve_url
 from django.views.generic import FormView
 from django.contrib import messages
 from guardian.mixins import LoginRequiredMixin
+from django.db.transaction import atomic
+
 
 from fungus.models import ShiftRegistration
-from fungus.forms import ChangeSelectedShiftsForm, ShiftRegisterForm, ShiftRegisterFormHelper
+from fungus.forms import ChangeSelectedShiftsForm, ShiftForm, ShiftRegisterFormHelper, FunctionaryForm, FunctionaryFormHelper
+from tickle.forms import PersonForm, PersonFormHelper, AcceptForm
+from tickle.utils.mail import TemplatedEmail
 
 
 class ShiftChangeView(FormView):
@@ -39,30 +43,54 @@ class ShiftChangeView(FormView):
         return super(ShiftChangeView, self).form_valid(form)
 
 
-class RegisterShiftsView(LoginRequiredMixin, FormView):
-    template_name = 'fungus/register_shifts.html'
-    form_class = ShiftRegisterForm
+class RegisterFunctionaryView(FormView):
+    template_name = 'fungus/register_functionary.html'
+    form_class = ShiftForm
 
     def get_success_url(self):
-        return resolve_url('fungus:register_shifts_success') + "?"
+        return resolve_url('fungus:register_functionary_success')
 
     def get_context_data(self, **kwargs):
-        context = super(RegisterShiftsView, self).get_context_data(**kwargs)
-        context['form_helper'] = ShiftRegisterFormHelper()
+        context = super(RegisterFunctionaryView, self).get_context_data(**kwargs)
 
-        form = context['form']
-        shifts = []
-        for i in range(len(form['shift'])):
-            shifts.append({'field': form['shift'][i], 'shift_type': form['shift'].field.queryset[i].shift_type})
-        context['shifts'] = shifts
+        context['person_form_helper'] = PersonFormHelper()
+        context['shift_form_helper'] = ShiftRegisterFormHelper()
+        context['functionary_form_helper'] = FunctionaryFormHelper()
+
+        context['person_form'] = PersonForm(self.request.POST or None)
+        context['functionary_form'] = FunctionaryForm(self.request.POST or None)
+        context['accept_form'] = AcceptForm(self.request.POST or None)
 
         return context
 
     def form_valid(self, form):
-        # accepted = form.cleaned_data['accept_terms']
-        selected_shifts = form.cleaned_data['shift']
+        context = self.get_context_data()
+        person_form = context['person_form']
+        functionary_form = context['functionary_form']
+        accept_form = context['accept_form']
 
-        for shift in selected_shifts:
-            ShiftRegistration(person=self.request.user.person, shift=shift).save()
+        if person_form.is_valid() and functionary_form.is_valid() and accept_form.is_valid():
+            with atomic():
+                person = person_form.save()
+                functionary_form.instance = person
+                functionary_form.save()
 
-        return super(RegisterShiftsView, self).form_valid(form)
+                for shift in form.cleaned_data['shifts']:
+                    ShiftRegistration(person=person, shift=shift).save()
+
+            msg = TemplatedEmail(
+                to=[person.pretty_email],
+                from_email='Funkissupport SOF15 <funkissupport@sof15.se>',
+                subject_template='fungus/email/register_functionary_success_subject.txt',
+                body_template_html='fungus/email/register_functionary_success.html',
+                context={
+                    'person': person,
+                },
+                tags=['fungus'])
+
+            msg.send()
+
+            return super(RegisterFunctionaryView, self).form_valid(form)
+
+        else:
+            return self.render_to_response(self.get_context_data(form=form))

@@ -58,8 +58,6 @@ INSTALLED_APPS = (
     'crispy_forms',
     'rest_framework',
 
-    'liu.django',
-
     'tickle',
     'orchard',
     'fungus',
@@ -97,14 +95,17 @@ ROOT_URLCONF = 'sof15.urls'
 WSGI_APPLICATION = 'sof15.wsgi.application'
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    # 'liu.django.backends.LiUStudentBackend',  # Temporarily activated until we allow LiU id logins.
+    # Adding the standard ModelBackend here potentially means a huge security risk, don't do it!
+    'tickle.auth.backends.TickleBackend',  # Handles email auth
+    'tickle.auth.backends.LiUStudentLDAPBackend',
+    'tickle.auth.backends.LiUEmployeeLDAPBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
 
 AUTH_USER_MODEL = 'tickle.TickleUser'
 
 ANONYMOUS_USER_ID = -1
+GUARDIAN_GET_INIT_ANONYMOUS_USER = 'tickle.models.get_init_anonymous_user'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'profile'
@@ -153,7 +154,7 @@ LOCALE_PATHS = (
 
     os.path.join(BASE_DIR, 'tickle', 'locale'),
     os.path.join(BASE_DIR, 'fungus', 'locale'),
-    # os.path.join(BASE_DIR, 'invar', 'locale'),
+    os.path.join(BASE_DIR, 'invar', 'locale'),
     os.path.join(BASE_DIR, 'karthago', 'locale'),
     os.path.join(BASE_DIR, 'orchard', 'locale'),
 )
@@ -175,10 +176,10 @@ TEMPLATE_DIRS = (
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-LIU_KOBRA_USER = d12f['KOBRA_USER']
-LIU_KOBRA_API_KEY = d12f['KOBRA_API_KEY']
+KOBRA_USER = d12f['KOBRA_USER']
+KOBRA_KEY = d12f['KOBRA_API_KEY']
 
-SERVER_EMAIL = 'tickle@sof15.se'
+SERVER_EMAIL = 'Tickle SOF15 <tickle@sof15.se>'
 DEFAULT_FROM_EMAIL = 'Tickle SOF15 <tickle@sof15.se>'
 
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"

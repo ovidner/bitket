@@ -56,7 +56,7 @@ class EntryMaterial(models.Model):
 @python_2_unicode_compatible
 class EntryCustomMaterial(models.Model):
     entry = models.ForeignKey('Entry', verbose_name=_('entry'))
-    material = models.CharField(max_length=256, verbose_name=_('material'))
+    material = models.CharField(max_length=512, verbose_name=_('material'))
 
     amount = models.DecimalField(max_digits=9, decimal_places=3, verbose_name=_('amount'))
     unit = models.CharField(max_length=8, verbose_name=_('unit'))

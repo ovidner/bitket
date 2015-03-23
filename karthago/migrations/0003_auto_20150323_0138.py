@@ -7,14 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('orchard', '0004_auto_20150119_1556'),
+        ('karthago', '0002_create_default_data'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='orchestramembership',
-            name='person',
-            field=models.ForeignKey(related_name='orchestra_memberships', verbose_name='person', to='tickle.Person'),
+            model_name='entrycustommaterial',
+            name='material',
+            field=models.CharField(max_length=512, verbose_name='material'),
             preserve_default=True,
         ),
     ]

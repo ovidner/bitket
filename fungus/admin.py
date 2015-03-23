@@ -205,4 +205,4 @@ class WorkerAdmin(admin.ModelAdmin):
         """
         Returns the original queryset but filters out only registered workers and people with shift registrations
         """
-        return super(WorkerAdmin, self).get_queryset(request).filter(Q(shift_registrations__isnull=False) | Q(functionary__isnull=False)).distinct()
+        return super(WorkerAdmin, self).get_queryset(request).workers()
