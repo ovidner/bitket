@@ -29,9 +29,9 @@ RUN /home/sof15/bin/pip install -r /home/sof15/app/requirements.txt
 # Now copy the rest of the code
 COPY . /home/sof15/app
 
-RUN cp /home/sof15/app/_conf/ad.liu.se-enterprise-ca.pem.crt /usr/local/share/ca-certificates/
-RUN cp /home/sof15/app/_conf/ad.liu.se-root-ca.pem.crt /usr/local/share/ca-certificates/
-RUN update-ca-certificates
+# RUN cp /home/sof15/app/_conf/ad.liu.se-enterprise-ca.pem.crt /usr/local/share/ca-certificates/
+# RUN cp /home/sof15/app/_conf/ad.liu.se-root-ca.pem.crt /usr/local/share/ca-certificates/
+# RUN update-ca-certificates
 
 RUN mkdir -p /home/sof15/app/_build/static/
 
