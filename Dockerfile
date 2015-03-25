@@ -40,6 +40,10 @@ RUN /home/sof15/bin/python /home/sof15/app/manage.py compilemessages
 ENV SECRET_KEY ''
 ENV DEBUG false
 
+RUN cp /home/sof15/app/_conf/ad.liu.se-enterprise-ca-crt.pem /usr/local/share/ca-certificates/
+RUN cp /home/sof15/app/_conf/ad.liu.se-root-ca-crt.pem /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+
 USER sof15
 ENV HOME /home/sof15
 WORKDIR /home/sof15/app
