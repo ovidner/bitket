@@ -19,7 +19,12 @@ class ChangeSelectedShiftsForm(forms.Form):
 class ShiftForm(forms.Form):
     shifts = forms.ModelMultipleChoiceField(label='', required=False, widget=forms.CheckboxSelectMultiple(),
                                             queryset=Shift.objects.registerable().order_by('shift_type', 'start'),
-                                            error_messages={'invalid_choice': 'Passet är tyvärr fullt, välj ett annat.'})
+                                            error_messages={'invalid_choice': u'Passet är tyvärr fullt, välj ett annat.'})
+
+    def __init__(self, *args, **kwargs):
+        super(ShiftForm, self).__init__(*args, **kwargs)
+        # Force query every time form is loaded instead of only first time created.
+        self.fields['shifts'].queryset = Shift.objects.registerable().order_by('shift_type', 'start')
 
     def clean_shifts(self):
         data = self.cleaned_data['shifts']
