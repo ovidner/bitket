@@ -1,6 +1,11 @@
 FROM phusion/baseimage:0.9.15
 MAINTAINER Olle Vidner <olle.vidner@sof15.se>
 
+# We specify this here so it is cached by Docker, no need to run it more often than necessary.
+# Running gunicorn also enters the virtualenv, so we don't have to do that explicitly
+CMD ["/home/sof15/bin/newrelic-admin", "run-program", "/home/sof15/bin/gunicorn", "sof15.wsgi", "-c", "/home/sof15/app/_conf/gunicorn.py"]
+EXPOSE 8080
+
 # Disable SSH
 RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
 
@@ -26,12 +31,12 @@ COPY ./requirements.txt /home/sof15/app/requirements.txt
 
 RUN /home/sof15/bin/pip install -r /home/sof15/app/requirements.txt
 
+# RUN cp /home/sof15/app/_conf/ad.liu.se-enterprise-ca.pem.crt /usr/local/share/ca-certificates/
+COPY _conf/ad.liu.se-root-ca.pem.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+
 # Now copy the rest of the code
 COPY . /home/sof15/app
-
-# RUN cp /home/sof15/app/_conf/ad.liu.se-enterprise-ca.pem.crt /usr/local/share/ca-certificates/
-RUN cp /home/sof15/app/_conf/ad.liu.se-root-ca.pem.crt /usr/local/share/ca-certificates/
-RUN update-ca-certificates
 
 RUN mkdir -p /home/sof15/app/_build/static/
 
@@ -44,13 +49,7 @@ RUN /home/sof15/bin/python /home/sof15/app/manage.py compilemessages
 ENV SECRET_KEY ''
 ENV DEBUG false
 
-
-
+# Make sure these are always last, we want to have as few ownerships on files as possible
 USER sof15
 ENV HOME /home/sof15
 WORKDIR /home/sof15/app
-
-EXPOSE 8080
-
-# Running gunicorn also enters the virtualenv, so we don't have to do that explicitly
-CMD ["/home/sof15/bin/newrelic-admin", "run-program", "/home/sof15/bin/gunicorn", "sof15.wsgi", "-c", "/home/sof15/app/_conf/gunicorn.py"]
