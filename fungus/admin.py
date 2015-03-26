@@ -17,6 +17,11 @@ class ShiftTypeAdmin(admin.ModelAdmin):
     pass
 
 
+class ShiftRegistrationInline(admin.TabularInline):
+    model = ShiftRegistration
+    extra = 0
+
+
 class ResponsibleListFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
     # right admin sidebar just above the filter options.
@@ -196,11 +201,6 @@ class FunctionaryInline(admin.StackedInline):
     model = Functionary
     extra = 0
     max_num = 1
-
-
-class ShiftRegistrationInline(admin.TabularInline):
-    model = ShiftRegistration
-    extra = 0
 
 
 @admin.register(Worker)
