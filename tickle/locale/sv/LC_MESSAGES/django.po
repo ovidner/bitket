@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-23 10:02+0100\n"
+"POT-Creation-Date: 2015-03-25 14:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,25 +21,25 @@ msgstr ""
 msgid "total quantity"
 msgstr "total kvantitet"
 
-#: tickle/fields.py:31
+#: tickle/fields.py:32
 msgid "Enter a valid LiU ID."
 msgstr "Ange ett giltigt LiU-id."
 
-#: tickle/fields.py:32
+#: tickle/fields.py:33
 msgid "Employee LiU IDs are not allowed."
 msgstr ""
 
-#: tickle/fields.py:33
+#: tickle/fields.py:34
 #, fuzzy
 #| msgid "Co-ordination numbers are not allowed."
 msgid "Student LiU IDs are not allowed."
 msgstr "Samordningsnummer är inte tillåtna."
 
-#: tickle/fields.py:83
+#: tickle/fields.py:84
 msgid "Enter a valid Swedish personal identity number or YYMMDD-0000."
 msgstr "Ange ett giltigt svenskt personnummer eller ÅÅMMDD-0000."
 
-#: tickle/fields.py:84
+#: tickle/fields.py:85
 msgid "Co-ordination numbers are not allowed."
 msgstr "Samordningsnummer är inte tillåtna."
 
