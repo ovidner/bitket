@@ -37,8 +37,7 @@ class Worker(Person):
 class Functionary(models.Model):
     person = models.OneToOneField('tickle.Person', related_name='functionary', verbose_name=_('person'))
 
-    registered = models.DateTimeField(auto_now_add=True, verbose_name=_('registration timestamp'))
-    registered.editable = True  # Ignored if set during field init
+    registered = models.DateTimeField(blank=True, verbose_name=_('registration timestamp'))
 
     ice_number = models.CharField(max_length=16, null=True, blank=True, verbose_name=_('ICE number'))
     b_driving_license = models.BooleanField(default=False, verbose_name=_('B driving license'), help_text=_('Mandatory for driving missions.'))
@@ -57,7 +56,12 @@ class Functionary(models.Model):
             return self.person.full_name
         except models.ObjectDoesNotExist:
             return '<No person set>'
-
+        
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.pk:
+            self.registered = now()
+        
+        super(Functionary, self).save(force_insert, force_update, using, update_fields)
 
 class WorkerDiscount(BaseDiscount):
     shifts = models.PositiveIntegerField(verbose_name=_('shifts'),
@@ -99,6 +103,12 @@ class Location(MPTTModel):
 
 
 class ShiftQuerySet(models.QuerySet):
+    def _exclude_critical_equals_alarming(self):
+        return self.exclude(people_critical=F('people_alarming'))
+
+    def _exclude_alarming_equals_max(self):
+        return self.exclude(people_alarming=F('people_max'))
+
     def annotate_registrations_count(self):
         return self.annotate(registrations_count=Count('registrations'))
 
@@ -106,13 +116,40 @@ class ShiftQuerySet(models.QuerySet):
         return self.filter(public=True)
 
     def critical(self):
-        return self.annotate_registrations_count().exclude(registrations_count__gt=F('people_critical')).distinct()
+        return self.annotate_registrations_count().exclude(
+            # Well, obviously.
+            registrations_count__gt=F('people_critical'),
+        ).exclude(
+            # These are ok.
+            people_max=F('people_critical'),
+            registrations_count=F('people_critical'),
+        ).distinct()
 
     def alarming(self):
-        return self.annotate_registrations_count().exclude(registrations_count__lte=F('people_critical'), registrations_count__gt=F('people_alarming')).distinct()
+        return self.annotate_registrations_count().exclude(
+            # These can never count as alarming, they're either critical or ok.
+            people_critical=F('people_alarming'),
+        ).exclude(
+            # These can never count as alarming, they're either critical or ok.
+            people_max=F('people_alarming'),
+        ).exclude(
+            registrations_count__lte=F('people_critical'),
+        ).exclude(
+            registrations_count__gt=F('people_alarming'),
+        ).distinct()
 
     def ok(self):
-        return self.annotate_registrations_count().exclude(registrations_count__lte=F('people_alarming'), registrations_count__gt=F('people_max')).distinct()
+        return self.annotate_registrations_count().exclude(
+            # Overstaffed shifts are not ok.
+            registrations_count__gt=F('people_max'),
+        ).exclude(
+            # Well, obviously.
+            registrations_count__lt=F('people_alarming'),
+        ).exclude(
+            # A shift with alarming=3, max=5 is not ok if registrations=3
+            ~Q(people_alarming=F('people_max')),
+            registrations_count=F('people_alarming'),
+        ).distinct()
 
     def overstaffed(self):
         return self.annotate_registrations_count().filter(registrations_count__gt=F('people_max')).distinct()
