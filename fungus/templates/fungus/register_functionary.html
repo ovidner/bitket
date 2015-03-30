@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ block.super }} – Funktionärsanmälan{% endblock %}
+
+{% block header %}Funktionärsanmälan{% endblock %}
+
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <h2>Personuppgifter</h2>
+        {% crispy person_form person_form_helper %}
+
+
+        <h2>Arbetspass</h2>
+        <p>Bocka i det eller de pass du är intresserad av. Observera att denna anmälan är att betrakta som bindande.</p>
+
+        {% for error in form.shifts.errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+
+
+        {% regroup form.fields.shifts.queryset by shift_type as shift_list %}
+
+            {% for shift_type in shift_list %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ shift_type.grouper }}</h3>
+                    </div>
+
+                    {% if shift_type.grouper.description %}
+                        <div class="panel-body">
+                            <p>{{ shift_type.grouper.description }}</p>
+                        </div>
+                    {% endif %}
+
+                    <ul class="list-group">
+                        {% for shift in shift_type.list %}
+                            <li class="list-group-item">
+                                <input type="checkbox" id="id_shifts_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}" value="{{ shift.pk }}" name="shifts" />
+                                <label for="id_shifts_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">{{ shift.start }} – {{ shift.end }}</label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        {{ functionary_form|crispy }}
+        {{ accept_form|crispy }}
+        <input value="Skicka anmälan" class="btn btn-primary" type="submit">
+    </form>
+{% endblock %}

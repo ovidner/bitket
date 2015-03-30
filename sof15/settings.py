@@ -56,8 +56,7 @@ INSTALLED_APPS = (
     'guardian',
     'raven.contrib.django.raven_compat',
     'crispy_forms',
-
-    'liu.django',
+    'rest_framework',
 
     'tickle',
     'orchard',
@@ -78,6 +77,16 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
 )
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.DjangoObjectPermissions',
+    ),
+}
+
 # Database backed cache backend.
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
@@ -86,14 +95,17 @@ ROOT_URLCONF = 'sof15.urls'
 WSGI_APPLICATION = 'sof15.wsgi.application'
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    # 'liu.django.backends.LiUStudentBackend',  # Temporarily activated until we allow LiU id logins.
+    # Adding the standard ModelBackend here potentially means a huge security risk, don't do it!
+    'tickle.auth.backends.TickleBackend',  # Handles email auth
+    'tickle.auth.backends.LiUStudentLDAPBackend',
+    'tickle.auth.backends.LiUEmployeeLDAPBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
 
 AUTH_USER_MODEL = 'tickle.TickleUser'
 
 ANONYMOUS_USER_ID = -1
+GUARDIAN_GET_INIT_ANONYMOUS_USER = 'tickle.models.get_init_anonymous_user'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'profile'
@@ -125,7 +137,7 @@ CACHES = d12f['CACHES']
 
 LANGUAGE_CODE = 'sv-se'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Stockholm'
 
 USE_I18N = True
 
@@ -142,7 +154,7 @@ LOCALE_PATHS = (
 
     os.path.join(BASE_DIR, 'tickle', 'locale'),
     os.path.join(BASE_DIR, 'fungus', 'locale'),
-    # os.path.join(BASE_DIR, 'invar', 'locale'),
+    os.path.join(BASE_DIR, 'invar', 'locale'),
     os.path.join(BASE_DIR, 'karthago', 'locale'),
     os.path.join(BASE_DIR, 'orchard', 'locale'),
 )
@@ -164,10 +176,10 @@ TEMPLATE_DIRS = (
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-LIU_KOBRA_USER = d12f['KOBRA_USER']
-LIU_KOBRA_API_KEY = d12f['KOBRA_API_KEY']
+KOBRA_USER = d12f['KOBRA_USER']
+KOBRA_KEY = d12f['KOBRA_API_KEY']
 
-SERVER_EMAIL = 'tickle@sof15.se'
+SERVER_EMAIL = 'Tickle SOF15 <tickle@sof15.se>'
 DEFAULT_FROM_EMAIL = 'Tickle SOF15 <tickle@sof15.se>'
 
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"

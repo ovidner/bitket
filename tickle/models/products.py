@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.db.models import Sum
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
@@ -38,6 +39,17 @@ class Event(MPTTModel):
         return self.name
 
 
+class ProductQuerySet(models.QuerySet):
+    def published(self):
+        return self.filter(published=True)
+
+    def unpublished(self):
+        return self.filter(published=False)
+
+    def ticket_types(self):
+        return self.filter(ticket_type__isnull=False)
+
+
 @python_2_unicode_compatible
 class Product(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
@@ -51,7 +63,11 @@ class Product(models.Model):
                                        verbose_name=_('quantitative'),
                                        help_text=_('Can you purchase more than one (1) of this product?'))
 
+    published = models.BooleanField(default=True, verbose_name=_('published'))
+
     class Meta:
+        ordering = ('name',)
+
         verbose_name = _('product')
         verbose_name_plural = _('products')
 
@@ -108,6 +124,9 @@ class TicketType(Product):
 
 
 class HoldingQuerySet(models.QuerySet):
+    def quantity(self):
+        return self.aggregate(Sum('quantity'))['quantity__sum'] or 0
+
     def tickets(self):
         return self.filter(product__ticket_type__isnull=False)
 
@@ -173,7 +192,7 @@ class Purchase(models.Model):
         verbose_name_plural = _('purchases')
 
     def __str__(self):
-        return u'{0}'.format(self.person)
+        return u'{0} – {1}'.format(self.person, self.purchased)
 
 
 @python_2_unicode_compatible

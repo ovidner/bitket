@@ -24,6 +24,8 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^karthago/', include('karthago.urls', namespace='karthago', app_name='karthago')),
     url(r'^orchard/', include('orchard.urls', namespace='orchard', app_name='orchard')),
+    url(r'^fungus/', include('fungus.urls', namespace='fungus', app_name='fungus')),
 
-    # url(r'^people/', )
+    url(r'^api/', include('api.urls', namespace='api')),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )

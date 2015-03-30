@@ -5,8 +5,24 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
-from tickle.models import Product, TicketType, Purchase, Person, Holding
+from tickle.models import Product, TicketType, Purchase, Person, Holding, ProductQuerySet
 from invar.models import generate_invoice
+
+
+class OrchardPerson(Person):
+    class Meta:
+        proxy = True
+
+        verbose_name = _('orchestra member')
+        verbose_name_plural = _('orchestra members')
+
+    @property
+    def primary_orchestra(self):
+        return self.orchestra_memberships.get_primary().orchestra
+
+    @property
+    def nonprimary_orchestras(self):
+        return self.orchestra_memberships.nonprimary().orchestras()
 
 
 class OrchestraQuerySet(models.QuerySet):
@@ -64,6 +80,9 @@ class OrchestraMembershipQuerySet(models.QuerySet):
     def primary(self):
         return self.filter(primary=True)
 
+    def nonprimary(self):
+        return self.exclude(primary=True)
+
     def approved(self):
         return self.filter(approved=True)
 
@@ -71,10 +90,13 @@ class OrchestraMembershipQuerySet(models.QuerySet):
         return self.primary().approved()
 
     def people(self):
-        return Person.objects.filter(orchestra_memberships__in=self)
+        return Person.objects.filter(orchestra_memberships__in=self).distinct()
 
     def purchases(self):
         return Purchase.objects.filter(person__in=self.people(), orchestra_member_registration__isnull=False)
+
+    def orchestras(self):
+        return Orchestra.objects.filter(memberships__in=self).distinct()
 
 
 @python_2_unicode_compatible
@@ -112,7 +134,7 @@ class OrchestraMemberRegistration(models.Model):
         verbose_name_plural = _('orchestra member registrations')
 
     def __str__(self):
-        return self.purchase.__str__()
+        return self.purchase.person.full_name
 
 
 @python_2_unicode_compatible
@@ -141,8 +163,8 @@ class OrchestraTicketType(models.Model):
         return self.ticket_type.name
 
 
-class OrchestraProductQuerySet(models.QuerySet):
-    def stuff(self):
+class OrchestraProductQuerySet(ProductQuerySet):
+    def gadgets(self):
         return self.exclude(pk__in=TicketType.objects.all())
 
 
@@ -151,3 +173,6 @@ class OrchestraProduct(Product):
 
     class Meta:
         proxy = True
+
+        verbose_name = _('product')
+        verbose_name_plural = _('products')

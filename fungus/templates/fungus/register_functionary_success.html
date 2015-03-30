@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ block.super }} – Funktionärsanmälan{% endblock %}
+
+{% block header %}Funktionärsanmälan{% endblock %}
+
+{% block content %}
+<p>
+    Tack för din anmälan! Du bör inom 15 minuter ha fått ett mail med en bekräftelse till den adress du har angett. Om
+    inte, kontrollera att det inte kategoriserats som skräppost.
+</p>
+{% endblock %}

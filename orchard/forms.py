@@ -11,7 +11,8 @@ from crispy_forms.bootstrap import InlineCheckboxes, AppendedText
 
 from tickle.models.people import Person
 from tickle.models.products import Purchase, Holding, Product
-from tickle.forms import PersonForm, PublicNameModelChoiceField, DisplayField
+from tickle.forms import PersonForm, DisplayField
+from tickle.fields import PublicNameModelChoiceField
 from orchard.models import Orchestra, OrchestraMembership, OrchestraTicketType, OrchestraProduct
 
 

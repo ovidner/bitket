@@ -112,7 +112,7 @@ class RegisterOrchestraMemberView(CreateView):
         return resolve_url('orchard:register_orchestra_member_success')
 
     def get_stuff_queryset(self):
-        return OrchestraProduct.objects.stuff()
+        return OrchestraProduct.objects.gadgets().published()
 
     def get_stuff_formset_initial_data(self):
         data = []

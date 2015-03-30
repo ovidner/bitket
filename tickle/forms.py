@@ -3,85 +3,17 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
-from django.core.validators import EMPTY_VALUES
 from django.forms.widgets import flatatt
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from django.db.models import Q
 
-from localflavor.se.forms import SWEDISH_ID_NUMBER
-from localflavor.se.utils import validate_id_birthday, id_number_checksum
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div
 from crispy_forms.bootstrap import InlineCheckboxes
 
-from tickle.models import Person, Holding, Product
-
-
-class PublicNameModelChoiceField(forms.ModelChoiceField):
-    def label_from_instance(self, obj):
-        return obj.public_name
-
-
-class SEPersonalIdentityNumberField(forms.CharField):
-    """
-    A form field that validates input as a Swedish personal identity number
-    (personnummer).
-
-    The correct formats are YYYYMMDD-XXXX, YYYYMMDDXXXX, YYMMDD-XXXX,
-    YYMMDDXXXX and YYMMDD+XXXX. XXXX can be 0000.
-
-    A + indicates that the person is older than 100 years, which will be taken
-    into consideration when the date is validated.
-
-    The birth date is checked to be a valid date.
-
-    By default, co-ordination numbers (samordningsnummer) will be accepted. To
-    only allow real personal identity numbers, pass the keyword argument
-    coordination_number=False to the constructor.
-
-    Returns (date, code) where date is a datetime.date object and code is a string with the last four characters or None
-    if input was YYMMDD-0000.
-    """
-
-    def __init__(self, coordination_number=True, *args, **kwargs):
-        self.coordination_number = coordination_number
-        super(SEPersonalIdentityNumberField, self).__init__(*args, **kwargs)
-
-    default_error_messages = {
-        'invalid': _('Enter a valid Swedish personal identity number or YYMMDD-0000.'),
-        'coordination_number': _('Co-ordination numbers are not allowed.'),
-    }
-
-    def clean(self, value):
-        value = super(SEPersonalIdentityNumberField, self).clean(value)
-
-        if value in EMPTY_VALUES:
-            return None, None
-
-        match = SWEDISH_ID_NUMBER.match(value)
-        if match is None:
-            raise forms.ValidationError(self.error_messages['invalid'])
-
-        gd = match.groupdict()
-
-        code = str(gd['serial'] + gd['checksum'])
-
-        # compare the calculated value with the checksum
-        # if id_number_checksum(gd) != int(gd['checksum']):
-        # raise forms.ValidationError(self.error_messages['invalid'])
-
-        # check for valid birthday
-        try:
-            birth_day = validate_id_birthday(gd)
-        except ValueError:
-            raise forms.ValidationError(self.error_messages['invalid'])
-
-        # make sure that co-ordination numbers do not pass if not allowed
-        if not self.coordination_number and int(gd['day']) > 60:
-            raise forms.ValidationError(self.error_messages['coordination_number'])
-
-        if code == '0000':
-            return birth_day, None
-
-        return birth_day, code
+from tickle.models import Person
+from tickle.fields import SEPersonalIdentityNumberField, LiUIDField
 
 
 class AcceptForm(forms.Form):
@@ -93,6 +25,25 @@ class AcceptForm(forms.Form):
             'We store your personal information according to the regulations specified by the Swedish Personal Data '
             'Act (PUL) and will not share it with any third parties.')
     )
+
+
+class LiUIDOrEmailForm(forms.Form):
+    liu_id = LiUIDField(employee_id=True, student_id=True, label=_('LiU ID'))
+    email = forms.EmailField()
+
+    def clean(self):
+        data = super(LiUIDOrEmailForm, self).clean()
+
+        # XOR
+        if bool(data['liu_id']) != bool(data['email']):
+            raise ValidationError(_('Please specify LiU ID <em>or</em> email address.'))
+
+        return data
+
+    def get_existing_person(self):
+        return Person.objects.get(
+            Q(liu_id__exact=self.cleaned_data['liu_id']) |
+            Q(email__exact=self.cleaned_data['email']))
 
 
 class PersonForm(forms.ModelForm):
