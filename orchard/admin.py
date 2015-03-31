@@ -31,7 +31,7 @@ class ProductFilter(admin.SimpleListFilter):
 @admin.register(OrchardPerson)
 class OrchardPersonAdmin(PersonAdmin):
     actions = ('csv_export',)
-    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'primary_orchestra')
+    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'primary_orchestra', 'notes')
     list_filter = ('orchestra_memberships__orchestra', 'special_nutrition', ProductFilter)
 
     def has_add_permission(self, request):
