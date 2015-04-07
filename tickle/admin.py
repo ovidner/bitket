@@ -128,17 +128,16 @@ class TickleUserInline(admin.StackedInline):
 class PersonAdmin(admin.ModelAdmin):
     inlines = (TickleUserInline, PurchaseInline,)
 
-    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id')
+    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'notes')
     list_display_links = ('first_name', 'last_name', 'pid')
     list_filter = ('special_nutrition',)
 
-    search_fields = ('first_name', 'last_name', 'email', 'liu_id')
+    search_fields = ('first_name', 'last_name', 'email', 'liu_id', 'notes')
 
 
 @admin.register(Permission)
 class PermissionAdmin(admin.ModelAdmin):
     list_filter = ('content_type',)
-    pass
 
 
 @admin.register(UserObjectPermission)
