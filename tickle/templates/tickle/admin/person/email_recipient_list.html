@@ -1,0 +1,14 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{% trans 'Email recipients' %}</h1>
+    <p>
+        {% trans 'Copy the text in the box below and paste it into the TO, CC or BCC field of your email client.'%}
+        {% trans 'Use the back button in your browser when done.' %}
+    </p>
+    <form>
+        <textarea id="recipients" rows="8" cols="50">{{ recipients }}</textarea>
+        <label for="recipients"></label>
+    </form>
+{% endblock %}

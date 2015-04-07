@@ -12,6 +12,12 @@ from tickle.utils.mail import TemplatedEmail
 from tickle.fields import SEPersonalIdentityNumberField
 
 
+def generate_pretty_email(first_name, last_name, email):
+    return '"{0} {1}" <{2}>; '.format(first_name.replace('"', '\\"'),
+                                      last_name.replace('"', '\\"'),
+                                      email)
+
+
 @python_2_unicode_compatible
 class StudentUnion(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
@@ -21,7 +27,18 @@ class StudentUnion(models.Model):
 
 
 class PersonQuerySet(models.QuerySet):
-    pass
+    def pretty_emails_string(self):
+        """
+        Returns a string with pretty formatted emails, separated by semicolons
+        """
+
+        recipient_list = ''
+        values = self.values('first_name', 'last_name', 'email')
+
+        for i in values:
+            recipient_list += generate_pretty_email(i['first_name'], i['last_name'], i['email'])
+
+        return recipient_list
 
 
 @python_2_unicode_compatible
@@ -164,7 +181,7 @@ class Person(models.Model):
 
     @property
     def pretty_email(self):
-        return '{0} <{1}>'.format(self.full_name, self.email)
+        return generate_pretty_email(self.first_name, self.last_name, self.email)
 
 
 @python_2_unicode_compatible
