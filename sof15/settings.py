@@ -50,7 +50,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'django_extensions',
-    'djangosecure',
     'debug_toolbar',
     'djrill',
     'guardian',
@@ -66,7 +65,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'djangosecure.middleware.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -114,9 +113,11 @@ if not DEBUG:
     # Disabled due to redirect loop in combination with CloudFlare
     # SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_HTTPONLY = True
+    CSRF_COOKIE_SECURE = True
 
-SECURE_FRAME_DENY = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 
