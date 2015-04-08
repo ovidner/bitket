@@ -8,9 +8,10 @@ from django.contrib import messages
 
 from guardian.shortcuts import get_objects_for_user
 
-from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper
+from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, PurchaseIdentifyForm
 from tickle.models.people import Person
 from tickle.views.mixins import MeOrPermissionRequiredMixin
+from tickle.utils.kobra import StudentNotFound, Unauthorized
 
 
 class ProfileView(MeOrPermissionRequiredMixin, DetailView):
@@ -106,3 +107,51 @@ class ChangePasswordView(FormView):
         messages.success(self.request, _('Your password has been changed. Please log in again.'))
 
         return super(ChangePasswordView, self).form_valid(form)
+
+
+class TicketPurchaseIdentifyView(FormView):
+    form_class = PurchaseIdentifyForm
+    template_name = 'tickle/purchase_identify.html'
+
+    person = None
+    liu_id = None
+
+    @staticmethod
+    def get_create_user_url():
+        return '%s?next=%s' % (resolve_url('create_user'), resolve_url('purchase'))
+
+    def create_liu_user(self):
+        person = Person(liu_id=self.liu_id, email='%s@student.liu.se' % self.liu_id)
+        try:
+            person.fill_kobra_data()
+        except StudentNotFound:
+            # TODO: Use translation.
+            messages.warning(self.request, 'Ingen student med LiU ID %s hittades. '
+                                           'Vänligen fyll i person information själv' % self.liu_id)
+            return self.get_create_user_url()
+        except Unauthorized:
+            # TODO: Use translation.
+            messages.warning(self.request,
+                             'Det går för tillfället inte att få tag på information för LiU ID:n, '
+                             'vänligen fyll i person information själv.')
+            return self.get_create_user_url()
+
+        person.save()
+        person.create_user_and_login(self.request)
+        return resolve_url('create_user_success')
+
+    def get_success_url(self):
+        if self.person:
+            if self.request.user.is_authenticated() and self.request.user.person == self.person:
+                return resolve_url('purchase')
+            return '%s?next=%s' % (resolve_url('login'), resolve_url('purchase'))
+        elif self.liu_id:
+            return self.create_liu_user()
+        return self.get_create_user_url()
+
+    def form_valid(self, form):
+        person = form.get_existing_person_or_none()
+        self.person = person
+        self.liu_id = form.cleaned_data['liu_id']
+        return super(TicketPurchaseIdentifyView, self).form_valid(form)
+

@@ -193,3 +193,35 @@ class DisplayField(forms.Field):
 
     def has_changed(self, initial, data):
         return False
+
+
+class PurchaseIdentifyForm(forms.Form):
+    liu_id = LiUIDField(employee_id=True, student_id=True, label=_('LiU ID'), required=False)
+    pid = SEPersonalIdentityNumberField(coordination_number=True, label=_('Personal identity number'), help_text=_(
+        "Swedish personal identity number in the format <em>YYMMDD-XXXX</em>. If you don't have one, "
+        "enter <em>YYMMDD-0000</em>, where <em>YYMMDD</em> represents your birthday."), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(PurchaseIdentifyForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+
+    def clean(self):
+        data = super(PurchaseIdentifyForm, self).clean()
+        # XOR
+        if bool(data.get('liu_id', None)) == bool(data.get('pid', (None, None))[0]):
+            raise ValidationError(_('Please specify LiU ID or personal identity number.'))
+
+        return data
+
+    def get_existing_person_or_none(self):
+        try:
+            liu_id = self.cleaned_data['liu_id']
+            if liu_id:
+                return Person.objects.get(liu_id__exact=liu_id)
+            else:
+                pid = self.cleaned_data['pid']
+                return Person.objects.get(birth_date__exact=pid[0], pid_code__exact=pid[1])
+        except Person.DoesNotExist:
+            return None

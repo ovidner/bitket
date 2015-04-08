@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 
 from tickle.views.people import LoginView, ProfileView, ChangePasswordView, CreateUserView,\
+    TicketPurchaseIdentifyView
 from orchard.views import ApproveOrchestraMemberView, RegisterOrchestraMemberView
 from fungus.views import ShiftChangeView
 
@@ -22,6 +23,8 @@ urlpatterns = patterns(
     url(r'^people/logout/$', 'django.contrib.auth.views.logout', {'next_page': 'root'}, name='logout'),
     url(r'^people/(?P<pk>\d+)/$', ProfileView.as_view(), name='profile'),
     url(r'^people/me/$', LoginView.as_view(), name='profile_me'),
+
+    url(r'^people/identify/$', TicketPurchaseIdentifyView.as_view(), name='identify'),
 
     url(r'^admin/fungus/shiftregistration/shifchange/$', ShiftChangeView.as_view(), name='change_selected_shifts'),
     url(r'^admin/', include(admin.site.urls)),
