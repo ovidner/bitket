@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth import login, authenticate
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
@@ -157,6 +158,16 @@ class Person(models.Model):
         self.birth_date, self.pid_code = SEPersonalIdentityNumberField().clean(value)
 
     pid = property(_get_pid, _set_pid)
+
+    def create_user_and_login(self, request):
+        # Create user
+        username = self.liu_id or self.email
+        user = TickleUser.objects.create(username=username, person=self)
+        password = user.generate_and_send_password()
+        user.save()
+        # Login
+        user = authenticate(username=user.username, password=password)
+        login(request, user)
 
     @property
     def full_name(self):

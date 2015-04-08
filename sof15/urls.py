@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
 
-from tickle.views.people import LoginView, ProfileView, ChangePasswordView
+from tickle.views.people import LoginView, ProfileView, ChangePasswordView, CreateUserView,\
 from orchard.views import ApproveOrchestraMemberView, RegisterOrchestraMemberView
 from fungus.views import ShiftChangeView
 
@@ -16,6 +16,9 @@ urlpatterns = patterns(
 
     url(r'^people/login/$', LoginView.as_view(), name='login'),
     url(r'^people/change-password/$', ChangePasswordView.as_view(), name='change_password'),
+    url(r'^people/create-account/$', CreateUserView.as_view(), name='create_user'),
+    url(r'^people/create-account/success$', TemplateView.as_view(template_name='people/create_user_success.html'),
+        name='create_user_success'),
     url(r'^people/logout/$', 'django.contrib.auth.views.logout', {'next_page': 'root'}, name='logout'),
     url(r'^people/(?P<pk>\d+)/$', ProfileView.as_view(), name='profile'),
     url(r'^people/me/$', LoginView.as_view(), name='profile_me'),

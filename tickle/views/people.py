@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, DetailView
+from django.views.generic import FormView, DetailView, CreateView
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login
 from django.shortcuts import resolve_url
@@ -8,7 +8,7 @@ from django.contrib import messages
 
 from guardian.shortcuts import get_objects_for_user
 
-from tickle.forms import LoginFormHelper
+from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper
 from tickle.models.people import Person
 from tickle.views.mixins import MeOrPermissionRequiredMixin
 
@@ -57,6 +57,27 @@ class LoginView(FormView):
         self._user = form.get_user()
 
         return super(LoginView, self).form_valid(form)
+
+
+class CreateUserView(CreateView):
+    model = Person
+    form_class = PersonForm
+    template_name = 'people/create_user.html'
+
+    _user = None
+
+    def get_success_url(self):
+        return self.request.GET.get('next', resolve_url('create_user_success'))
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateUserView, self).get_context_data(**kwargs)
+        context['form_helper'] = PersonFormHelper()
+        return context
+
+    def form_valid(self, form):
+        person = form.save()
+        person.create_user_and_login(self.request)
+        return super(CreateUserView, self).form_valid(form)
 
 
 class ChangePasswordView(FormView):
