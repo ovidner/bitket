@@ -195,20 +195,20 @@ class DisplayField(forms.Field):
         return False
 
 
-class PurchaseIdentifyForm(forms.Form):
+class IdentifyForm(forms.Form):
     liu_id = LiUIDField(employee_id=True, student_id=True, label=_('LiU ID'), required=False)
     pid = SEPersonalIdentityNumberField(coordination_number=True, label=_('Personal identity number'), help_text=_(
         "Swedish personal identity number in the format <em>YYMMDD-XXXX</em>. If you don't have one, "
         "enter <em>YYMMDD-0000</em>, where <em>YYMMDD</em> represents your birthday."), required=False)
 
     def __init__(self, *args, **kwargs):
-        super(PurchaseIdentifyForm, self).__init__(*args, **kwargs)
+        super(IdentifyForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.disable_csrf = True
 
     def clean(self):
-        data = super(PurchaseIdentifyForm, self).clean()
+        data = super(IdentifyForm, self).clean()
         # XOR
         if bool(data.get('liu_id', None)) == bool(data.get('pid', (None, None))[0]):
             raise ValidationError(_('Please specify LiU ID or personal identity number.'))

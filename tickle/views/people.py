@@ -8,7 +8,7 @@ from django.contrib import messages
 
 from guardian.shortcuts import get_objects_for_user
 
-from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, PurchaseIdentifyForm
+from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, IdentifyForm
 from tickle.models.people import Person
 from tickle.views.mixins import MeOrPermissionRequiredMixin
 from tickle.utils.kobra import StudentNotFound, Unauthorized
@@ -109,16 +109,18 @@ class ChangePasswordView(FormView):
         return super(ChangePasswordView, self).form_valid(form)
 
 
-class TicketPurchaseIdentifyView(FormView):
-    form_class = PurchaseIdentifyForm
-    template_name = 'tickle/purchase_identify.html'
+class IdentifyView(FormView):
+    form_class = IdentifyForm
+    template_name = 'people/identify.html'
 
     person = None
     liu_id = None
 
-    @staticmethod
-    def get_create_user_url():
-        return '%s?next=%s' % (resolve_url('create_user'), resolve_url('purchase'))
+    def get_create_user_url(self):
+        next_url = self.request.GET.get('next', None)
+        if next_url:
+            return '%s?next=%s' % (resolve_url('create_user'), next_url)
+        return resolve_url('create_user')
 
     def create_liu_user(self):
         person = Person(liu_id=self.liu_id, email='%s@student.liu.se' % self.liu_id)
@@ -142,9 +144,10 @@ class TicketPurchaseIdentifyView(FormView):
 
     def get_success_url(self):
         if self.person:
+            next_url = self.request.GET.get('next', resolve_url('profile', pk=self.person.pk))
             if self.request.user.is_authenticated() and self.request.user.person == self.person:
-                return resolve_url('purchase')
-            return '%s?next=%s' % (resolve_url('login'), resolve_url('purchase'))
+                return next_url
+            return '%s?next=%s' % (resolve_url('login'), next_url)
         elif self.liu_id:
             return self.create_liu_user()
         return self.get_create_user_url()
@@ -153,5 +156,5 @@ class TicketPurchaseIdentifyView(FormView):
         person = form.get_existing_person_or_none()
         self.person = person
         self.liu_id = form.cleaned_data['liu_id']
-        return super(TicketPurchaseIdentifyView, self).form_valid(form)
+        return super(IdentifyView, self).form_valid(form)
 
