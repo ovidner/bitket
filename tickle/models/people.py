@@ -232,7 +232,7 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
     # username = models.CharField(max_length=256, unique=True, null=True, blank=True, verbose_name=_('LiU ID or email address'))
 
     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
-    is_admin = models.BooleanField(default=False, verbose_name=_('is admin'))
+    is_staff = models.BooleanField(default=False, verbose_name=_('is staff'))
 
     objects = TickleUserManager()
 
@@ -244,12 +244,6 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.get_full_name()
-
-    @property
-    def is_staff(self):
-        """Is the user a member of staff?"""
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
 
     def get_full_name(self):
         return self.person.full_name

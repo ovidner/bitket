@@ -86,7 +86,7 @@ class SpecialNutritionAdmin(admin.ModelAdmin):
 class TickleUserAdminForm(forms.ModelForm):
     class Meta:
         model = TickleUser
-        fields = ('person', 'is_active', 'is_admin')
+        fields = ('person', 'is_active', 'is_staff')
 
 
 @admin.register(TickleUser)
@@ -96,16 +96,16 @@ class TickleUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('person', )}),
         ('Permissions', {'fields': ('groups', 'user_permissions')}),
-        ('Stuff', {'fields': ('is_active', 'is_admin', 'is_superuser')}),
+        ('Stuff', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
     )
     add_fieldsets = (
         (None, {'fields': ('person', )}),
         ('Permissions', {'fields': ('groups', 'user_permissions')}),
-        ('Stuff', {'fields': ('is_active', 'is_admin', 'is_superuser')}),
+        ('Stuff', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
     )
 
-    list_display = ('person', 'is_active', 'is_admin')
-    list_filter = ('is_admin', 'is_superuser', 'is_active', 'groups')
+    list_display = ('person', 'is_active', 'is_staff')
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     raw_id_fields = ('person',)
     ordering = None  # Parent class uses 'username'
 
