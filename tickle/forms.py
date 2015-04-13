@@ -7,6 +7,7 @@ from django.forms.widgets import flatatt
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.db.models import Q
+from django.contrib.auth.forms import AuthenticationForm as DjangoAuthenticationForm
 
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div
@@ -44,6 +45,10 @@ class LiUIDOrEmailForm(forms.Form):
         return Person.objects.get(
             Q(liu_id__exact=self.cleaned_data['liu_id']) |
             Q(email__exact=self.cleaned_data['email']))
+
+
+class AuthenticationForm(DjangoAuthenticationForm):
+    username = forms.CharField(max_length=254, label=_('LiU ID or email address'))
 
 
 class PersonForm(forms.ModelForm):
