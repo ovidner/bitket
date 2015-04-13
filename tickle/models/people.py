@@ -67,7 +67,6 @@ class Person(models.Model):
 
     special_nutrition = models.ManyToManyField(
         'SpecialNutrition',
-        null=True,
         blank=True,
         verbose_name=_('special nutrition'),
         help_text=_('Specify any special nutritional needs or habits.')
