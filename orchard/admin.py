@@ -76,7 +76,7 @@ class OrchestraMembershipInline(admin.TabularInline):
 
 
 @admin.register(Orchestra)
-class OrchestraAdmin(GuardedModelAdmin):
+class OrchestraAdmin(admin.ModelAdmin):
     actions = ['generate_invoice']
     inlines = (OrchestraMembershipInline,)
 
