@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext_lazy as _
-
+from django.template.response import TemplateResponse
 
 from gfklookupwidget.widgets import GfkLookupWidget
 from guardian.models import UserObjectPermission, GroupObjectPermission
@@ -133,6 +133,15 @@ class PersonAdmin(admin.ModelAdmin):
     list_filter = ('special_nutrition',)
 
     search_fields = ('first_name', 'last_name', 'email', 'liu_id', 'notes')
+
+    actions = ['generate_email_recipient_list_action']
+
+    def generate_email_recipient_list_action(self, request, queryset):
+        context = {
+            'recipients': queryset.pretty_emails_string()
+        }
+        return TemplateResponse(request, 'tickle/admin/person/email_recipient_list.html', context)
+    generate_email_recipient_list_action.short_description = _('Generate email recipient list')
 
 
 @admin.register(Permission)

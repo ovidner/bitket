@@ -8,5 +8,5 @@ workers = multiprocessing.cpu_count() * 2 + 1  # todo: optimize
 threads = 1  # todo: optimize
 
 user = None
-loglevel = 'debug'
+loglevel = 'warning'
 errorlog = '-'  # stderr

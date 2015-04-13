@@ -29,8 +29,11 @@ class _LiUBaseLDAPBackend(LDAPBackend):
         """
         Feel free to override this in your subclass. You don't have to save the person object, we'll do it later.
         """
+
         person.first_name = ldap_user.attrs['givenName'][0]
         person.last_name = ldap_user.attrs['sn'][0]
+
+        return person
 
     def get_or_create_person(self, ldap_user):
         liu_id = ldap_user.attrs['cn'][0]
@@ -48,7 +51,7 @@ class _LiUBaseLDAPBackend(LDAPBackend):
             person, person_created = self.get_or_create_person(ldap_user)
 
             # Runs any subclass specific logic for populating the Person object with extra data.
-            self.populate_person_data(person, ldap_user)
+            person = self.populate_person_data(person, ldap_user)
 
             person.save()
 
@@ -70,9 +73,11 @@ class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
     _settings = LiUStudentLDAPSettings(settings_prefix)
 
     def _populate_person_data(self, person, ldap_user):
-        super(LiUStudentLDAPBackend, self).populate_person_data(person, ldap_user)
+        person = super(LiUStudentLDAPBackend, self).populate_person_data(person, ldap_user)
 
         person.fill_kobra_data(save=False, overwrite_name=False)
+
+        return person
 
 
 class LiUEmployeeLDAPBackend(_LiUBaseLDAPBackend):
