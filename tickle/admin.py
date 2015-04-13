@@ -107,6 +107,7 @@ class TickleUserAdmin(UserAdmin):
     list_display = ('person', 'is_active', 'is_admin')
     list_filter = ('is_admin', 'is_superuser', 'is_active', 'groups')
     raw_id_fields = ('person',)
+    ordering = None  # Parent class uses 'username'
 
 
 class AlwaysChangedModelForm(forms.ModelForm):
@@ -121,7 +122,7 @@ class TickleUserInline(admin.StackedInline):
     extra = 0
     max_num = 1
 
-    exclude = ('username', 'password',)
+    exclude = ('password',)
 
 
 @admin.register(Person)

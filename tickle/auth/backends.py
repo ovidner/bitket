@@ -35,7 +35,7 @@ class _LiUBaseLDAPBackend(LDAPBackend):
 
         return person
 
-    def get_or_create_person(self, ldap_user):
+    def get_or_create_person(self, username, ldap_user):
         liu_id = ldap_user.attrs['cn'][0]
         email = ldap_user.attrs['mail'][0]
 
@@ -44,24 +44,15 @@ class _LiUBaseLDAPBackend(LDAPBackend):
         return person, created
 
     def get_or_create_user(self, username, ldap_user):
-        model = self.get_user_model()
-        username_field = getattr(model, 'USERNAME_FIELD', 'username')
-
         with atomic():
-            person, person_created = self.get_or_create_person(ldap_user)
+            person, person_created = self.get_or_create_person(username, ldap_user)
 
             # Runs any subclass specific logic for populating the Person object with extra data.
             person = self.populate_person_data(person, ldap_user)
 
             person.save()
 
-            kwargs = {
-                username_field + '__iexact': username,
-                'defaults': {username_field: username.lower(),
-                             'person': person}
-            }
-
-            return model.objects.get_or_create(**kwargs)
+            return TickleUser.objects.get_or_create(person=person)
 
 
 class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):

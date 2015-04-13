@@ -229,14 +229,14 @@ class TickleUserManager(BaseUserManager):
 class TickleUser(AbstractBaseUser, PermissionsMixin):
     person = models.OneToOneField('Person', related_name='user', verbose_name=_('person'))
 
-    username = models.CharField(max_length=256, unique=True, null=True, blank=True, verbose_name=_('LiU ID or email address'))
+    # username = models.CharField(max_length=256, unique=True, null=True, blank=True, verbose_name=_('LiU ID or email address'))
 
     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
     is_admin = models.BooleanField(default=False, verbose_name=_('is admin'))
 
     objects = TickleUserManager()
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'person'
 
     class Meta:
         verbose_name = _('user')
@@ -245,10 +245,6 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.get_full_name()
 
-    def clean_username(self):
-        # We want to store NULL if username == ''
-        return self.cleaned_data['username'] or None
-
     @property
     def is_staff(self):
         """Is the user a member of staff?"""
@@ -256,16 +252,10 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
     def get_full_name(self):
-        if self.person:
-            return self.person.full_name
-        else:
-            return self.username
+        return self.person.full_name
 
     def get_short_name(self):
-        if self.person:
-            return self.person.full_name
-        else:
-            return self.username
+        return self.person.full_name
 
     def generate_and_send_password(self):
         password = TickleUser.objects.make_random_password()
