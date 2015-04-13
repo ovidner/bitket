@@ -130,12 +130,12 @@ class ShiftAdmin(admin.ModelAdmin):
     inlines = (ShiftRegistrationInline,)
 
     date_hierarchy = 'start'
-    list_display = ('shift_type', 'start', 'end', 'registrations', 'people_critical', 'people_alarming', 'people_max', 'responsible', 'public')
+    list_display = ('shift_type', 'start', 'end', 'rendered_registrations', 'people_critical', 'people_alarming', 'people_max', 'responsible', 'public')
     list_display_links = ('shift_type', 'start', 'end')
     list_editable = ('people_max', 'people_alarming', 'people_critical', 'public')
     list_filter = (ShiftTypeListFilter, ShiftStatusListFilter, 'public', ResponsibleListFilter)
 
-    def registrations(self, obj):
+    def rendered_registrations(self, obj):
         registrations = obj.registrations.count()
         status = obj.status
 
@@ -148,8 +148,8 @@ class ShiftAdmin(admin.ModelAdmin):
         elif status == 'overstaffed':
             return '{0}&nbsp;&nbsp;&nbsp;&nbsp;<strong style="color: #48ac3b;">{1}</strong>'.format(registrations, ugettext('Overstaffed'))
 
-    registrations.short_description = _('status')
-    registrations.allow_tags = True
+    rendered_registrations.short_description = _('status')
+    rendered_registrations.allow_tags = True
 
 
 class ShiftRegistrationPersonListFilter(admin.SimpleListFilter):
