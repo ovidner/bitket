@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
 
-from tickle.utils.kobra import KobraClient
+from tickle.utils.kobra import KobraClient, Unauthorized, StudentNotFound
 from tickle.utils.mail import TemplatedEmail
 from tickle.fields import SEPersonalIdentityNumberField
 
@@ -27,6 +27,10 @@ class StudentUnion(models.Model):
 
 
 class PersonQuerySet(models.QuerySet):
+    def fill_kobra_data(self):
+        for i in self:
+            i.fill_kobra_data(save=True, overwrite_name=False, fail_silently=True)
+
     def pretty_emails_string(self):
         """
         Returns a string with pretty formatted emails, separated by semicolons
@@ -130,14 +134,23 @@ class Person(models.Model):
         elif self.liu_card_magnet:
             request = {'magnet_number': self.liu_card_magnet}
         else:
-            raise KeyError('Person object must have LiU id, PID, RFID card number or magnet card number defined.')
+            if fail_silently:
+                return
+            else:
+                raise KeyError('Person object must have LiU id, PID, RFID card number or magnet card number defined.')
+
 
         data = KobraClient().get_student(**request)
 
         return data
 
     def fill_kobra_data(self, save=False, overwrite_name=False, fail_silently=False):
-        data = self.get_kobra_data(fail_silently=fail_silently)
+        try:
+            data = self.get_kobra_data(fail_silently=fail_silently)
+        except (Unauthorized, StudentNotFound) as e:
+            if fail_silently:
+                return
+            raise e
 
         if data:
             # Now we trust KOBRA to always give us all values. Let's hope it works that way.
@@ -151,12 +164,14 @@ class Person(models.Model):
             self.pid = data['personal_number']
             self.liu_id = data['liu_id']
             self.liu_id_blocked = data['blocked']
-            self.liu_card_magnet = data['barcode_number']
-            self.liu_card_rfid = data['rfid_number']
-            self.liu_student_union = StudentUnion.objects.get_or_create(name=data['union'])[0]
+            self.liu_card_magnet = data['barcode_number'] or ''  # Some people actually have no LiU card
+            self.liu_card_rfid = data['rfid_number'] or ''  # Some people actually have no LiU card
 
-        if save:
-            self.save()
+            if data['union']:
+                self.liu_student_union = StudentUnion.objects.get_or_create(name=data['union'])[0]
+
+            if save:
+                self.save()
 
     def _get_pid(self):
         if self.birth_date:

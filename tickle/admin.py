@@ -12,6 +12,7 @@ from guardian.admin import UserObjectPermissionsForm
 
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, \
     TickleUser, StudentUnionDiscount, ProductDiscount
+from tickle.utils.kobra import Unauthorized
 
 
 class PurchaseInline(admin.StackedInline):
@@ -135,7 +136,13 @@ class PersonAdmin(admin.ModelAdmin):
 
     search_fields = ('first_name', 'last_name', 'email', 'liu_id', 'notes')
 
-    actions = ['generate_email_recipient_list_action']
+    actions = ['generate_email_recipient_list_action', 'fill_kobra_data_action']
+
+    def fill_kobra_data_action(self, request, queryset):
+        queryset.fill_kobra_data()
+        self.message_user(request, _('Fetched KOBRA data.'))
+
+    fill_kobra_data_action.short_description = _('Fetch KOBRA data (use with caution)')
 
     def generate_email_recipient_list_action(self, request, queryset):
         context = {
