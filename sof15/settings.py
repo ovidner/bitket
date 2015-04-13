@@ -111,8 +111,7 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'profile'
 
 if not DEBUG:
-    # Disabled due to redirect loop in combination with CloudFlare
-    # SECURE_SSL_REDIRECT = True
+    SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
 
