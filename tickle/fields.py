@@ -122,7 +122,7 @@ class SEPersonalIdentityNumberField(forms.CharField):
         value = super(SEPersonalIdentityNumberField, self).clean(value)
 
         if value in EMPTY_VALUES:
-            return None, None
+            return None, None, False
 
         match = SWEDISH_ID_NUMBER.match(value)
         if match is None:
@@ -131,6 +131,15 @@ class SEPersonalIdentityNumberField(forms.CharField):
         gd = match.groupdict()
 
         code = str(gd['serial'] + gd['checksum'])
+        is_coordination_number = int(gd['day']) > 60
+
+        # make sure that co-ordination numbers do not pass if not allowed
+        if not self.coordination_number and is_coordination_number:
+            raise forms.ValidationError(self.error_messages['coordination_number'])
+
+        # make sure that interim numbers do not pass if not allowed
+        if not self.interim_number and gd['serial'][0].isalpha():
+            raise forms.ValidationError(self.error_messages['interim_number'])
 
         # compare the calculated value with the checksum, only if other than 0000
         if code != '0000' and id_number_checksum(gd) != int(gd['checksum']):
@@ -142,15 +151,7 @@ class SEPersonalIdentityNumberField(forms.CharField):
         except ValueError:
             raise forms.ValidationError(self.error_messages['invalid'])
 
-        # make sure that co-ordination numbers do not pass if not allowed
-        if not self.coordination_number and int(gd['day']) > 60:
-            raise forms.ValidationError(self.error_messages['coordination_number'])
-
-        # make sure that interim numbers do not pass if not allowed
-        if not self.interim_number and gd['serial'][0].isalpha():
-            raise forms.ValidationError(self.error_messages['interim_number'])
-
         if code == '0000':
-            return birth_day, None
+            return birth_day, None, False
 
-        return birth_day, code
+        return birth_day, code, is_coordination_number

@@ -53,9 +53,12 @@ class AuthenticationForm(DjangoAuthenticationForm):
 
 class PersonForm(forms.ModelForm):
     phone = forms.CharField(required=True, label=_('Phone number'))
-    pid = SEPersonalIdentityNumberField(coordination_number=True, label=_('Personal identity number'), help_text=_(
-        "Swedish personal identity number in the format <em>YYMMDD-XXXX</em>. If you don't have one, "
-        "enter <em>YYMMDD-0000</em>, where <em>YYMMDD</em> represents your birthday."))
+    pid = SEPersonalIdentityNumberField(coordination_number=True, interim_number=True,
+                                        label=_('Personal identity number'),
+                                        help_text=_("Swedish personal identity number in the format "
+                                                    "<em>YYMMDD-XXXX</em>. If you don't have one, enter "
+                                                    "<em>YYMMDD-0000</em>, where <em>YYMMDD</em> represents your "
+                                                    "birthday."))
 
     class Meta:
         model = Person
@@ -65,10 +68,11 @@ class PersonForm(forms.ModelForm):
         }
 
     def save(self, commit=True):
-        birth_date, pid_code = self.cleaned_data['pid']
+        birth_date, pid_code, pid_coordination = self.cleaned_data['pid']
 
         self.instance.birth_date = birth_date
         self.instance.pid_code = pid_code
+        self.instance.pid_coordination = pid_coordination
 
         return super(PersonForm, self).save(commit=commit)
 
@@ -77,11 +81,12 @@ class PersonForm(forms.ModelForm):
 
         try:
             # pid consists of None when invalid
-            birth_date, pid_code = data['pid']
+            birth_date, pid_code, pid_coordination = data['pid']
 
             # Checks for PID collision
             if birth_date and pid_code and self._meta.model.objects.filter(birth_date=birth_date,
-                                                                           pid_code=pid_code).exists():
+                                                                           pid_code=pid_code,
+                                                                           pid_coordination=pid_coordination).exists():
                 self.add_error('pid', forms.ValidationError(_(
                     'This personal identity number is already registered. Please contact us if you think this is a '
                     'mistake.')))

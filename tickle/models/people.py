@@ -58,6 +58,7 @@ class Person(models.Model):
         verbose_name=_('national identity code'),
         help_text=_('Last 4 digits in Swedish national identity number.'),
     )
+    pid_coordination = models.BooleanField(default=False, verbose_name=_('coordination number'), help_text=_('Designates if national identity number is a <em>samordningsnummer</em>.'))
 
     liu_id = models.CharField(max_length=10, default='', blank=True, verbose_name=_('LiU ID'))
     liu_id_blocked = models.NullBooleanField(verbose_name=_('LiU ID blocked'))
@@ -93,7 +94,7 @@ class Person(models.Model):
         unique_together = (
             # If both are specified, the combination must be unique. Two birth dates with NULL as pid_code should pass
             # as we want it to.
-            ('birth_date', 'pid_code'),
+            ('birth_date', 'pid_code', 'pid_coordination'),
         )
 
         ordering = ('first_name', 'last_name')
@@ -175,17 +176,22 @@ class Person(models.Model):
 
     def _get_pid(self):
         if self.birth_date:
+            day = self.birth_date.day
+
+            if self.pid_coordination:
+                day += 60
+
             return '{0:0>2}{1:0>2}{2:0>2}-{3}'.format(
                 str(self.birth_date.year)[-2:],
                 self.birth_date.month,
-                self.birth_date.day,
+                day,
                 self.pid_code or '0000',
             )
         else:
             return None
 
     def _set_pid(self, value):
-        self.birth_date, self.pid_code = SEPersonalIdentityNumberField().clean(value)
+        self.birth_date, self.pid_code, self.pid_coordination = SEPersonalIdentityNumberField().clean(value)
 
     pid = property(_get_pid, _set_pid)
 
