@@ -9,7 +9,8 @@ from localflavor.se.forms import SWEDISH_ID_NUMBER
 from localflavor.se.utils import validate_id_birthday, id_number_checksum
 
 
-LIU_ID = re.compile(r'^(?P<name>[a-z]{5})(?P<code>\d{2,3})$')
+# People with short names may have shorter LiU IDs!
+LIU_ID = re.compile(r'^(?P<name>[a-z]{4,5})(?P<code>\d{2,3})$')
 
 
 class PublicNameModelChoiceField(forms.ModelChoiceField):
