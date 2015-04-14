@@ -5,12 +5,43 @@ from django.core.validators import EMPTY_VALUES
 
 import re
 
-from localflavor.se.forms import SWEDISH_ID_NUMBER
-from localflavor.se.utils import validate_id_birthday, id_number_checksum
+from localflavor.se.utils import validate_id_birthday
 
 
 # People with short names may have shorter LiU IDs!
 LIU_ID = re.compile(r'^(?P<name>[a-z]{4,5})(?P<code>\d{2,3})$')
+
+# Originally from localflavor.se.forms but patched for interimspersonnummer where the 7th (or 9th) position may be
+# A-Z. This letter counts as a 1 when calculating Luhn checksum. See more at
+# https://portal.nordu.net/display/Inkubator/norEduPersonNIN+och+Svenska+Personnummer and
+# https://confluence.its.umu.se/confluence/display/Publik/Interrimspersonnummer
+SWEDISH_ID_NUMBER = re.compile(r'^(?P<century>\d{2})?(?P<year>\d{2})(?P<month>\d{2})(?P<day>\d{2})(?P<sign>[\-+])?(?P<serial>\d{3}|[A-Za-z]\d{2})(?P<checksum>\d)$')
+
+
+# Originally from localflavor.se.forms but patched for interimspersonnummer. See above.
+def id_number_checksum(gd):
+    """
+    Calculates a Swedish ID number checksum, using the
+    "Luhn"-algoritm
+    """
+    n = s = 0
+    for c in (gd['year'] + gd['month'] + gd['day'] + gd['serial']):
+        # Letter? It's an interimspersonnummer and we substitute the letter with 1.
+        if c.isalpha():
+            c = 1
+
+        tmp = ((n % 2) and 1 or 2) * int(c)
+
+        if tmp > 9:
+            tmp = sum([int(i) for i in str(tmp)])
+
+        s += tmp
+        n += 1
+
+    if (s % 10) == 0:
+        return 0
+
+    return (((s // 10) + 1) * 10) - s
 
 
 class PublicNameModelChoiceField(forms.ModelChoiceField):
@@ -76,13 +107,15 @@ class SEPersonalIdentityNumberField(forms.CharField):
     if input was YYMMDD-0000.
     """
 
-    def __init__(self, coordination_number=True, *args, **kwargs):
+    def __init__(self, coordination_number=True, interim_number=True, *args, **kwargs):
         self.coordination_number = coordination_number
+        self.interim_number = interim_number
         super(SEPersonalIdentityNumberField, self).__init__(*args, **kwargs)
 
     default_error_messages = {
         'invalid': _('Enter a valid Swedish personal identity number or YYMMDD-0000.'),
         'coordination_number': _('Co-ordination numbers are not allowed.'),
+        'interim_number': _('Interim numbers are not allowed.'),
         }
 
     def clean(self, value):
@@ -99,9 +132,9 @@ class SEPersonalIdentityNumberField(forms.CharField):
 
         code = str(gd['serial'] + gd['checksum'])
 
-        # compare the calculated value with the checksum
-        # if id_number_checksum(gd) != int(gd['checksum']):
-        # raise forms.ValidationError(self.error_messages['invalid'])
+        # compare the calculated value with the checksum, only if other than 0000
+        if code != '0000' and id_number_checksum(gd) != int(gd['checksum']):
+            raise forms.ValidationError(self.error_messages['invalid'])
 
         # check for valid birthday
         try:
@@ -112,6 +145,10 @@ class SEPersonalIdentityNumberField(forms.CharField):
         # make sure that co-ordination numbers do not pass if not allowed
         if not self.coordination_number and int(gd['day']) > 60:
             raise forms.ValidationError(self.error_messages['coordination_number'])
+
+        # make sure that interim numbers do not pass if not allowed
+        if not self.interim_number and gd['serial'][0].isalpha():
+            raise forms.ValidationError(self.error_messages['interim_number'])
 
         if code == '0000':
             return birth_day, None
