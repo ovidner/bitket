@@ -59,7 +59,7 @@ class Product(models.Model):
     _public_name = models.CharField(max_length=256, null=True, blank=True, verbose_name=_('public name'))
     description = models.TextField(blank=True, verbose_name=_('description'))
 
-    categories = models.ManyToManyField('Category', null=True, blank=True, verbose_name=_('categories'))
+    categories = models.ManyToManyField('Category', blank=True, verbose_name=_('categories'))
 
     price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_('price'))
     quantitative = models.BooleanField(default=False,

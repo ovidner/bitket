@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.utils.timezone import now
 import datetime
 from random import randint
 from tickle.models.products import Holding
+
+
+def default_invoice_creation_date():
+    return now()
+
+
+def default_invoice_due_date():
+    return now() + datetime.timedelta(days=14)
 
 
 class Invoice(models.Model):
@@ -11,8 +20,8 @@ class Invoice(models.Model):
     customerOrganization = models.CharField(max_length=255, default='', verbose_name='Förening')
     customerPNR = models.CharField(max_length=10, verbose_name='Personnummer')
     customerEmail = models.EmailField(max_length=254, verbose_name='mail')
-    create_date = models.DateField(auto_now_add=True, default=datetime.date.today())
-    due_date = models.DateField(default=datetime.date.today() + datetime.timedelta(days=14))
+    create_date = models.DateField(default=default_invoice_creation_date)
+    due_date = models.DateField(default=default_invoice_due_date)
 
 
 class InvoiceRow(models.Model):

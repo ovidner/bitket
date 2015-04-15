@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, DetailView, CreateView, ListView, DeleteView
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.shortcuts import resolve_url, redirect
@@ -14,7 +14,7 @@ from datetime import datetime
 from guardian.shortcuts import get_objects_for_user
 from guardian.mixins import LoginRequiredMixin
 
-from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, IdentifyForm
+from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, IdentifyForm, AuthenticationForm
 from tickle.models.people import Person
 from tickle.models.products import Holding, Purchase, Product
 from tickle.views.mixins import MeOrPermissionRequiredMixin

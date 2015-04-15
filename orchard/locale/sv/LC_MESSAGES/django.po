@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-25 14:33+0100\n"
+"POT-Creation-Date: 2015-04-16 01:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,31 +17,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: orchard/admin.py:38
+#: orchard/admin.py:17
+msgid "holds product"
+msgstr "produktägarskap"
+
+#: orchard/admin.py:54
 msgid "Name"
 msgstr "Namn"
 
-#: orchard/admin.py:38
+#: orchard/admin.py:54
 msgid "PID"
 msgstr "Personnummer"
 
-#: orchard/admin.py:38
+#: orchard/admin.py:54
 msgid "Primary orchestra"
 msgstr "Primär orkester"
 
-#: orchard/admin.py:38
+#: orchard/admin.py:54
 msgid "Other orchestras"
 msgstr "Andra orkestrar"
 
-#: orchard/admin.py:45
+#: orchard/admin.py:61
 msgid "Export selected objects as CSV file"
 msgstr "Exportera markerade objekt i CSV-format"
 
-#: orchard/admin.py:70
+#: orchard/admin.py:86
 msgid "Invoice orchestra"
 msgstr "Fakturera orkester"
 
-#: orchard/admin.py:86
+#: orchard/admin.py:102
 msgid "invoicable quantity"
 msgstr "fakturerbar kvantitet"
 

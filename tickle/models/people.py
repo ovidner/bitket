@@ -8,9 +8,15 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
 
-from tickle.utils.kobra import KobraClient
+from tickle.utils.kobra import KobraClient, Unauthorized, StudentNotFound
 from tickle.utils.mail import TemplatedEmail
 from tickle.fields import SEPersonalIdentityNumberField
+
+
+def generate_pretty_email(first_name, last_name, email):
+    return '"{0} {1}" <{2}>; '.format(first_name.replace('"', '\\"'),
+                                      last_name.replace('"', '\\"'),
+                                      email)
 
 
 @python_2_unicode_compatible
@@ -22,7 +28,22 @@ class StudentUnion(models.Model):
 
 
 class PersonQuerySet(models.QuerySet):
-    pass
+    def fill_kobra_data(self):
+        for i in self:
+            i.fill_kobra_data(save=True, overwrite_name=False, fail_silently=True)
+
+    def pretty_emails_string(self):
+        """
+        Returns a string with pretty formatted emails, separated by semicolons
+        """
+
+        recipient_list = ''
+        values = self.values('first_name', 'last_name', 'email')
+
+        for i in values:
+            recipient_list += generate_pretty_email(i['first_name'], i['last_name'], i['email'])
+
+        return recipient_list
 
 
 @python_2_unicode_compatible
@@ -38,6 +59,7 @@ class Person(models.Model):
         verbose_name=_('national identity code'),
         help_text=_('Last 4 digits in Swedish national identity number.'),
     )
+    pid_coordination = models.BooleanField(default=False, verbose_name=_('coordination number'), help_text=_('Designates if national identity number is a <em>samordningsnummer</em>.'))
 
     liu_id = models.CharField(max_length=10, default='', blank=True, verbose_name=_('LiU ID'))
     liu_id_blocked = models.NullBooleanField(verbose_name=_('LiU ID blocked'))
@@ -51,7 +73,6 @@ class Person(models.Model):
 
     special_nutrition = models.ManyToManyField(
         'SpecialNutrition',
-        null=True,
         blank=True,
         verbose_name=_('special nutrition'),
         help_text=_('Specify any special nutritional needs or habits.')
@@ -74,7 +95,7 @@ class Person(models.Model):
         unique_together = (
             # If both are specified, the combination must be unique. Two birth dates with NULL as pid_code should pass
             # as we want it to.
-            ('birth_date', 'pid_code'),
+            ('birth_date', 'pid_code', 'pid_coordination'),
         )
 
         ordering = ('first_name', 'last_name')
@@ -115,14 +136,22 @@ class Person(models.Model):
         elif self.liu_card_magnet:
             request = {'magnet_number': self.liu_card_magnet}
         else:
-            raise KeyError('Person object must have LiU id, PID, RFID card number or magnet card number defined.')
+            if fail_silently:
+                return
+            else:
+                raise KeyError('Person object must have LiU id, PID, RFID card number or magnet card number defined.')
 
         data = KobraClient().get_student(**request)
 
         return data
 
     def fill_kobra_data(self, save=False, overwrite_name=False, fail_silently=False):
-        data = self.get_kobra_data(fail_silently=fail_silently)
+        try:
+            data = self.get_kobra_data(fail_silently=fail_silently)
+        except (Unauthorized, StudentNotFound) as e:
+            if fail_silently:
+                return
+            raise e
 
         if data:
             # Now we trust KOBRA to always give us all values. Let's hope it works that way.
@@ -136,26 +165,33 @@ class Person(models.Model):
             self.pid = data['personal_number']
             self.liu_id = data['liu_id']
             self.liu_id_blocked = data['blocked']
-            self.liu_card_magnet = data['barcode_number']
-            self.liu_card_rfid = data['rfid_number']
-            self.liu_student_union = StudentUnion.objects.get_or_create(name=data['union'])[0]
+            self.liu_card_magnet = data['barcode_number'] or ''  # Some people actually have no LiU card
+            self.liu_card_rfid = data['rfid_number'] or ''  # Some people actually have no LiU card
 
-        if save:
-            self.save()
+            if data['union']:
+                self.liu_student_union = StudentUnion.objects.get_or_create(name=data['union'])[0]
+
+            if save:
+                self.save()
 
     def _get_pid(self):
         if self.birth_date:
+            day = self.birth_date.day
+
+            if self.pid_coordination:
+                day += 60
+
             return '{0:0>2}{1:0>2}{2:0>2}-{3}'.format(
                 str(self.birth_date.year)[-2:],
                 self.birth_date.month,
-                self.birth_date.day,
+                day,
                 self.pid_code or '0000',
             )
         else:
             return None
 
     def _set_pid(self, value):
-        self.birth_date, self.pid_code = SEPersonalIdentityNumberField().clean(value)
+        self.birth_date, self.pid_code, self.pid_coordination = SEPersonalIdentityNumberField().clean(value)
 
     pid = property(_get_pid, _set_pid)
 
@@ -175,7 +211,7 @@ class Person(models.Model):
 
     @property
     def pretty_email(self):
-        return '{0} <{1}>'.format(self.full_name, self.email)
+        return generate_pretty_email(self.first_name, self.last_name, self.email)
 
 
 @python_2_unicode_compatible
@@ -223,14 +259,12 @@ class TickleUserManager(BaseUserManager):
 class TickleUser(AbstractBaseUser, PermissionsMixin):
     person = models.OneToOneField('Person', related_name='user', verbose_name=_('person'))
 
-    username = models.CharField(max_length=256, unique=True, null=True, blank=True, verbose_name=_('LiU ID or email address'))
-
     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
-    is_admin = models.BooleanField(default=False, verbose_name=_('is admin'))
+    is_staff = models.BooleanField(default=False, verbose_name=_('is staff'))
 
     objects = TickleUserManager()
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'person'
 
     class Meta:
         verbose_name = _('user')
@@ -239,27 +273,11 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.get_full_name()
 
-    def clean_username(self):
-        # We want to store NULL if username == ''
-        return self.cleaned_data['username'] or None
-
-    @property
-    def is_staff(self):
-        """Is the user a member of staff?"""
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
-
     def get_full_name(self):
-        if self.person:
-            return self.person.full_name
-        else:
-            return self.username
+        return self.person.full_name
 
     def get_short_name(self):
-        if self.person:
-            return self.person.full_name
-        else:
-            return self.username
+        return self.person.full_name
 
     def generate_and_send_password(self):
         password = TickleUser.objects.make_random_password()
