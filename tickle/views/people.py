@@ -1,17 +1,25 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, DetailView, CreateView
+from django.views.generic import FormView, DetailView, CreateView, ListView, DeleteView
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from django.shortcuts import resolve_url
+from django.shortcuts import resolve_url, redirect
+from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
+from django.http import Http404
+
+from datetime import datetime
 
 from guardian.shortcuts import get_objects_for_user
+from guardian.mixins import LoginRequiredMixin
 
 from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, IdentifyForm
 from tickle.models.people import Person
+from tickle.models.products import Holding, Purchase, Product
 from tickle.views.mixins import MeOrPermissionRequiredMixin
 from tickle.utils.kobra import StudentNotFound, Unauthorized
+from tickle.utils.mail import TemplatedEmail
 
 
 class ProfileView(MeOrPermissionRequiredMixin, DetailView):
@@ -123,24 +131,20 @@ class IdentifyView(FormView):
         return resolve_url('create_user')
 
     def create_liu_user(self):
-        person = Person(liu_id=self.liu_id, email='%s@student.liu.se' % self.liu_id)
         try:
+            person = Person(liu_id=self.liu_id, email='%s@student.liu.se' % self.liu_id)
             person.fill_kobra_data()
         except StudentNotFound:
-            # TODO: Use translation.
-            messages.warning(self.request, 'Ingen student med LiU ID %s hittades. '
-                                           'Vänligen fyll i person information själv' % self.liu_id)
-            return self.get_create_user_url()
+            error_message = _(u'No student with the Liu ID %s was found.' % self.liu_id)
         except Unauthorized:
-            # TODO: Use translation.
-            messages.warning(self.request,
-                             'Det går för tillfället inte att få tag på information för LiU ID:n, '
-                             'vänligen fyll i person information själv.')
-            return self.get_create_user_url()
+            error_message = _(u"It's temporally not possible to retrieve information for LiU IDs.")
+        else:
+            person.save()
+            person.create_user_and_login(self.request)
+            return resolve_url('create_user_success')
 
-        person.save()
-        person.create_user_and_login(self.request)
-        return resolve_url('create_user_success')
+        messages.warning(self.request, u"%s %s" % (error_message, _(u'Please enter your personal information yourself.')))
+        return self.get_create_user_url()
 
     def get_success_url(self):
         if self.person:
@@ -158,3 +162,92 @@ class IdentifyView(FormView):
         self.liu_id = form.cleaned_data['liu_id']
         return super(IdentifyView, self).form_valid(form)
 
+
+class PurchaseView(LoginRequiredMixin, ListView):
+    model = Product
+    template_name = 'tickle/purchase.html'
+    login_url = reverse_lazy('identify')
+
+    def get_queryset(self):
+        return Product.objects.published()
+
+    def get_context_data(self, **kwargs):
+        context = super(PurchaseView, self).get_context_data(**kwargs)
+        context['holding_list'] = self.request.user.person.holdings.filter(purchase__isnull=True)
+        return context
+
+
+@login_required(login_url=reverse_lazy('identify'))
+def add_to_shopping_cart(request, pk):
+    # TODO: Convert to CreateView with Holding as model?
+    if request.POST:
+        product = Product.objects.get(pk=pk)
+        if product.quantitative:
+            holding, created = Holding.objects.get_or_create(person=request.user.person, product=product,
+                                                             purchase__isnull=True)
+            if not created:
+                holding.quantity += 1
+                holding.save()
+        else:
+            holding, created = Holding.objects.get_or_create(person=request.user.person, product=product)
+            if not created:
+                messages.warning(request, _(u'You can only buy one %s product.') % product.public_name)
+
+        return redirect('tickle:purchase')
+    raise Http404()
+
+
+class PurchaseCreateHoldingView(LoginRequiredMixin, CreateView):
+    model = Holding
+    success_url = reverse_lazy('tickle:purchase')
+
+    def form_valid(self, form):
+        pass
+
+
+class ShoppingCartView(LoginRequiredMixin, ListView):
+    # TODO: Full support for discounts.
+    # TODO: Merge shopping cart stuff to one class?
+    model = Holding
+    template_name = 'tickle/shopping_cart.html'
+
+    def get_queryset(self):
+        return Holding.objects.filter(person=self.request.user.person, purchase__isnull=True)
+
+
+class ShoppingCartDeleteView(LoginRequiredMixin, DeleteView):
+    model = Holding
+    success_url = reverse_lazy('tickle:shopping_cart')
+
+    def get(self, request, *args, **kwargs):
+        return redirect('tickle:shopping_cart')  # Only POST delete.
+
+
+@login_required(login_url=reverse_lazy('identify'))
+def complete_purchase(request):
+    # TODO: Merge old purchases with new ones?
+    # TODO: Convert to CreateView with Purchase as model?
+    # TODO: Convert to UpdateView with Holding as model?
+    if request.POST:
+        person = request.user.person
+        purchase = Purchase.objects.create(person=person, purchased=datetime.now())
+        updated = person.holdings.filter(purchase__isnull=True).update(purchase=purchase)
+        if updated:
+            # TODO: Fill email body with correct information and test it.
+            msg = TemplatedEmail(
+                to=[person.pretty_email],
+                from_email='Biljett SOF15 <biljett@sof15.se>',
+                subject_template='tickle/email/purchase_success_subject.txt',
+                body_template_html='tickle/email/purchase_success.html',
+                context={
+                    'person': person,
+                    'purchase': purchase,
+                },
+                tags=['tickle'])
+            msg.send()
+            return redirect('tickle:purchase_completed_success')
+
+        purchase.delete()
+        messages.warning(request, _(u'Add at least one product to your shopping cart before you try to make a purchase.'))
+        return redirect('tickle:purchase')
+    raise Http404()

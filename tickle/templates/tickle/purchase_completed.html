@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} – {% trans 'Purchase completed' %}{% endblock %}
+
+{% block header %}{% trans 'Purchase completed' %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-7">
+        <p>
+            Grattis, du har nu köpt biljetter till SOF 2015! En faktura kommer att skickas till dig.
+            Du kan se ditt köp på din profil. Vi ses på SOF! TAGGA SOF!
+        </p>
+        </div>
+    </div>
+{% endblock content %}

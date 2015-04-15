@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ block.super }} – Biljettköp{% endblock %}
+
+{% block header %}Biljettköp{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Information</h3>
+            <p>Du kan köpa biljetter samt prylar genom att lägga till dem i din kundvagn.
+                När du har lagt till allt du vill ha kan du gå till utcheckningen för att slutföra ditt köp.<br>
+                Saker i din kundvagn sparas så du kan komma tillbaka senare.
+                Du kan även ta bort saker ifrån din kundvagn om du inte slutfört ditt köp ifall du ångrar något.
+            </p>
+
+            <h3>Biljetter</h3>
+            {% for ticket in product_list.ticket_types %}
+                <form action="{% url 'tickle:shopping_cart_add' ticket.pk %}" method="post" class="row">{% csrf_token %}
+                    <h4 class="col-sm-6">{{ ticket.public_name }} - {{ ticket.price }}:-</h4>
+                    <input value="Lägg till i kundvagn" class="btn btn-sm btn-success pull-right" type="submit">
+                </form>
+            {% empty %}
+                <p>Det finns tyvärr inga tillgängliga biljetter till SOF.</p>
+            {% endfor %}
+
+            <h3>Prylar</h3>
+            {% for gadget in product_list.gadget_types %}
+                <form action="{% url 'tickle:shopping_cart_add' gadget.pk %}" method="post" class="row">{% csrf_token %}
+                    <h4 class="col-sm-6">{{ gadget.public_name }} - {{ gadget.price }}:-</h4>
+                    <input value="Lägg till i kundvagn" class="btn btn-sm btn-success pull-right" type="submit">
+                </form>
+            {% empty %}
+                <p>Det finns inga tillgängliga prylar till SOF.</p>
+            {% endfor %}
+
+            <br><a href="{% url 'tickle:shopping_cart' %}" class="btn btn-default btn-primary">Gå till utcheckning</a>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Kundvagn</h3>
+            {% include 'tickle/holdings_table.html' %}
+        </div>
+    </div>
+
+
+{% endblock %}

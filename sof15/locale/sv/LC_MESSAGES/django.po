@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-25 14:33+0100\n"
+"POT-Creation-Date: 2015-04-15 20:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,69 +18,84 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: sof15/settings.py:149
+#: settings.py:149
 msgid "Swedish"
 msgstr "Svenska"
 
-#: sof15/templates/base.html:24
+#: templates/base.html:24
 msgid "Return to sof15.se"
 msgstr "Tillbaka till sof15.se"
 
-#: sof15/templates/base.html:32
+#: templates/base.html:32
 msgid "Toggle navigation"
 msgstr "Växla navigation"
 
-#: sof15/templates/base.html:37
+#: templates/base.html:37
 msgid "SOF 2015 Tickets/Registration"
 msgstr "SOF 2015 Biljetter/Anmälan"
 
-#: sof15/templates/base.html:42
+#: templates/base.html:42
 msgid "Orchestra member"
 msgstr "Orkestermedlem"
 
-#: sof15/templates/base.html:43
+#: templates/base.html:43
 msgid "Kårtege applicant"
 msgstr "Kårtegedeltagare"
 
-#: sof15/templates/base.html:44
+#: templates/base.html:44
 msgid "Functionary"
 msgstr "Funktionär"
 
-#: sof15/templates/base.html:48 sof15/templates/people/login.html:4
-#: sof15/templates/people/login.html:6 sof15/templates/people/login.html:13
+#: templates/base.html:45
+msgid "Tickets"
+msgstr "Biljetter"
+
+#: templates/base.html:49 templates/people/login.html:4
+#: templates/people/login.html.py:6 templates/people/login.html:13
 msgid "Log in"
 msgstr "Logga in"
 
-#: sof15/templates/base.html:51
+#: templates/base.html:52
 msgid "Logged in as"
 msgstr "Inloggad som"
 
-#: sof15/templates/base.html:53
+#: templates/base.html:54
 msgid "Profile"
 msgstr "Profil"
 
-#: sof15/templates/base.html:55
+#: templates/base.html:55
+msgid "Shopping cart"
+msgstr "Kundvagn"
+
+#: templates/base.html:57
 msgid "Administration"
 msgstr "Administration"
 
-#: sof15/templates/base.html:57 sof15/templates/people/change_password.html:4
-#: sof15/templates/people/change_password.html:6
-#: sof15/templates/people/change_password.html:13
+#: templates/base.html:59 templates/people/change_password.html:4
+#: templates/people/change_password.html:6
+#: templates/people/change_password.html:13
 msgid "Change password"
 msgstr "Ändra lösenord"
 
-#: sof15/templates/base.html:59
+#: templates/base.html:61
 msgid "Log out"
 msgstr "Logga ut"
 
-#: sof15/templates/people/profile.html:69
+#: templates/people/create_user.html:4 templates/people/create_user.html:6
+#: templates/people/create_user.html:13
+#: templates/people/create_user_success.html:4
+#: templates/people/create_user_success.html:6
+msgid "Create account"
+msgstr "Skapa konto"
+
+#: templates/people/profile.html:69
 msgid "Orchestra representative"
 msgstr "Orkesterrepresentant"
 
-#: sof15/templates/people/profile.html:73
+#: templates/people/profile.html:73
 msgid "Approve members"
 msgstr "Godkänn medlemmar"
 
-#: sof15/templates/people/profile.html:74
+#: templates/people/profile.html:74
 msgid "Review invoice data"
 msgstr "Granska fakturaunderlag"

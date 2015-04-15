@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load i18n crispy_forms_tags %}
+
+{% block title %}{{ block.super }} – Kundvagn{% endblock %}
+
+{% block header %}Kundvagn{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>Biljetter</h2>
+            <p>
+                Kom ihåg att <strong>dina biljetter är personliga</strong>, dvs. du och endast du kan hämta ut dem
+                tillsammans med LiU-kort eller fotolegitimation.
+            </p>
+            {% for ticket in holding_list.tickets %}
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+
+                        <form action="{% url 'tickle:shopping_cart_remove' ticket.pk %}" method="post">{% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger pull-right">
+                                <span class="glyphicon glyphicon-remove"></span> Ta bort
+                            </button>
+                        </form>
+                        <h3 class="panel-title" style="padding-top: 7.5px;">{{ ticket.product.ticket_type }}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <dl>
+                            <dt>Medger entré till</dt>
+                            <dd>
+                                <ul class="list-unstyled">
+                                    {% for event in ticket.product.ticket_type.events.all %}
+                                        <li>{{ event }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>Information</dt>
+                            <dd>
+                                <ul class="list-unstyled">
+                                    {% if ticket.product.quantitative %}
+                                        <li>Antal: {{ ticket.quantity }}</li>
+                                    {% endif %}
+                                    <li>Pris: {{ ticket.product.price }}</li>
+                                    {% for discount in ticket.product.discounts.all %}
+                                        <li>Rabbat: {{ discount }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Du har inga biljetter i din kundvagn.</p>
+            {% endfor %}
+        </div>
+
+        <div class="col-lg-4">
+            <h2>Prylar</h2>
+            <p>
+                Övriga prylar och grejer.
+            </p>
+            {% for gadget in holding_list.gadgets %}
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <form action="{% url 'tickle:shopping_cart_remove'  gadget.pk %}" method="post">{% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger pull-right">
+                                <span class="glyphicon glyphicon-remove"></span> Ta bort
+                            </button>
+                        </form>
+                        <h3 class="panel-title" style="padding-top: 7.5px;">{{ gadget.product.public_name }}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <dl>
+                            <dt>Information</dt>
+                            <dd>
+                                <ul class="list-unstyled">
+                                    {% if gadget.product.quantitative %}
+                                    <li>Antal: {{ gadget.quantity }}</li>
+                                    {% endif %}
+                                    <li>Pris: {{ gadget.product.price }}</li>
+                                    {% for discount in gadget.product.discounts.all %}
+                                        <li>Rabbat: {{ discount }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Du har inga prylar i din kundvagn.</p>
+            {% endfor %}
+        </div>
+
+        <div class="col-lg-4">
+            <h2>Slutgiltigt köp</h2>
+            <p>
+                Detta är ett <strong>köp</strong> och <strong>en faktura kommer skickas till {{ person.full_name }}</strong> på e-postaddressen
+                {{ person.email }}. Du är skyldig att betala denna faktura och då du köper en biljett gäller
+                därför <strong>inget öppet köp</strong>.
+            </p>
+
+            <h3>Kostnad</h3>
+            {% include 'tickle/holdings_table.html' %}
+
+            <form action="{% url 'tickle:complete_purchase' %}" method="post">{% csrf_token %}
+                <button type="submit" class="btn btn-default btn-success">
+                    <span class="glyphicon glyphicon-shopping-cart"></span> Köp
+                </button>
+            </form>
+        </div>
+
+    </div>
+{% endblock content %}

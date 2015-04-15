@@ -49,6 +49,9 @@ class ProductQuerySet(models.QuerySet):
     def ticket_types(self):
         return self.filter(ticket_type__isnull=False)
 
+    def gadget_types(self):
+        return self.filter(ticket_type__isnull=True)
+
 
 @python_2_unicode_compatible
 class Product(models.Model):
@@ -64,6 +67,8 @@ class Product(models.Model):
                                        help_text=_('Can you purchase more than one (1) of this product?'))
 
     published = models.BooleanField(default=True, verbose_name=_('published'))
+
+    objects = ProductQuerySet.as_manager()
 
     class Meta:
         ordering = ('name',)
@@ -130,6 +135,12 @@ class HoldingQuerySet(models.QuerySet):
     def tickets(self):
         return self.filter(product__ticket_type__isnull=False)
 
+    def gadgets(self):
+        return self.filter(product__ticket_type__isnull=True)
+
+    def total_cost(self):
+        return self.annotate(price=Sum('product__price')).aggregate(Sum('price', field='price*quantity'))['price__sum']\
+            or 0
 
 @python_2_unicode_compatible
 class Holding(models.Model):

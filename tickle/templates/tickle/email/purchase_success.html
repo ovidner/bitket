@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family: sans-serif;">
+    <h1>Köpbekräftelse</h1>
+
+    <p>Biljettnummer: {{ purchase.pk }}</p>
+
+    <p>Denna biljett är personlig och tillhör {{ person.full_name }}, {{ person.pid }}</p>
+
+    {% include 'tickle/holdings_table.html' with holding_list=purchase.holdings.all %}
+
+    <p>Du behöver din biljett och en giltig id-handling för att kunna hämta ut ditt festivalband.
+        Ditt festivalband kan hämtas ut i vår biljettutlämning utanför C4 från och med den 2:a maj,
+        samt utanför festivalområdet under själva festivalen 9-11 maj.</p>
+
+    <p>Biljetten är personlig och kan inte säljas vidare direkt.</p>
+
+    <p>Har du några frågor och funderingar, eller vill du bara ha någon att prata med så når du oss på <a href="mailto:biljett@sof15.se">biljett@sof15.se</a>!</p>
+
+</body>
+</html>

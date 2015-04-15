@@ -28,6 +28,7 @@ urlpatterns = patterns(
     url(r'^karthago/', include('karthago.urls', namespace='karthago', app_name='karthago')),
     url(r'^orchard/', include('orchard.urls', namespace='orchard', app_name='orchard')),
     url(r'^fungus/', include('fungus.urls', namespace='fungus', app_name='fungus')),
+    url(r'^tickets/', include('tickle.urls', namespace='tickle', app_name='tickle')),
 
     url(r'^api/', include('api.urls', namespace='api')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
