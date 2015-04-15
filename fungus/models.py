@@ -63,6 +63,7 @@ class Functionary(models.Model):
         
         super(Functionary, self).save(force_insert, force_update, using, update_fields)
 
+
 class WorkerDiscount(BaseDiscount):
     shifts = models.PositiveIntegerField(verbose_name=_('shifts'),
                                          help_text=_('Number of shifts to work to be eligible for this discount.'))
