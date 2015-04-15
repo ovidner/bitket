@@ -120,6 +120,11 @@ class TickleUserInline(admin.StackedInline):
     model = TickleUser
     form = AlwaysChangedModelForm  # This way we can just press Add, not change anything and still get an account
     # created
+    filter_horizontal = ('groups', 'user_permissions')
+    fieldsets = (
+        (None, {'fields': ('is_active', 'is_staff')}),
+        (_('Permissions'), {'fields': ('groups', 'user_permissions', 'is_superuser')})
+    )
     extra = 0
     max_num = 1
 
