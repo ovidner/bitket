@@ -134,6 +134,8 @@ class PersonAdmin(admin.ModelAdmin):
     list_display_links = ('first_name', 'last_name', 'pid')
     list_filter = ('special_nutrition',)
 
+    filter_horizontal = ('special_nutrition',)
+    
     search_fields = ('first_name', 'last_name', 'email', 'liu_id', 'notes')
 
     actions = ['generate_email_recipient_list_action', 'fill_kobra_data_action']
