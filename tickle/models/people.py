@@ -140,7 +140,6 @@ class Person(models.Model):
             else:
                 raise KeyError('Person object must have LiU id, PID, RFID card number or magnet card number defined.')
 
-
         data = KobraClient().get_student(**request)
 
         return data
@@ -248,8 +247,6 @@ class TickleUserManager(BaseUserManager):
 @python_2_unicode_compatible
 class TickleUser(AbstractBaseUser, PermissionsMixin):
     person = models.OneToOneField('Person', related_name='user', verbose_name=_('person'))
-
-    # username = models.CharField(max_length=256, unique=True, null=True, blank=True, verbose_name=_('LiU ID or email address'))
 
     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
     is_staff = models.BooleanField(default=False, verbose_name=_('is staff'))
