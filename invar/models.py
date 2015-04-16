@@ -13,6 +13,14 @@ def get_new_invoice_id():
     return randint(0, 1000000)
 
 
+def default_invoice_creation_date():
+    return now()
+
+
+def default_invoice_due_date():
+    return now() + datetime.timedelta(days=14)
+
+
 class Invoice(models.Model):
     class OrderStatus(Enum):
         GENERATED = 'g'
@@ -63,6 +71,8 @@ class Invoice(models.Model):
             else:
                 products_summary[row.itemName] = row.nrItems
 
+    create_date = models.DateField(default=default_invoice_creation_date)
+    due_date = models.DateField(default=default_invoice_due_date)
 
 
 class InvoiceRow(models.Model):

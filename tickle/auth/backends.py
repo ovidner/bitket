@@ -29,10 +29,13 @@ class _LiUBaseLDAPBackend(LDAPBackend):
         """
         Feel free to override this in your subclass. You don't have to save the person object, we'll do it later.
         """
+
         person.first_name = ldap_user.attrs['givenName'][0]
         person.last_name = ldap_user.attrs['sn'][0]
 
-    def get_or_create_person(self, ldap_user):
+        return person
+
+    def get_or_create_person(self, username, ldap_user):
         liu_id = ldap_user.attrs['cn'][0]
         email = ldap_user.attrs['mail'][0]
 
@@ -41,24 +44,15 @@ class _LiUBaseLDAPBackend(LDAPBackend):
         return person, created
 
     def get_or_create_user(self, username, ldap_user):
-        model = self.get_user_model()
-        username_field = getattr(model, 'USERNAME_FIELD', 'username')
-
         with atomic():
-            person, person_created = self.get_or_create_person(ldap_user)
+            person, person_created = self.get_or_create_person(username, ldap_user)
 
             # Runs any subclass specific logic for populating the Person object with extra data.
-            self.populate_person_data(person, ldap_user)
+            person = self.populate_person_data(person, ldap_user)
 
             person.save()
 
-            kwargs = {
-                username_field + '__iexact': username,
-                'defaults': {username_field: username.lower(),
-                             'person': person}
-            }
-
-            return model.objects.get_or_create(**kwargs)
+            return TickleUser.objects.get_or_create(person=person)
 
 
 class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
@@ -70,9 +64,11 @@ class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
     _settings = LiUStudentLDAPSettings(settings_prefix)
 
     def _populate_person_data(self, person, ldap_user):
-        super(LiUStudentLDAPBackend, self).populate_person_data(person, ldap_user)
+        person = super(LiUStudentLDAPBackend, self).populate_person_data(person, ldap_user)
 
         person.fill_kobra_data(save=False, overwrite_name=False)
+
+        return person
 
 
 class LiUEmployeeLDAPBackend(_LiUBaseLDAPBackend):

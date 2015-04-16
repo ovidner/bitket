@@ -17,18 +17,12 @@ class LiULDAPSettings(LDAPSettings):
             'SERVER_URI': 'ldap://ad.liu.se',
             'START_TLS': True,
             'CONNECTION_OPTIONS': {
-                ldap.OPT_X_TLS_REQUIRE_CERT: ldap.OPT_X_TLS_NEVER,  # Don't require certificate
+                ldap.OPT_X_TLS_REQUIRE_CERT: ldap.OPT_X_TLS_NEVER,
             },
 
             'BIND_AS_AUTHENTICATING_USER': True,
 
             'GROUP_TYPE': ActiveDirectoryGroupType(),
-
-            'USER_ATTR_MAP': {
-                'first_name': 'givenName',
-                'last_name': 'sn',
-                'email': 'mail'
-            },
         })
 
         super(LiULDAPSettings, self).__init__(*args, **kwargs)

@@ -7,16 +7,32 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 
 from guardian.admin import GuardedModelAdmin
 
+from tickle.models import Product
 from tickle.admin import PersonAdmin
 from orchard.models import OrchardPerson, Orchestra, OrchestraMembership, OrchestraTicketType, OrchestraProduct, \
     OrchestraMemberRegistration
 
 
+class ProductFilter(admin.SimpleListFilter):
+    title = _('holds product')
+    parameter_name = 'product'
+
+    def lookups(self, request, model_admin):
+        products = set([i for i in Product.objects.all()])
+        return [(i.pk, i.name) for i in products]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(holdings__product=self.value())
+        else:
+            return queryset
+
+
 @admin.register(OrchardPerson)
 class OrchardPersonAdmin(PersonAdmin):
     actions = ('csv_export',)
-    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'primary_orchestra')
-    list_filter = ('orchestra_memberships__orchestra', 'special_nutrition')
+    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'primary_orchestra', 'notes')
+    list_filter = ('orchestra_memberships__orchestra', 'special_nutrition', ProductFilter)
 
     def has_add_permission(self, request):
         # We should not add people from here.
@@ -60,7 +76,7 @@ class OrchestraMembershipInline(admin.TabularInline):
 
 
 @admin.register(Orchestra)
-class OrchestraAdmin(GuardedModelAdmin):
+class OrchestraAdmin(admin.ModelAdmin):
     actions = ['generate_invoice']
     inlines = (OrchestraMembershipInline,)
 

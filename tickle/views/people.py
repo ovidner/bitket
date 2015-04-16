@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, DetailView
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import login
 from django.shortcuts import resolve_url
 from django.contrib import messages
 
 from guardian.shortcuts import get_objects_for_user
 
-from tickle.forms import LoginFormHelper
+from tickle.forms import LoginFormHelper, AuthenticationForm
 from tickle.models.people import Person
 from tickle.views.mixins import MeOrPermissionRequiredMixin
 

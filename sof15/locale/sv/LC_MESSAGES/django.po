@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-25 14:33+0100\n"
+"POT-Creation-Date: 2015-04-14 09:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: sof15/settings.py:149
+#: sof15/settings.py:151
 msgid "Swedish"
 msgstr "Svenska"
 
@@ -63,13 +63,13 @@ msgstr "Profil"
 msgid "Administration"
 msgstr "Administration"
 
-#: sof15/templates/base.html:57 sof15/templates/people/change_password.html:4
+#: sof15/templates/base.html:58 sof15/templates/people/change_password.html:4
 #: sof15/templates/people/change_password.html:6
 #: sof15/templates/people/change_password.html:13
 msgid "Change password"
 msgstr "Ändra lösenord"
 
-#: sof15/templates/base.html:59
+#: sof15/templates/base.html:61
 msgid "Log out"
 msgstr "Logga ut"
 

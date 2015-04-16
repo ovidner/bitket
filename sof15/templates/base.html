@@ -54,7 +54,9 @@
                                     {% if user.is_staff %}
                                         <li><a href="{% url 'admin:index' %}">{% trans 'Administration' %}</a></li>
                                     {% endif %}
-                                    <li><a href="{% url 'change_password' %}">{% trans 'Change password' %}</a></li>
+                                    {% if user.has_usable_password %}
+                                        <li><a href="{% url 'change_password' %}">{% trans 'Change password' %}</a></li>
+                                    {% endif %}
                                     <li class="divider"></li>
                                     <li><a href="{% url 'logout' %}">{% trans 'Log out' %}</a></li>
                                 </ul>
