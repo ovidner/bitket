@@ -220,6 +220,12 @@ class ShoppingCartDeleteView(LoginRequiredMixin, DeleteView):
     def get(self, request, *args, **kwargs):
         return redirect('tickle:shopping_cart')  # Only POST delete.
 
+    def post(self, request, *args, **kwargs):
+        holding = self.get_object()
+        if holding.person == request.user.person:
+            return super(ShoppingCartDeleteView, self).post(request, *args, **kwargs)
+        return redirect('tickle:shopping_cart')
+
 
 @login_required(login_url=reverse_lazy('identify'))
 def complete_purchase(request):
