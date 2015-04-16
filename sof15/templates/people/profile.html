@@ -35,36 +35,99 @@
                 </dd>
             </dl>
         </div>
-        {% comment %}
-        <div class="col-lg-4">
-            <h2>Biljetter</h2>
-            <p>
-                Kom ihåg att <strong>dina biljetter är personliga</strong>, dvs. du och endast du kan hämta ut dem
-                tillsammans med LiU-kort eller fotolegitimation.
-            </p>
-            {% for ticket in person.holdings.tickets %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">{{ ticket.product.ticket_type }}</h3>
-                    </div>
-                    <div class="panel-body">
-                        <dl>
-                            <dt>Medger entré till</dt>
-                            <dd>
-                                <ul class="list-unstyled">
-                                    {% for event in ticket.product.ticket_type.events.all %}
-                                        <li>{{ event }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        {% endcomment %}
-        <div class="col-lg-4">
-            {% if membership_approvable_orchestras %}
+
+        <!-- Tickets and products. -->
+        {% if person.purchase_set.exists %}
+            <div class="col-lg-4">
+                <h2>Biljetter</h2>
+                <p>
+                    Kom ihåg att <strong>dina biljetter är personliga</strong>, dvs. du och endast du kan hämta ut dem
+                    tillsammans med LiU-kort eller fotolegitimation.
+                </p>
+
+                {% for purchase in person.purchase_set.all %}
+                    {% for holding in purchase.holdings.all %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">{{  holding.product.public_name }}</h3>
+                            </div>
+
+                            <div class="panel-body">
+                                <dl>
+                                    {% if holding.product.ticket_type %}
+                                        <dt>Medger entré till</dt>
+                                        <dd>
+                                            <ul class="list-unstyled">
+                                                {% for event in holding.product.ticket_type.events.all %}
+                                                    <li>{{ event }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </dd>
+                                    {% endif %}
+
+                                    <dt>Information</dt>
+                                    <dd>
+                                        <ul class="list-unstyled">
+                                            {% if holding.product.quantitative %}
+                                                <li>Antal: {{ holding.quantity }}</li>
+                                            {% endif %}
+                                            <li>Pris: {{ holding.product.price }}</li>
+                                            {% for discount in holding.product.discounts.all %}
+                                                <li>Rabbat: {{ discount }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    {% comment %}
+                    <h3>Kostnad</h3>
+                    {% include 'tickle/holdings_table.html' with holding_list=purchase.holdings.all %}
+                    {% endcomment %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+
+        <!-- Functionary and shifts. -->
+        {% if person.functionary %}
+            <div class="col-lg-4">
+                <h2>Funktionärsupgiffter</h2>
+                <dl>
+                    <dt>ICE-nummer</dt>
+                    <dd>{{ person.functionary.ice_number|default:'&mdash;' }}</dd>
+
+                    <dt>Innehar B-körkort</dt>
+                    <dd>{{ person.functionary.b_driving_license|yesno:'Ja,Nej' }}</dd>
+
+                    {% comment %}
+                    <dt>Godkänt kontrakt</dt>
+                    <dd>{{ person.functionary.signed_contract|yesno:'Ja,Nej' }}</dd>
+
+                    <dt>Deltagit på infomöte</dt>
+                    <dd>{{ person.functionary.attended_info_meeting|yesno:'Ja,Nej' }}</dd>
+
+                    <dt>Pant betalad</dt>
+                    <dd>{{ person.functionary.pledge_payed|yesno:'Ja,Nej' }}</dd>
+
+                    <dt>Pant återbetalad</dt>
+                    <dd>{{ person.functionary.pledge_returned|yesno:'Ja,Nej' }}</dd>
+                    {% endcomment %}
+                </dl>
+
+                <h3>Mina pass</h3>
+                {% for shift_reg in person.shift_registrations.all %}
+                    <p>{{ shift_reg.shift }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+
+        <!-- Orchestra -->
+        {% if membership_approvable_orchestras %}
+            <div class="col-lg-4">
                 <h2>{% trans 'Orchestra representative' %}</h2>
                 {% for orchestra in membership_approvable_orchestras %}
                     <h3>{{ orchestra }}</h3>
@@ -73,8 +136,9 @@
                         <li><a href="{% url 'orchard:view_orchestra_invoice_data' orchestra.pk %}">{% trans 'Review invoice data' %}</a></li>
                     </ul>
                 {% endfor %}
-            {% endif %}
-        </div>
+            </div>
+        {% endif %}
+
     </div>
 
 {% endblock content %}
