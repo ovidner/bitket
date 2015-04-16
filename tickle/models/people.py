@@ -296,4 +296,4 @@ def get_init_anonymous_user(User):
                                                                     'last_name': 'Person>',
                                                                     'email': 'a@a.nonexisting'})
 
-    return User(username='AnonymousUser', person=person)
+    return User(id=settings.ANONYMOUS_USER_ID, person=person)
