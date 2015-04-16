@@ -148,6 +148,8 @@ class Holding(models.Model):
     product = models.ForeignKey('Product', related_name='holdings', verbose_name=_('product'))
 
     purchase = models.ForeignKey('Purchase', related_name='holdings', null=True, blank=True, verbose_name=_('purchase'))
+    shopping_cart = models.ForeignKey('ShoppingCart', related_name='holdings', null=True, blank=True,
+                                      verbose_name=_('shopping cart'))
 
     quantity = models.PositiveIntegerField(default=1, verbose_name=_('quantity'))
 
@@ -163,6 +165,15 @@ class Holding(models.Model):
     def clean(self):
         if not self.product.quantitative and not self.quantity == 1:
             raise ValidationError(_('Quantity must be exactly 1 for un-quantitative products.'))
+
+    def save(self, *args, **kwargs):
+        shopping_cart = getattr(self, 'shopping_cart')
+        purchase = getattr(self, 'purchase')
+        if shopping_cart and purchase:
+            raise ValidationError(_("Can't hold both a shopping cart and a purchase at the same time."))
+        elif not shopping_cart and not purchase:
+            raise ValidationError(_('Holding must have either a shopping cart or a purchase.'))
+        return super(Holding, self).save(*args, **kwargs)
 
     @property
     def total(self):
@@ -182,6 +193,17 @@ class Delivery(models.Model):
         return u'{0}, {1}'.format(self.holdings, self.delivered)
 
 
+class ShoppingCart(models.Model):
+    person = models.OneToOneField('Person', verbose_name=_('person'), related_name='shopping_cart')
+
+    class Meta:
+        verbose_name = _('shopping cart')
+        verbose_name_plural = _('shopping cart')
+
+    def __str__(self):
+        return self.person.full_name
+
+
 class PurchaseQuerySet(models.QuerySet):
     def holdings(self):
         return Holding.objects.filter(purchase__in=self)
@@ -190,8 +212,6 @@ class PurchaseQuerySet(models.QuerySet):
 @python_2_unicode_compatible
 class Purchase(models.Model):
     person = models.ForeignKey('Person', verbose_name=_('person'))
-    # holdings = models.ManyToManyField('Holding', null=True, verbose_name=_('holdings'))
-
     purchased = models.DateTimeField(verbose_name=_('purchased'))
 
     valid = models.BooleanField(default=True, verbose_name=_('valid'))

@@ -16,7 +16,7 @@ from guardian.mixins import LoginRequiredMixin
 
 from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, IdentifyForm, AuthenticationForm
 from tickle.models.people import Person
-from tickle.models.products import Holding, Purchase, Product
+from tickle.models.products import Holding, Purchase, Product, ShoppingCart
 from tickle.views.mixins import MeOrPermissionRequiredMixin
 from tickle.utils.kobra import StudentNotFound, Unauthorized
 from tickle.utils.mail import TemplatedEmail
@@ -173,7 +173,10 @@ class PurchaseView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PurchaseView, self).get_context_data(**kwargs)
-        context['holding_list'] = self.request.user.person.holdings.filter(purchase__isnull=True)
+        person = self.request.user.person
+        if not hasattr(person, 'shopping_cart'):
+            ShoppingCart.objects.create(person=person)
+        context['holding_list'] = person.shopping_cart.holdings.all()
         return context
 
 
@@ -182,37 +185,32 @@ def add_to_shopping_cart(request, pk):
     # TODO: Convert to CreateView with Holding as model?
     if request.POST:
         product = Product.objects.get(pk=pk)
+        person = request.user.person
         if product.quantitative:
-            holding, created = Holding.objects.get_or_create(person=request.user.person, product=product,
-                                                             purchase__isnull=True)
+            holding, created = Holding.objects.get_or_create(person=person, product=product,
+                                                             shopping_cart=person.shopping_cart)
             if not created:
                 holding.quantity += 1
                 holding.save()
         else:
-            holding, created = Holding.objects.get_or_create(person=request.user.person, product=product)
+            holding, created = Holding.objects.get_or_create(person=person, product=product,
+                                                             defaults={'shopping_cart': person.shopping_cart})
             if not created:
                 messages.warning(request, _(u'You can only buy one %s product.') % product.public_name)
-
         return redirect('tickle:purchase')
     raise Http404()
 
 
-class PurchaseCreateHoldingView(LoginRequiredMixin, CreateView):
-    model = Holding
-    success_url = reverse_lazy('tickle:purchase')
-
-    def form_valid(self, form):
-        pass
-
-
 class ShoppingCartView(LoginRequiredMixin, ListView):
-    # TODO: Full support for discounts.
     # TODO: Merge shopping cart stuff to one class?
     model = Holding
     template_name = 'tickle/shopping_cart.html'
 
     def get_queryset(self):
-        return Holding.objects.filter(person=self.request.user.person, purchase__isnull=True)
+        person = self.request.user.person
+        if not hasattr(person, 'shopping_cart'):
+            ShoppingCart.objects.create(person=person)
+        return person.shopping_cart.holdings.all()
 
 
 class ShoppingCartDeleteView(LoginRequiredMixin, DeleteView):
@@ -225,14 +223,14 @@ class ShoppingCartDeleteView(LoginRequiredMixin, DeleteView):
 
 @login_required(login_url=reverse_lazy('identify'))
 def complete_purchase(request):
-    # TODO: Merge old purchases with new ones?
     # TODO: Convert to CreateView with Purchase as model?
     # TODO: Convert to UpdateView with Holding as model?
     if request.POST:
         person = request.user.person
         purchase = Purchase.objects.create(person=person, purchased=datetime.now())
-        updated = person.holdings.filter(purchase__isnull=True).update(purchase=purchase)
+        updated = person.shopping_cart.holdings.update(shopping_cart=None, purchase=purchase)
         if updated:
+            person.shopping_cart.delete()
             # TODO: Fill email body with correct information and test it.
             msg = TemplatedEmail(
                 to=[person.pretty_email],
