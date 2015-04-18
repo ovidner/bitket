@@ -218,6 +218,10 @@ class SpecialNutrition(models.Model):
 
 
 class TickleUserManager(BaseUserManager):
+    def get_by_natural_key(self, pk):
+        # Ugly hack to solve problems with serialization from natural keys
+        return self.get(pk=pk)
+
     def create_user(self, username, password=None):
         """
         Creates and saves a User with the given email and password.
@@ -261,6 +265,10 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.get_full_name()
+
+    def natural_key(self):
+        # Ugly hack to solve problems with serialization to natural keys
+        return (self.pk,)
 
     def get_full_name(self):
         return self.person.full_name
