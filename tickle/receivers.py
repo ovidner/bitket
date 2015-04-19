@@ -20,5 +20,5 @@ def generate_and_send_password_user(sender, instance, **kwargs):
 @receiver(pre_save, sender=Person)
 def generate_and_send_password_person(sender, instance, **kwargs):
     # Do this only for non-LiU id users.
-    if not instance.liu_id and hasattr(instance, 'user') and not instance.user.password:
+    if not instance.liu_id and hasattr(instance, 'user') and not instance.user.password and instance.id != settings.ANONYMOUS_USER_ID:
         instance.user.generate_and_send_password()
