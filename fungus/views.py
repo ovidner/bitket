@@ -5,6 +5,8 @@ from django.contrib import messages
 from guardian.mixins import LoginRequiredMixin
 from django.db.transaction import atomic
 
+from guardian.mixins import LoginRequiredMixin
+
 
 from fungus.models import ShiftRegistration
 from fungus.forms import ChangeSelectedShiftsForm, ShiftForm, ShiftRegisterFormHelper, FunctionaryForm, FunctionaryFormHelper
@@ -43,7 +45,7 @@ class ShiftChangeView(FormView):
         return super(ShiftChangeView, self).form_valid(form)
 
 
-class RegisterFunctionaryView(FormView):
+class RegisterFunctionaryView(LoginRequiredMixin, FormView):
     template_name = 'fungus/register_functionary.html'
     form_class = ShiftForm
 
@@ -53,11 +55,13 @@ class RegisterFunctionaryView(FormView):
     def get_context_data(self, **kwargs):
         context = super(RegisterFunctionaryView, self).get_context_data(**kwargs)
 
-        context['person_form_helper'] = PersonFormHelper()
+        if hasattr(self.request.user.person, 'functionary'):
+            context['already_registered'] = True
+            return context
+
         context['shift_form_helper'] = ShiftRegisterFormHelper()
         context['functionary_form_helper'] = FunctionaryFormHelper()
 
-        context['person_form'] = PersonForm(self.request.POST or None)
         context['functionary_form'] = FunctionaryForm(self.request.POST or None)
         context['accept_form'] = AcceptForm(self.request.POST or None)
 
@@ -65,13 +69,13 @@ class RegisterFunctionaryView(FormView):
 
     def form_valid(self, form):
         context = self.get_context_data()
-        person_form = context['person_form']
         functionary_form = context['functionary_form']
         accept_form = context['accept_form']
 
-        if person_form.is_valid() and functionary_form.is_valid() and accept_form.is_valid():
+        person = self.request.user.person
+
+        if functionary_form.is_valid() and accept_form.is_valid():
             with atomic():
-                person = person_form.save()
                 functionary_form.instance.person = person
                 functionary_form.save()
 

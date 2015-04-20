@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Biljett</h1>
+    <p><strong>Hej {{ holding.person.first_name }}!</strong></p>
+    <p>
+        Detta mejl är din biljett. Den är strikt personlig vilket innebär att <em>endast du</em> kan
+        använda den.
+        {% if holding.transferable %}
+            Vill du sälja den vidare, kontakta oss så hjälper vi dig att överlåta den. Du måste själv hitta en köpare.
+        {% endif %}
+    </p>
+    <p>
+        Det är viktigt att du sparar biljetten ända tills SOF är slut och du betalat den. Festivalbiljetter kan lösas in
+        mot festivalband under våra utlämningstider, se <a href="http://sof15.se/">vår hemsida</a>. Tag med dig
+        biljettnumret och LiU-kort eller annan giltig id-handling.
+    </p>
+    <p>
+        Om du har några frågor som inte besvaras av <a href="http://sof15.se/">vår hemsida</a> får du gärna svara på det
+        här mailet så hör vi av oss.
+    </p>
+    <p>
+        <strong>Vi ses på SOF!</strong><br>
+        //SOF-organisationen 2015
+    </p>
+    <h2>Biljettdata</h2>
+    <table style="text-align: left">
+        <tr>
+            <th>Biljettnummer</th>
+            <td>{{ holding.pk }}</td>
+        </tr>
+        <tr>
+            <th>Tillhör</th>
+            <td>{{ holding.person.full_name }} ({{ holding.person.pid }})</td>
+        </tr>
+        <tr>
+            <th>Biljettyp</th>
+            <td>{{ holding.product.public_name }}</td>
+        </tr>
+
+        {% if not holding.transferable %}
+            <tr>
+                <th>Överlåtningsbar</th>
+                <td>Nej</td>
+            </tr>
+        {% endif %}
+    </table>
+</body>
+</html>

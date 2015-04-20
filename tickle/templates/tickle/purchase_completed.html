@@ -6,12 +6,19 @@
 {% block header %}{% trans 'Purchase completed' %}{% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-sm-7">
-        <p>
-            Grattis, du har nu köpt biljetter till SOF 2015! En faktura kommer att skickas till dig.
-            Du kan se ditt köp på din profil. Vi ses på SOF! TAGGA SOF!
-        </p>
-        </div>
-    </div>
+    <p class="lead">
+        {% url 'profile' request.user.person.pk as profile_url %}
+        {% blocktrans %}
+            Congratulations, you just purchased tickets for SOF 2015! You will receive the tickets via email shortly.
+            The tickets can also be reviewed in your <a href="{{ profile_url }}">profile</a>.
+        {% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans %}
+            You will receive an invoice for this purchase in a few days.
+        {% endblocktrans %}
+    </p>
+    <p>
+        <strong>{% trans "See you at SOF!" %}</strong>
+    </p>
 {% endblock content %}

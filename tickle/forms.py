@@ -51,8 +51,7 @@ class AuthenticationForm(DjangoAuthenticationForm):
     username = forms.CharField(max_length=254, label=_('LiU ID or email address'))
 
 
-class PersonForm(forms.ModelForm):
-    phone = forms.CharField(required=True, label=_('Phone number'))
+class SimplePersonForm(forms.ModelForm):
     pid = SEPersonalIdentityNumberField(coordination_number=True, interim_number=True,
                                         label=_('Personal identity number'),
                                         help_text=_("Swedish personal identity number in the format "
@@ -62,10 +61,7 @@ class PersonForm(forms.ModelForm):
 
     class Meta:
         model = Person
-        fields = ('first_name', 'last_name', 'pid', 'phone', 'email', 'special_nutrition', 'notes')
-        widgets = {
-            'special_nutrition': forms.CheckboxSelectMultiple,  # TODO: Better multi-select solution.
-        }
+        fields = ('first_name', 'last_name', 'pid', 'email',)
 
     def save(self, commit=True):
         birth_date, pid_code, pid_coordination = self.cleaned_data['pid']
@@ -74,10 +70,10 @@ class PersonForm(forms.ModelForm):
         self.instance.pid_code = pid_code
         self.instance.pid_coordination = pid_coordination
 
-        return super(PersonForm, self).save(commit=commit)
+        return super(SimplePersonForm, self).save(commit=commit)
 
     def clean(self):
-        data = super(PersonForm, self).clean()
+        data = super(SimplePersonForm, self).clean()
 
         try:
             # pid consists of None when invalid
@@ -95,6 +91,17 @@ class PersonForm(forms.ModelForm):
             pass
 
         return data
+
+
+class PersonForm(SimplePersonForm):
+    phone = forms.CharField(required=True, label=_('Phone number'))
+
+    class Meta:
+        model = Person
+        fields = ('first_name', 'last_name', 'pid', 'phone', 'email', 'special_nutrition', 'notes')
+        widgets = {
+            'special_nutrition': forms.CheckboxSelectMultiple,  # TODO: Better multi-select solution.
+        }
 
 
 class PersonFormHelper(FormHelper):
@@ -144,6 +151,37 @@ class PersonFormHelper(FormHelper):
             ),
 
             'notes'
+        )
+
+
+class SimplePersonFormHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super(SimplePersonFormHelper, self).__init__(*args, **kwargs)
+
+        self.form_tag = False
+        self.layout = Layout(
+            Div(
+                Div(
+                    'first_name',
+                    css_class='col-sm-6'
+                ),
+                Div(
+                    'last_name',
+                    css_class='col-sm-6'
+                ),
+                css_class='row'
+            ),
+            Div(
+                Div(
+                    'pid',
+                    css_class='col-sm-6'
+                ),
+                Div(
+                    'email',
+                    css_class='col-sm-6'
+                ),
+                css_class='row'
+            ),
         )
 
 
@@ -220,7 +258,7 @@ class IdentifyForm(forms.Form):
     def clean(self):
         data = super(IdentifyForm, self).clean()
         # XOR
-        if bool(data.get('liu_id', None)) == bool(data.get('pid', (None, None))[0]):
+        if bool(data.get('liu_id', None)) == bool(data.get('pid', (None, None, False))[0]):
             raise ValidationError(_('Please specify LiU ID or personal identity number.'))
 
         return data

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.db.models import F, Q, Count
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import now
 from django.core.exceptions import ValidationError
@@ -64,16 +64,26 @@ class Functionary(models.Model):
         super(Functionary, self).save(force_insert, force_update, using, update_fields)
 
 
-class WorkerDiscount(BaseDiscount):
+@python_2_unicode_compatible
+class FunctionaryDiscount(BaseDiscount):
     shifts = models.PositiveIntegerField(verbose_name=_('shifts'),
                                          help_text=_('Number of shifts to work to be eligible for this discount.'))
 
     class Meta:
-        verbose_name = _('worker discount')
-        verbose_name_plural = _('worker discounts')
+        ordering = ('shifts',)
+        verbose_name = _('functionary discount')
+        verbose_name_plural = _('functionary discounts')
+
+    def __str__(self):
+        return '{0} {1}, {2}'.format(self.shifts, _('shift/s'), self.readable_discount())
 
     def eligible(self, person):
-        return person.shift_registrations.count() == self.shifts
+        if getattr(person, 'functionary', False):
+            return person.shift_registrations.count() == self.shifts
+        return False
+
+    def description(self):
+        return '{0}, {1}'.format(self._meta.verbose_name, ungettext_lazy("%d shift", "%d shifts") % self.shifts)
 
 
 @python_2_unicode_compatible

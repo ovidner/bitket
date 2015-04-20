@@ -23,7 +23,6 @@ urlpatterns = patterns(
     url(r'^people/logout/$', 'django.contrib.auth.views.logout', {'next_page': 'root'}, name='logout'),
     url(r'^people/(?P<pk>\d+)/$', ProfileView.as_view(), name='profile'),
     url(r'^people/me/$', LoginView.as_view(), name='profile_me'),
-    url(r'^people/identify/$', IdentifyView.as_view(), name='identify'),
 
     url(r'^karthago/', include('karthago.urls', namespace='karthago', app_name='karthago')),
     url(r'^orchard/', include('orchard.urls', namespace='orchard', app_name='orchard')),

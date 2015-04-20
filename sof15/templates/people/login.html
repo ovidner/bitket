@@ -3,15 +3,33 @@
 
 {% block title %}{{ block.super }} – {% trans 'Log in' %}{% endblock %}
 
-{% block header %}{% trans 'Log in' %}{% endblock %}
+{% block header %}{% trans 'SOF 2015 – Tickets' %}{% endblock %}
 
 {% block content %}
+    <p class="lead">
+        {% blocktrans %}
+            To buy tickets, register as functionary or view your profile, you must login or register.
+        {% endblocktrans %}
+    </p>
+
     <div class="row">
-        <div class="col-sm-4 col-sm-offset-4">
+        <div class="col-sm-6 col-md-5 col-md-offset-1 col-lg-4 col-lg-offset-2">
+            <h2>{% trans 'LiU student' %} <small>{% trans 'or already registered' %}</small></h2>
             <form action="" method="post">
                 {% crispy form form_helper %}
                 <input type="submit" class="btn btn-primary" value="{% trans 'Log in' %}">
             </form>
         </div>
+        <div class="col-sm-6 col-md-5 col-lg-4">
+            <h2>{% trans 'Other' %}</h2>
+            {% url 'create_user' next=request.POST.next as register_url %}
+            {% blocktrans %}
+                Please proceed to <a href="{{ register_url }}">registration</a>.
+            {% endblocktrans %}
+        </div>
     </div>
+
+    <p>
+
+    </p>
 {% endblock content %}

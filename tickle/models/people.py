@@ -11,6 +11,7 @@ from django.conf import settings
 from tickle.utils.kobra import KobraClient, Unauthorized, StudentNotFound
 from tickle.utils.mail import TemplatedEmail
 from tickle.fields import SEPersonalIdentityNumberField
+from tickle.models.discounts import Discount
 
 
 def generate_pretty_email(first_name, last_name, email):
@@ -197,12 +198,11 @@ class Person(models.Model):
 
     def create_user_and_login(self, request):
         # Create user
-        username = self.liu_id or self.email
-        user = TickleUser.objects.create(username=username, person=self)
+        user = TickleUser.objects.create(person=self)
         password = user.generate_and_send_password()
         user.save()
         # Login
-        user = authenticate(username=user.username, password=password)
+        user = authenticate(username=self.email, password=password)
         login(request, user)
 
     @property

@@ -34,6 +34,36 @@
                     </ul>
                 </dd>
             </dl>
+            <!-- Functionary and shifts. -->
+            {% if person.functionary %}
+                    <h2>Funktionärsupgiffter</h2>
+                    <dl>
+                        <dt>ICE-nummer</dt>
+                        <dd>{{ person.functionary.ice_number|default:'&mdash;' }}</dd>
+
+                        <dt>Innehar B-körkort</dt>
+                        <dd>{{ person.functionary.b_driving_license|yesno:'Ja,Nej' }}</dd>
+
+                        {% comment %}
+                    <dt>Godkänt kontrakt</dt>
+                    <dd>{{ person.functionary.signed_contract|yesno:'Ja,Nej' }}</dd>
+
+                    <dt>Deltagit på infomöte</dt>
+                    <dd>{{ person.functionary.attended_info_meeting|yesno:'Ja,Nej' }}</dd>
+
+                    <dt>Pant betalad</dt>
+                    <dd>{{ person.functionary.pledge_payed|yesno:'Ja,Nej' }}</dd>
+
+                    <dt>Pant återbetalad</dt>
+                    <dd>{{ person.functionary.pledge_returned|yesno:'Ja,Nej' }}</dd>
+                    {% endcomment %}
+                    </dl>
+
+                    <h3>Mina pass</h3>
+                    {% for shift_reg in person.shift_registrations.all %}
+                        <p>{{ shift_reg.shift }}</p>
+                    {% endfor %}
+            {% endif %}
         </div>
 
         <!-- Tickets and products. -->
@@ -69,12 +99,9 @@
                                     <dd>
                                         <ul class="list-unstyled">
                                             {% if holding.product.quantitative %}
-                                                <li>Antal: {{ holding.quantity }}</li>
+                                                <li>{% trans 'Quantity' %}: {{ holding.quantity }}</li>
                                             {% endif %}
-                                            <li>Pris: {{ holding.product.price }}</li>
-                                            {% for discount in holding.product.discounts.all %}
-                                                <li>Rabbat: {{ discount }}</li>
-                                            {% endfor %}
+                                            <li>{% trans 'Price' %}: {{ holding.discounted_price }}</li>
                                         </ul>
                                     </dd>
                                 </dl>
@@ -91,38 +118,7 @@
         {% endif %}
 
 
-        <!-- Functionary and shifts. -->
-        {% if person.functionary %}
-            <div class="col-lg-4">
-                <h2>Funktionärsupgiffter</h2>
-                <dl>
-                    <dt>ICE-nummer</dt>
-                    <dd>{{ person.functionary.ice_number|default:'&mdash;' }}</dd>
 
-                    <dt>Innehar B-körkort</dt>
-                    <dd>{{ person.functionary.b_driving_license|yesno:'Ja,Nej' }}</dd>
-
-                    {% comment %}
-                    <dt>Godkänt kontrakt</dt>
-                    <dd>{{ person.functionary.signed_contract|yesno:'Ja,Nej' }}</dd>
-
-                    <dt>Deltagit på infomöte</dt>
-                    <dd>{{ person.functionary.attended_info_meeting|yesno:'Ja,Nej' }}</dd>
-
-                    <dt>Pant betalad</dt>
-                    <dd>{{ person.functionary.pledge_payed|yesno:'Ja,Nej' }}</dd>
-
-                    <dt>Pant återbetalad</dt>
-                    <dd>{{ person.functionary.pledge_returned|yesno:'Ja,Nej' }}</dd>
-                    {% endcomment %}
-                </dl>
-
-                <h3>Mina pass</h3>
-                {% for shift_reg in person.shift_registrations.all %}
-                    <p>{{ shift_reg.shift }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
 
 
         <!-- Orchestra -->

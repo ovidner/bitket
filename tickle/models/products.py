@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.db import models
 from django.db.models import Sum
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.functional import cached_property
 from django.core.exceptions import ValidationError
+from django.utils.timezone import now
+from django.db.transaction import atomic
 
 from mptt.models import MPTTModel, TreeForeignKey
 from decimal import Decimal
 
+from tickle.models.discounts import Discount
+from tickle.utils.mail import TemplatedEmail
+from tickle.utils.format import format_percent
 
 @python_2_unicode_compatible
 class Category(models.Model):
@@ -67,11 +72,15 @@ class Product(models.Model):
                                        help_text=_('Can you purchase more than one (1) of this product?'))
 
     published = models.BooleanField(default=True, verbose_name=_('published'))
+    transferable = models.BooleanField(default=True, verbose_name=_('transferable'),
+                                       help_text=_('If people should be able to transfer this product to other people.'))
+
+    order = models.PositiveIntegerField(verbose_name=_('order'))
 
     objects = ProductQuerySet.as_manager()
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('order',)
 
         verbose_name = _('product')
         verbose_name_plural = _('products')
@@ -83,36 +92,9 @@ class Product(models.Model):
     def public_name(self):
         return self._public_name or self.name
 
-    def discounted_price(self, person):
-        total_discount = Decimal(0)
-        for d in self.discounts.all():
-            total_discount += d.discount(self.price, person)
-
-        return self.price - total_discount
-
-
-@python_2_unicode_compatible
-class ProductDiscount(models.Model):
-    product = models.ForeignKey('Product', related_name='discounts')
-
-    discount_content_type = models.ForeignKey(ContentType)
-    discount_object_id = models.PositiveIntegerField()
-    discount_object = GenericForeignKey('discount_content_type', 'discount_object_id')
-
-    class Meta:
-        verbose_name = _('product discount')
-        verbose_name_plural = _('product discounts')
-
-    def __str__(self):
-        return self.discount_object.name
-
-    def eligible(self, person):
-        return self.discount_object.eligible(person)
-
-    def discount(self, full_price, person):
-        if self.eligible(person):
-            return self.discount_object.discount(full_price, person)
-        return Decimal(0)
+    @property
+    def is_ticket_type(self):
+        return bool(getattr(self, 'ticket_type', False))
 
 
 @python_2_unicode_compatible
@@ -129,6 +111,9 @@ class TicketType(Product):
 
 
 class HoldingQuerySet(models.QuerySet):
+    def purchased(self):
+        return self.filter(purchase__isnull=False)
+
     def quantity(self):
         return self.aggregate(Sum('quantity'))['quantity__sum'] or 0
 
@@ -142,6 +127,13 @@ class HoldingQuerySet(models.QuerySet):
         return self.annotate(price=Sum('product__price')).aggregate(Sum('price', field='price*quantity'))['price__sum']\
             or 0
 
+    def discounted_total(self):
+        total = Decimal("0.00")
+        for i in self:
+            total += i.discounted_total
+        return total
+
+
 @python_2_unicode_compatible
 class Holding(models.Model):
     person = models.ForeignKey('Person', related_name='holdings', verbose_name=_('person'))
@@ -150,6 +142,9 @@ class Holding(models.Model):
     purchase = models.ForeignKey('Purchase', related_name='holdings', null=True, blank=True, verbose_name=_('purchase'))
     shopping_cart = models.ForeignKey('ShoppingCart', related_name='holdings', null=True, blank=True,
                                       verbose_name=_('shopping cart'))
+
+    _transferable = models.NullBooleanField(default=None, verbose_name=_('transferable'),
+                                            help_text=_('If people should be able to transfer this product to other people. Note: this will override the product setting.'))
 
     quantity = models.PositiveIntegerField(default=1, verbose_name=_('quantity'))
 
@@ -173,7 +168,48 @@ class Holding(models.Model):
             raise ValidationError(_("Can't hold both a shopping cart and a purchase at the same time."))
         elif not shopping_cart and not purchase:
             raise ValidationError(_('Holding must have either a shopping cart or a purchase.'))
+
         return super(Holding, self).save(*args, **kwargs)
+
+    def send_ticket(self):
+        msg = TemplatedEmail(
+            to=[self.person.pretty_email],
+            from_email='Biljett SOF15 <biljett@sof15.se>',
+            subject_template='tickle/email/ticket_subject.txt',
+            body_template_html='tickle/email/ticket.html',
+            context={
+                'holding': self,
+            },
+            tags=['tickle', 'ticket'])
+        msg.send()
+
+    @cached_property
+    def discounted_price(self):
+        price = self.product.price
+        if getattr(self, 'purchase'):
+            # Calculate by HoldingDiscounts if purchased
+            for i in self.holding_discounts.all():
+                price -= i.discount.delta(price)
+        else:
+            # Else calculate by ProductDiscounts
+            for i in self.product.product_discounts.eligible(self.person):
+                price -= i.discount.delta(price)
+
+        return price
+
+    @cached_property
+    def discounted_total(self):
+        return self.discounted_price * self.quantity
+
+    def _get_transferable(self):
+        if self._transferable is None:
+            return self.product.transferable
+        return self._transferable
+
+    def _set_transferable(self, value):
+        self._transferable = value
+
+    transferable = property(_get_transferable, _set_transferable)
 
     @property
     def total(self):
@@ -193,15 +229,29 @@ class Delivery(models.Model):
         return u'{0}, {1}'.format(self.holdings, self.delivered)
 
 
+@python_2_unicode_compatible
 class ShoppingCart(models.Model):
-    person = models.OneToOneField('Person', verbose_name=_('person'), related_name='shopping_cart')
+    person = models.OneToOneField('Person', related_name='shopping_cart', verbose_name=_('person'))
 
     class Meta:
         verbose_name = _('shopping cart')
-        verbose_name_plural = _('shopping cart')
+        verbose_name_plural = _('shopping carts')
 
     def __str__(self):
         return self.person.full_name
+
+    def purchase(self):
+        with atomic():
+            purchase = Purchase.objects.create(person=self.person, purchased=now())
+
+            for holding in self.holdings.all():
+                holding.shopping_cart = None
+                holding.purchase = purchase
+
+                # This copies all eligible discounts to the holding object
+                holding.product.product_discounts.eligible(self.person).copy_to_holding_discounts(holding)
+
+                holding.save()
 
 
 class PurchaseQuerySet(models.QuerySet):
@@ -224,51 +274,3 @@ class Purchase(models.Model):
 
     def __str__(self):
         return u'{0} – {1}'.format(self.person, self.purchased)
-
-
-@python_2_unicode_compatible
-class BaseDiscount(models.Model):
-    name = models.CharField(max_length=256, verbose_name=_('name'))
-
-    discount_amount = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True,
-                                          verbose_name=_('amount'))
-    discount_percent = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True,
-                                           verbose_name=_('percent'))
-
-    class Meta:
-        abstract = True
-
-        verbose_name = _('base discount')
-        verbose_name_plural = _('base discounts')
-
-    def __str__(self):
-        return self.name
-
-    def calc_percent_discount(self, full_price):
-        if self.discount_percent:
-            return Decimal(full_price * self.discount_percent).quantize(Decimal('.01'))
-        return Decimal(0)
-
-    def eligible(self, person):
-        """
-        Method checking if the supplied person is eligible for this discount. Subclass this in your discount class and
-        make it return True or False.
-        """
-        return None
-
-    def discount(self, full_price, person):
-        if self.eligible(person):
-            return self.discount_amount or self.calc_percent_discount(full_price)
-        else:
-            return Decimal(0)
-
-
-class StudentUnionDiscount(BaseDiscount):
-    student_union = models.ForeignKey('StudentUnion', related_name='discounts', verbose_name=_('student union'))
-
-    class Meta:
-        verbose_name = _('student union discount')
-        verbose_name_plural = _('student union discounts')
-
-    def eligible(self, person):
-        return self.student_union.members.filter(liu_id=person.liu_id).exists()

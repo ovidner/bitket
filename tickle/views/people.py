@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, DetailView, CreateView, ListView, DeleteView
+from django.views.generic import FormView, DetailView, CreateView, ListView, DeleteView, TemplateView
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
@@ -14,7 +14,7 @@ from datetime import datetime
 from guardian.shortcuts import get_objects_for_user
 from guardian.mixins import LoginRequiredMixin
 
-from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, IdentifyForm, AuthenticationForm
+from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, IdentifyForm, AuthenticationForm, SimplePersonForm, SimplePersonFormHelper
 from tickle.models.people import Person
 from tickle.models.products import Holding, Purchase, Product, ShoppingCart
 from tickle.views.mixins import MeOrPermissionRequiredMixin
@@ -70,7 +70,7 @@ class LoginView(FormView):
 
 class CreateUserView(CreateView):
     model = Person
-    form_class = PersonForm
+    form_class = SimplePersonForm
     template_name = 'people/create_user.html'
 
     _user = None
@@ -80,7 +80,7 @@ class CreateUserView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(CreateUserView, self).get_context_data(**kwargs)
-        context['form_helper'] = PersonFormHelper()
+        context['form_helper'] = SimplePersonFormHelper()
         return context
 
     def form_valid(self, form):
@@ -163,95 +163,3 @@ class IdentifyView(FormView):
         return super(IdentifyView, self).form_valid(form)
 
 
-class PurchaseView(LoginRequiredMixin, ListView):
-    model = Product
-    template_name = 'tickle/purchase.html'
-    login_url = reverse_lazy('identify')
-
-    def get_queryset(self):
-        return Product.objects.published()
-
-    def get_context_data(self, **kwargs):
-        context = super(PurchaseView, self).get_context_data(**kwargs)
-        person = self.request.user.person
-        if not hasattr(person, 'shopping_cart'):
-            ShoppingCart.objects.create(person=person)
-        context['holding_list'] = person.shopping_cart.holdings.all()
-        return context
-
-
-@login_required(login_url=reverse_lazy('identify'))
-def add_to_shopping_cart(request, pk):
-    # TODO: Convert to CreateView with Holding as model?
-    if request.POST:
-        product = Product.objects.get(pk=pk)
-        person = request.user.person
-        if product.quantitative:
-            holding, created = Holding.objects.get_or_create(person=person, product=product,
-                                                             shopping_cart=person.shopping_cart)
-            if not created:
-                holding.quantity += 1
-                holding.save()
-        else:
-            holding, created = Holding.objects.get_or_create(person=person, product=product,
-                                                             defaults={'shopping_cart': person.shopping_cart})
-            if not created:
-                messages.warning(request, _(u'You can only buy one %s product.') % product.public_name)
-        return redirect('tickle:purchase')
-    raise Http404()
-
-
-class ShoppingCartView(LoginRequiredMixin, ListView):
-    # TODO: Merge shopping cart stuff to one class?
-    model = Holding
-    template_name = 'tickle/shopping_cart.html'
-
-    def get_queryset(self):
-        person = self.request.user.person
-        if not hasattr(person, 'shopping_cart'):
-            ShoppingCart.objects.create(person=person)
-        return person.shopping_cart.holdings.all()
-
-
-class ShoppingCartDeleteView(LoginRequiredMixin, DeleteView):
-    model = Holding
-    success_url = reverse_lazy('tickle:shopping_cart')
-
-    def get(self, request, *args, **kwargs):
-        return redirect('tickle:shopping_cart')  # Only POST delete.
-
-    def post(self, request, *args, **kwargs):
-        holding = self.get_object()
-        if holding.person == request.user.person:
-            return super(ShoppingCartDeleteView, self).post(request, *args, **kwargs)
-        return redirect('tickle:shopping_cart')
-
-
-@login_required(login_url=reverse_lazy('identify'))
-def complete_purchase(request):
-    # TODO: Convert to CreateView with Purchase as model?
-    # TODO: Convert to UpdateView with Holding as model?
-    if request.POST:
-        person = request.user.person
-        purchase = Purchase.objects.create(person=person, purchased=datetime.now())
-        updated = person.shopping_cart.holdings.update(shopping_cart=None, purchase=purchase)
-        if updated:
-            person.shopping_cart.delete()
-            # TODO: Fill email body with correct information and test it.
-            msg = TemplatedEmail(
-                to=[person.pretty_email],
-                from_email='Biljett SOF15 <biljett@sof15.se>',
-                subject_template='tickle/email/purchase_success_subject.txt',
-                body_template_html='tickle/email/purchase_success.html',
-                context={
-                    'person': person,
-                    'purchase': purchase,
-                },
-                tags=['tickle'])
-            msg.send()
-            return redirect('tickle:purchase_completed_success')
-
-        purchase.delete()
-        messages.warning(request, _(u'Add at least one product to your shopping cart before you try to make a purchase.'))
-        return redirect('tickle:purchase')
-    raise Http404()

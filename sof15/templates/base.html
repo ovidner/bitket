@@ -34,15 +34,15 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="{% url 'root' %}">{% trans 'SOF 2015 Tickets/Registration' %}</a>
+                    <a class="navbar-brand" href="{% url 'root' %}">{% trans 'SOF 2015 Tickets' %}</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="tickle-navbar">
                     <ul class="nav navbar-nav">
-                        <li><a href="{% url 'orchard:register_orchestra_member' %}">{% trans 'Orchestra member' %}</a></li>
-                        <li><a href="{% url 'karthago:create_kartege_entry' %}">{% trans 'Kårtege applicant' %}</a></li>
-                        <li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Functionary' %}</a></li>
-                        <li><a href="{% url 'tickle:purchase' %}">{% trans 'Tickets' %}</a></li>
+                        <li><a href="{% url 'tickle:purchase' %}">{% trans 'Purchase tickets' %}</a></li>
+                        {% comment %}<li><a href="{% url 'orchard:register_orchestra_member' %}">{% trans 'Orchestra member' %}</a></li>{% endcomment %}
+                        {% comment %}<li><a href="{% url 'karthago:create_kartege_entry' %}">{% trans 'Kårtege applicant' %}</a></li>{% endcomment %}
+                        <li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_anonymous %}
@@ -52,7 +52,6 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{% trans 'Logged in as' %} {{ user }} <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="{% url 'profile' user.person.pk %}">{% trans 'Profile' %}</a></li>
-                                    <li><a href="{% url 'tickle:shopping_cart' %}">{% trans 'Shopping cart' %}</a></li>
                                     {% if user.is_staff %}
                                         <li><a href="{% url 'admin:index' %}">{% trans 'Administration' %}</a></li>
                                     {% endif %}
@@ -79,17 +78,15 @@
 
         {% block content %}
             <ul>
-                <li><a href="{% url 'orchard:register_orchestra_member' %}">Anmälan av orkestermedlem</a></li>
-                <li><a href="{% url 'karthago:create_kartege_entry' %}">Ansökan om kårtegebidrag</a></li>
-                <li><a href="{% url 'fungus:register_functionary' %}">Anmälan av funktionär</a></li>
-                <li><a href="{% url 'tickle:purchase' %}">Köp biljett</a></li>
+                <li><a href="{% url 'tickle:purchase' %}">{% trans 'Purchase tickets' %}</a></li>
+                {% comment %}<li><a href="{% url 'orchard:register_orchestra_member' %}">Anmälan av orkestermedlem</a></li>{% endcomment %}
+                {% comment %}<li><a href="{% url 'karthago:create_kartege_entry' %}">Ansökan om kårtegebidrag</a></li>{% endcomment %}
+                <li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>
             </ul>
         {% endblock content %}
     </div>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     {% block js %}{% endblock js %}
     <script>

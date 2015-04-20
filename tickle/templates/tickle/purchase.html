@@ -1,49 +1,152 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
+{% load i18n crispy_forms_tags tickle_hacks %}
 
-{% block title %}{{ block.super }} – Biljettköp{% endblock %}
+{% block title %}{{ block.super }} – {% trans 'Tickets and gadgets' %}{% endblock %}
 
-{% block header %}Biljettköp{% endblock %}
+{% block header %}{% trans 'Tickets and gadgets' %}{% endblock %}
 
 {% block content %}
-
+    <p class="lead">
+        {% blocktrans %}
+            Buy your tickets by adding to your shopping cart, then press <em>Proceed...</em>.
+        {% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans %}
+            Due to our tickets being strictly personal, you cannot buy more than one of most tickets.
+        {% endblocktrans %}
+    </p>
     <div class="row">
         <div class="col-md-6">
-            <h3>Information</h3>
-            <p>Du kan köpa biljetter samt prylar genom att lägga till dem i din kundvagn.
-                När du har lagt till allt du vill ha kan du gå till utcheckningen för att slutföra ditt köp.<br>
-                Saker i din kundvagn sparas så du kan komma tillbaka senare.
-                Du kan även ta bort saker ifrån din kundvagn om du inte slutfört ditt köp ifall du ångrar något.
-            </p>
+            <h2>{% trans 'Tickets' %}</h2>
+            {% for product in product_list.ticket_types %}
+                <form action="{% url 'tickle:shopping_cart_add' product.pk %}" method="post">
+                    {% csrf_token %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{ product.public_name }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ product.description }}</p>
+                        </div>
 
-            <h3>Biljetter</h3>
-            {% for ticket in product_list.ticket_types %}
-                <form action="{% url 'tickle:shopping_cart_add' ticket.pk %}" method="post" class="row">{% csrf_token %}
-                    <h4 class="col-sm-6">{{ ticket.public_name }} - {{ ticket.price }}:-</h4>
-                    <input value="Lägg till i kundvagn" class="btn btn-sm btn-success pull-right" type="submit">
+                        <!-- Table -->
+                        {% price_table request product %}
+
+                        <div class="panel-footer form-inline" style="text-align: right;">
+                            {% if product.quantitative %}
+                                <div class="form-group">
+                                    <label for="quantity-{{ product.pk }}">{% trans 'Quantity' %}: </label>
+                                    <input type="number" id="quantity-{{ product.pk }}" name="quantity" class="form-control input-sm" value="1" style="width: 5em;">
+                                </div>
+
+                            {% endif %}
+                            <input type="submit" class="btn btn-primary btn-sm" value="{% trans 'Add to cart' %}">
+                        </div>
+                    </div>
                 </form>
             {% empty %}
-                <p>Det finns tyvärr inga tillgängliga biljetter till SOF.</p>
+                <p>{% trans 'There are currently no tickets available.' %}</p>
             {% endfor %}
 
-            <h3>Prylar</h3>
-            {% for gadget in product_list.gadget_types %}
-                <form action="{% url 'tickle:shopping_cart_add' gadget.pk %}" method="post" class="row">{% csrf_token %}
-                    <h4 class="col-sm-6">{{ gadget.public_name }} - {{ gadget.price }}:-</h4>
-                    <input value="Lägg till i kundvagn" class="btn btn-sm btn-success pull-right" type="submit">
+        {% if product_list.gadget_types %}
+        <h2>{% trans 'Gadgets' %}</h2>
+            {% for product in product_list.gadget_types %}
+                <form action="{% url 'tickle:shopping_cart_add' product.pk %}" method="post">
+                    {% csrf_token %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{ product.public_name }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ product.description }}</p>
+                        </div>
+
+                        <!-- Table -->
+                        {% price_table request product %}
+
+                        <div class="panel-footer form-inline" style="text-align: right;">
+                            {% if product.quantitative %}
+                                <div class="form-group">
+                                    <label for="quantity-{{ product.pk }}">{% trans 'Quantity' %}: </label>
+                                    <input type="number" id="quantity-{{ product.pk }}" name="quantity" class="form-control input-sm" value="1" style="width: 5em;">
+                                </div>
+
+                            {% endif %}
+                            <input type="submit" class="btn btn-primary btn-sm" value="{% trans 'Add to cart' %}">
+                        </div>
+                    </div>
+
                 </form>
             {% empty %}
-                <p>Det finns inga tillgängliga prylar till SOF.</p>
+                <p>{% trans 'There are currently no gadgets available.' %}</p>
             {% endfor %}
-
-            <br><a href="{% url 'tickle:shopping_cart' %}" class="btn btn-default btn-primary">Gå till utcheckning</a>
+        {% endif %}
         </div>
 
+
         <div class="col-md-6">
-            <h3>Kundvagn</h3>
-            {% include 'tickle/holdings_table.html' %}
+            <h2>{% trans 'Shopping cart' %}</h2>
+            {% include 'tickle/elements/shopping_cart_table.html' with shopping_cart=person.shopping_cart delete_column=True %}
+
+            {# Modal trigger button #}
+            <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#confirm-purchase-modal">
+                <span class="glyphicon glyphicon-shopping-cart"></span> {% trans 'Proceed...' %}
+            </button>
         </div>
     </div>
 
+    <div class="modal fade" id="confirm-purchase-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-purchase-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="confirm-purchase-modal-label">{% trans 'Purchase terms' %}</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>{% trans 'Delivery' %}</h4>
+                    <p>
+                        {% blocktrans %}
+                            All ordered tickets will be delivered via email and will probably reach your inbox within a few minutes from purchase.
+                        {% endblocktrans %}
+                    </p>
+                    <h4>{% trans 'Payment' %}</h4>
+                    <p>
+                        {% blocktrans %}
+                            We handle payment via invoicing. You will receive an invoice within a few days from your
+                            purchase. The invoice will be delivered via email.
+                        {% endblocktrans %}
+                    </p>
+                    <p>
+                        {% blocktrans %}
+                            Payment must be us at hand within 14 week days upon invoice reception.
+                        {% endblocktrans %}
+                    </p>
+                    <h4>{% trans 'Refunds and transfer' %}</h4>
+                    <p>
+                        {% blocktrans %}
+                            Please observe <strong>we do not refund tickets</strong>. However, we normally allow
+                            transferring tickets to other people.
+                        {% endblocktrans %}
+                    </p>
+                    <h3>{% trans 'Shopping cart' %}</h3>
+                    <p>
+                        {% blocktrans %}
+                            Check that everything seems to be correct.
+                        {% endblocktrans %}
+                    </p>
+                    {% include 'tickle/elements/shopping_cart_table.html' with shopping_cart=person.shopping_cart delete_column=False %}
+                    <p><strong>{% trans 'By clicking <em>Confirm purchase</em> you agree to these terms and confirm that the shopping cart above is correct.' %}</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <form action="{% url 'tickle:complete_purchase' %}" method="post">
+                        {% csrf_token %}
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cancel' %}</button>
+                        <button type="submit" class="btn btn-default btn-success">{% trans 'Confirm purchase' %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
