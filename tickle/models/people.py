@@ -175,6 +175,8 @@ class Person(models.Model):
             if save:
                 self.save()
 
+        return self
+
     def _get_pid(self):
         if self.birth_date:
             day = self.birth_date.day

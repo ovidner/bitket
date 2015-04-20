@@ -66,7 +66,7 @@ class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
     def _populate_person_data(self, person, ldap_user):
         person = super(LiUStudentLDAPBackend, self).populate_person_data(person, ldap_user)
 
-        person.fill_kobra_data(save=True, overwrite_name=False)
+        person = person.fill_kobra_data(save=True, overwrite_name=False)
 
         return person
 
