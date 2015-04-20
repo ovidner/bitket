@@ -35,10 +35,15 @@ class ProductDiscountInline(SortableTabularInline):
 
 @admin.register(Product)
 class ProductAdmin(SortableModelAdmin):
-    list_display = ('name', '_public_name', 'price', 'published', 'quantitative', 'total_quantity')
+    list_display = ('name', '_public_name', 'price', 'published', 'quantitative', 'purchased_quantity', 'total_quantity')
     list_editable = ('published',)
     inlines = (ProductDiscountInline,)
     sortable = 'order'
+
+    def purchased_quantity(self, obj):
+        return obj.holdings.purchased().quantity()
+
+    purchased_quantity.short_description = _('purchased quantity')
 
     def total_quantity(self, obj):
         return obj.holdings.quantity()
@@ -58,7 +63,7 @@ class HoldingAdmin(admin.ModelAdmin):
 
 
 @admin.register(TicketType)
-class TicketTypeAdmin(admin.ModelAdmin):
+class TicketTypeAdmin(ProductAdmin):
     pass
 
 
