@@ -15,9 +15,12 @@
     <div class="row">
         <div class="col-sm-6 col-md-5 col-md-offset-1 col-lg-4 col-lg-offset-2">
             <h2>{% trans 'LiU student' %} <small>{% trans 'or already registered' %}</small></h2>
+            <p>{% trans "LiU student? Just enter your LiU id credentials. Else fill in your email address and your SOF password." %}</p>
             <form action="" method="post">
-                {% crispy form form_helper %}
-                <input type="submit" class="btn btn-primary" value="{% trans 'Log in' %}">
+                <div class="well">
+                    {% crispy form form_helper %}
+                    <input type="submit" class="btn btn-primary" value="{% trans 'Log in' %}">
+                </div>
             </form>
         </div>
         <div class="col-sm-6 col-md-5 col-lg-4">

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-20 03:01+0200\n"
+"POT-Creation-Date: 2015-04-20 03:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,7 +39,7 @@ msgid "Become a functionary"
 msgstr "Bli funktionär"
 
 #: sof15/templates/base.html:51 sof15/templates/people/login.html:4
-#: sof15/templates/people/login.html:20
+#: sof15/templates/people/login.html:22
 msgid "Log in"
 msgstr "Logga in"
 
@@ -97,11 +97,17 @@ msgstr "LiU-student"
 msgid "or already registered"
 msgstr "eller redan registrerad"
 
-#: sof15/templates/people/login.html:24
+#: sof15/templates/people/login.html:18
+msgid ""
+"LiU student? Just enter your LiU id credentials. Else fill in your email "
+"address and your SOF password."
+msgstr "LiU-student? Fyll i inloggningsuppgifter för ditt LiU-id. Annars, ange din e-postadress och ditt SOF-lösenord."
+
+#: sof15/templates/people/login.html:27
 msgid "Other"
 msgstr "Annan"
 
-#: sof15/templates/people/login.html:26
+#: sof15/templates/people/login.html:29
 #, python-format
 msgid ""
 "\n"
@@ -114,22 +120,22 @@ msgstr ""
 "\">registrering</a>.\n"
 "            "
 
-#: sof15/templates/people/profile.html:103
+#: sof15/templates/people/profile.html:105
 msgid "Quantity"
 msgstr "Kvantitet"
 
-#: sof15/templates/people/profile.html:105
+#: sof15/templates/people/profile.html:107
 msgid "Price"
 msgstr "Pris"
 
-#: sof15/templates/people/profile.html:129
+#: sof15/templates/people/profile.html:131
 msgid "Orchestra representative"
 msgstr "Orkesterrepresentant"
 
-#: sof15/templates/people/profile.html:133
+#: sof15/templates/people/profile.html:135
 msgid "Approve members"
 msgstr "Godkänn medlemmar"
 
-#: sof15/templates/people/profile.html:134
+#: sof15/templates/people/profile.html:136
 msgid "Review invoice data"
 msgstr "Granska fakturaunderlag"
