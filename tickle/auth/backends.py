@@ -39,7 +39,11 @@ class _LiUBaseLDAPBackend(LDAPBackend):
         liu_id = ldap_user.attrs['cn'][0]
         email = ldap_user.attrs['mail'][0]
 
-        person, created = Person.objects.get_or_create(liu_id=liu_id, defaults={'email': email})
+        try:
+            person = Person.objects.get(email=email)
+            created = False
+        except Person.NotFound:
+            person, created = Person.objects.get_or_create(liu_id=liu_id, defaults={'email': email})
 
         return person, created
 
