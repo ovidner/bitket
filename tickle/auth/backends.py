@@ -63,12 +63,17 @@ class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
     settings_prefix = 'LIU_STUDENT_LDAP_'
     _settings = LiUStudentLDAPSettings(settings_prefix)
 
-    def _populate_person_data(self, person, ldap_user):
-        person = super(LiUStudentLDAPBackend, self).populate_person_data(person, ldap_user)
+    def get_or_create_user(self, username, ldap_user):
+        with atomic():
+            person, person_created = self.get_or_create_person(username, ldap_user)
 
-        person = person.fill_kobra_data(save=True, overwrite_name=False)
+            # Runs any subclass specific logic for populating the Person object with extra data.
+            person = self.populate_person_data(person, ldap_user)
+            person = person.fill_kobra_data(save=True, overwrite_name=False)
 
-        return person
+            person.save()
+
+            return TickleUser.objects.get_or_create(person=person)
 
 
 class LiUEmployeeLDAPBackend(_LiUBaseLDAPBackend):
