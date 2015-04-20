@@ -6,6 +6,12 @@
 {% block header %}{% trans 'Create account' %}{% endblock %}
 
 {% block content %}
+    <p class="lead">
+        {% url 'login' as login_url %}
+        {% blocktrans %}
+            LiU student? Don't register here, just <a href="{{ login_url }}">log in</a> with your LiU ID!
+        {% endblocktrans %}
+    </p>
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
             <form action="" method="post">
