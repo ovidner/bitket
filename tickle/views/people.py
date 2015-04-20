@@ -89,7 +89,7 @@ class CreateUserView(CreateView):
         return super(CreateUserView, self).form_valid(form)
 
 
-class ChangePasswordView(FormView):
+class ChangePasswordView(LoginRequiredMixin, FormView):
     form_class = PasswordChangeForm
     template_name = 'people/change_password.html'
 
