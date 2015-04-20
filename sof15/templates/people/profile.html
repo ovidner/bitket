@@ -60,9 +60,11 @@
                     </dl>
 
                     <h3>Mina pass</h3>
-                    {% for shift_reg in person.shift_registrations.all %}
-                        <p>{{ shift_reg.shift }}</p>
-                    {% endfor %}
+                    <ul>
+                        {% for shift_reg in person.shift_registrations.all %}
+                            <li><strong>{{ shift_reg.shift.shift_type }}</strong> {{ shift_reg.shift.start }} – {{ shift_reg.shift.end }}</li>
+                        {% endfor %}
+                    </ul>
             {% endif %}
         </div>
 
