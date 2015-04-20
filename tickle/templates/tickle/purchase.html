@@ -26,9 +26,11 @@
                         <div class="panel-heading">
                             <h3 class="panel-title">{{ product.public_name }}</h3>
                         </div>
-                        <div class="panel-body">
-                            <p>{{ product.description }}</p>
-                        </div>
+                        {% if product.description %}
+                            <div class="panel-body">
+                                <p>{{ product.description }}</p>
+                            </div>
+                        {% endif %}
 
                         <!-- Table -->
                         {% price_table request product %}
@@ -58,9 +60,11 @@
                         <div class="panel-heading">
                             <h3 class="panel-title">{{ product.public_name }}</h3>
                         </div>
-                        <div class="panel-body">
-                            <p>{{ product.description }}</p>
-                        </div>
+                        {% if product.description %}
+                            <div class="panel-body">
+                                <p>{{ product.description }}</p>
+                            </div>
+                        {% endif %}
 
                         <!-- Table -->
                         {% price_table request product %}
