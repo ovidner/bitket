@@ -25,7 +25,7 @@
         </div>
         <div class="col-sm-6 col-md-5 col-lg-4">
             <h2>{% trans 'Other' %}</h2>
-            {% url 'create_user' next=request.POST.next as register_url %}
+            {% url 'create_user' register_url %}
             {% blocktrans %}
                 Please proceed to <a href="{{ register_url }}">registration</a>.
             {% endblocktrans %}
