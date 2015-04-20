@@ -42,7 +42,7 @@ class _LiUBaseLDAPBackend(LDAPBackend):
         try:
             person = Person.objects.get(email=email)
             created = False
-        except Person.NotFound:
+        except Person.DoesNotExist:
             person, created = Person.objects.get_or_create(liu_id=liu_id, defaults={'email': email})
 
         return person, created
