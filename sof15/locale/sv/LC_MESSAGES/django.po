@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-20 03:44+0200\n"
+"POT-Creation-Date: 2015-04-20 13:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,11 +67,24 @@ msgstr "Logga ut"
 
 #: sof15/templates/people/create_user.html:4
 #: sof15/templates/people/create_user.html:6
-#: sof15/templates/people/create_user.html:13
+#: sof15/templates/people/create_user.html:19
 #: sof15/templates/people/create_user_success.html:4
 #: sof15/templates/people/create_user_success.html:6
 msgid "Create account"
 msgstr "Skapa konto"
+
+#: sof15/templates/people/create_user.html:11
+#, python-format
+msgid ""
+"\n"
+"            LiU student? Don't register here, just <a href=\"%(login_url)s"
+"\">log in</a> with your LiU ID!\n"
+"        "
+msgstr ""
+"\n"
+"            LiU-student? Registrera dig inte här, <a href=\"%(login_url)s"
+"\">logga in</a> med ditt LiU-id direkt istället!\n"
+"        "
 
 #: sof15/templates/people/login.html:6
 msgid "SOF 2015 – Tickets"
@@ -101,7 +114,9 @@ msgstr "eller redan registrerad"
 msgid ""
 "LiU student? Just enter your LiU id credentials. Else fill in your email "
 "address and your SOF password."
-msgstr "LiU-student? Fyll i inloggningsuppgifter för ditt LiU-id. Annars, ange din e-postadress och ditt SOF-lösenord."
+msgstr ""
+"LiU-student? Fyll i inloggningsuppgifter för ditt LiU-id. Annars, ange din e-"
+"postadress och ditt SOF-lösenord."
 
 #: sof15/templates/people/login.html:27
 msgid "Other"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-20 03:01+0200\n"
+"POT-Creation-Date: 2015-04-20 13:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -210,7 +210,7 @@ msgstr "kårrabatter"
 msgid "text"
 msgstr "text"
 
-#: tickle/models/people.py:25 tickle/models/people.py:219
+#: tickle/models/people.py:25 tickle/models/people.py:221
 #: tickle/models/products.py:21 tickle/models/products.py:33
 #: tickle/models/products.py:63
 msgid "name"
@@ -260,7 +260,7 @@ msgstr "telefonnummer"
 msgid "email address"
 msgstr "e-postadress"
 
-#: tickle/models/people.py:78 tickle/models/people.py:224
+#: tickle/models/people.py:78 tickle/models/people.py:226
 msgid "special nutrition"
 msgstr "speciella kostvanor"
 
@@ -288,7 +288,7 @@ msgstr "För internt bruk. Kan endast ses av organisationen."
 msgid "Can view person"
 msgstr "Kan visa person"
 
-#: tickle/models/people.py:108 tickle/models/people.py:264
+#: tickle/models/people.py:108 tickle/models/people.py:266
 #: tickle/models/products.py:139 tickle/models/products.py:234
 #: tickle/models/products.py:264
 msgid "person"
@@ -298,23 +298,23 @@ msgstr "person"
 msgid "people"
 msgstr "personer"
 
-#: tickle/models/people.py:225
+#: tickle/models/people.py:227
 msgid "special nutritions"
 msgstr "speciella kostvanor"
 
-#: tickle/models/people.py:266
+#: tickle/models/people.py:268
 msgid "is active"
 msgstr "aktiv"
 
-#: tickle/models/people.py:267
+#: tickle/models/people.py:269
 msgid "is staff"
 msgstr "organisationskonto"
 
-#: tickle/models/people.py:274
+#: tickle/models/people.py:276
 msgid "user"
 msgstr "användarkonto"
 
-#: tickle/models/people.py:275
+#: tickle/models/people.py:277
 msgid "users"
 msgstr "användarkonton"
 
@@ -482,8 +482,8 @@ msgid "Product"
 msgstr "Produkt"
 
 #: tickle/templates/tickle/elements/shopping_cart_table.html:5
-#: tickle/templates/tickle/purchase.html:39
-#: tickle/templates/tickle/purchase.html:71
+#: tickle/templates/tickle/purchase.html:41
+#: tickle/templates/tickle/purchase.html:75
 msgid "Quantity"
 msgstr "Kvantitet"
 
@@ -532,45 +532,45 @@ msgstr ""
 msgid "Tickets"
 msgstr "Biljetter"
 
-#: tickle/templates/tickle/purchase.html:44
-#: tickle/templates/tickle/purchase.html:76
+#: tickle/templates/tickle/purchase.html:46
+#: tickle/templates/tickle/purchase.html:80
 msgid "Add to cart"
 msgstr "Lägg i varukorg"
 
-#: tickle/templates/tickle/purchase.html:49
+#: tickle/templates/tickle/purchase.html:51
 msgid "There are currently no tickets available."
 msgstr "Just nu finns det inga biljetter tillgängliga."
 
-#: tickle/templates/tickle/purchase.html:53
+#: tickle/templates/tickle/purchase.html:55
 msgid "Gadgets"
 msgstr "Prylar"
 
-#: tickle/templates/tickle/purchase.html:82
+#: tickle/templates/tickle/purchase.html:86
 msgid "There are currently no gadgets available."
 msgstr "Just nu finns det inga prylar tillgängliga."
 
-#: tickle/templates/tickle/purchase.html:89
-#: tickle/templates/tickle/purchase.html:132
+#: tickle/templates/tickle/purchase.html:93
+#: tickle/templates/tickle/purchase.html:136
 msgid "Shopping cart"
 msgstr "Varukorg"
 
-#: tickle/templates/tickle/purchase.html:94
+#: tickle/templates/tickle/purchase.html:98
 msgid "Proceed..."
 msgstr "Gå vidare..."
 
-#: tickle/templates/tickle/purchase.html:103
+#: tickle/templates/tickle/purchase.html:107
 msgid "Close"
 msgstr "Stäng"
 
-#: tickle/templates/tickle/purchase.html:104
+#: tickle/templates/tickle/purchase.html:108
 msgid "Purchase terms"
 msgstr "Villkor för köp"
 
-#: tickle/templates/tickle/purchase.html:107
+#: tickle/templates/tickle/purchase.html:111
 msgid "Delivery"
 msgstr "Leverans"
 
-#: tickle/templates/tickle/purchase.html:109
+#: tickle/templates/tickle/purchase.html:113
 msgid ""
 "\n"
 "                            All ordered tickets will be delivered via email "
@@ -582,11 +582,11 @@ msgstr ""
 "och når sannolikt din inkorg inom några minuter från köpet.\n"
 "                        "
 
-#: tickle/templates/tickle/purchase.html:113
+#: tickle/templates/tickle/purchase.html:117
 msgid "Payment"
 msgstr "Betalning"
 
-#: tickle/templates/tickle/purchase.html:115
+#: tickle/templates/tickle/purchase.html:119
 msgid ""
 "\n"
 "                            We handle payment via invoicing. You will "
@@ -601,7 +601,7 @@ msgstr ""
 "                            Fakturan skickas via e-post.\n"
 "                        "
 
-#: tickle/templates/tickle/purchase.html:121
+#: tickle/templates/tickle/purchase.html:125
 msgid ""
 "\n"
 "                            Payment must be us at hand within 14 week days "
@@ -613,11 +613,11 @@ msgstr ""
 "från mottagandet av fakturan.\n"
 "                        "
 
-#: tickle/templates/tickle/purchase.html:125
+#: tickle/templates/tickle/purchase.html:129
 msgid "Refunds and transfer"
 msgstr "Återköp och överlåtning"
 
-#: tickle/templates/tickle/purchase.html:127
+#: tickle/templates/tickle/purchase.html:131
 msgid ""
 "\n"
 "                            Please observe <strong>we do not refund tickets</"
@@ -631,7 +631,7 @@ msgstr ""
 "biljetter till andra.\n"
 "                        "
 
-#: tickle/templates/tickle/purchase.html:134
+#: tickle/templates/tickle/purchase.html:138
 msgid ""
 "\n"
 "                            Check that everything seems to be correct.\n"
@@ -641,7 +641,7 @@ msgstr ""
 "                            Kontrollera att allt stämmer.\n"
 "                        "
 
-#: tickle/templates/tickle/purchase.html:139
+#: tickle/templates/tickle/purchase.html:143
 msgid ""
 "By clicking <em>Confirm purchase</em> you agree to these terms and confirm "
 "that the shopping cart above is correct."
@@ -649,11 +649,11 @@ msgstr ""
 "Genom att klicka på <em>Bekräfta köp</em> godkänner du dessa villkor och "
 "bekräftar att varukorgen ovan stämmer överens med vad du vill köpa."
 
-#: tickle/templates/tickle/purchase.html:144
+#: tickle/templates/tickle/purchase.html:148
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: tickle/templates/tickle/purchase.html:145
+#: tickle/templates/tickle/purchase.html:149
 msgid "Confirm purchase"
 msgstr "Bekräfta köp"
 
