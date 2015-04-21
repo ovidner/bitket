@@ -1,6 +1,61 @@
 <!DOCTYPE html>
 <html>
+<head>
+<style>
+	.infocell {
+    padding-right: 20px;
+}
+</style>
+</head>
+
 <body style="">
     <h1>Faktura!</h1>
+
+    <table>
+    <tr>
+        <td colspan="2">Fakturanummer:</td> <td colspan="2">{% invoice_num %} </td>
+    </tr>
+    <tr>
+        <td colspan="2">Skickad:</td> <td colspan="2"> {% sent_date %} </td>
+        <td colspan="2">Sista betaldatum:</td> <td colspan="2"> {% due_date %} </td>
+    </tr>
+    {% if organization == None %}
+    <tr>
+    <td colspan="2"> Beställare: </td> <td colspan="2"> {% customer_name %} </td>
+    <td colspan="2"> Personnummer: </td> <td colspan="2"> {% customer_PNR %} </td>
+    </tr>
+    {% else %}
+    <tr>
+    <td colspan="2"> Organisation: </td> <td colspan="2"> {% customer_organization %} </td>
+    <td colspan="2"> Beställare: </td> <td colspan="2"> {% customer_name %} </td>
+    <td colspan="2"> Org nummer: </td> <td colspan="2"> {% customer_PNR %} </td>
+
+    </tr>
+    {% endif %}
+
+        <tr>
+            <td>Pryl</td> <td>Antal</td> <td> Pris styck </td> <td> Tot pris</td>
+        </tr>
+        {% for p in products %}
+            <tr>
+                <td>name {% pryl.name %}</td>
+                <td>{% p.num_items %}</td>
+                <td>{% p.item_cost %}</td>
+                <td>{% p.row_total %}</td>
+            </tr>
+        {% endfor %}
+    <tr>
+        <td>
+            Summa: {% total_sum %}
+        </td>
+    </tr>
+
+    <tr>
+        <td>OCR</td>
+    </tr>
+    <tr>
+        <td colspan="4">{% ocr_num %}</td>
+    </tr>
+    </table>
 </body>
 </html>
