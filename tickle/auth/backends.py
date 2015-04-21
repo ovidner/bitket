@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.backends import ModelBackend
 from django.db.transaction import atomic
+from django.db import IntegrityError
 
 from django_auth_ldap.backend import LDAPBackend
 
@@ -43,7 +44,12 @@ class _LiUBaseLDAPBackend(LDAPBackend):
             person = Person.objects.get(email=email)
             created = False
         except Person.DoesNotExist:
-            person, created = Person.objects.get_or_create(liu_id=liu_id, defaults={'email': email})
+            try:
+                person = Person.objects.get(liu_id=liu_id)
+                created = False
+            except Person.DoesNotExist:
+                person = Person(liu_id=liu_id, email=email)
+                created = True
 
         return person, created
 
@@ -78,9 +84,13 @@ class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
 
             # Runs any subclass specific logic for populating the Person object with extra data.
             person = self.populate_person_data(person, ldap_user)
-            person = person.fill_kobra_data(save=True, overwrite_name=False)
-
-            person.save()
+            person = person.fill_kobra_data(overwrite_name=False)
+            try:
+                person.save()
+            except IntegrityError:
+                person = Person.objects.get(birth_date=person.birth_date, pid_code=person.pid_code,
+                                            pid_coordination=person.pid_coordination)
+                person = person.fill_kobra_data(save=True, overwrite_name=False)
 
             return TickleUser.objects.get_or_create(person=person)
 
