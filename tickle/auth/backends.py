@@ -58,6 +58,11 @@ class _LiUBaseLDAPBackend(LDAPBackend):
 
             return TickleUser.objects.get_or_create(person=person)
 
+    def get_group_permissions(self, user, obj=None):
+        # A hack resolving issues with using TickleUser.person (a ForeignKey) as USERNAME_FIELD. We don't use LDAP group
+        # permissions anyway.
+        return set()
+
 
 class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
     """
