@@ -10,6 +10,7 @@ from functools import update_wrapper
 class InvoiceRowInline(admin.TabularInline):
     model = InvoiceRow
     extra = 0
+    raw_id_fields = ('holding',)
 
 
 @admin.register(Invoice)

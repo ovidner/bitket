@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 import django.utils.timezone
+from django.utils.timezone import now
 import datetime
 from random import randint
 from tickle.models.products import Holding
 from enumfields import EnumField
 from enum import Enum
 import tickle.utils.mail as mail
+
+
+def default_invoice_creation_date():
+    return now()
+
+
+def default_invoice_due_date():
+    return now() + datetime.timedelta(days=14)
+
 
 class Invoice(models.Model):
     class OrderStatus(Enum):
@@ -20,13 +30,16 @@ class Invoice(models.Model):
     invoice_number = models.IntegerField(unique=True, verbose_name='Fakturanummer', null=True)
     customer_name = models.CharField(max_length=255, verbose_name='Namn', default='')
     customer_organization = models.CharField(max_length=255, default='', verbose_name='Förening')
-    customer_PNR = models.CharField(max_length=10, verbose_name='Personnummer')
-    customer_mail = models.EmailField(max_length=254, verbose_name='mail')
-    create_date = models.DateField(auto_now_add=True, default=django.utils.timezone.now())
-    sent_date = models.DateField(null=True)
-    due_date = models.DateField(default=None, nullable=True)
+    customer_pid = models.CharField(max_length=10, verbose_name='Personnummer')
+    customer_email = models.EmailField(max_length=254, verbose_name='mail')
+    create_date = models.DateField(default=default_invoice_creation_date)
+    sent_date = models.DateField(default=default_invoice_due_date)
+    due_date = models.DateField(default=None, null=True)
     current_status = EnumField(OrderStatus, max_length=1, default='g')
-    invoice_ocr = models.CharField(max_length=255, unique=True, verbose_name='OCR')
+    invoice_ocr = models.CharField(max_length=255, null=True, unique=True, verbose_name='OCR')
+
+    def clean_invoice_ocr(self):
+        return self.cleaned_data['invoice_ocr'] or None
 
     def send_invoice(self):
         self.sent_date = django.utils.timezone.now()
@@ -45,7 +58,7 @@ class Invoice(models.Model):
         data = dict()
         data['customer_name'] = self.customer_name
         data['customer_organization'] = self.customer_organization
-        data['customer_PNR'] = self.customerPNR
+        data['customer_pid'] = self.customer_pid
         data['sent_date'] = self.sent_date
         data['due_date'] = self.due_date
         data['invoice_number'] = self.invoice_number
@@ -55,9 +68,9 @@ class Invoice(models.Model):
         total_sum = 0
         for row in self.rows.all():
             row_details = row.get_details()
-            row_details['row_total'] = row_details['item_cost'] * row_details['num_items']
+            row_details['row_total'] = row_details['item_price'] * row_details['num_items']
             products_specification.append(row_details)
-            total_sum = row_details['item_cost'] * row_details['num_items']
+            total_sum = row_details['item_price'] * row_details['num_items']
 
 
         data['products'] = products_specification
@@ -75,29 +88,29 @@ class Invoice(models.Model):
 
 class InvoiceRow(models.Model):
     invoice = models.ForeignKey(Invoice,related_name='rows')
-    itemName = models.CharField(max_length=255, verbose_name='Pryl')
-    nrItems = models.IntegerField(default=1, verbose_name='Antal')
-    itemCost = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Pris')
-    holdingBackref = models.ForeignKey(Holding, null=True)
+    item_name = models.CharField(max_length=255, verbose_name='Pryl')
+    num_items = models.IntegerField(default=1, verbose_name='Antal')
+    item_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Pris')
+    holding = models.ForeignKey(Holding, null=True)
 
     def get_details(self):
         details = dict()
-        if self.holdingBackref:
-            details['owner_id'] = self.holdingBackref.person.pk
-            details['owner_name'] = self.holdingBackref.person.full_name
+        if self.holding:
+            details['owner_id'] = self.holding.person.pk
+            details['owner_name'] = self.holding.person.full_name
 
-        details['item_name'] = self.itemName
-        details['num_items'] = self.nrItems
-        details['item_cost'] = self.itemCost
+        details['item_name'] = self.item_name
+        details['num_items'] = self.num_items
+        details['item_price'] = self.item_price
         return details
 
 
 def generate_invoice(name, email, orgName, id_nr, stuff):
     invoice_offset = 100000
-    bill = Invoice(customerName=name,
-                   customerOrganization=orgName,
-                   customerPNR=id_nr,
-                   customerEmail=email
+    bill = Invoice(customer_name=name,
+                   customer_organization=orgName,
+                   customer_pid=id_nr,
+                   customer_email=email
                    )
     bill.save()
     bill.invoice_number = bill.pk + invoice_offset
@@ -105,7 +118,7 @@ def generate_invoice(name, email, orgName, id_nr, stuff):
     bill.save()
 
     for thing in stuff:
-        row = InvoiceRow(invoice=bill, itemName=thing[0].name, nrItems=thing[1],
-                         itemCost=thing[0].price, holdingBackref=thing[2])
+        row = InvoiceRow(invoice=bill, item_name=thing[0].name, num_items=thing[1],
+                         item_price=thing[0].price, holding=thing[2])
         row.save()
 

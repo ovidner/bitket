@@ -37,7 +37,7 @@ class OrchestraQuerySet(models.QuerySet):
                     product = thing.product
                     # print(product)
                     quantity = thing.quantity
-                    total_stuff.append((product, quantity, Person(member.person)))
+                    total_stuff.append((product, quantity, member.person))
                     #print(total_stuff)
             generate_invoice(orch.contact.full_name, orch.contact.email, orch.name, orch.organisation_number,
                              total_stuff)
