@@ -24,7 +24,7 @@ class Invoice(models.Model):
     customer_organization = models.CharField(max_length=255, default='', verbose_name='Förening')
     customer_pid = models.CharField(max_length=10, verbose_name='Personnummer')
     customer_mail = models.EmailField(max_length=254, verbose_name='mail')
-    create_date = models.DateField(auto_now_add=True, default=default_create_date)
+    create_date = models.DateField(default=default_create_date)
     sent_date = models.DateField(null=True,default=None)
     due_date = models.DateField(null=True,default=None)
     current_status = EnumField(OrderStatus, max_length=1, default='g')
