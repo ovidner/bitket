@@ -6,6 +6,10 @@ from enumfields import EnumField
 from enum import Enum
 import tickle.utils.mail as mail
 
+
+def default_create_date():
+    return django.utils.timezone.now()
+
 class Invoice(models.Model):
     class OrderStatus(Enum):
         GENERATED = 'g'
@@ -15,16 +19,16 @@ class Invoice(models.Model):
         OBLITERATED = 'o'
         LATE = 'L'
 
-    invoice_number = models.IntegerField(unique=True, verbose_name='Fakturanummer', null=True)
+    invoice_number = models.IntegerField(unique=True, verbose_name='Fakturanummer', null=True, default=None)
     customer_name = models.CharField(max_length=255, verbose_name='Namn', default='')
     customer_organization = models.CharField(max_length=255, default='', verbose_name='Förening')
     customer_pid = models.CharField(max_length=10, verbose_name='Personnummer')
     customer_mail = models.EmailField(max_length=254, verbose_name='mail')
-    create_date = models.DateField(auto_now_add=True, default=django.utils.timezone.now())
-    sent_date = models.DateField(null=True)
-    due_date = models.DateField(default=None, nullable=True)
+    create_date = models.DateField(auto_now_add=True, default=default_create_date)
+    sent_date = models.DateField(null=True,default=None)
+    due_date = models.DateField(null=True,default=None)
     current_status = EnumField(OrderStatus, max_length=1, default='g')
-    invoice_ocr = models.CharField(max_length=255, unique=True, verbose_name='OCR')
+    invoice_ocr = models.CharField(max_length=255, unique=True, verbose_name='OCR', null=True, default=None)
 
     def send_invoice(self):
         self.sent_date = django.utils.timezone.now()
@@ -43,7 +47,7 @@ class Invoice(models.Model):
         data = dict()
         data['customer_name'] = self.customer_name
         data['customer_organization'] = self.customer_organization
-        data['customer_pid'] = self.customerPNR
+        data['customer_pid'] = self.customer_pid
         data['sent_date'] = self.sent_date
         data['due_date'] = self.due_date
         data['invoice_number'] = self.invoice_number
@@ -64,6 +68,7 @@ class Invoice(models.Model):
 
     def get_luhn_check(self, invoice_id):
         digits = str(invoice_id)
+        digits += "7"
         sum = 0
         for number in digits:
             sum = sum + int(number)
@@ -90,7 +95,7 @@ class InvoiceRow(models.Model):
 
 
 def generate_invoice(name, email, orgName, id_nr, stuff):
-    invoice_offset = 100000
+    invoice_offset = 10000
     bill = Invoice(customer_name=name,
                    customer_organzation=orgName,
                    customer_pid=id_nr,
@@ -106,4 +111,3 @@ def generate_invoice(name, email, orgName, id_nr, stuff):
                          num_items=thing.quantity, item_cost=thing.product.price,
                          holding=thing)
         row.save()
-
