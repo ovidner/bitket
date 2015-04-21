@@ -42,6 +42,7 @@ class _LiUBaseLDAPBackend(LDAPBackend):
 
         try:
             person = Person.objects.get(email=email)
+            person.liu_id = liu_id
             created = False
         except Person.DoesNotExist:
             try:
