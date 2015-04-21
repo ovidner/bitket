@@ -91,10 +91,10 @@ class InvoiceRow(models.Model):
 
 def generate_invoice(name, email, orgName, id_nr, stuff):
     invoice_offset = 100000
-    bill = Invoice(customerName=name,
-                   customerOrganization=orgName,
-                   customerPNR=id_nr,
-                   customerEmail=email
+    bill = Invoice(customer_name=name,
+                   customer_organzation=orgName,
+                   customer_pid=id_nr,
+                   customer_email=email
                    )
     bill.save()
     bill.invoice_number = bill.pk + invoice_offset
