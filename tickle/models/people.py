@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth import login, authenticate
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
@@ -10,6 +11,7 @@ from django.conf import settings
 from tickle.utils.kobra import KobraClient, Unauthorized, StudentNotFound
 from tickle.utils.mail import TemplatedEmail
 from tickle.fields import SEPersonalIdentityNumberField
+from tickle.models.discounts import Discount
 
 
 def generate_pretty_email(first_name, last_name, email):
@@ -173,6 +175,8 @@ class Person(models.Model):
             if save:
                 self.save()
 
+        return self
+
     def _get_pid(self):
         if self.birth_date:
             day = self.birth_date.day
@@ -193,6 +197,15 @@ class Person(models.Model):
         self.birth_date, self.pid_code, self.pid_coordination = SEPersonalIdentityNumberField().clean(value)
 
     pid = property(_get_pid, _set_pid)
+
+    def create_user_and_login(self, request):
+        # Create user
+        user = TickleUser.objects.create(person=self)
+        password = user.generate_and_send_password()
+        user.save()
+        # Login
+        user = authenticate(username=self.email, password=password)
+        login(request, user)
 
     @property
     def full_name(self):
@@ -218,6 +231,10 @@ class SpecialNutrition(models.Model):
 
 
 class TickleUserManager(BaseUserManager):
+    def get_by_natural_key(self, pk):
+        # Ugly hack to solve problems with serialization from natural keys
+        return self.get(pk=pk)
+
     def create_user(self, username, password=None):
         """
         Creates and saves a User with the given email and password.
@@ -261,6 +278,10 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.get_full_name()
+
+    def natural_key(self):
+        # Ugly hack to solve problems with serialization to natural keys
+        return (self.pk,)
 
     def get_full_name(self):
         return self.person.full_name

@@ -4,8 +4,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 
-from tickle.views.people import LoginView, ProfileView, ChangePasswordView
-from orchard.views import ApproveOrchestraMemberView, RegisterOrchestraMemberView
+from tickle.views.people import LoginView, ProfileView, ChangePasswordView, CreateUserView, IdentifyView
 from fungus.views import ShiftChangeView
 
 urlpatterns = patterns(
@@ -18,6 +17,9 @@ urlpatterns = patterns(
 
     url(r'^people/login/$', LoginView.as_view(), name='login'),
     url(r'^people/change-password/$', ChangePasswordView.as_view(), name='change_password'),
+    url(r'^people/create-account/$', CreateUserView.as_view(), name='create_user'),
+    url(r'^people/create-account/success$', TemplateView.as_view(template_name='people/create_user_success.html'),
+        name='create_user_success'),
     url(r'^people/logout/$', 'django.contrib.auth.views.logout', {'next_page': 'root'}, name='logout'),
     url(r'^people/(?P<pk>\d+)/$', ProfileView.as_view(), name='profile'),
     url(r'^people/me/$', LoginView.as_view(), name='profile_me'),
@@ -25,6 +27,7 @@ urlpatterns = patterns(
     url(r'^karthago/', include('karthago.urls', namespace='karthago', app_name='karthago')),
     url(r'^orchard/', include('orchard.urls', namespace='orchard', app_name='orchard')),
     url(r'^fungus/', include('fungus.urls', namespace='fungus', app_name='fungus')),
+    url(r'^tickets/', include('tickle.urls', namespace='tickle', app_name='tickle')),
 
     url(r'^api/', include('api.urls', namespace='api')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),

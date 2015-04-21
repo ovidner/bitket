@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.db.models import Q
 
 from tickle.models import Person
-from fungus.models import ShiftType, Shift, ShiftRegistration, Functionary, Worker
+from fungus.models import ShiftType, Shift, ShiftRegistration, Functionary, Worker, FunctionaryDiscount
 from tickle.admin import PersonAdmin, TickleUserInline, PurchaseInline
 
 
@@ -254,3 +254,7 @@ class WorkerAdmin(PersonAdmin):
         return obj.shift_registrations.count()
 
     registration_count.short_description = _('shifts')
+
+@admin.register(FunctionaryDiscount)
+class FunctionaryDiscountAdmin(admin.ModelAdmin):
+    pass

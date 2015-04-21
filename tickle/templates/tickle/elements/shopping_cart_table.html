@@ -1,0 +1,43 @@
+{% load i18n %}
+<table class="table">
+    <tr>
+        <th>{% trans 'Product' %}</th>
+        <th>{% trans 'Quantity' %}</th>
+        <th>{% trans 'Subtotal' %}</th>
+        {% if delete_column %}
+            <th></th>
+        {% endif %}
+    </tr>
+    {% for holding in shopping_cart.holdings.all %}
+        <tr>
+            <td>{{ holding.product.public_name }}</td>
+            <td align="right">{{ holding.quantity }}</td>
+            <td align="right">{{ holding.discounted_total }}</td>
+            {% if delete_column %}
+                <td>
+                    <form action="{% url 'tickle:shopping_cart_remove' holding.pk %}" method="post">{% csrf_token %}
+                        <button type="submit" class="btn btn-xs btn-danger pull-right">
+                            <span class="glyphicon glyphicon-remove"></span> {% trans 'Remove' %}
+                        </button>
+                    </form>
+                </td>
+            {% endif %}
+        </tr>
+        {% if forloop.last %}
+            <tr>
+                <td colspan="2"></td>
+                <td align="right"><strong>{{ shopping_cart.holdings.discounted_total }}</strong></td>
+                {% if delete_column %}
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endif %}
+    {% empty %}
+        <tr>
+            <td colspan="3">{% trans 'No products in the shopping cart.' %}</td>
+            {% if delete_column %}
+                <td></td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>

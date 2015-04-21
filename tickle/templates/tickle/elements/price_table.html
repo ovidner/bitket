@@ -1,0 +1,33 @@
+{% load i18n %}
+<table class="table">
+    {% if discounts %}
+        <tr>
+            <td colspan="2">{% trans 'Full price' %}</td>
+            <td align="right">{{ product.price }}</td>
+        </tr>
+    {% endif %}
+    {% for discount in discounts %}
+        <tr>
+            <td>{{ discount.description|capfirst }}&nbsp;</td>
+            <td align="right">{% if discount.percent %}<small class="text-muted">– {{ discount.percent }}</small>{% endif %}</td>
+            <td align="right" class="text-success">– {{ discount.delta }}</td>
+        </tr>
+    {% endfor %}
+    <tr{% if discounts %} class="success"{% endif %}>
+        <td colspan="2"><strong>{% trans 'Your price' %}</strong></td>
+        <td align="right"><strong>{{ price }}</strong></td>
+    </tr>
+    <tr class="info">
+        {% url 'fungus:register_functionary' as register_functionary_url %}
+        <td colspan="3">
+            {% blocktrans %}
+                <a href="{{ register_functionary_url }}">Become a functionary</a> and receive a 25 or 60 percent discount!
+            {% endblocktrans %}
+        </td>
+    </tr>
+    {% comment %}{% for teaser in teasers %}
+        <tr class="info">
+            <td colspan="3">{{ teaser.description|capfirst }}</td>
+        </tr>
+    {% endfor %}{% endcomment %}
+</table>

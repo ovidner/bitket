@@ -42,6 +42,7 @@ PRIMARY_HOST = 'https://tickle.sof15.se'
 # Application definition
 
 INSTALLED_APPS = (
+    'suit',  # Must be installed before `django.contrib.admin`
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -75,6 +76,23 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.template.context_processors.debug",
+    "django.template.context_processors.i18n",
+    "django.template.context_processors.media",
+    "django.template.context_processors.static",
+    "django.template.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+    'django.template.context_processors.request',
+)
+
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'Tickle SOF15',
+    'SHOW_REQUIRED_ASTERISK': True,
+    'CONFIRM_UNSAVED_CHANGES': True,
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -146,10 +164,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-LANGUAGES = (
-    ('sv', _('Swedish')),
-)
 
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'sof15', 'locale'),

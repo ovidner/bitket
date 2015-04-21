@@ -39,7 +39,11 @@ class _LiUBaseLDAPBackend(LDAPBackend):
         liu_id = ldap_user.attrs['cn'][0]
         email = ldap_user.attrs['mail'][0]
 
-        person, created = Person.objects.get_or_create(liu_id=liu_id, defaults={'email': email})
+        try:
+            person = Person.objects.get(email=email)
+            created = False
+        except Person.DoesNotExist:
+            person, created = Person.objects.get_or_create(liu_id=liu_id, defaults={'email': email})
 
         return person, created
 
@@ -54,6 +58,11 @@ class _LiUBaseLDAPBackend(LDAPBackend):
 
             return TickleUser.objects.get_or_create(person=person)
 
+    def get_group_permissions(self, user, obj=None):
+        # A hack resolving issues with using TickleUser.person (a ForeignKey) as USERNAME_FIELD. We don't use LDAP group
+        # permissions anyway.
+        return set()
+
 
 class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
     """
@@ -63,12 +72,17 @@ class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
     settings_prefix = 'LIU_STUDENT_LDAP_'
     _settings = LiUStudentLDAPSettings(settings_prefix)
 
-    def _populate_person_data(self, person, ldap_user):
-        person = super(LiUStudentLDAPBackend, self).populate_person_data(person, ldap_user)
+    def get_or_create_user(self, username, ldap_user):
+        with atomic():
+            person, person_created = self.get_or_create_person(username, ldap_user)
 
-        person.fill_kobra_data(save=False, overwrite_name=False)
+            # Runs any subclass specific logic for populating the Person object with extra data.
+            person = self.populate_person_data(person, ldap_user)
+            person = person.fill_kobra_data(save=True, overwrite_name=False)
 
-        return person
+            person.save()
+
+            return TickleUser.objects.get_or_create(person=person)
 
 
 class LiUEmployeeLDAPBackend(_LiUBaseLDAPBackend):

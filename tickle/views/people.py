@@ -1,16 +1,25 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, DetailView
+from django.views.generic import FormView, DetailView, CreateView, ListView, DeleteView, TemplateView
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from django.shortcuts import resolve_url
+from django.shortcuts import resolve_url, redirect
+from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
+from django.http import Http404
+
+from datetime import datetime
 
 from guardian.shortcuts import get_objects_for_user
+from guardian.mixins import LoginRequiredMixin
 
-from tickle.forms import LoginFormHelper, AuthenticationForm
+from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, IdentifyForm, AuthenticationForm, SimplePersonForm, SimplePersonFormHelper
 from tickle.models.people import Person
+from tickle.models.products import Holding, Purchase, Product, ShoppingCart
 from tickle.views.mixins import MeOrPermissionRequiredMixin
+from tickle.utils.kobra import StudentNotFound, Unauthorized
+from tickle.utils.mail import TemplatedEmail
 
 
 class ProfileView(MeOrPermissionRequiredMixin, DetailView):
@@ -59,7 +68,28 @@ class LoginView(FormView):
         return super(LoginView, self).form_valid(form)
 
 
-class ChangePasswordView(FormView):
+class CreateUserView(CreateView):
+    model = Person
+    form_class = SimplePersonForm
+    template_name = 'people/create_user.html'
+
+    _user = None
+
+    def get_success_url(self):
+        return self.request.GET.get('next', resolve_url('create_user_success'))
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateUserView, self).get_context_data(**kwargs)
+        context['form_helper'] = SimplePersonFormHelper()
+        return context
+
+    def form_valid(self, form):
+        person = form.save()
+        person.create_user_and_login(self.request)
+        return super(CreateUserView, self).form_valid(form)
+
+
+class ChangePasswordView(LoginRequiredMixin, FormView):
     form_class = PasswordChangeForm
     template_name = 'people/change_password.html'
 
@@ -85,3 +115,51 @@ class ChangePasswordView(FormView):
         messages.success(self.request, _('Your password has been changed. Please log in again.'))
 
         return super(ChangePasswordView, self).form_valid(form)
+
+
+class IdentifyView(FormView):
+    form_class = IdentifyForm
+    template_name = 'people/identify.html'
+
+    person = None
+    liu_id = None
+
+    def get_create_user_url(self):
+        next_url = self.request.GET.get('next', None)
+        if next_url:
+            return '%s?next=%s' % (resolve_url('create_user'), next_url)
+        return resolve_url('create_user')
+
+    def create_liu_user(self):
+        try:
+            person = Person(liu_id=self.liu_id, email='%s@student.liu.se' % self.liu_id)
+            person.fill_kobra_data()
+        except StudentNotFound:
+            error_message = _(u'No student with the Liu ID %s was found.' % self.liu_id)
+        except Unauthorized:
+            error_message = _(u"It's temporally not possible to retrieve information for LiU IDs.")
+        else:
+            person.save()
+            person.create_user_and_login(self.request)
+            return resolve_url('create_user_success')
+
+        messages.warning(self.request, u"%s %s" % (error_message, _(u'Please enter your personal information yourself.')))
+        return self.get_create_user_url()
+
+    def get_success_url(self):
+        if self.person:
+            next_url = self.request.GET.get('next', resolve_url('profile', pk=self.person.pk))
+            if self.request.user.is_authenticated() and self.request.user.person == self.person:
+                return next_url
+            return '%s?next=%s' % (resolve_url('login'), next_url)
+        elif self.liu_id:
+            return self.create_liu_user()
+        return self.get_create_user_url()
+
+    def form_valid(self, form):
+        person = form.get_existing_person_or_none()
+        self.person = person
+        self.liu_id = form.cleaned_data['liu_id']
+        return super(IdentifyView, self).form_valid(form)
+
+

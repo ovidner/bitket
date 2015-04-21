@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-14 09:35+0200\n"
+"POT-Creation-Date: 2015-04-20 13:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,10 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: sof15/settings.py:151
-msgid "Swedish"
-msgstr "Svenska"
 
 #: sof15/templates/base.html:24
 msgid "Return to sof15.se"
@@ -31,56 +27,130 @@ msgid "Toggle navigation"
 msgstr "Växla navigation"
 
 #: sof15/templates/base.html:37
-msgid "SOF 2015 Tickets/Registration"
-msgstr "SOF 2015 Biljetter/Anmälan"
+msgid "SOF 2015 Tickets"
+msgstr "SOF 2015 Biljetter"
 
-#: sof15/templates/base.html:42
-msgid "Orchestra member"
-msgstr "Orkestermedlem"
+#: sof15/templates/base.html:42 sof15/templates/base.html.py:83
+msgid "Purchase tickets"
+msgstr "Köp biljetter"
 
-#: sof15/templates/base.html:43
-msgid "Kårtege applicant"
-msgstr "Kårtegedeltagare"
+#: sof15/templates/base.html:47 sof15/templates/base.html.py:88
+msgid "Become a functionary"
+msgstr "Bli funktionär"
 
-#: sof15/templates/base.html:44
-msgid "Functionary"
-msgstr "Funktionär"
-
-#: sof15/templates/base.html:48 sof15/templates/people/login.html:4
-#: sof15/templates/people/login.html:6 sof15/templates/people/login.html:13
+#: sof15/templates/base.html:51 sof15/templates/people/login.html:4
+#: sof15/templates/people/login.html:22
 msgid "Log in"
 msgstr "Logga in"
 
-#: sof15/templates/base.html:51
+#: sof15/templates/base.html:54
 msgid "Logged in as"
 msgstr "Inloggad som"
 
-#: sof15/templates/base.html:53
+#: sof15/templates/base.html:56
 msgid "Profile"
 msgstr "Profil"
 
-#: sof15/templates/base.html:55
+#: sof15/templates/base.html:58
 msgid "Administration"
 msgstr "Administration"
 
-#: sof15/templates/base.html:58 sof15/templates/people/change_password.html:4
+#: sof15/templates/base.html:61 sof15/templates/people/change_password.html:4
 #: sof15/templates/people/change_password.html:6
 #: sof15/templates/people/change_password.html:13
 msgid "Change password"
 msgstr "Ändra lösenord"
 
-#: sof15/templates/base.html:61
+#: sof15/templates/base.html:64
 msgid "Log out"
 msgstr "Logga ut"
 
-#: sof15/templates/people/profile.html:69
+#: sof15/templates/people/create_user.html:4
+#: sof15/templates/people/create_user.html:6
+#: sof15/templates/people/create_user.html:19
+#: sof15/templates/people/create_user_success.html:4
+#: sof15/templates/people/create_user_success.html:6
+msgid "Create account"
+msgstr "Skapa konto"
+
+#: sof15/templates/people/create_user.html:11
+#, python-format
+msgid ""
+"\n"
+"            LiU student? Don't register here, just <a href=\"%(login_url)s"
+"\">log in</a> with your LiU ID!\n"
+"        "
+msgstr ""
+"\n"
+"            LiU-student? Registrera dig inte här, <a href=\"%(login_url)s"
+"\">logga in</a> med ditt LiU-id direkt istället!\n"
+"        "
+
+#: sof15/templates/people/login.html:6
+msgid "SOF 2015 – Tickets"
+msgstr "SOF 2015 Biljetter/Anmälan"
+
+#: sof15/templates/people/login.html:10
+msgid ""
+"\n"
+"            To buy tickets, register as functionary or view your profile, "
+"you must login or register.\n"
+"        "
+msgstr ""
+"\n"
+"            För att köpa biljetter, bli funktionär eller se din profil måste "
+"du logga in eller registrera dig.\n"
+"        "
+
+#: sof15/templates/people/login.html:17
+msgid "LiU student"
+msgstr "LiU-student"
+
+#: sof15/templates/people/login.html:17
+msgid "or already registered"
+msgstr "eller redan registrerad"
+
+#: sof15/templates/people/login.html:18
+msgid ""
+"LiU student? Just enter your LiU id credentials. Else fill in your email "
+"address and your SOF password."
+msgstr ""
+"LiU-student? Fyll i inloggningsuppgifter för ditt LiU-id. Annars, ange din e-"
+"postadress och ditt SOF-lösenord."
+
+#: sof15/templates/people/login.html:27
+msgid "Other"
+msgstr "Annan"
+
+#: sof15/templates/people/login.html:29
+#, python-format
+msgid ""
+"\n"
+"                Please proceed to <a href=\"%(register_url)s\">registration</"
+"a>.\n"
+"            "
+msgstr ""
+"\n"
+"                Vänligen fortsätt till <a href=\"%(register_url)s"
+"\">registrering</a>.\n"
+"            "
+
+#: sof15/templates/people/profile.html:105
+msgid "Quantity"
+msgstr "Kvantitet"
+
+#: sof15/templates/people/profile.html:107
+msgid "Price"
+msgstr "Pris"
+
+#: sof15/templates/people/profile.html:131
 msgid "Orchestra representative"
 msgstr "Orkesterrepresentant"
 
-#: sof15/templates/people/profile.html:73
+#: sof15/templates/people/profile.html:135
 msgid "Approve members"
 msgstr "Godkänn medlemmar"
 
-#: sof15/templates/people/profile.html:74
+#: sof15/templates/people/profile.html:136
 msgid "Review invoice data"
 msgstr "Granska fakturaunderlag"

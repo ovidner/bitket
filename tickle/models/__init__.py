@@ -2,3 +2,4 @@
 
 from .people import *
 from .products import *
+from .discounts import *

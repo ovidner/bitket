@@ -9,9 +9,10 @@ from django.template.response import TemplateResponse
 from gfklookupwidget.widgets import GfkLookupWidget
 from guardian.models import UserObjectPermission, GroupObjectPermission
 from guardian.admin import UserObjectPermissionsForm
+from suit.admin import SortableTabularInline, SortableModelAdmin
 
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, \
-    TickleUser, StudentUnionDiscount, ProductDiscount
+    TickleUser, StudentUnionDiscount, ProductDiscount, Discount, HoldingDiscount
 from tickle.utils.kobra import Unauthorized
 
 
@@ -26,24 +27,23 @@ class EventAdmin(admin.ModelAdmin):
     pass
 
 
-class ProductDiscountInline(admin.TabularInline):
+class ProductDiscountInline(SortableTabularInline):
     model = ProductDiscount
-    extra = 0  # Seems like the generic relation hack makes anything else than 0 fail.
-
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name == 'discount_object_id':
-            kwargs['widget'] = GfkLookupWidget(
-                content_type_field_name='discount_content_type',
-                parent_field=ProductDiscount._meta.get_field('discount_content_type'),
-            )
-
-        return super(ProductDiscountInline, self).formfield_for_dbfield(db_field, **kwargs)
+    extra = 0
+    sortable = 'order'
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', '_public_name', 'price', 'quantitative', 'total_quantity')
+class ProductAdmin(SortableModelAdmin):
+    list_display = ('name', '_public_name', 'price', 'published', 'quantitative', 'purchased_quantity', 'total_quantity')
+    list_editable = ('published',)
     inlines = (ProductDiscountInline,)
+    sortable = 'order'
+
+    def purchased_quantity(self, obj):
+        return obj.holdings.purchased().quantity()
+
+    purchased_quantity.short_description = _('purchased quantity')
 
     def total_quantity(self, obj):
         return obj.holdings.quantity()
@@ -51,13 +51,19 @@ class ProductAdmin(admin.ModelAdmin):
     total_quantity.short_description = _('total quantity')
 
 
+class HoldingDiscountInline(SortableTabularInline):
+    model = HoldingDiscount
+    sortable = 'order'
+
+
 @admin.register(Holding)
 class HoldingAdmin(admin.ModelAdmin):
-    pass
+    raw_id_fields = ('person', 'purchase', 'shopping_cart',)
+    inlines = (HoldingDiscountInline,)
 
 
 @admin.register(TicketType)
-class TicketTypeAdmin(admin.ModelAdmin):
+class TicketTypeAdmin(ProductAdmin):
     pass
 
 
@@ -184,6 +190,11 @@ class GroupObjectPermissionAdmin(admin.ModelAdmin):
         'permission__codename'
     )
     list_filter = ('content_type',)
+
+
+@admin.register(Discount)
+class DiscountAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(StudentUnionDiscount)

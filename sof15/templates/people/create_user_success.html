@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} – {% trans 'Create account' %}{% endblock %}
+
+{% block header %}{% trans 'Create account' %}{% endblock %}
+
+{% block content %}
+    <p>
+        Ett konto hos SOF har skapats! Du bör få ett bekräftelsmail med ditt lösenord inom cirka 15 minuter till den adress du uppgav. Om inte, kontrollera att det inte kategoriserats som skräppost.
+    </p>
+{% endblock content %}
