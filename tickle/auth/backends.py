@@ -79,20 +79,19 @@ class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
     _settings = LiUStudentLDAPSettings(settings_prefix)
 
     def get_or_create_user(self, username, ldap_user):
-        with atomic():
-            person, person_created = self.get_or_create_person(username, ldap_user)
+        person, person_created = self.get_or_create_person(username, ldap_user)
 
-            # Runs any subclass specific logic for populating the Person object with extra data.
-            person = self.populate_person_data(person, ldap_user)
-            person = person.fill_kobra_data(overwrite_name=False)
-            try:
-                person.save()
-            except IntegrityError:
-                person = Person.objects.get(birth_date=person.birth_date, pid_code=person.pid_code,
-                                            pid_coordination=person.pid_coordination)
-                person = person.fill_kobra_data(save=True, overwrite_name=False)
+        # Runs any subclass specific logic for populating the Person object with extra data.
+        person = self.populate_person_data(person, ldap_user)
+        person = person.fill_kobra_data(overwrite_name=False)
+        try:
+            person.save()
+        except IntegrityError:
+            person = Person.objects.get(birth_date=person.birth_date, pid_code=person.pid_code,
+                                        pid_coordination=person.pid_coordination)
+            person = person.fill_kobra_data(save=True, overwrite_name=False)
 
-            return TickleUser.objects.get_or_create(person=person)
+        return TickleUser.objects.get_or_create(person=person)
 
 
 class LiUEmployeeLDAPBackend(_LiUBaseLDAPBackend):
