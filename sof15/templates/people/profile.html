@@ -16,27 +16,33 @@
                 <dt>Personnummer</dt>
                 <dd>{{ person.pid|default_if_none:'&mdash;' }}</dd>
 
-                <dt>LiU-id</dt>
-                <dd>{{ person.liu_id|default:'&mdash;' }}</dd>
+                {% if person.liu_id %}
+                    <dt>LiU-id</dt>
+                    <dd>{{ person.liu_id }}</dd>
+                {% endif %}
 
                 <dt>E-postadress</dt>
                 <dd>{{ person.email }}</dd>
 
-                <dt>Telefonnummer</dt>
-                <dd>{{ person.phone|default:'&mdash;' }}</dd>
+                {% if person.phone %}
+                    <dt>Telefonnummer</dt>
+                    <dd>{{ person.phone }}</dd>
+                {% endif %}
 
-                <dt>Specialkost</dt>
-                <dd>
-                    <ul class="list-unstyled">
-                        {% for i in person.special_nutrition.all %}
-                            <li>{{ i }}</li>
-                        {% endfor %}
-                    </ul>
-                </dd>
+                {% if person.special_nutrition.exists %}
+                    <dt>Specialkost</dt>
+                    <dd>
+                        <ul class="list-unstyled">
+                            {% for i in person.special_nutrition.all %}
+                                <li>{{ i }}</li>
+                            {% endfor %}
+                        </ul>
+                    </dd>
+                {% endif %}
             </dl>
             <!-- Functionary and shifts. -->
             {% if person.functionary %}
-                    <h2>Funktionärsupgiffter</h2>
+                    <h2>Funktionärsuppgifter</h2>
                     <dl>
                         <dt>ICE-nummer</dt>
                         <dd>{{ person.functionary.ice_number|default:'&mdash;' }}</dd>
