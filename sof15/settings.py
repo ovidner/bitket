@@ -57,6 +57,7 @@ INSTALLED_APPS = (
     'raven.contrib.django.raven_compat',
     'crispy_forms',
     'rest_framework',
+    'markdown_deux',
 
     'tickle',
     'orchard',
