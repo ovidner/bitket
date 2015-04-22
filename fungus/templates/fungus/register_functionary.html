@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n crispy_forms_tags %}
+{% load i18n crispy_forms_tags markdown_deux_tags %}
 
 {% block title %}{{ block.super }} – Funktionärsanmälan{% endblock %}
 
@@ -27,7 +27,7 @@
 
                         {% if shift_type.grouper.description %}
                             <div class="panel-body">
-                                <p>{{ shift_type.grouper.description }}</p>
+                                <p>{{ shift_type.grouper.description|markdown }}</p>
                             </div>
                         {% endif %}
 
