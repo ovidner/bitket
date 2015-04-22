@@ -76,7 +76,8 @@ class CreateUserView(CreateView):
     _user = None
 
     def get_success_url(self):
-        return self.request.GET.get('next', resolve_url('create_user_success'))
+        messages.success(self.request, _('An account has been created! You will receive an email in a few minutes with your account details. If not, please check your spam folder.'))
+        return self.request.GET.get('next', resolve_url('tickle:purchase'))
 
     def get_context_data(self, **kwargs):
         context = super(CreateUserView, self).get_context_data(**kwargs)
