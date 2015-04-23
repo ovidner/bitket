@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-20 13:14+0200\n"
+"POT-Creation-Date: 2015-04-23 17:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,22 +18,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: tickle/admin.py:46
+msgid "purchased quantity"
+msgstr "köpt kvantitet"
+
+#: tickle/admin.py:51
 msgid "total quantity"
 msgstr "total kvantitet"
 
-#: tickle/admin.py:127
+#: tickle/admin.py:134
 msgid "Permissions"
 msgstr "Rättigheter"
 
-#: tickle/admin.py:151
+#: tickle/admin.py:158
 msgid "Fetched KOBRA data."
 msgstr "Hämtade data från KOBRA."
 
-#: tickle/admin.py:153
+#: tickle/admin.py:160
 msgid "Fetch KOBRA data (use with caution)"
 msgstr "Hämta data från KOBRA"
 
-#: tickle/admin.py:160
+#: tickle/admin.py:167
 msgid "Generate email recipient list"
 msgstr "Generera mottagarlista för e-post"
 
@@ -210,7 +214,7 @@ msgstr "kårrabatter"
 msgid "text"
 msgstr "text"
 
-#: tickle/models/people.py:25 tickle/models/people.py:221
+#: tickle/models/people.py:25 tickle/models/people.py:225
 #: tickle/models/products.py:21 tickle/models/products.py:33
 #: tickle/models/products.py:63
 msgid "name"
@@ -260,7 +264,7 @@ msgstr "telefonnummer"
 msgid "email address"
 msgstr "e-postadress"
 
-#: tickle/models/people.py:78 tickle/models/people.py:226
+#: tickle/models/people.py:78 tickle/models/people.py:230
 msgid "special nutrition"
 msgstr "speciella kostvanor"
 
@@ -288,7 +292,7 @@ msgstr "För internt bruk. Kan endast ses av organisationen."
 msgid "Can view person"
 msgstr "Kan visa person"
 
-#: tickle/models/people.py:108 tickle/models/people.py:266
+#: tickle/models/people.py:108 tickle/models/people.py:270
 #: tickle/models/products.py:139 tickle/models/products.py:234
 #: tickle/models/products.py:264
 msgid "person"
@@ -298,23 +302,23 @@ msgstr "person"
 msgid "people"
 msgstr "personer"
 
-#: tickle/models/people.py:227
+#: tickle/models/people.py:231
 msgid "special nutritions"
 msgstr "speciella kostvanor"
 
-#: tickle/models/people.py:268
+#: tickle/models/people.py:272
 msgid "is active"
 msgstr "aktiv"
 
-#: tickle/models/people.py:269
+#: tickle/models/people.py:273
 msgid "is staff"
 msgstr "organisationskonto"
 
-#: tickle/models/people.py:276
+#: tickle/models/people.py:280
 msgid "user"
 msgstr "användarkonto"
 
-#: tickle/models/people.py:277
+#: tickle/models/people.py:281
 msgid "users"
 msgstr "användarkonton"
 
@@ -469,12 +473,12 @@ msgstr "Ditt pris"
 msgid ""
 "\n"
 "                <a href=\"%(register_functionary_url)s\">Become a "
-"functionary</a> and receive a 25 or 60 percent discount!\n"
+"functionary</a>, get a free Kravall and receive up to 60 percent discount!\n"
 "            "
 msgstr ""
 "\n"
-"                <a href=\"%(register_functionary_url)s\">Bli funktionär </a> "
-"och få 25 eller 60 procent rabatt!\n"
+"                <a href=\"%(register_functionary_url)s\">Bli funktionär </"
+"a>, få en gratis kravall och upp till 60 procent rabatt!\n"
 "            "
 
 #: tickle/templates/tickle/elements/shopping_cart_table.html:4
@@ -692,20 +696,28 @@ msgstr ""
 msgid "See you at SOF!"
 msgstr "Vi ses på SOF!"
 
-#: tickle/views/people.py:115
+#: tickle/views/people.py:79
+msgid ""
+"An account has been created! You will receive an email in a few minutes with "
+"your account details. If not, please check your spam folder."
+msgstr ""
+"Ett konto har skapats! Du kommer få ett mail inom några minuter med dina "
+"kontouppgifter. Om inte, kontrollera din skräppostmapp."
+
+#: tickle/views/people.py:116
 msgid "Your password has been changed. Please log in again."
 msgstr "Ditt lösenord har ändrats. Vänligen logga in på nytt."
 
-#: tickle/views/people.py:138
+#: tickle/views/people.py:139
 #, python-format
 msgid "No student with the Liu ID %s was found."
 msgstr "Ingen student med LiU-id %s hittades."
 
-#: tickle/views/people.py:140
+#: tickle/views/people.py:141
 msgid "It's temporally not possible to retrieve information for LiU IDs."
 msgstr "Det är tillfäligt inte möjligt att hämta information för LiU-id:n."
 
-#: tickle/views/people.py:146
+#: tickle/views/people.py:147
 msgid "Please enter your personal information yourself."
 msgstr "Vänligen fyll i dina personuppgifter själv."
 

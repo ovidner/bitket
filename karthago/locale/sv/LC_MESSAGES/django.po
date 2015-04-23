@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-23 13:39+0200\n"
+"POT-Creation-Date: 2015-04-23 17:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,6 +52,7 @@ msgid "material roles"
 msgstr "materialroller"
 
 #: karthago/models.py:39 karthago/models.py:58 karthago/models.py:133
+#: karthago/models.py:145
 msgid "entry"
 msgstr "bidrag"
 
@@ -187,3 +188,7 @@ msgstr "Något mer vi borde veta?"
 #: karthago/models.py:134
 msgid "entries"
 msgstr "bidrag"
+
+#: karthago/models.py:144
+msgid "person"
+msgstr "person"
