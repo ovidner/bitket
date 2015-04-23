@@ -14,7 +14,8 @@ class EntryCustomMaterialInlineAdmin(admin.TabularInline):
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
     inlines = (EntryMaterialInlineAdmin, EntryCustomMaterialInlineAdmin)
-    list_display = ('constellation', 'name', 'entry_type', 'members')
+    list_display = ('constellation', 'name', 'entry_type', 'approved', 'members')
+    list_editable = ('approved',)
     list_display_links = ('constellation', 'name')
 
 

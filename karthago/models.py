@@ -94,6 +94,8 @@ class Entry(models.Model):
     entry_type = models.ForeignKey('EntryType', related_name='entries', verbose_name=_('entry type'))
     members = models.PositiveIntegerField(default=10, verbose_name=_('number of members'))
 
+    approved = models.BooleanField(default=False, verbose_name=_('approved'))
+
     # Fult som stryk!
     primary_contact_name = models.CharField(max_length=256, verbose_name=_('name'))
     primary_contact_address = models.CharField(max_length=256, verbose_name=_('address'))
