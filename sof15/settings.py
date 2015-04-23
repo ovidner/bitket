@@ -158,6 +158,11 @@ CACHES = d12f['CACHES']
 
 LANGUAGE_CODE = 'sv-se'
 
+LANGUAGES = (
+    ('sv', _('Swedish')),
+    ('en', _('English')),
+)
+
 TIME_ZONE = 'Europe/Stockholm'
 
 USE_I18N = True

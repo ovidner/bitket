@@ -44,6 +44,7 @@
                         {% comment %}<li><a href="{% url 'karthago:create_kartege_entry' %}">{% trans 'Kårtege applicant' %}</a></li>{% endcomment %}
                         <li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>
                     </ul>
+
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_anonymous %}
                             <li><a href="{% url 'login' %}">{% trans 'Log in' %}</a></li>
@@ -64,6 +65,24 @@
                             </li>
                         {% endif %}
                     </ul>
+
+                    <form action="{% url 'set_language' %}" method="post" class="navbar-form navbar-right">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="language-switcher" class="sr-only">{% trans 'Language' %}</label>
+                            <select id="language-switcher" name="language" class="form-control">
+                                {% get_language_info_list for LANGUAGES as languages %}
+                                {% for language in languages %}
+                                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                                        {{ language.name_local|capfirst }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="next" value="{{ redirect_to }}">
+                        <input type="submit" value="{% trans 'Select' %}" class="btn btn-default">
+                    </form>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
