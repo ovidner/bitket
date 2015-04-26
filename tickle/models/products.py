@@ -12,9 +12,11 @@ from django.db.transaction import atomic
 from mptt.models import MPTTModel, TreeForeignKey
 from decimal import Decimal
 
+from tickle.models.people import Person
 from tickle.models.discounts import Discount
 from tickle.utils.mail import TemplatedEmail
 from tickle.utils.format import format_percent
+
 
 @python_2_unicode_compatible
 class Category(models.Model):
@@ -28,17 +30,24 @@ class Category(models.Model):
         return self.name
 
 
+class EventQuerySet(models.QuerySet):
+    def holdings(self):
+        return Holding.objects.filter(product__ticket_type__events__in=self)
+
+    def visitors(self):
+        return self.holdings().purchased().holders()
+
+
 @python_2_unicode_compatible
-class Event(MPTTModel):
+class Event(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
-    parent = TreeForeignKey('self', null=True, blank=True)
+
+    objects = EventQuerySet.as_manager()
 
     class Meta:
+        ordering = ('name',)
         verbose_name = _('event')
         verbose_name_plural = _('events')
-
-    class MPTTMeta:
-        order_insertion_by = ['name']
 
     def __str__(self):
         return self.name
@@ -56,6 +65,9 @@ class ProductQuerySet(models.QuerySet):
 
     def gadget_types(self):
         return self.filter(ticket_type__isnull=True)
+
+    def holdings(self):
+        return Holding.objects.filter(product__in=self)
 
 
 @python_2_unicode_compatible
@@ -100,7 +112,7 @@ class Product(models.Model):
 @python_2_unicode_compatible
 class TicketType(Product):
     product = models.OneToOneField('Product', related_name='ticket_type', parent_link=True, verbose_name=_('product'))
-    events = models.ManyToManyField('Event', verbose_name=_('events'))
+    events = models.ManyToManyField('Event', related_name='ticket_types', blank=True, verbose_name=_('events'))
 
     class Meta:
         verbose_name = _('ticket type')
@@ -132,6 +144,9 @@ class HoldingQuerySet(models.QuerySet):
         for i in self:
             total += i.discounted_total
         return total
+
+    def holders(self):
+        return Person.objects.filter(holdings__in=self).distinct()
 
 
 @python_2_unicode_compatible

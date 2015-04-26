@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.admin.views.main import ChangeList
 from django import forms
+from django.db.models import Count
 from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext_lazy as _
 from django.template.response import TemplateResponse
@@ -58,6 +61,8 @@ class HoldingDiscountInline(SortableTabularInline):
 
 @admin.register(Holding)
 class HoldingAdmin(admin.ModelAdmin):
+    list_display = ('person', 'product',)
+
     raw_id_fields = ('person', 'purchase', 'shopping_cart',)
     inlines = (HoldingDiscountInline,)
 
@@ -137,19 +142,63 @@ class TickleUserInline(admin.StackedInline):
     exclude = ('password',)
 
 
+class EventVisitorListFilter(admin.SimpleListFilter):
+    title = _('event')
+
+    parameter_name = 'event'
+
+    def lookups(self, request, model_admin):
+        return [(i.pk, i.name) for i in Event.objects.all()]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            event = Event.objects.get(pk=self.value())
+            return queryset.filter(holdings__product__ticket_type__events=event)
+        else:
+            return queryset
+
+
+class PersonChangeList(ChangeList):
+    def get_results(self, *args, **kwargs):
+        super(PersonChangeList, self).get_results(*args, **kwargs)
+
+        self.special_nutrition_totals = self.queryset.order_by().values(
+            'special_nutrition__name').annotate(Count('pk'))
+
+
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
     inlines = (TickleUserInline, PurchaseInline,)
 
-    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'notes')
+    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'special_nutrition_render', 'notes')
     list_display_links = ('first_name', 'last_name', 'pid')
-    list_filter = ('special_nutrition',)
+    list_filter = ('special_nutrition', EventVisitorListFilter)
 
     filter_horizontal = ('special_nutrition',)
     
     search_fields = ('first_name', 'last_name', 'email', 'liu_id', 'notes')
 
     actions = ['generate_email_recipient_list_action', 'fill_kobra_data_action']
+
+    list_max_show_all = 2000
+
+    def get_changelist(self, request, **kwargs):
+        return PersonChangeList
+
+    def special_nutrition_render(self, obj):
+        items = obj.special_nutrition.values_list('name', flat=True)
+        if not items:
+            return ''
+
+        output = '<ul>'
+        for i in items:
+            output += '<li>{0}</li>'.format(i)
+        output += '</ul>'
+        return output
+
+    special_nutrition_render.short_description = _('special nutrition')
+    special_nutrition_render.allow_tags = True
+    special_nutrition_render.admin_order_field = 'special_nutrition'
 
     def fill_kobra_data_action(self, request, queryset):
         queryset.fill_kobra_data()
