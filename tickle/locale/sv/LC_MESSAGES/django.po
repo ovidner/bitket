@@ -477,7 +477,7 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                <a href=\"%(register_functionary_url)s\">Bli funktionär </"
+"                <a href=\"%(register_functionary_url)s\">Bli funktionär</"
 "a>, få en gratis kravall och upp till 60 procent rabatt!\n"
 "            "
 
