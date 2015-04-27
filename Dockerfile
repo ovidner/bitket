@@ -1,4 +1,4 @@
-FROM phusion/baseimage:0.9.15
+FROM phusion/baseimage:0.9.16
 MAINTAINER Olle Vidner <olle.vidner@sof15.se>
 
 # We specify this here so it is cached by Docker, no need to run it more often than necessary.
