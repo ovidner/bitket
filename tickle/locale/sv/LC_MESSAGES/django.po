@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 02:48+0200\n"
+"POT-Creation-Date: 2015-04-28 14:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,7 +33,7 @@ msgstr "Rättigheter"
 msgid "event"
 msgstr "evenemang"
 
-#: tickle/admin.py:210 tickle/models/people.py:78 tickle/models/people.py:230
+#: tickle/admin.py:210 tickle/models/people.py:78 tickle/models/people.py:226
 msgid "special nutrition"
 msgstr "speciella kostvanor"
 
@@ -50,8 +50,10 @@ msgid "Generate email recipient list"
 msgstr "Generera mottagarlista för e-post"
 
 #: tickle/admin.py:232
+#, fuzzy
+#| msgid "No products in the shopping cart."
 msgid "Add product to shopping cart..."
-msgstr "Lägg till produkter i varukorg..."
+msgstr "Inga produkter i varukorgen."
 
 #: tickle/fields.py:63
 msgid "Enter a valid LiU ID."
@@ -127,9 +129,13 @@ msgstr ""
 msgid "Phone number"
 msgstr "Telefonnummer"
 
-#: tickle/forms.py:262
+#: tickle/forms.py:266
 msgid "Please specify LiU ID or personal identity number."
-msgstr "Vänligen ange LiU-id <em>eller</em> e-postadress."
+msgstr "Vänligen ange LiU ID eller e-postadress."
+
+#: tickle/forms.py:269
+msgid "No person found with the entered LiU ID or personal identity number."
+msgstr "Ingen person hittad med det angivna LiU ID:t eller e-postadressen."
 
 #: tickle/models/discounts.py:28
 msgid "discount eligibility"
@@ -231,14 +237,18 @@ msgid "text"
 msgstr "text"
 
 #: tickle/models/discounts.py:207
+#, fuzzy
+#| msgid "product discount"
 msgid "personal discount"
-msgstr "personlig rabatt"
+msgstr "produktrabatter"
 
 #: tickle/models/discounts.py:208
+#, fuzzy
+#| msgid "product discounts"
 msgid "personal discounts"
-msgstr "personliga rabatter"
+msgstr "produktrabatter"
 
-#: tickle/models/people.py:25 tickle/models/people.py:225
+#: tickle/models/people.py:25 tickle/models/people.py:221
 #: tickle/models/products.py:23 tickle/models/products.py:43
 #: tickle/models/products.py:75
 msgid "name"
@@ -254,7 +264,7 @@ msgstr "efternamn"
 
 #: tickle/models/people.py:55
 msgid "birth date"
-msgstr "födelsedatum"
+msgstr ""
 
 #: tickle/models/people.py:60
 msgid "national identity code"
@@ -316,29 +326,29 @@ msgstr "För internt bruk. Kan endast ses av organisationen."
 msgid "Can view person"
 msgstr "Kan visa person"
 
-#: tickle/models/people.py:108 tickle/models/people.py:270
+#: tickle/models/people.py:108 tickle/models/people.py:266
 #: tickle/models/products.py:154 tickle/models/products.py:249
 #: tickle/models/products.py:279
 msgid "person"
 msgstr "person"
 
-#: tickle/models/people.py:231
+#: tickle/models/people.py:227
 msgid "special nutritions"
 msgstr "speciella kostvanor"
 
-#: tickle/models/people.py:272
+#: tickle/models/people.py:268
 msgid "is active"
 msgstr "aktiv"
 
-#: tickle/models/people.py:273
+#: tickle/models/people.py:269
 msgid "is staff"
 msgstr "organisationskonto"
 
-#: tickle/models/people.py:280
+#: tickle/models/people.py:276
 msgid "user"
 msgstr "användarkonto"
 
-#: tickle/models/people.py:281
+#: tickle/models/people.py:277
 msgid "users"
 msgstr "användarkonton"
 
@@ -501,8 +511,8 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"                <a href=\"%(register_functionary_url)s\">Bli funktionär</a>, "
-"få en gratis kravall och upp till 60 procent rabatt!\n"
+"                <a href=\"%(register_functionary_url)s\">Bli funktionär </"
+"a>, få en gratis kravall och upp till 60 procent rabatt!\n"
 "            "
 
 #: tickle/templates/tickle/elements/shopping_cart_table.html:4
@@ -526,6 +536,139 @@ msgstr "Ta bort"
 #: tickle/templates/tickle/elements/shopping_cart_table.html:37
 msgid "No products in the shopping cart."
 msgstr "Inga produkter i varukorgen."
+
+#: tickle/templates/tickle/exchange.html:4
+#: tickle/templates/tickle/exchange.html:6
+msgid "Ticket exchange"
+msgstr "Biljettbyte"
+
+#: tickle/templates/tickle/exchange.html:12
+msgid ""
+"\n"
+"            For a transfer to be possible the receiving person must have "
+"logged in on the site with their LiU ID or\n"
+"            created an account with their personal identification number."
+"<br>\n"
+"            When you transfer your ticket you're still obligated to pay the "
+"invoice, not the person receiving the ticket.\n"
+"            Discounts are personal and won't be transferred with the ticket. "
+"You're obligated to pay for any price\n"
+"            difference that may occur.\n"
+"        "
+msgstr ""
+"\n"
+"För att en överlåtning ska kunna göras måste personen du överlåter till ha "
+"loggat in på hemsidan med deras LiU ID eller skapat ett konto med deras "
+"personnummer.<br>\n"
+"När du överlåter din biljett är det fortfarande du som ska betala fakturan. "
+"Rabatter är personliga och kommer inte följa med biljetten. Du är skyldig "
+"att betala för mellanskillnad som kan uppkomma.\n"
+"        "
+
+#: tickle/templates/tickle/exchange.html:22
+msgid ""
+"\n"
+"            Enter LiU ID <em>or</em> personal identification number for the "
+"person you want to give your ticket.\n"
+"        "
+msgstr ""
+"\n"
+"Ange LiU ID <em>eller</em> personnummer för personen du vill ge din biljett."
+
+#: tickle/templates/tickle/exchange.html:30
+msgid "Transfer"
+msgstr "Överlåt"
+
+#: tickle/templates/tickle/exchange.html:37
+#: tickle/templates/tickle/purchase.html:107
+msgid "Close"
+msgstr "Stäng"
+
+#: tickle/templates/tickle/exchange.html:38
+msgid "Exchange"
+msgstr "Överlåt"
+
+#: tickle/templates/tickle/exchange.html:42
+msgid "Invoice"
+msgstr "Faktura"
+
+#: tickle/templates/tickle/exchange.html:44
+msgid ""
+"\n"
+"                                When you transfer your ticket you're still "
+"obligated to pay the invoice.\n"
+"                            "
+msgstr ""
+"\n"
+"När du överlåter din biljett är du fortfarande skyldig att betala fakturan.\n"
+"                            "
+
+#: tickle/templates/tickle/exchange.html:48
+msgid "Discounts"
+msgstr "Rabatter"
+
+#: tickle/templates/tickle/exchange.html:50
+msgid ""
+"\n"
+"                                Discounts are personal and won't be "
+"transferred with the ticket. You are obligated to\n"
+"                                pay for any price difference that may "
+"occur.\n"
+"                            "
+msgstr ""
+"\n"
+"Rabatter är personliga och kommer inte följa med biljetten. Du är skylldig "
+"att betala mellanskilnaden som kan uppstå.                        "
+
+#: tickle/templates/tickle/exchange.html:55
+msgid "Ownership"
+msgstr "Ägare"
+
+#: tickle/templates/tickle/exchange.html:57
+msgid ""
+"\n"
+"                                The tickets owner will change.\n"
+"                                It won't be your ticket anymore and you "
+"can't collect your festival band with it.\n"
+"                            "
+msgstr ""
+"\n"
+"Biljettens ägare kommer att ändras. Det kommer inte längre vara din biljett "
+"och du kan inte hämta ut ditt festivalband med den.                        "
+
+#: tickle/templates/tickle/exchange.html:63
+msgid ""
+"By clicking <em>Exchange</em> you agree to these terms and confirm that your "
+"ticket should be transferred."
+msgstr ""
+"Genom att klicka på <em>Överlåt biljett</em> godkänner du dessa villkor och "
+"bekräftar att din biljett ska överlåtas."
+
+#: tickle/templates/tickle/exchange.html:66
+#: tickle/templates/tickle/purchase.html:148
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: tickle/templates/tickle/exchange.html:67
+msgid "Exchange ticket"
+msgstr "Överlåt biljett"
+
+#: tickle/templates/tickle/exchange_success.html:4
+#: tickle/templates/tickle/exchange_success.html:6
+msgid "Exchange completed"
+msgstr "Biljettbyte slutfört"
+
+#: tickle/templates/tickle/exchange_success.html:10
+msgid ""
+"\n"
+"            Your ticket has been transferred. The person receiving the "
+"ticket will receive it via email shortly.\n"
+"        "
+msgstr ""
+"\n"
+"            Din biljett har blivit överlåten. Personen som får biljetten "
+"kommer snart att få den via email.\n"
+"        "
 
 #: tickle/templates/tickle/purchase.html:4
 #: tickle/templates/tickle/purchase.html:6
@@ -585,10 +728,6 @@ msgstr "Varukorg"
 #: tickle/templates/tickle/purchase.html:98
 msgid "Proceed..."
 msgstr "Gå vidare..."
-
-#: tickle/templates/tickle/purchase.html:107
-msgid "Close"
-msgstr "Stäng"
 
 #: tickle/templates/tickle/purchase.html:108
 msgid "Purchase terms"
@@ -677,10 +816,6 @@ msgstr ""
 "Genom att klicka på <em>Bekräfta köp</em> godkänner du dessa villkor och "
 "bekräftar att varukorgen ovan stämmer överens med vad du vill köpa."
 
-#: tickle/templates/tickle/purchase.html:148
-msgid "Cancel"
-msgstr "Avbryt"
-
 #: tickle/templates/tickle/purchase.html:149
 msgid "Confirm purchase"
 msgstr "Bekräfta köp"
@@ -749,20 +884,20 @@ msgstr "Det är tillfäligt inte möjligt att hämta information för LiU-id:n."
 msgid "Please enter your personal information yourself."
 msgstr "Vänligen fyll i dina personuppgifter själv."
 
-#: tickle/views/products.py:40
+#: tickle/views/products.py:42
 msgid "Product not available."
 msgstr "Produkten är inte tillgänglig."
 
-#: tickle/views/products.py:49
+#: tickle/views/products.py:51
 msgid "Invalid quantity specified."
 msgstr "Ogiltigt antal angivet."
 
-#: tickle/views/products.py:62
+#: tickle/views/products.py:64
 #, python-format
 msgid "You can only buy one %s product."
 msgstr "Du kan bara köpa ett exemplar av produkten %s."
 
-#: tickle/views/products.py:101
+#: tickle/views/products.py:103
 msgid ""
 "Add at least one product to your shopping cart before you try to make a "
 "purchase."

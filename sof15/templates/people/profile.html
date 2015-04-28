@@ -75,7 +75,7 @@
         </div>
 
         <!-- Tickets and products. -->
-        {% if person.purchase_set.exists %}
+        {% if person.holdings.purchased.exists %}
             <div class="col-lg-4">
                 <h2>Biljetter</h2>
                 <p>
@@ -83,39 +83,39 @@
                     tillsammans med LiU-kort eller fotolegitimation.
                 </p>
 
-                {% for purchase in person.purchase_set.all %}
-                    {% for holding in purchase.holdings.all %}
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">{{  holding.product.public_name }}</h3>
-                            </div>
+                {% for holding in person.holdings.purchased %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{  holding.product.public_name }}</h3>
+                        </div>
 
-                            <div class="panel-body">
-                                <dl>
-                                    {% if holding.product.ticket_type %}
-                                        <dt>Medger entré till</dt>
-                                        <dd>
-                                            <ul class="list-unstyled">
-                                                {% for event in holding.product.ticket_type.events.all %}
-                                                    <li>{{ event }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                        </dd>
-                                    {% endif %}
-
-                                    <dt>Information</dt>
+                        <div class="panel-body">
+                            <dl>
+                                {% if holding.product.ticket_type %}
+                                    <dt>Medger entré till</dt>
                                     <dd>
                                         <ul class="list-unstyled">
-                                            {% if holding.product.quantitative %}
-                                                <li>{% trans 'Quantity' %}: {{ holding.quantity }}</li>
-                                            {% endif %}
-                                            <li>{% trans 'Price' %}: {{ holding.discounted_price }}</li>
+                                            {% for event in holding.product.ticket_type.events.all %}
+                                                <li>{{ event }}</li>
+                                            {% endfor %}
                                         </ul>
                                     </dd>
-                                </dl>
-                            </div>
+                                {% endif %}
+
+                                <dt>Information</dt>
+                                <dd>
+                                    <ul class="list-unstyled">
+                                        {% if holding.product.quantitative %}
+                                            <li>{% trans 'Quantity' %}: {{ holding.quantity }}</li>
+                                        {% endif %}
+                                        <li>{% trans 'Price' %}: {{ holding.discounted_price }}</li>
+                                    </ul>
+                                </dd>
+                            </dl>
+
+                            <a href="{% url 'tickle:exchange_ticket' holding.pk %}" class="btn btn-sm btn-primary">Överlåt biljett</a>
                         </div>
-                    {% endfor %}
+                    </div>
 
                     {% comment %}
                     <h3>Kostnad</h3>

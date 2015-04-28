@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-23 17:47+0200\n"
+"POT-Creation-Date: 2015-04-28 14:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -151,11 +151,11 @@ msgstr ""
 "\">registrering</a>.\n"
 "            "
 
-#: sof15/templates/people/profile.html:111
+#: sof15/templates/people/profile.html:110
 msgid "Quantity"
 msgstr "Kvantitet"
 
-#: sof15/templates/people/profile.html:113
+#: sof15/templates/people/profile.html:112
 msgid "Price"
 msgstr "Pris"
 
