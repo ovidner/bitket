@@ -116,7 +116,7 @@ AUTHENTICATION_BACKENDS = (
     # Adding the standard ModelBackend here potentially means a huge security risk, don't do it!
     'tickle.auth.backends.TickleBackend',  # Handles email auth
     'tickle.auth.backends.LiUStudentLDAPBackend',
-    'tickle.auth.backends.LiUEmployeeLDAPBackend',
+    # 'tickle.auth.backends.LiUEmployeeLDAPBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
 
