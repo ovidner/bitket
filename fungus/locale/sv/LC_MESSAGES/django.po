@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-23 17:47+0200\n"
+"POT-Creation-Date: 2015-04-28 02:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,27 +51,31 @@ msgstr "Överbemannat"
 msgid "person"
 msgstr "person"
 
-#: fungus/admin.py:226
+#: fungus/admin.py:207 fungus/models.py:223 fungus/models.py:270
+msgid "shift"
+msgstr "pass"
+
+#: fungus/admin.py:246
 msgid "functionary registered"
 msgstr "registrerad som funktionär"
 
-#: fungus/admin.py:232 fungus/models.py:46
+#: fungus/admin.py:252 fungus/models.py:46
 msgid "signed contract"
 msgstr "godkänt kontrakt"
 
-#: fungus/admin.py:238 fungus/models.py:47
+#: fungus/admin.py:258 fungus/models.py:47
 msgid "attended info meeting"
 msgstr "deltagit på infomöte"
 
-#: fungus/admin.py:244 fungus/models.py:48
+#: fungus/admin.py:264 fungus/models.py:48
 msgid "pledge payed"
 msgstr "pant betalad"
 
-#: fungus/admin.py:250 fungus/models.py:49
+#: fungus/admin.py:270 fungus/models.py:49
 msgid "pledge returned"
 msgstr "pant återbetalad"
 
-#: fungus/admin.py:256 fungus/models.py:70 fungus/models.py:224
+#: fungus/admin.py:276 fungus/models.py:70 fungus/models.py:224
 msgid "shifts"
 msgstr "pass"
 
@@ -221,10 +225,6 @@ msgid ""
 "public users."
 msgstr ""
 
-#: fungus/models.py:223 fungus/models.py:270
-msgid "shift"
-msgstr "pass"
-
 #: fungus/models.py:231 fungus/models.py:232
 msgid "Critical number must be less than or equal to alarming."
 msgstr ""
@@ -263,9 +263,10 @@ msgid ""
 "Select the shift(s) that you will work. Please note that this registration "
 "is binding."
 msgstr ""
-"Markera det eller de pass du tänker arbeta. Vänligen notera att denna anmälan är bindande."
+"Markera det eller de pass du tänker arbeta. Vänligen notera att denna "
+"anmälan är bindande."
 
-#: fungus/templates/fungus/register_functionary.html:51
+#: fungus/templates/fungus/register_functionary.html:50
 msgid ""
 "\n"
 "                It seems you're already registered as a functionary. Please "
