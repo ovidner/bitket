@@ -285,9 +285,14 @@ class AddProductToShoppingCartForm(forms.ModelForm):
         fields = ('people', 'product', 'quantity', '_transferable')
 
     def save(self, commit=True):
+        product = self.cleaned_data['product']
+        quantity = self.cleaned_data['quantity']
+        _transferable = self.cleaned_data['_transferable']
+
         for person in self.cleaned_data['people']:
-            # We just need to set the shopping cart manually
-            instance = super(AddProductToShoppingCartForm, self).save(commit=False)
-            instance.person = person
-            instance.shopping_cart = person.shopping_cart
-            instance.save()
+            Holding.objects.create(
+                person=person,
+                product=product,
+                shopping_cart=person.shopping_cart,
+                quantity=quantity,
+                _transferable=_transferable)
