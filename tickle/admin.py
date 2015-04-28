@@ -8,15 +8,14 @@ from django.db.models import Count
 from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext_lazy as _
 from django.template.response import TemplateResponse
+from django.http import HttpResponseRedirect
 
-from gfklookupwidget.widgets import GfkLookupWidget
 from guardian.models import UserObjectPermission, GroupObjectPermission
-from guardian.admin import UserObjectPermissionsForm
 from suit.admin import SortableTabularInline, SortableModelAdmin
 
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, \
-    TickleUser, StudentUnionDiscount, ProductDiscount, Discount, HoldingDiscount
-from tickle.utils.kobra import Unauthorized
+    TickleUser, StudentUnionDiscount, ProductDiscount, Discount, HoldingDiscount, PersonalDiscount
+from tickle.views.admin import AddProductToShoppingCartAdminView
 
 
 class PurchaseInline(admin.StackedInline):
@@ -178,9 +177,21 @@ class PersonAdmin(admin.ModelAdmin):
     
     search_fields = ('first_name', 'last_name', 'email', 'liu_id', 'notes')
 
-    actions = ['generate_email_recipient_list_action', 'fill_kobra_data_action']
+    actions = ['generate_email_recipient_list_action', 'fill_kobra_data_action', 'add_product_to_shopping_cart_action']
 
     list_max_show_all = 2000
+
+    def get_urls(self):
+        from django.conf.urls import url
+        urls = super(PersonAdmin, self).get_urls()
+
+        info = self.model._meta.app_label, self.model._meta.model_name
+
+        custom_urls = [
+            url(r'^add-product/$', AddProductToShoppingCartAdminView.as_view(), name='%s_%s_add_product' % info),
+        ]
+
+        return custom_urls + urls  # Add our own first so the pk filter won't catch them
 
     def get_changelist(self, request, **kwargs):
         return PersonChangeList
@@ -212,6 +223,13 @@ class PersonAdmin(admin.ModelAdmin):
         }
         return TemplateResponse(request, 'tickle/admin/person/email_recipient_list.html', context)
     generate_email_recipient_list_action.short_description = _('Generate email recipient list')
+
+    def add_product_to_shopping_cart_action(self, request, queryset):
+        selected = queryset.values_list('pk', flat=True)
+        # selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        return HttpResponseRedirect('add-product/?ids=%s' % ",".join(map(str, selected)))
+
+    add_product_to_shopping_cart_action.short_description = _('Add product to shopping cart...')
 
 
 @admin.register(Permission)
