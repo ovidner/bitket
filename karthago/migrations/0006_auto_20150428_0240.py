@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tickle', '0011_auto_20150428_0240'),
+        ('tickle', '0011_auto_20150428_0259'),
         ('karthago', '0005_entry_approved'),
     ]
 
