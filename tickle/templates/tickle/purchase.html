@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n crispy_forms_tags tickle_hacks %}
+{% load i18n crispy_forms_tags tickle_hacks markdown_deux_tags %}
 
 {% block title %}{{ block.super }} – {% trans 'Tickets and gadgets' %}{% endblock %}
 
@@ -28,7 +28,7 @@
                         </div>
                         {% if product.description %}
                             <div class="panel-body">
-                                <p>{{ product.description }}</p>
+                                <p>{{ product.description|markdown }}</p>
                             </div>
                         {% endif %}
 
@@ -62,7 +62,7 @@
                         </div>
                         {% if product.description %}
                             <div class="panel-body">
-                                <p>{{ product.description }}</p>
+                                <p>{{ product.description|markdown }}</p>
                             </div>
                         {% endif %}
 
