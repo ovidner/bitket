@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-23 17:47+0200\n"
+"POT-Creation-Date: 2015-04-28 02:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,150 +26,150 @@ msgstr "För många deltagare för den här bidragstypen."
 msgid "Free build must have specified, valid dimensions."
 msgstr "Fribyggen måste ha specifika mått."
 
-#: karthago/models.py:9 karthago/models.py:27 karthago/models.py:75
-#: karthago/models.py:100 karthago/models.py:107
+#: karthago/models.py:13 karthago/models.py:31 karthago/models.py:79
+#: karthago/models.py:104 karthago/models.py:111
 msgid "name"
 msgstr "namn"
 
-#: karthago/models.py:10 karthago/models.py:62
+#: karthago/models.py:14 karthago/models.py:66
 msgid "unit"
 msgstr "enhet"
 
-#: karthago/models.py:13 karthago/models.py:40 karthago/models.py:59
+#: karthago/models.py:17 karthago/models.py:44 karthago/models.py:63
 msgid "material"
 msgstr "material"
 
-#: karthago/models.py:14
+#: karthago/models.py:18
 msgid "materials"
 msgstr "material"
 
-#: karthago/models.py:30
+#: karthago/models.py:34
 msgid "material role"
 msgstr "materialroll"
 
-#: karthago/models.py:31
+#: karthago/models.py:35
 msgid "material roles"
 msgstr "materialroller"
 
-#: karthago/models.py:39 karthago/models.py:58 karthago/models.py:133
-#: karthago/models.py:145
+#: karthago/models.py:43 karthago/models.py:62 karthago/models.py:137
+#: karthago/models.py:149
 msgid "entry"
 msgstr "bidrag"
 
-#: karthago/models.py:42 karthago/models.py:61
+#: karthago/models.py:46 karthago/models.py:65
 msgid "amount"
 msgstr "mängd"
 
-#: karthago/models.py:43 karthago/models.py:63
+#: karthago/models.py:47 karthago/models.py:67
 msgid "role"
 msgstr "användningsområde"
 
-#: karthago/models.py:48
+#: karthago/models.py:52
 msgid "entry material"
 msgstr "bidragsmaterial"
 
-#: karthago/models.py:49
+#: karthago/models.py:53
 msgid "entry materials"
 msgstr "bidragsmaterial"
 
-#: karthago/models.py:66
+#: karthago/models.py:70
 msgid "entry custom material"
 msgstr "anpassat bidragsmaterial"
 
-#: karthago/models.py:67
+#: karthago/models.py:71
 msgid "entry custom materials"
 msgstr "anpassade bidragsmaterial"
 
-#: karthago/models.py:76 karthago/models.py:121
+#: karthago/models.py:80 karthago/models.py:125
 msgid "description"
 msgstr "beskrivning"
 
-#: karthago/models.py:77
+#: karthago/models.py:81
 msgid "max members"
 msgstr "maximalt antal deltagare"
 
-#: karthago/models.py:82 karthago/models.py:94
+#: karthago/models.py:86 karthago/models.py:98
 msgid "entry type"
 msgstr "bidragstyp"
 
-#: karthago/models.py:83
+#: karthago/models.py:87
 msgid "entry types"
 msgstr "bidragstyper"
 
-#: karthago/models.py:91
+#: karthago/models.py:95
 msgid "constellation"
 msgstr "förening/sällskap"
 
-#: karthago/models.py:92
+#: karthago/models.py:96
 msgid "E.g. <em>MPiRE</em>, <em>Grabbarna Grus</em>"
 msgstr ""
 "Till exempel <em>3Cant</em>, <em>Navitas</em> eller <em>Grabbarna Grus</em>"
 
-#: karthago/models.py:93
+#: karthago/models.py:97
 msgid "entry name"
 msgstr "bidragsnamn"
 
-#: karthago/models.py:95
+#: karthago/models.py:99
 msgid "number of members"
 msgstr "antal deltagare"
 
-#: karthago/models.py:97
+#: karthago/models.py:101
 msgid "approved"
 msgstr "godkänt"
 
-#: karthago/models.py:101 karthago/models.py:108
+#: karthago/models.py:105 karthago/models.py:112
 msgid "address"
 msgstr "adress"
 
-#: karthago/models.py:102 karthago/models.py:109
+#: karthago/models.py:106 karthago/models.py:113
 msgid "postcode"
 msgstr "postnummer"
 
-#: karthago/models.py:103 karthago/models.py:110
+#: karthago/models.py:107 karthago/models.py:114
 msgid "city"
 msgstr "stad"
 
-#: karthago/models.py:104 karthago/models.py:111
+#: karthago/models.py:108 karthago/models.py:115
 msgid "phone"
 msgstr "telefonnummer"
 
-#: karthago/models.py:105 karthago/models.py:112
+#: karthago/models.py:109 karthago/models.py:116
 msgid "email"
 msgstr "e-postadress"
 
-#: karthago/models.py:114
+#: karthago/models.py:118
 msgid "width"
 msgstr "bredd"
 
-#: karthago/models.py:115
+#: karthago/models.py:119
 msgid "Width in meters, in direction of movement."
 msgstr "Bredd i meter, i färdriktningen."
 
-#: karthago/models.py:116
+#: karthago/models.py:120
 msgid "length"
 msgstr "längd"
 
-#: karthago/models.py:117
+#: karthago/models.py:121
 msgid "Length in meters, in direction of movement."
 msgstr "Längd i meter, i färdriktningen."
 
-#: karthago/models.py:118
+#: karthago/models.py:122
 msgid "height"
 msgstr "höjd"
 
-#: karthago/models.py:119
+#: karthago/models.py:123
 msgid "Height in meters."
 msgstr "Höjd i meter."
 
-#: karthago/models.py:121
+#: karthago/models.py:125
 msgid "Describe your idea! Maximum 500 words."
 msgstr "Hur ska bidraget se ut? Beskriv er idé! Högst 500 ord."
 
-#: karthago/models.py:122
+#: karthago/models.py:126
 msgid "spex description"
 msgstr "spexbeskrivning"
 
-#: karthago/models.py:123
+#: karthago/models.py:127
 msgid ""
 "Describe what will happen in, on and around your carriage! Music, theatre or "
 "anything else amusing? Maximum 500 words."
@@ -177,18 +177,34 @@ msgstr ""
 "Vad kommer att hända på/runt ert bidrag? Till exempel dans, sång, teater "
 "eller annat kul! Högst 500 ord."
 
-#: karthago/models.py:125
+#: karthago/models.py:129
 msgid "other information"
 msgstr "annan information"
 
-#: karthago/models.py:126
+#: karthago/models.py:130
 msgid "Want us to know something else?"
 msgstr "Något mer vi borde veta?"
 
-#: karthago/models.py:134
+#: karthago/models.py:138
 msgid "entries"
 msgstr "bidrag"
 
-#: karthago/models.py:144
+#: karthago/models.py:148
 msgid "person"
 msgstr "person"
+
+#: karthago/models.py:154
+msgid "entry membership"
+msgstr "bidragsmedlemskap"
+
+#: karthago/models.py:155
+msgid "entry memberships"
+msgstr "bidragsmedlemskap"
+
+#: karthago/models.py:164
+msgid "Kårtege member discount"
+msgstr "Kårtegedeltagarrabatt"
+
+#: karthago/models.py:165
+msgid "Kårtege member discounts"
+msgstr "Kårtegedeltagarrabatter"

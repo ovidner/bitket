@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
+
+from tickle.models import BaseDiscount
 
 
 @python_2_unicode_compatible
@@ -137,3 +141,31 @@ class Entry(models.Model):
 
     def __str__(self):
         return self.constellation
+
+
+@python_2_unicode_compatible
+class EntryMembership(models.Model):
+    person = models.ForeignKey('tickle.Person', related_name='kartege_memberships', verbose_name=_('person'))
+    entry = models.ForeignKey('Entry', related_name='memberships', verbose_name=_('entry'))
+
+    class Meta:
+        unique_together = (('person', 'entry'),)
+
+        verbose_name = _('entry membership')
+        verbose_name_plural = _('entry memberships')
+
+    def __str__(self):
+        return '{0}: {1}'.format(self.person, self.entry)
+
+
+@python_2_unicode_compatible
+class KartegeMemberDiscount(BaseDiscount):
+    class Meta:
+        verbose_name = _('Kårtege member discount')
+        verbose_name_plural = _('Kårtege member discounts')
+
+    def __str__(self):
+        return self.readable_discount()
+
+    def eligible(self, person):
+        return EntryMembership.objects.filter(person=person, entry__approved=True).exists()
