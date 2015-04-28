@@ -52,7 +52,7 @@ class Person(models.Model):
     first_name = models.CharField(max_length=256, verbose_name=_('first name'))
     last_name = models.CharField(max_length=256, verbose_name=_('last name'))
 
-    birth_date = models.DateField(null=True, blank=True)
+    birth_date = models.DateField(null=True, blank=True, verbose_name=_('birth date'))
     pid_code = models.CharField(
         max_length=4,
         null=True,  # This is needed for the uniqueness check. (NULL != NULL but '' == '')

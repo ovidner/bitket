@@ -267,3 +267,8 @@ class DiscountAdmin(admin.ModelAdmin):
 @admin.register(StudentUnionDiscount)
 class StudentUnionDiscountAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(PersonalDiscount)
+class PersonalDiscountAdmin(admin.ModelAdmin):
+    pass

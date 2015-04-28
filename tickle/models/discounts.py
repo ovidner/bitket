@@ -98,12 +98,13 @@ class Discount(models.Model):
 
     class Meta:
         unique_together = (('content_type', 'object_id'),)
+        ordering = ('content_type', 'object_id')
 
         verbose_name = _('discount')
         verbose_name_plural = _('discounts')
 
     def __str__(self):
-        return '{0}: {1}'.format(self.object._meta.verbose_name, self.object.__str__())
+        return '{0}: {1}'.format(self.object._meta.verbose_name, self.object.__unicode__())
 
     def eligible(self, person):
         return self.object.eligible(person)
@@ -179,6 +180,7 @@ class BaseDiscount(models.Model):
         return self._meta.verbose_name
 
 
+@python_2_unicode_compatible
 class StudentUnionDiscount(BaseDiscount):
     student_union = models.ForeignKey('StudentUnion', related_name='discounts', verbose_name=_('student union'))
 
@@ -194,6 +196,25 @@ class StudentUnionDiscount(BaseDiscount):
 
     def description(self):
         return '{0}, {1}'.format(self._meta.verbose_name, self.student_union.name)
+
+
+@python_2_unicode_compatible
+class PersonalDiscount(BaseDiscount):
+    people = models.ManyToManyField('tickle.Person', related_name='personal_discounts', verbose_name=_('people'))
+    text = models.CharField(max_length=256, verbose_name=_('text'))
+
+    class Meta:
+        verbose_name = _('personal discount')
+        verbose_name_plural = _('personal discounts')
+
+    def __str__(self):
+        return '{0} ({1}), {2}'.format(self.text, self.people.count(), self.readable_discount())
+
+    def eligible(self, person):
+        return self.people.filter(pk=person.pk).exists()
+
+    def description(self):
+        return self.text
 
 
 class DiscountTeaser(models.Model):
