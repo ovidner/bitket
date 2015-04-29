@@ -203,12 +203,31 @@ class FunctionaryInline(admin.StackedInline):
     max_num = 1
 
 
+class ShiftListFilter(admin.SimpleListFilter):
+    title = _('shift')
+
+    parameter_name = 'shift'
+
+    def lookups(self, request, model_admin):
+        return [(i.pk, i) for i in Shift.objects.all()]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            shift = Shift.objects.get(pk=self.value())
+            return queryset.filter(shift_registrations__shift=shift)
+        else:
+            return queryset
+
+
 @admin.register(Worker)
 class WorkerAdmin(PersonAdmin):
+    change_list_template = 'admin/tickle/person/change_list.html'
     inlines = (FunctionaryInline, ShiftRegistrationInline, TickleUserInline, PurchaseInline,)
     list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'registration_count',
                     'functionary_registered', 'functionary_signed_contract', 'functionary_attended_info_meeting',
-                    'functionary_pledge_payed', 'functionary_pledge_returned')
+                    'functionary_pledge_payed', 'functionary_pledge_returned', 'special_nutrition_render')
+
+    list_filter = ('special_nutrition', ShiftListFilter)
 
     def has_add_permission(self, request):
         # We should not add people from here.
