@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.hashers import is_password_usable
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
@@ -197,6 +198,17 @@ class Person(models.Model):
         self.birth_date, self.pid_code, self.pid_coordination = SEPersonalIdentityNumberField().clean(value)
 
     pid = property(_get_pid, _set_pid)
+
+    def get_or_create_user(self):
+        """
+        Gets or creates corresponding TickleUser object. Also generates and sends a password if needed.
+        """
+
+        user, created = TickleUser.objects.get_or_create(person=self)
+        if (created or not is_password_usable(user.password)) and not self.liu_id:
+            user.generate_and_send_password()
+            user.save()
+        return user, created
 
     def create_user_and_login(self, request):
         # Create user
