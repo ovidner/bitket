@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 14:52+0200\n"
+"POT-Creation-Date: 2015-04-29 20:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -145,7 +145,7 @@ msgstr "rabattberättigande"
 msgid "discount eligibilities"
 msgstr "rabattberättiganden"
 
-#: tickle/models/discounts.py:37 tickle/models/products.py:169
+#: tickle/models/discounts.py:37 tickle/models/products.py:174
 msgid "holding"
 msgstr "ägandeskap"
 
@@ -155,7 +155,7 @@ msgid "discount"
 msgstr "rabatt"
 
 #: tickle/models/discounts.py:40 tickle/models/discounts.py:67
-#: tickle/models/products.py:90
+#: tickle/models/products.py:92
 msgid "order"
 msgstr "ordning"
 
@@ -167,8 +167,8 @@ msgstr "ägandeskapsrabatt"
 msgid "holding discounts"
 msgstr "ägandeskapsrabatt"
 
-#: tickle/models/discounts.py:64 tickle/models/products.py:97
-#: tickle/models/products.py:114 tickle/models/products.py:155
+#: tickle/models/discounts.py:64 tickle/models/products.py:99
+#: tickle/models/products.py:119 tickle/models/products.py:160
 msgid "product"
 msgstr "produkt"
 
@@ -327,8 +327,8 @@ msgid "Can view person"
 msgstr "Kan visa person"
 
 #: tickle/models/people.py:108 tickle/models/people.py:266
-#: tickle/models/products.py:154 tickle/models/products.py:249
-#: tickle/models/products.py:279
+#: tickle/models/products.py:159 tickle/models/products.py:254
+#: tickle/models/products.py:288
 msgid "person"
 msgstr "person"
 
@@ -360,7 +360,7 @@ msgstr "kategori"
 msgid "categories"
 msgstr "kategorier"
 
-#: tickle/models/products.py:50 tickle/models/products.py:115
+#: tickle/models/products.py:50 tickle/models/products.py:120
 msgid "events"
 msgstr "evenemang"
 
@@ -388,85 +388,93 @@ msgstr "Kan man äga fler än en (1) av denna produkt?"
 msgid "published"
 msgstr "publicerad"
 
-#: tickle/models/products.py:87 tickle/models/products.py:161
+#: tickle/models/products.py:87
+msgid "quota"
+msgstr "max antal"
+
+#: tickle/models/products.py:88
+msgid "0 means there is no quota limit."
+msgstr "0 innebär att det inte finns någon maxgräns."
+
+#: tickle/models/products.py:89 tickle/models/products.py:166
 msgid "transferable"
 msgstr "överlåtningsbar"
 
-#: tickle/models/products.py:88
+#: tickle/models/products.py:90
 msgid "If people should be able to transfer this product to other people."
 msgstr ""
 
-#: tickle/models/products.py:98
+#: tickle/models/products.py:100
 msgid "products"
 msgstr "produkter"
 
-#: tickle/models/products.py:118
+#: tickle/models/products.py:123
 msgid "ticket type"
 msgstr "biljettyp"
 
-#: tickle/models/products.py:119
+#: tickle/models/products.py:124
 msgid "ticket types"
 msgstr "biljettyper"
 
-#: tickle/models/products.py:157 tickle/models/products.py:287
+#: tickle/models/products.py:162 tickle/models/products.py:296
 msgid "purchase"
 msgstr "köp"
 
-#: tickle/models/products.py:159 tickle/models/products.py:252
+#: tickle/models/products.py:164 tickle/models/products.py:257
 msgid "shopping cart"
 msgstr "varukorg"
 
-#: tickle/models/products.py:162
+#: tickle/models/products.py:167
 msgid ""
 "If people should be able to transfer this product to other people. Note: "
 "this will override the product setting."
 msgstr ""
 
-#: tickle/models/products.py:164
+#: tickle/models/products.py:169
 msgid "quantity"
 msgstr "kvantitet"
 
-#: tickle/models/products.py:170 tickle/models/products.py:236
+#: tickle/models/products.py:175 tickle/models/products.py:241
 msgid "holdings"
 msgstr "ägandeskap"
 
-#: tickle/models/products.py:177
+#: tickle/models/products.py:182
 msgid "Quantity must be exactly 1 for un-quantitative products."
 msgstr ""
 
-#: tickle/models/products.py:183
+#: tickle/models/products.py:188
 msgid "Can't hold both a shopping cart and a purchase at the same time."
 msgstr ""
 
-#: tickle/models/products.py:185
+#: tickle/models/products.py:190
 msgid "Holding must have either a shopping cart or a purchase."
 msgstr ""
 
-#: tickle/models/products.py:237
+#: tickle/models/products.py:242
 msgid "delivered"
 msgstr "levererad"
 
-#: tickle/models/products.py:240
+#: tickle/models/products.py:245
 msgid "delivery"
 msgstr "leverans"
 
-#: tickle/models/products.py:241
+#: tickle/models/products.py:246
 msgid "deliveries"
 msgstr "leveranser"
 
-#: tickle/models/products.py:253
+#: tickle/models/products.py:258
 msgid "shopping carts"
 msgstr "varukorgar"
 
-#: tickle/models/products.py:280
+#: tickle/models/products.py:289
 msgid "purchased"
 msgstr "köpt"
 
-#: tickle/models/products.py:282
+#: tickle/models/products.py:291
 msgid "valid"
 msgstr "giltigt"
 
-#: tickle/models/products.py:288
+#: tickle/models/products.py:297
 msgid "purchases"
 msgstr "köp"
 
@@ -888,17 +896,21 @@ msgstr "Vänligen fyll i dina personuppgifter själv."
 msgid "Product not available."
 msgstr "Produkten är inte tillgänglig."
 
-#: tickle/views/products.py:51
+#: tickle/views/products.py:46 tickle/views/products.py:108
+#, python-format
+msgid "Sorry but %s is out of stock."
+msgstr "Tyvärr är %s slutsålda."
+
+#: tickle/views/products.py:55
 msgid "Invalid quantity specified."
 msgstr "Ogiltigt antal angivet."
 
-#: tickle/views/products.py:64
+#: tickle/views/products.py:68
 #, python-format
 msgid "You can only buy one %s product."
 msgstr "Du kan bara köpa ett exemplar av produkten %s."
 
-#: tickle/views/products.py:103
-msgid ""
-"Add at least one product to your shopping cart before you try to make a "
-"purchase."
-msgstr "Lägg till minst en produkt i din kundvagn innan du gör ett köp."
+#~ msgid ""
+#~ "Add at least one product to your shopping cart before you try to make a "
+#~ "purchase."
+#~ msgstr "Lägg till minst en produkt i din kundvagn innan du gör ett köp."
