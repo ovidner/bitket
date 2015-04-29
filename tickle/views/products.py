@@ -40,6 +40,10 @@ def add_to_shopping_cart(request, pk):
             messages.warning(request, _('Product not available.'))
             return redirect('tickle:purchase')
 
+        if product.has_reached_quota():
+            messages.warning(request, _('Sorry but %s is out of stock.') % product)
+            return redirect('tickle:purchase')
+
         person = request.user.person
 
         if product.quantitative:
@@ -99,9 +103,13 @@ def complete_purchase(request):
 
         if shopping_cart.holdings.count() < 1:
             messages.warning(request, _(u'Add at least one product to your shopping cart before you try to make a purchase.'))
+
+        try:
+            shopping_cart.purchase()
+        except Exception as e:
+            messages.warning(request, _('Sorry but %s is out of stock.') % e.args)
             return redirect('tickle:purchase')
 
-        shopping_cart.purchase()
         return redirect('tickle:purchase_completed_success')
 
     raise Http404()
