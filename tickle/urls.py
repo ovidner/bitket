@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
 from tickle.views.products import PurchaseView, ShoppingCartView, ShoppingCartDeleteView, add_to_shopping_cart, \
-    complete_purchase, ExchangeView
+    complete_purchase
 
 urlpatterns = patterns(
     '',
@@ -14,8 +14,5 @@ urlpatterns = patterns(
 
     url(r'^shoppingcart/add/(?P<pk>\d+)$', add_to_shopping_cart, name='shopping_cart_add'),
     url(r'^shoppingcart/remove/(?P<pk>\d+)$', ShoppingCartDeleteView.as_view(), name='shopping_cart_remove'),
-    url(r'^purchase/exchange/(?P<pk>\d+)$', ExchangeView.as_view(), name='exchange_ticket'),
-    url(r'^purchase/exchange/success$', TemplateView.as_view(template_name='tickle/exchange_success.html'),
-        name='exchange_ticket_success'),
 
 )

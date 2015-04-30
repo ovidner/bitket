@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 14:52+0200\n"
+"POT-Creation-Date: 2015-04-28 02:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -194,21 +194,17 @@ msgid "person"
 msgstr "person"
 
 #: karthago/models.py:154
-#, fuzzy
-#| msgid "entry material"
 msgid "entry membership"
-msgstr "bidragsmaterial"
+msgstr "bidragsmedlemskap"
 
 #: karthago/models.py:155
-#, fuzzy
-#| msgid "entry materials"
 msgid "entry memberships"
-msgstr "bidragsmaterial"
+msgstr "bidragsmedlemskap"
 
 #: karthago/models.py:164
 msgid "Kårtege member discount"
-msgstr ""
+msgstr "Kårtegedeltagarrabatt"
 
 #: karthago/models.py:165
 msgid "Kårtege member discounts"
-msgstr ""
+msgstr "Kårtegedeltagarrabatter"
