@@ -103,6 +103,7 @@ def complete_purchase(request):
 
         if shopping_cart.holdings.count() < 1:
             messages.warning(request, _(u'Add at least one product to your shopping cart before you try to make a purchase.'))
+            return redirect('tickle:purchase')
 
         try:
             shopping_cart.purchase()
