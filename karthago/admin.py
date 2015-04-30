@@ -15,6 +15,7 @@ class EntryMembershipInline(admin.TabularInline):
     model = EntryMembership
     raw_id_fields = ('person',)
 
+
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
     inlines = (EntryMaterialInlineAdmin, EntryCustomMaterialInlineAdmin, EntryMembershipInline)

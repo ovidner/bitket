@@ -68,7 +68,7 @@ class HoldingAdmin(admin.ModelAdmin):
 
 @admin.register(TicketType)
 class TicketTypeAdmin(ProductAdmin):
-    pass
+    filter_horizontal = ('events',)
 
 
 @admin.register(Delivery)
@@ -291,4 +291,4 @@ class StudentUnionDiscountAdmin(admin.ModelAdmin):
 
 @admin.register(PersonalDiscount)
 class PersonalDiscountAdmin(admin.ModelAdmin):
-    pass
+    filter_horizontal = ('people',)
