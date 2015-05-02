@@ -33,7 +33,7 @@ class ShiftForm(forms.Form):
         elif len(data) > 1:
             data = data.order_by('start')
             for i in range(0, len(data) - 1):
-                if (data[i].start <= data[i + 1].end) and (data[i].end >= data[i + 1].start):
+                if (data[i].start < data[i + 1].end) and (data[i].end > data[i + 1].start):
                     raise forms.ValidationError(_("You have chosen two shifts that overlap."))
         return data
 
