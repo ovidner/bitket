@@ -63,7 +63,7 @@ class Person(models.Model):
     )
     pid_coordination = models.BooleanField(default=False, verbose_name=_('coordination number'), help_text=_('Designates if national identity number is a <em>samordningsnummer</em>.'))
 
-    liu_id = models.CharField(max_length=10, default='', blank=True, verbose_name=_('LiU ID'))
+    liu_id = models.CharField(max_length=10, default=None, null=True, blank=True, verbose_name=_('LiU ID'))
     liu_id_blocked = models.NullBooleanField(verbose_name=_('LiU ID blocked'))
     liu_card_magnet = models.CharField(max_length=32, blank=True, verbose_name=_('magnet/barcode card number'))
     liu_card_rfid = models.CharField(max_length=32, blank=True, verbose_name=_('RFID card number'))
@@ -115,6 +115,10 @@ class Person(models.Model):
     def clean_pid_code(self):
         # If pid_code == '' then we should actually save NULL for uniqueness check, see above.
         return self.cleaned_data['pid_code'] or None
+
+    def clean_liu_id(self):
+        # If liu_id == '' then we should actually save NULL for uniqueness check, see above.
+        return self.cleaned_data['liu_id'] or None
 
     def get_kobra_data(self, fail_silently=False):
         """
