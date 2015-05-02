@@ -1,6 +1,6 @@
 dj-database-url==0.3.0
 dj-email-url==0.0.2
-Django==1.8
+Django==1.8.1
 django-auth-ldap==1.2.6
 django-cache-url==0.8.0
 django-crispy-forms==1.4.0
