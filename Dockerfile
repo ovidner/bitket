@@ -17,6 +17,7 @@ RUN apt-get update -y && apt-get install -y \
     libsasl2-dev \
     libncurses5-dev \
     libffi-dev \
+    libssl-dev \
     git \
     gettext
 
