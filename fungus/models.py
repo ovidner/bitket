@@ -79,12 +79,31 @@ class FunctionaryDiscount(BaseDiscount):
         return '{0} {1}, {2}'.format(self.shifts, _('shift/s'), self.readable_discount())
 
     def eligible(self, person):
-        if getattr(person, 'functionary', False):
-            return person.shift_registrations.count() == self.shifts
-        return False
+        return hasattr(person, 'functionary') and person.shift_registrations.count() == self.shifts
 
     def description(self):
         return '{0}, {1}'.format(self._meta.verbose_name, ungettext_lazy("%d shift", "%d shifts") % self.shifts)
+
+
+@python_2_unicode_compatible
+class FunctionaryShiftTypeDiscount(BaseDiscount):
+    shift_types = models.ManyToManyField('ShiftType', related_name='shift_type_discounts', verbose_name=_('shift types'))
+    text = models.CharField(max_length=256, verbose_name=_('text'))
+
+    class Meta:
+        ordering = ('text',)
+
+        verbose_name = _('shift type discount')
+        verbose_name_plural = _('shift type discounts')
+
+    def __str__(self):
+        return '{0}, {1}'.format(self.text, self.readable_discount())
+
+    def eligible(self, person):
+        return hasattr(person, 'functionary') and person.shift_registrations.filter(shift__shift_type__in=self.shift_types.all()).exists()
+
+    def description(self):
+        return self.text
 
 
 @python_2_unicode_compatible

@@ -8,7 +8,8 @@ from django.http import HttpResponseRedirect
 from django.db.models import Q
 
 from tickle.models import Person
-from fungus.models import ShiftType, Shift, ShiftRegistration, Functionary, Worker, FunctionaryDiscount
+from fungus.models import ShiftType, Shift, ShiftRegistration, Functionary, Worker, FunctionaryDiscount, \
+    FunctionaryShiftTypeDiscount
 from tickle.admin import PersonAdmin, TickleUserInline, PurchaseInline
 
 
@@ -277,3 +278,8 @@ class WorkerAdmin(PersonAdmin):
 @admin.register(FunctionaryDiscount)
 class FunctionaryDiscountAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(FunctionaryShiftTypeDiscount)
+class FunctionaryShiftTypeDiscountAdmin(admin.ModelAdmin):
+    filter_horizontal = ('shift_types',)
