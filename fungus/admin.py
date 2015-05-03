@@ -232,10 +232,6 @@ class WorkerAdmin(PersonAdmin):
 
     list_filter = ('special_nutrition', ShiftListFilter)
 
-    def has_add_permission(self, request):
-        # We should not add people from here.
-        return False
-
     def get_queryset(self, request):
         """
         Returns the original queryset but filters out only registered workers and people with shift registrations
