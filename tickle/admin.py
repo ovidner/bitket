@@ -175,7 +175,7 @@ class PersonAdmin(admin.ModelAdmin):
 
     filter_horizontal = ('special_nutrition',)
     
-    search_fields = ('first_name', 'last_name', 'email', 'liu_id', 'notes')
+    search_fields = ('first_name', 'last_name', 'email', 'liu_id', 'notes', 'pid_code')
 
     actions = ['generate_email_recipient_list_action',
                'fill_kobra_data_action',
