@@ -22,6 +22,8 @@ class ShiftRegistrationInline(admin.TabularInline):
     model = ShiftRegistration
     extra = 0
 
+    raw_id_fields = ('person',)
+
 
 class ResponsibleListFilter(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
