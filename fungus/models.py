@@ -100,7 +100,7 @@ class FunctionaryShiftTypeDiscount(BaseDiscount):
         return '{0}, {1}'.format(self.text, self.readable_discount())
 
     def eligible(self, person):
-        return hasattr(person, 'functionary') and person.shift_registrations.filter(shift__shift_type__in=self.shift_types.all()).exists()
+        return person.shift_registrations.filter(shift__shift_type__in=self.shift_types.all()).exists()
 
     def description(self):
         return self.text
