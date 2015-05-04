@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import *
+from tickle.admin import PersonAdmin
 
 
 class EntryMaterialInlineAdmin(admin.TabularInline):
@@ -30,7 +31,14 @@ class MaterialAdmin(admin.ModelAdmin):
 
 
 @admin.register(KartegeMemberDiscount)
-class KartegeMemberDiscount(admin.ModelAdmin):
+class KartegeMemberDiscountAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(KartegeMember)
+class KartegeMemberAdmin(PersonAdmin):
+    def get_queryset(self, request):
+        """
+        Returns the original queryset but filters out only registered workers and people with shift registrations
+        """
+        return super(KartegeMemberAdmin, self).get_queryset(request).kartege_members()
