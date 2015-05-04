@@ -27,7 +27,7 @@ class Invoice(models.Model):
         OBLITERATED = 'o'
         LATE = 'L'
 
-    invoice_number = models.IntegerField(unique=True, verbose_name='Fakturanummer', null=True)
+    invoice_number = models.IntegerField(unique=True, verbose_name='Fakturanummer', null=True, default=None)
     customer_name = models.CharField(max_length=255, verbose_name='Namn', default='')
     customer_organization = models.CharField(max_length=255, default='', verbose_name='Förening')
     customer_pid = models.CharField(max_length=10, verbose_name='Personnummer')
