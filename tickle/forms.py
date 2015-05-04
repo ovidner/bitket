@@ -13,7 +13,7 @@ from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div
 from crispy_forms.bootstrap import InlineCheckboxes
 
-from tickle.models import Person, Product, Holding
+from tickle.models import Person, Product, Holding, ShoppingCart
 from tickle.fields import SEPersonalIdentityNumberField, LiUIDField
 
 
@@ -290,9 +290,12 @@ class AddProductToShoppingCartForm(forms.ModelForm):
         _transferable = self.cleaned_data['_transferable']
 
         for person in self.cleaned_data['people']:
-            Holding.objects.create(
+            shopping_cart, shopping_cart_created = ShoppingCart.objects.get_or_create(person=person)
+
+            Holding.objects.get_or_create(
                 person=person,
                 product=product,
-                shopping_cart=person.shopping_cart,
-                quantity=quantity,
-                _transferable=_transferable)
+                defaults={'shopping_cart': shopping_cart,
+                          'quantity': quantity,
+                          '_transferable': _transferable}
+            )
