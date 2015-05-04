@@ -1,4 +1,8 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
+from django.db.models import Count
 
 from .models import *
 from tickle.admin import PersonAdmin
@@ -20,9 +24,17 @@ class EntryMembershipInline(admin.TabularInline):
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
     inlines = (EntryMaterialInlineAdmin, EntryCustomMaterialInlineAdmin, EntryMembershipInline)
-    list_display = ('constellation', 'name', 'entry_type', 'approved', 'members')
+    list_display = ('constellation', 'name', 'entry_type', 'approved', 'members', 'memberships_count')
     list_editable = ('approved',)
     list_display_links = ('constellation', 'name')
+
+    def get_queryset(self, request):
+        return super(EntryAdmin, self).get_queryset(request).annotate(Count('memberships'))
+
+    def memberships_count(self, obj):
+        return obj.memberships__count
+
+    memberships_count.short_description = _('registered members')
 
 
 @admin.register(Material)
