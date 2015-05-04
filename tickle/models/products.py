@@ -186,8 +186,6 @@ class Holding(models.Model):
         purchase = getattr(self, 'purchase')
         if shopping_cart and purchase:
             raise ValidationError(_("Can't hold both a shopping cart and a purchase at the same time."))
-        elif not shopping_cart and not purchase:
-            raise ValidationError(_('Holding must have either a shopping cart or a purchase.'))
 
         return super(Holding, self).save(*args, **kwargs)
 
