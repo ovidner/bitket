@@ -273,6 +273,7 @@ class WorkerAdmin(PersonAdmin):
 
     registration_count.short_description = _('shifts')
 
+
 @admin.register(FunctionaryDiscount)
 class FunctionaryDiscountAdmin(admin.ModelAdmin):
     pass
