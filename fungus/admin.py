@@ -8,7 +8,8 @@ from django.http import HttpResponseRedirect
 from django.db.models import Q
 
 from tickle.models import Person
-from fungus.models import ShiftType, Shift, ShiftRegistration, Functionary, Worker, FunctionaryDiscount
+from fungus.models import ShiftType, Shift, ShiftRegistration, Functionary, Worker, FunctionaryDiscount, \
+    FunctionaryShiftTypeDiscount
 from tickle.admin import PersonAdmin, TickleUserInline, PurchaseInline
 
 
@@ -20,6 +21,8 @@ class ShiftTypeAdmin(admin.ModelAdmin):
 class ShiftRegistrationInline(admin.TabularInline):
     model = ShiftRegistration
     extra = 0
+
+    raw_id_fields = ('person',)
 
 
 class ResponsibleListFilter(admin.SimpleListFilter):
@@ -203,16 +206,31 @@ class FunctionaryInline(admin.StackedInline):
     max_num = 1
 
 
+class ShiftListFilter(admin.SimpleListFilter):
+    title = _('shift')
+
+    parameter_name = 'shift'
+
+    def lookups(self, request, model_admin):
+        return [(i.pk, i) for i in Shift.objects.all()]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            shift = Shift.objects.get(pk=self.value())
+            return queryset.filter(shift_registrations__shift=shift)
+        else:
+            return queryset
+
+
 @admin.register(Worker)
 class WorkerAdmin(PersonAdmin):
+    change_list_template = 'admin/tickle/person/change_list.html'
     inlines = (FunctionaryInline, ShiftRegistrationInline, TickleUserInline, PurchaseInline,)
     list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'registration_count',
                     'functionary_registered', 'functionary_signed_contract', 'functionary_attended_info_meeting',
-                    'functionary_pledge_payed', 'functionary_pledge_returned')
+                    'functionary_pledge_payed', 'functionary_pledge_returned', 'special_nutrition_render')
 
-    def has_add_permission(self, request):
-        # We should not add people from here.
-        return False
+    list_filter = ('special_nutrition', ShiftListFilter)
 
     def get_queryset(self, request):
         """
@@ -255,6 +273,12 @@ class WorkerAdmin(PersonAdmin):
 
     registration_count.short_description = _('shifts')
 
+
 @admin.register(FunctionaryDiscount)
 class FunctionaryDiscountAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(FunctionaryShiftTypeDiscount)
+class FunctionaryShiftTypeDiscountAdmin(admin.ModelAdmin):
+    filter_horizontal = ('shift_types',)

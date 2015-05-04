@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.backends import ModelBackend
 from django.db.transaction import atomic
+from django.db import IntegrityError
 
 from django_auth_ldap.backend import LDAPBackend
 
@@ -41,9 +42,15 @@ class _LiUBaseLDAPBackend(LDAPBackend):
 
         try:
             person = Person.objects.get(email=email)
+            person.liu_id = liu_id
             created = False
         except Person.DoesNotExist:
-            person, created = Person.objects.get_or_create(liu_id=liu_id, defaults={'email': email})
+            try:
+                person = Person.objects.get(liu_id=liu_id)
+                created = False
+            except Person.DoesNotExist:
+                person = Person(liu_id=liu_id, email=email)
+                created = True
 
         return person, created
 
@@ -73,16 +80,19 @@ class LiUStudentLDAPBackend(_LiUBaseLDAPBackend):
     _settings = LiUStudentLDAPSettings(settings_prefix)
 
     def get_or_create_user(self, username, ldap_user):
-        with atomic():
-            person, person_created = self.get_or_create_person(username, ldap_user)
+        person, person_created = self.get_or_create_person(username, ldap_user)
 
-            # Runs any subclass specific logic for populating the Person object with extra data.
-            person = self.populate_person_data(person, ldap_user)
+        # Runs any subclass specific logic for populating the Person object with extra data.
+        person = self.populate_person_data(person, ldap_user)
+        person = person.fill_kobra_data(overwrite_name=False)
+        try:
+            person.save()
+        except IntegrityError:
+            person = Person.objects.get(birth_date=person.birth_date, pid_code=person.pid_code,
+                                        pid_coordination=person.pid_coordination)
             person = person.fill_kobra_data(save=True, overwrite_name=False)
 
-            person.save()
-
-            return TickleUser.objects.get_or_create(person=person)
+        return TickleUser.objects.get_or_create(person=person)
 
 
 class LiUEmployeeLDAPBackend(_LiUBaseLDAPBackend):

@@ -1,25 +1,19 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, DetailView, CreateView, ListView, DeleteView, TemplateView
+from django.views.generic import FormView, DetailView, CreateView
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from django.shortcuts import resolve_url, redirect
-from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import resolve_url
 from django.contrib import messages
-from django.http import Http404
-
-from datetime import datetime
+from django.http import Http404, HttpResponseRedirect
 
 from guardian.shortcuts import get_objects_for_user
 from guardian.mixins import LoginRequiredMixin
 
-from tickle.forms import LoginFormHelper, PersonForm, PersonFormHelper, IdentifyForm, AuthenticationForm, SimplePersonForm, SimplePersonFormHelper
+from tickle.forms import LoginFormHelper, IdentifyForm, AuthenticationForm, SimplePersonForm, SimplePersonFormHelper
 from tickle.models.people import Person
-from tickle.models.products import Holding, Purchase, Product, ShoppingCart
 from tickle.views.mixins import MeOrPermissionRequiredMixin
 from tickle.utils.kobra import StudentNotFound, Unauthorized
-from tickle.utils.mail import TemplatedEmail
 
 
 class ProfileView(MeOrPermissionRequiredMixin, DetailView):
@@ -76,7 +70,8 @@ class CreateUserView(CreateView):
     _user = None
 
     def get_success_url(self):
-        return self.request.GET.get('next', resolve_url('create_user_success'))
+        messages.success(self.request, _('An account has been created! You will receive an email in a few minutes with your account details. If not, please check your spam folder.'))
+        return self.request.GET.get('next', resolve_url('tickle:purchase'))
 
     def get_context_data(self, **kwargs):
         context = super(CreateUserView, self).get_context_data(**kwargs)
@@ -84,9 +79,9 @@ class CreateUserView(CreateView):
         return context
 
     def form_valid(self, form):
-        person = form.save()
-        person.create_user_and_login(self.request)
-        return super(CreateUserView, self).form_valid(form)
+        self.object = form.save()
+        self.object.create_user_and_login(self.request)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ChangePasswordView(LoginRequiredMixin, FormView):

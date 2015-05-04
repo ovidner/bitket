@@ -25,5 +25,9 @@ def create_shopping_cart(sender, **kwargs):
 
 @receiver(post_save, sender=Holding)
 def send_ticket(sender, instance, **kwargs):
-    if instance.product.is_ticket_type and getattr(instance, 'purchase'):
+    # Don't do anything if called by `loaddata` etc.
+    if kwargs['raw']:
+        return
+
+    if instance.product.is_ticket_type and instance.purchase:
         instance.send_ticket()

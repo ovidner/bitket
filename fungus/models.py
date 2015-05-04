@@ -5,8 +5,9 @@ from django.db import models
 from django.db.models import F, Q, Count
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.timezone import now
+from django.utils.timezone import now, get_current_timezone
 from django.core.exceptions import ValidationError
+from django.template.defaultfilters import date as format_date
 from mptt.models import MPTTModel, TreeForeignKey
 
 from tickle.models import Person, PersonQuerySet, BaseDiscount
@@ -78,12 +79,31 @@ class FunctionaryDiscount(BaseDiscount):
         return '{0} {1}, {2}'.format(self.shifts, _('shift/s'), self.readable_discount())
 
     def eligible(self, person):
-        if getattr(person, 'functionary', False):
-            return person.shift_registrations.count() == self.shifts
-        return False
+        return hasattr(person, 'functionary') and person.shift_registrations.count() == self.shifts
 
     def description(self):
         return '{0}, {1}'.format(self._meta.verbose_name, ungettext_lazy("%d shift", "%d shifts") % self.shifts)
+
+
+@python_2_unicode_compatible
+class FunctionaryShiftTypeDiscount(BaseDiscount):
+    shift_types = models.ManyToManyField('ShiftType', related_name='shift_type_discounts', verbose_name=_('shift types'))
+    text = models.CharField(max_length=256, verbose_name=_('text'))
+
+    class Meta:
+        ordering = ('text',)
+
+        verbose_name = _('shift type discount')
+        verbose_name_plural = _('shift type discounts')
+
+    def __str__(self):
+        return '{0}, {1}'.format(self.text, self.readable_discount())
+
+    def eligible(self, person):
+        return person.shift_registrations.filter(shift__shift_type__in=self.shift_types.all()).exists()
+
+    def description(self):
+        return self.text
 
 
 @python_2_unicode_compatible
@@ -93,6 +113,8 @@ class ShiftType(MPTTModel):
     description = models.TextField(blank=True, null=True, verbose_name=_('description'))
 
     class Meta:
+        ordering = ('name',)
+
         verbose_name = _('shift type')
         verbose_name_plural = _('shift types')
 
@@ -193,15 +215,13 @@ class Shift(models.Model):
     objects = ShiftQuerySet.as_manager()
 
     class Meta:
+        ordering = ('shift_type', 'start', 'end')
+
         verbose_name = _('shift')
         verbose_name_plural = _('shifts')
 
     def __str__(self):
-        time_format = "%H:%M"
-        date_format = " %A %d %B"
-        if self.start.date() == self.end.date():
-            return u'%s, %s–%s %s' % (self.shift_type.name, self.start.strftime(time_format), self.end.strftime(time_format), self.start.strftime(date_format))
-        return u'%s, %s – %s' % (self.shift_type.name, self.start.strftime(time_format + date_format), self.end.strftime(time_format + date_format))
+        return '{0}: {1}'.format(self.shift_type, self.pretty_start_end)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self.people_critical <= self.people_alarming:
@@ -211,8 +231,22 @@ class Shift(models.Model):
         if not self.people_alarming <= self.people_max:
             raise ValidationError({'people_alarming': _('Alarming number must be less than or equal to maximum.'),
                                    'people_max': _('Alarming number must be less than or equal to maximum.')})
-        
-        return super(Shift, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
+        return super(Shift, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                                       update_fields=update_fields)
+
+    @property
+    def pretty_start_end(self):
+        tz = get_current_timezone()
+        start = self.start.astimezone(tz)
+        end = self.end.astimezone(tz)
+        time_format = "H:i"
+        date_format = "d b"
+        if start.date() == end.date():
+            return '{0} {1} – {2}'.format(format_date(start, date_format), format_date(start, time_format),
+                                          format_date(end, time_format))
+        return '{0} {1} – {2} {3}'.format(format_date(start, date_format), format_date(start, time_format),
+                                          format_date(end, date_format), format_date(end, time_format))
 
     @property
     def status(self):

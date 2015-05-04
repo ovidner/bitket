@@ -1,0 +1,13 @@
+{% extends 'admin/change_list.html' %}
+{% load i18n %}
+{% block result_list %}
+    <h2>{% trans 'Special nutrition totals' %}</h2>
+    <ul>
+        {% for i in cl.special_nutrition_totals %}
+            {% if i.special_nutrition__name and i.pk__count %}
+                <li>{{ i.special_nutrition__name }}: {{ i.pk__count }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {{ block.super }}
+{% endblock %}

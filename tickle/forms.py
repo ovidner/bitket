@@ -13,7 +13,7 @@ from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div
 from crispy_forms.bootstrap import InlineCheckboxes
 
-from tickle.models import Person
+from tickle.models import Person, Product, Holding, ShoppingCart
 from tickle.fields import SEPersonalIdentityNumberField, LiUIDField
 
 
@@ -273,3 +273,29 @@ class IdentifyForm(forms.Form):
                 return Person.objects.get(birth_date__exact=pid[0], pid_code__exact=pid[1])
         except Person.DoesNotExist:
             return None
+
+
+class AddProductToShoppingCartForm(forms.ModelForm):
+    people = forms.ModelMultipleChoiceField(queryset=Person.objects.all(), widget=forms.MultipleHiddenInput())
+    product = forms.ModelChoiceField(queryset=Product.objects.all(), empty_label=None, required=True)
+
+    class Meta:
+        model = Holding
+
+        fields = ('people', 'product', 'quantity', '_transferable')
+
+    def save(self, commit=True):
+        product = self.cleaned_data['product']
+        quantity = self.cleaned_data['quantity']
+        _transferable = self.cleaned_data['_transferable']
+
+        for person in self.cleaned_data['people']:
+            shopping_cart, shopping_cart_created = ShoppingCart.objects.get_or_create(person=person)
+
+            Holding.objects.get_or_create(
+                person=person,
+                product=product,
+                defaults={'shopping_cart': shopping_cart,
+                          'quantity': quantity,
+                          '_transferable': _transferable}
+            )

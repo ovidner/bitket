@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n crispy_forms_tags tickle_hacks %}
+{% load i18n crispy_forms_tags tickle_hacks markdown_deux_tags %}
 
 {% block title %}{{ block.super }} – {% trans 'Tickets and gadgets' %}{% endblock %}
 
@@ -8,7 +8,8 @@
 {% block content %}
     <p class="lead">
         {% blocktrans %}
-            Buy your tickets by adding to your shopping cart, then press <em>Proceed...</em>.
+            Buy your tickets by adding to your shopping cart, then press <em>Proceed...</em>. Questions? Contact us at
+            <a href="mailto:biljett@sof15.se">biljett@sof15.se</a>.
         {% endblocktrans %}
     </p>
     <p>
@@ -28,7 +29,7 @@
                         </div>
                         {% if product.description %}
                             <div class="panel-body">
-                                <p>{{ product.description }}</p>
+                                {{ product.description|markdown }}
                             </div>
                         {% endif %}
 
@@ -62,7 +63,7 @@
                         </div>
                         {% if product.description %}
                             <div class="panel-body">
-                                <p>{{ product.description }}</p>
+                                {{ product.description|markdown }}
                             </div>
                         {% endif %}
 

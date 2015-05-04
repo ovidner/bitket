@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
-{% load i18n crispy_forms_tags %}
+{% load i18n crispy_forms_tags markdown_deux_tags %}
 
-{% block title %}{{ block.super }} – Funktionärsanmälan{% endblock %}
+{% block title %}{{ block.super }} – {% trans 'Functionary registration' %}{% endblock %}
 
-{% block header %}Funktionärsanmälan{% endblock %}
+{% block header %}{% trans 'Functionary registration' %}{% endblock %}
 
 {% block content %}
     {% if not already_registered %}
         <form action="" method="post">
             {% csrf_token %}
-            <h2>Arbetspass</h2>
-            <p>Bocka i det eller de pass du är intresserad av. Observera att denna anmälan är att betrakta som bindande.</p>
+            <h2>{% trans 'Shifts' %}</h2>
+            <p>{% trans 'Select the shift(s) that you will work. Please note that this registration is binding.' %}</p>
 
             {% for error in form.shifts.errors %}
                 <div class="alert alert-danger">{{ error }}</div>
@@ -27,7 +27,7 @@
 
                         {% if shift_type.grouper.description %}
                             <div class="panel-body">
-                                <p>{{ shift_type.grouper.description }}</p>
+                                {{ shift_type.grouper.description|markdown }}
                             </div>
                         {% endif %}
 
@@ -35,7 +35,7 @@
                             {% for shift in shift_type.list %}
                                 <li class="list-group-item">
                                     <input type="checkbox" id="id_shifts_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}" value="{{ shift.pk }}" name="shifts" />
-                                    <label for="id_shifts_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">{{ shift.start }} – {{ shift.end }}</label>
+                                    <label for="id_shifts_{{ forloop.parentloop.counter0 }}_{{ forloop.counter0 }}">{{ shift.pretty_start_end }}</label>
                                 </li>
                             {% endfor %}
                         </ul>
