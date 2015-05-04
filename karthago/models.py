@@ -137,6 +137,7 @@ class Entry(models.Model):
         verbose_name = _('entry')
         verbose_name_plural = _('entries')
 
+        ordering = ('constellation',)
         unique_together = (('constellation', 'name'),)
 
     def __str__(self):
