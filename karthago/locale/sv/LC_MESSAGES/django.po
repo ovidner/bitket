@@ -3,20 +3,24 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: SOF15/Karthago\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 02:48+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2015-05-04 12:48+0200\n"
+"PO-Revision-Date: 2015-05-04 13:33+0100\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: Olle Vidner <olle@vidner.se>\n"
+"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
+"X-Generator: Poedit 1.7.6\n"
+
+#: karthago/admin.py:37
+msgid "registered members"
+msgstr "registrerade deltagare"
 
 #: karthago/forms.py:48
 msgid "Too many members for this entry type."
@@ -52,7 +56,7 @@ msgid "material roles"
 msgstr "materialroller"
 
 #: karthago/models.py:43 karthago/models.py:62 karthago/models.py:137
-#: karthago/models.py:149
+#: karthago/models.py:150
 msgid "entry"
 msgstr "bidrag"
 
@@ -189,22 +193,30 @@ msgstr "Något mer vi borde veta?"
 msgid "entries"
 msgstr "bidrag"
 
-#: karthago/models.py:148
+#: karthago/models.py:149
 msgid "person"
 msgstr "person"
 
-#: karthago/models.py:154
+#: karthago/models.py:155
 msgid "entry membership"
 msgstr "bidragsmedlemskap"
 
-#: karthago/models.py:155
+#: karthago/models.py:156
 msgid "entry memberships"
 msgstr "bidragsmedlemskap"
 
-#: karthago/models.py:164
+#: karthago/models.py:173
+msgid "Kårtege member"
+msgstr "Kårtegedeltagare"
+
+#: karthago/models.py:174
+msgid "Kårtege members"
+msgstr "Kårtegedeltagare"
+
+#: karthago/models.py:180
 msgid "Kårtege member discount"
 msgstr "Kårtegedeltagarrabatt"
 
-#: karthago/models.py:165
+#: karthago/models.py:181
 msgid "Kårtege member discounts"
 msgstr "Kårtegedeltagarrabatter"

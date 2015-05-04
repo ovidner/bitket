@@ -3,78 +3,78 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: SOF15/Fungus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-30 02:53+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2015-05-04 12:48+0200\n"
+"PO-Revision-Date: 2015-05-04 13:33+0100\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: Olle Vidner <olle@vidner.se>\n"
+"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
+"X-Generator: Poedit 1.7.6\n"
 
-#: fungus/admin.py:28
+#: fungus/admin.py:31
 msgid "responsible person"
 msgstr "ansvarig"
 
-#: fungus/admin.py:59 fungus/models.py:120 fungus/models.py:198
+#: fungus/admin.py:62 fungus/models.py:118 fungus/models.py:196
 msgid "shift type"
 msgstr "passtyp"
 
-#: fungus/admin.py:90 fungus/admin.py:151
+#: fungus/admin.py:93 fungus/admin.py:154
 msgid "status"
 msgstr "status"
 
-#: fungus/admin.py:104 fungus/admin.py:143
+#: fungus/admin.py:107 fungus/admin.py:146
 msgid "Critical"
 msgstr "Kritiskt"
 
-#: fungus/admin.py:105 fungus/admin.py:145
+#: fungus/admin.py:108 fungus/admin.py:148
 msgid "Alarming"
 msgstr "Alarmerande"
 
-#: fungus/admin.py:106 fungus/admin.py:147
+#: fungus/admin.py:109 fungus/admin.py:150
 msgid "OK"
 msgstr "OK"
 
-#: fungus/admin.py:107 fungus/admin.py:149
+#: fungus/admin.py:110 fungus/admin.py:152
 msgid "Overstaffed"
 msgstr "Överbemannat"
 
-#: fungus/admin.py:158 fungus/models.py:39 fungus/models.py:270
+#: fungus/admin.py:161 fungus/models.py:39 fungus/models.py:268
 msgid "person"
 msgstr "person"
 
-#: fungus/admin.py:207 fungus/models.py:222 fungus/models.py:269
+#: fungus/admin.py:210 fungus/models.py:220 fungus/models.py:267
 msgid "shift"
 msgstr "pass"
 
-#: fungus/admin.py:245
+#: fungus/admin.py:244
 msgid "functionary registered"
 msgstr "registrerad som funktionär"
 
-#: fungus/admin.py:251 fungus/models.py:46
+#: fungus/admin.py:250 fungus/models.py:46
 msgid "signed contract"
 msgstr "godkänt kontrakt"
 
-#: fungus/admin.py:257 fungus/models.py:47
+#: fungus/admin.py:256 fungus/models.py:47
 msgid "attended info meeting"
 msgstr "deltagit på infomöte"
 
-#: fungus/admin.py:263 fungus/models.py:48
+#: fungus/admin.py:262 fungus/models.py:48
 msgid "pledge payed"
 msgstr "pant betalad"
 
-#: fungus/admin.py:269 fungus/models.py:49
+#: fungus/admin.py:268 fungus/models.py:49
 msgid "pledge returned"
 msgstr "pant återbetalad"
 
-#: fungus/admin.py:275 fungus/models.py:70 fungus/models.py:223
+#: fungus/admin.py:274 fungus/models.py:70 fungus/models.py:221
 msgid "shifts"
 msgstr "pass"
 
@@ -135,120 +135,120 @@ msgstr "funktionärsrabatter"
 msgid "shift/s"
 msgstr "pass"
 
-#: fungus/models.py:87
+#: fungus/models.py:85
 #, python-format
 msgid "%d shift"
 msgid_plural "%d shifts"
 msgstr[0] "%d pass"
 msgstr[1] "%d pass"
 
-#: fungus/models.py:92 fungus/models.py:121
+#: fungus/models.py:90 fungus/models.py:119
 msgid "shift types"
 msgstr "passtyper"
 
-#: fungus/models.py:93
+#: fungus/models.py:91
 msgid "text"
-msgstr ""
+msgstr "text"
 
-#: fungus/models.py:98
+#: fungus/models.py:96
 msgid "shift type discount"
 msgstr "passtypsrabatt"
 
-#: fungus/models.py:99
+#: fungus/models.py:97
 msgid "shift type discounts"
 msgstr "passtypsrabatter"
 
-#: fungus/models.py:113 fungus/models.py:129
+#: fungus/models.py:111 fungus/models.py:127
 msgid "name"
 msgstr "namn"
 
-#: fungus/models.py:114 fungus/models.py:130
+#: fungus/models.py:112 fungus/models.py:128
 msgid "parent"
 msgstr ""
 
-#: fungus/models.py:115
+#: fungus/models.py:113
 msgid "description"
 msgstr "beskrivning"
 
-#: fungus/models.py:133 fungus/models.py:203
+#: fungus/models.py:131 fungus/models.py:201
 msgid "location"
 msgstr "plats"
 
-#: fungus/models.py:134
+#: fungus/models.py:132
 msgid "locations"
 msgstr "platser"
 
-#: fungus/models.py:200
+#: fungus/models.py:198
 msgid "start"
 msgstr "början"
 
-#: fungus/models.py:201
+#: fungus/models.py:199
 msgid "end"
 msgstr "slut"
 
-#: fungus/models.py:205
+#: fungus/models.py:203
 msgid "responsible"
 msgstr "ansvarig"
 
-#: fungus/models.py:207
+#: fungus/models.py:205
 msgid "maximum number of workers"
 msgstr "maximalt antal jobbare"
 
-#: fungus/models.py:208
+#: fungus/models.py:206
 msgid ""
 "The maximum number of workers on this shift. This shift's status will be "
 "reported as overstaffed if the number of workers are over this value."
 msgstr ""
 
-#: fungus/models.py:209
+#: fungus/models.py:207
 msgid "alarming number of workers"
 msgstr "alarmerande antal jobbare"
 
-#: fungus/models.py:210
+#: fungus/models.py:208
 msgid ""
 "The number of workers where the system will report the status as alarming."
 msgstr ""
 
-#: fungus/models.py:211
+#: fungus/models.py:209
 msgid "critical number of workers"
 msgstr "kritiskt antal jobbare"
 
-#: fungus/models.py:212
+#: fungus/models.py:210
 msgid ""
 "The number of workers where the system will report the status as critical."
 msgstr "Antal jobbare som behövs för normal operation."
 
-#: fungus/models.py:214
+#: fungus/models.py:212
 msgid "public"
 msgstr "publik"
 
-#: fungus/models.py:215
+#: fungus/models.py:213
 msgid ""
 "If unchecked, this shift won't be visible or available for registration by "
 "public users."
 msgstr ""
 
-#: fungus/models.py:230 fungus/models.py:231
+#: fungus/models.py:228 fungus/models.py:229
 msgid "Critical number must be less than or equal to alarming."
 msgstr ""
 
-#: fungus/models.py:234 fungus/models.py:235
+#: fungus/models.py:232 fungus/models.py:233
 msgid "Alarming number must be less than or equal to maximum."
 msgstr ""
 
-#: fungus/models.py:272
+#: fungus/models.py:270
 msgid "checked in"
 msgstr "incheckad"
 
-#: fungus/models.py:273
+#: fungus/models.py:271
 msgid "checked out"
 msgstr "utcheckad"
 
-#: fungus/models.py:276
+#: fungus/models.py:274
 msgid "shift registration"
 msgstr "passregistrering"
 
-#: fungus/models.py:277
+#: fungus/models.py:275
 msgid "shift registrations"
 msgstr "passregistreringar"
 
