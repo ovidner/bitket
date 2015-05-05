@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 """
 Django settings for sof15 project.
 
@@ -251,3 +252,8 @@ LOGGING = {
         },
     },
 }
+
+INVAR_OCR_CHECK_LENGTH = 2
+INVAR_BG_NUMBER = '5415-8712'
+INVAR_IBAN_NUMBER = ''
+INVAR_SWIFT_NUMBER = ''
