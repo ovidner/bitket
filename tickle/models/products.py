@@ -160,6 +160,8 @@ class Holding(models.Model):
 
     _transferable = models.NullBooleanField(default=None, verbose_name=_('transferable'),
                                             help_text=_('If people should be able to transfer this product to other people. Note: this will override the product setting.'))
+    transferee = models.ForeignKey('Person', related_name='transferee', null=True, blank=True, default=None,
+                                   verbose_name=_('transferee'))
 
     quantity = models.PositiveIntegerField(default=1, verbose_name=_('quantity'))
 

@@ -62,6 +62,8 @@ class HoldingDiscountInline(SortableTabularInline):
 class HoldingAdmin(admin.ModelAdmin):
     list_display = ('person', 'product',)
 
+    exclude = ('transferee',)
+
     raw_id_fields = ('person', 'purchase', 'shopping_cart',)
     inlines = (HoldingDiscountInline,)
 

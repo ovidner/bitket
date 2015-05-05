@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Biljett överlåtning</h1>
+    <p><strong>Hej {{ holding.transferee.first_name }}!</strong></p>
+    <p>
+        {{ holding.person.full_name }} vill överlåta en {{ holding.product.public_name }}s biljett till dig.
+        Fakturan för biljetten kommer faktureras dig. Om du går med på detta så följ nedanstående länk till
+        konfermationssidan. Du kan även hitta länken i din profil på hemsidan.
+    </p>
+
+    <a href="{% url 'tickle:transfer_ticket_confirm' holding.pk %}">Till biljetten</a>
+
+</body>
+</html>

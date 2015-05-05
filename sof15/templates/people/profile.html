@@ -112,9 +112,16 @@
                                     </ul>
                                 </dd>
                             </dl>
-
-                            <a href="{% url 'tickle:exchange_ticket' holding.pk %}" class="btn btn-sm btn-primary">Överlåt biljett</a>
                         </div>
+
+                        {% if holding.transferable %}
+                            <div class="panel-footer text-right">
+                                 {% if holding.transferee %}
+                                    <small class="text-muted text-left">Transfer pending &nbsp;&nbsp;</small>
+                                {% endif %}
+                                <a href="{% url 'tickle:transfer_ticket' holding.pk %}" class="btn btn-sm btn-primary">Överlåt biljett</a>
+                            </div>
+                        {% endif %}
                     </div>
 
                     {% comment %}
@@ -126,7 +133,23 @@
         {% endif %}
 
 
+        {% if person.transferee.exists %}
+            <div class="col-lg-4">
+                <h2>Överlåtningar av biljetter</h2>
+                <p>
+                    Du har har följande förfrågningar om att ta över en biljett.
+                    Dessa är inte dina biljetter än. Du måste godkänna överlåtningen innan du får biljetten på riktigt.
+                </p>
 
+                <ul class="list-unstyled">
+                {% for holding in person.transferee.all %}
+                    <li>
+                        <strong>{{  holding.product.public_name }}</strong> - <a href="{% url 'tickle:transfer_ticket_confirm' holding.pk %}" class="">Gå till godkännande</a>
+                    </li>
+
+                {% endfor %}
+                </ul>
+        {% endif %}
 
 
         <!-- Orchestra -->

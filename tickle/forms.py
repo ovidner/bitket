@@ -282,6 +282,37 @@ class IdentifyForm(forms.ModelForm):
             return None
 
 
+class SearchPersonForm(forms.ModelForm):
+    liu_or_mail = forms.CharField(max_length=254, label=_('LiU ID or email address'))
+
+    person = None
+
+    class Meta:
+        model = Person
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        super(SearchPersonForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+
+    def clean(self):
+        data = super(SearchPersonForm, self).clean()
+        liu_or_mail = data['liu_or_mail']
+        try:
+            self.person = Person.objects.get(liu_id__exact=liu_or_mail)
+        except Person.DoesNotExist:
+            try:
+                self.person = Person.objects.get(email__exact=liu_or_mail)
+            except Person.DoesNotExist:
+                raise ValidationError(_('No person found with the entered LiU ID or email.'))
+        return data
+
+    def get_person(self):
+        return self.person
+
+
 class AddProductToShoppingCartForm(forms.ModelForm):
     people = forms.ModelMultipleChoiceField(queryset=Person.objects.all(), widget=forms.MultipleHiddenInput())
     product = forms.ModelChoiceField(queryset=Product.objects.all(), empty_label=None, required=True)
