@@ -108,6 +108,9 @@ REST_FRAMEWORK = {
 # Database backed cache backend.
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
+# Session timeout is 6 hours
+SESSION_COOKIE_AGE = 60 * 60 * 6
+
 ROOT_URLCONF = 'sof15.urls'
 
 WSGI_APPLICATION = 'sof15.wsgi.application'
@@ -116,7 +119,7 @@ AUTHENTICATION_BACKENDS = (
     # Adding the standard ModelBackend here potentially means a huge security risk, don't do it!
     'tickle.auth.backends.TickleBackend',  # Handles email auth
     'tickle.auth.backends.LiUStudentLDAPBackend',
-    'tickle.auth.backends.LiUEmployeeLDAPBackend',
+    # 'tickle.auth.backends.LiUEmployeeLDAPBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
 

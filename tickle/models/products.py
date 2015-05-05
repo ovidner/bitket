@@ -84,6 +84,8 @@ class Product(models.Model):
                                        help_text=_('Can you purchase more than one (1) of this product?'))
 
     published = models.BooleanField(default=True, verbose_name=_('published'))
+    quota = models.PositiveIntegerField(default=0, verbose_name=_('quota'), blank=True,
+                                        help_text=_('0 means there is no quota limit.'))
     transferable = models.BooleanField(default=True, verbose_name=_('transferable'),
                                        help_text=_('If people should be able to transfer this product to other people.'))
 
@@ -107,6 +109,9 @@ class Product(models.Model):
     @property
     def is_ticket_type(self):
         return bool(getattr(self, 'ticket_type', False))
+
+    def has_reached_quota(self):
+        return self.quota != 0 and self.holdings.purchased().quantity() >= self.quota
 
 
 @python_2_unicode_compatible
@@ -183,8 +188,6 @@ class Holding(models.Model):
         purchase = getattr(self, 'purchase')
         if shopping_cart and purchase:
             raise ValidationError(_("Can't hold both a shopping cart and a purchase at the same time."))
-        elif not shopping_cart and not purchase:
-            raise ValidationError(_('Holding must have either a shopping cart or a purchase.'))
 
         return super(Holding, self).save(*args, **kwargs)
 
@@ -269,6 +272,10 @@ class ShoppingCart(models.Model):
 
     def purchase(self):
         with atomic():
+            for holding in self.holdings.all():
+                if holding.product.has_reached_quota():
+                    raise Exception(holding.product)
+
             purchase = Purchase.objects.create(person=self.person, purchased=now())
 
             for holding in self.holdings.all():

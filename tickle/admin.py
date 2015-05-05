@@ -70,7 +70,7 @@ class HoldingAdmin(admin.ModelAdmin):
 
 @admin.register(TicketType)
 class TicketTypeAdmin(ProductAdmin):
-    pass
+    filter_horizontal = ('events',)
 
 
 @admin.register(Delivery)
@@ -177,9 +177,13 @@ class PersonAdmin(admin.ModelAdmin):
 
     filter_horizontal = ('special_nutrition',)
     
-    search_fields = ('first_name', 'last_name', 'email', 'liu_id', 'notes')
+    search_fields = ('first_name', 'last_name', 'email', 'liu_id', 'notes', 'pid_code')
 
-    actions = ['generate_email_recipient_list_action', 'fill_kobra_data_action', 'add_product_to_shopping_cart_action']
+    actions = ['generate_email_recipient_list_action',
+               'fill_kobra_data_action',
+               'create_user_action',
+               'reset_password_action',
+               'add_product_to_shopping_cart_action']
 
     list_max_show_all = 2000
 
@@ -213,6 +217,21 @@ class PersonAdmin(admin.ModelAdmin):
     special_nutrition_render.allow_tags = True
     special_nutrition_render.admin_order_field = 'special_nutrition'
 
+    def create_user_action(self, request, queryset):
+        for person in queryset:
+            person.get_or_create_user()
+        self.message_user(request, _('Created user accounts.'))
+
+    create_user_action.short_description = _('Create user accounts (if not existing)')
+
+    def reset_password_action(self, request, queryset):
+        for person in queryset:
+            if hasattr(person, 'user') and not getattr(person, 'liu_id'):
+                person.user.generate_and_send_password()
+        self.message_user(request, _('Reset and sent passwords.'))
+
+    reset_password_action.short_description = _('Reset passwords')
+
     def fill_kobra_data_action(self, request, queryset):
         queryset.fill_kobra_data()
         self.message_user(request, _('Fetched KOBRA data.'))
@@ -224,6 +243,7 @@ class PersonAdmin(admin.ModelAdmin):
             'recipients': queryset.pretty_emails_string()
         }
         return TemplateResponse(request, 'tickle/admin/person/email_recipient_list.html', context)
+
     generate_email_recipient_list_action.short_description = _('Generate email recipient list')
 
     def add_product_to_shopping_cart_action(self, request, queryset):
@@ -273,4 +293,4 @@ class StudentUnionDiscountAdmin(admin.ModelAdmin):
 
 @admin.register(PersonalDiscount)
 class PersonalDiscountAdmin(admin.ModelAdmin):
-    pass
+    filter_horizontal = ('people',)

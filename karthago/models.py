@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
-from tickle.models import BaseDiscount
+from tickle.models import Person, PersonQuerySet, BaseDiscount
 
 
 @python_2_unicode_compatible
@@ -137,6 +137,7 @@ class Entry(models.Model):
         verbose_name = _('entry')
         verbose_name_plural = _('entries')
 
+        ordering = ('constellation',)
         unique_together = (('constellation', 'name'),)
 
     def __str__(self):
@@ -156,6 +157,21 @@ class EntryMembership(models.Model):
 
     def __str__(self):
         return '{0}: {1}'.format(self.person, self.entry)
+
+
+class KartegeMemberQuerySet(PersonQuerySet):
+    def kartege_members(self):
+        return self.filter(kartege_memberships__isnull=False)
+
+
+class KartegeMember(Person):
+    objects = KartegeMemberQuerySet.as_manager()
+
+    class Meta:
+        proxy = True
+
+        verbose_name = _('Kårtege member')
+        verbose_name_plural = _('Kårtege members')
 
 
 @python_2_unicode_compatible

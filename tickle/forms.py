@@ -13,7 +13,7 @@ from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div
 from crispy_forms.bootstrap import InlineCheckboxes
 
-from tickle.models import Person, Product, Holding
+from tickle.models import Person, Product, Holding, ShoppingCart
 from tickle.fields import SEPersonalIdentityNumberField, LiUIDField
 
 
@@ -243,15 +243,11 @@ class DisplayField(forms.Field):
         return False
 
 
-class IdentifyForm(forms.ModelForm):
+class IdentifyForm(forms.Form):
     liu_id = LiUIDField(employee_id=True, student_id=True, label=_('LiU ID'), required=False)
     pid = SEPersonalIdentityNumberField(coordination_number=True, label=_('Personal identity number'), help_text=_(
         "Swedish personal identity number in the format <em>YYMMDD-XXXX</em>. If you don't have one, "
         "enter <em>YYMMDD-0000</em>, where <em>YYMMDD</em> represents your birthday."), required=False)
-
-    class Meta:
-        model = Person
-        fields = ['liu_id', 'pid']
 
     def __init__(self, *args, **kwargs):
         super(IdentifyForm, self).__init__(*args, **kwargs)
@@ -264,9 +260,6 @@ class IdentifyForm(forms.ModelForm):
         # XOR
         if bool(data.get('liu_id', None)) == bool(data.get('pid', (None, None, False))[0]):
             raise ValidationError(_('Please specify LiU ID or personal identity number.'))
-
-        if not self.get_existing_person_or_none():
-            raise ValidationError(_('No person found with the entered LiU ID or personal identity number.'))
 
         return data
 
@@ -323,9 +316,17 @@ class AddProductToShoppingCartForm(forms.ModelForm):
         fields = ('people', 'product', 'quantity', '_transferable')
 
     def save(self, commit=True):
+        product = self.cleaned_data['product']
+        quantity = self.cleaned_data['quantity']
+        _transferable = self.cleaned_data['_transferable']
+
         for person in self.cleaned_data['people']:
-            # We just need to set the shopping cart manually
-            instance = super(AddProductToShoppingCartForm, self).save(commit=False)
-            instance.person = person
-            instance.shopping_cart = person.shopping_cart
-            instance.save()
+            shopping_cart, shopping_cart_created = ShoppingCart.objects.get_or_create(person=person)
+
+            Holding.objects.get_or_create(
+                person=person,
+                product=product,
+                defaults={'shopping_cart': shopping_cart,
+                          'quantity': quantity,
+                          '_transferable': _transferable}
+            )
