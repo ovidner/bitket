@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 14:52+0200\n"
+"POT-Creation-Date: 2015-05-05 20:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -159,14 +159,22 @@ msgstr "Kvantitet"
 msgid "Price"
 msgstr "Pris"
 
-#: sof15/templates/people/profile.html:137
+#: sof15/templates/people/profile.html:121
+msgid "Transfer pending"
+msgstr "Överlåtning väntar"
+
+#: sof15/templates/people/profile.html:123
+msgid "Transfer ticket"
+msgstr "Överlåt biljett"
+
+#: sof15/templates/people/profile.html:160
 msgid "Orchestra representative"
 msgstr "Orkesterrepresentant"
 
-#: sof15/templates/people/profile.html:141
+#: sof15/templates/people/profile.html:164
 msgid "Approve members"
 msgstr "Godkänn medlemmar"
 
-#: sof15/templates/people/profile.html:142
+#: sof15/templates/people/profile.html:165
 msgid "Review invoice data"
 msgstr "Granska fakturaunderlag"

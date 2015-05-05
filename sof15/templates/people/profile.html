@@ -117,9 +117,9 @@
                         {% if holding.transferable %}
                             <div class="panel-footer text-right">
                                  {% if holding.transferee %}
-                                    <small class="text-muted text-left">Transfer pending &nbsp;&nbsp;</small>
+                                    <small class="text-muted text-left">{% trans 'Transfer pending'%} &nbsp;&nbsp;</small>
                                 {% endif %}
-                                <a href="{% url 'tickle:transfer_ticket' holding.pk %}" class="btn btn-sm btn-primary">Överlåt biljett</a>
+                                <a href="{% url 'tickle:transfer_ticket' holding.pk %}" class="btn btn-sm btn-primary">{% trans 'Transfer ticket'%}</a>
                             </div>
                         {% endif %}
                     </div>
