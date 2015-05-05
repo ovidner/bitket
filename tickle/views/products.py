@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DeleteView, UpdateView, FormView
+from django.views.generic import ListView, DeleteView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
@@ -13,7 +13,7 @@ from datetime import datetime
 
 from guardian.mixins import LoginRequiredMixin
 
-from tickle.forms import IdentifyForm, SearchPersonForm
+from tickle.forms import SearchPersonForm
 from tickle.models.products import Holding, Purchase, Product, ShoppingCart
 from tickle.utils.mail import TemplatedEmail
 
@@ -181,12 +181,17 @@ class ConfirmExchangeView(LoginRequiredMixin, UpdateView):
                 # Recalculate discounts.
                 holding.holding_discounts.all().delete()
                 holding.product.product_discounts.eligible(transferee).copy_to_holding_discounts(holding)
+                holding.invalidate_cached_discounts()
                 holding.save()
 
-                if discounted_total - holding.discounted_total != 0:
+                diff = discounted_total - holding.discounted_total
+                if diff > 0:
                     # Price difference, invoice original owner with the difference.
-                    # TODO: Make it properly working.
-                    Purchase.objects.create(person=person, purchase=datetime.now())
+                    product = Product.objects.get_or_create(name='Transfer difference', price=diff,
+                                                            defaults={'order': 100, 'published': False,
+                                                                      'transferable': False})[0]
+                    purchase = Purchase.objects.create(person=person, purchased=datetime.now())
+                    Holding.objects.create(person=person, purchase=purchase, product=product)
 
             return redirect('tickle:transfer_ticket_confirm_success')
         elif '_decline' in self.request.POST:

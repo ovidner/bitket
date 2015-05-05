@@ -218,6 +218,16 @@ class Holding(models.Model):
     def discounted_total(self):
         return self.discounted_price * self.quantity
 
+    def invalidate_cached_discounts(self):
+        try:
+            del self.discounted_total
+        except AttributeError:
+            pass
+        try:
+            del self.discounted_price
+        except AttributeError:
+            pass
+
     def _get_transferable(self):
         if self._transferable is None:
             return self.product.transferable
