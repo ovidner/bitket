@@ -42,7 +42,7 @@
                         <li><a href="{% url 'tickle:purchase' %}">{% trans 'Purchase tickets' %}</a></li>
                         {% comment %}<li><a href="{% url 'orchard:register_orchestra_member' %}">{% trans 'Orchestra member' %}</a></li>{% endcomment %}
                         {% comment %}<li><a href="{% url 'karthago:create_kartege_entry' %}">{% trans 'Kårtege applicant' %}</a></li>{% endcomment %}
-                        <li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>
+                        {% comment %}<li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>{% endcomment %}
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
@@ -100,7 +100,7 @@
                 <li><a href="{% url 'tickle:purchase' %}">{% trans 'Purchase tickets' %}</a></li>
                 {% comment %}<li><a href="{% url 'orchard:register_orchestra_member' %}">Anmälan av orkestermedlem</a></li>{% endcomment %}
                 {% comment %}<li><a href="{% url 'karthago:create_kartege_entry' %}">Ansökan om kårtegebidrag</a></li>{% endcomment %}
-                <li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>
+                {% comment %}<li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>{% endcomment %}
             </ul>
         {% endblock content %}
     </div>
