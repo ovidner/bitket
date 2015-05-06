@@ -61,9 +61,12 @@ class HoldingDiscountInline(SortableTabularInline):
 @admin.register(Holding)
 class HoldingAdmin(admin.ModelAdmin):
     list_display = ('person', 'product',)
-
+    list_filter = ('product',)
+    
     raw_id_fields = ('person', 'purchase', 'shopping_cart',)
     inlines = (HoldingDiscountInline,)
+
+    search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__pid_code')
 
 
 @admin.register(TicketType)
@@ -87,6 +90,8 @@ class PurchaseAdmin(admin.ModelAdmin):
     inlines = (HoldingInline,)
     list_display = ('person', 'purchased')
     date_hierarchy = 'purchased'
+
+    search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__pid_code')
 
 
 @admin.register(SpecialNutrition)
