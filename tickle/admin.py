@@ -14,7 +14,7 @@ from guardian.models import UserObjectPermission, GroupObjectPermission
 from suit.admin import SortableTabularInline, SortableModelAdmin
 
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, \
-    TickleUser, StudentUnionDiscount, ProductDiscount, Discount, HoldingDiscount, PersonalDiscount
+    TickleUser, StudentUnionDiscount, ProductDiscount, Discount, HoldingDiscount, PersonalDiscount, DiscountEligibility
 from tickle.views.admin import AddProductToShoppingCartAdminView
 
 
@@ -141,6 +141,16 @@ class TickleUserInline(admin.StackedInline):
     exclude = ('password',)
 
 
+class DiscountEligibilityInline(admin.TabularInline):
+    model = DiscountEligibility
+    extra = 0
+    can_delete = 0
+    readonly_fields = ('discount',)
+
+    def has_add_permission(self, request):
+        return False
+
+
 class EventVisitorListFilter(admin.SimpleListFilter):
     title = _('event')
 
@@ -167,7 +177,7 @@ class PersonChangeList(ChangeList):
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    inlines = (TickleUserInline, PurchaseInline,)
+    inlines = (DiscountEligibilityInline, PurchaseInline, TickleUserInline,)
 
     list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'special_nutrition_render', 'notes')
     list_display_links = ('first_name', 'last_name', 'pid')
