@@ -10,7 +10,7 @@ from django.shortcuts import render_to_response
 
 from guardian.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-from tickle.models import Holding, Product, ShoppingCart, Person, Delivery
+from tickle.models import Holding, Product, ShoppingCart, Person, Delivery, ReachedQuota
 from tickle.forms import TurboDeliveryForm
 
 
@@ -141,7 +141,7 @@ def complete_purchase(request):
 
         try:
             shopping_cart.purchase()
-        except Exception as e:
+        except ReachedQuota as e:
             messages.warning(request, _('Sorry but %s is out of stock.') % e.args)
             return redirect('tickle:purchase')
 

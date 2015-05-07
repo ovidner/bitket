@@ -260,6 +260,10 @@ class Delivery(models.Model):
         return '{0}'.format(self.timestamp)
 
 
+class ReachedQuota(Exception):
+    pass
+
+
 @python_2_unicode_compatible
 class ShoppingCart(models.Model):
     person = models.OneToOneField('Person', related_name='shopping_cart', verbose_name=_('person'))
@@ -275,7 +279,7 @@ class ShoppingCart(models.Model):
         with atomic():
             for holding in self.holdings.all():
                 if holding.product.has_reached_quota():
-                    raise Exception(holding.product)
+                    raise ReachedQuota(holding.product)
 
             purchase = Purchase.objects.create(person=self.person, purchased=now())
 
