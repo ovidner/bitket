@@ -6,9 +6,9 @@ from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.db.models import Count
 from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.template.response import TemplateResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 
 from guardian.models import UserObjectPermission, GroupObjectPermission
 from suit.admin import SortableTabularInline, SortableModelAdmin
@@ -58,15 +58,51 @@ class HoldingDiscountInline(SortableTabularInline):
     sortable = 'order'
 
 
+class HoldingPurchasedListFilter(admin.SimpleListFilter):
+    title = _('purchased')
+
+    parameter_name = 'purchased'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('y', _('Yes')),
+            ('n', _('No'))
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'y':
+            return queryset.filter(purchase__isnull=False)
+        elif self.value() == 'n':
+            return queryset.filter(purchase__isnull=True)
+        return queryset
+
+
 @admin.register(Holding)
 class HoldingAdmin(admin.ModelAdmin):
     list_display = ('person', 'product',)
-    list_filter = ('product',)
+    list_filter = ('product', HoldingPurchasedListFilter)
     
     raw_id_fields = ('person', 'purchase', 'shopping_cart',)
     inlines = (HoldingDiscountInline,)
 
     search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__pid_code')
+    actions = ('csv_export_action',)
+
+    def csv_export_action(self, request, queryset):
+        import unicodecsv
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="holdings.csv"'
+
+        writer = unicodecsv.writer(response, delimiter=b';')
+
+        # We can't use lazy translation here.
+        writer.writerow(
+            (ugettext('PID'), ugettext('Name'), ugettext('Product')))
+        for h in queryset.order_by('person__birth_date', 'person__pid_code'):
+            writer.writerow([h.person.pid, h.person.full_name, h.product])
+
+        return response
 
 
 @admin.register(TicketType)
