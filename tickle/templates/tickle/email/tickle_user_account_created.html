@@ -3,23 +3,31 @@
 <body style="font-family: sans-serif;">
     <h2>Hej {{ person.full_name }}!</h2>
     <p>
-        Ett användarkonto hos SOF har skapats åt dig där du kan administrera dina biljetter.
+        SOF kommer göra ett försök att slå världsrekord i organiserad ölprovning under festivalen! Läs mer om
+        evenemanget på <a href="https://www.facebook.com/events/345880648954816/">Facebook</a>.
     </p>
     <p>
-        För att använda ditt användarkonto, gå in på <a href="{{ host }}{% url 'login' %}">{{ host }}{% url 'login' %}</a>
-        och logga in med dina användaruppgifter nedan. Du loggar in med din e-postadress som användarnamn.
+        Vi skickar ut det här mailet för att göra det möjligt även för orkestermedlemmar som ej är LiU-studenter att
+        köpa en biljett till ölprovningen. Om du inte har något intresse av att delta kan du ignorera det här mailet
+        helt och hållet.
     </p>
     <p>
-        E-postadress: {{ person.email }}<br>
-        Lösenord: {{ password }}
+        För att delta loggar du in på <a href="http://biljett.sof15.se">biljett.sof15.se</a> med
+        följande inloggningsuppgifter:
     </p>
-    <p>Byt gärna ditt lösenord när du loggat in.</p>
-
+    <ul>
+        <li>E-postadress: {{ person.email }}</li>
+        <li>Lösenord: {{ password }}</li>
+    </ul>
     <p>
-        Svara gärna på det här mailet om du har några frågor kring ditt konto.
+        ...och köper en biljett till "Guinness världsrekord i ölprovning". Biljetten kostar 40 kr och betalas via en
+        faktura som skickas till dig per mail. Därefter hämtar du ut din biljett tillsammans med ditt orkesterband.
     </p>
     <p>
-        <em>Vi ses i maj!</em><br>
+        Vill du byta lösenord så går det enkelt att göra ifrån din inloggning.
+    </p>
+    <p>
+        <strong>Vi ses på SOF!</strong><br>
         //SOF-organisationen 2015
     </p>
 </body>
