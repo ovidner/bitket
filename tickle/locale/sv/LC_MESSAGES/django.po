@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15/Tickle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 12:48+0200\n"
-"PO-Revision-Date: 2015-05-04 13:34+0100\n"
+"POT-Creation-Date: 2015-05-07 05:49+0200\n"
+"PO-Revision-Date: 2015-05-07 05:49+0100\n"
+"Last-Translator: Olle Vidner <olle@vidner.se>\n"
+"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: Olle Vidner <olle@vidner.se>\n"
-"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "X-Generator: Poedit 1.7.6\n"
 
 #: tickle/admin.py:48
@@ -93,11 +93,27 @@ msgstr "Samordningsnummer är inte tillåtna."
 msgid "Interim numbers are not allowed."
 msgstr "Interimspersonnummer är inte tillåtna."
 
+#: tickle/forms.py:21 tickle/models/people.py:69
+msgid "RFID card number"
+msgstr "RFID-kortnummer"
+
+#: tickle/forms.py:22 tickle/forms.py:98 tickle/forms.py:290
+msgid "Personal identity number"
+msgstr "Personnummer"
+
 #: tickle/forms.py:24
+msgid "Auto deliver products"
+msgstr "Produkter för autoutlämning"
+
+#: tickle/forms.py:30
+msgid "Must supply RFID number or PID."
+msgstr ""
+
+#: tickle/forms.py:66
 msgid "I accept that my personal information will be stored"
 msgstr "Jag accepterar att mina personuppgifter lagras"
 
-#: tickle/forms.py:26
+#: tickle/forms.py:68
 msgid ""
 "We store your personal information according to the regulations specified by "
 "the Swedish Personal Data Act (PUL) and will not share it with any third "
@@ -106,23 +122,19 @@ msgstr ""
 "Vi lagrar dina personuppgifter enligt PUL och kommer inte dela med oss av "
 "dem till någon tredje part."
 
-#: tickle/forms.py:32 tickle/forms.py:247 tickle/models/people.py:66
+#: tickle/forms.py:74 tickle/forms.py:289 tickle/models/people.py:66
 msgid "LiU ID"
 msgstr "LiU-id"
 
-#: tickle/forms.py:40
+#: tickle/forms.py:82
 msgid "Please specify LiU ID <em>or</em> email address."
 msgstr "Vänligen ange LiU-id <em>eller</em> e-postadress."
 
-#: tickle/forms.py:51
+#: tickle/forms.py:93
 msgid "LiU ID or email address"
 msgstr "LiU-id eller e-postadress"
 
-#: tickle/forms.py:56 tickle/forms.py:248
-msgid "Personal identity number"
-msgstr "Personnummer"
-
-#: tickle/forms.py:57 tickle/forms.py:249
+#: tickle/forms.py:99 tickle/forms.py:291
 msgid ""
 "Swedish personal identity number in the format <em>YYMMDD-XXXX</em>. If you "
 "don't have one, enter <em>YYMMDD-0000</em>, where <em>YYMMDD</em> represents "
@@ -131,7 +143,7 @@ msgstr ""
 "Svenskt personnummer i formatet <em>ÅÅMMDD-XXXX</em>. Har du inget – ange "
 "<em>ÅÅMMDD-0000</em> där <em>ÅÅMMDD</em> representerar ditt födelsedatum."
 
-#: tickle/forms.py:87
+#: tickle/forms.py:129
 msgid ""
 "This personal identity number is already registered. Please contact us if "
 "you think this is a mistake."
@@ -139,11 +151,11 @@ msgstr ""
 "Detta personnummer finns redan registrerat. Kontakta oss om du tror att det "
 "här är ett misstag."
 
-#: tickle/forms.py:97
+#: tickle/forms.py:139
 msgid "Phone number"
 msgstr "Telefonnummer"
 
-#: tickle/forms.py:262
+#: tickle/forms.py:304
 msgid "Please specify LiU ID or personal identity number."
 msgstr "Vänligen ange LiU-id <em>eller</em> e-postadress."
 
@@ -155,7 +167,7 @@ msgstr "rabattberättigande"
 msgid "discount eligibilities"
 msgstr "rabattberättiganden"
 
-#: tickle/models/discounts.py:37 tickle/models/products.py:174
+#: tickle/models/discounts.py:37 tickle/models/products.py:186
 msgid "holding"
 msgstr "ägandeskap"
 
@@ -178,7 +190,7 @@ msgid "holding discounts"
 msgstr "ägandeskapsrabatt"
 
 #: tickle/models/discounts.py:64 tickle/models/products.py:99
-#: tickle/models/products.py:119 tickle/models/products.py:160
+#: tickle/models/products.py:119 tickle/models/products.py:172
 msgid "product"
 msgstr "produkt"
 
@@ -296,10 +308,6 @@ msgstr "spärrat LiU-id"
 msgid "magnet/barcode card number"
 msgstr "magnet-/streckkodskortnummer"
 
-#: tickle/models/people.py:69
-msgid "RFID card number"
-msgstr "RFID-kortnummer"
-
 #: tickle/models/people.py:73
 msgid "phone number"
 msgstr "telefonnummer"
@@ -333,8 +341,8 @@ msgid "Can view person"
 msgstr "Kan visa person"
 
 #: tickle/models/people.py:109 tickle/models/people.py:282
-#: tickle/models/products.py:159 tickle/models/products.py:254
-#: tickle/models/products.py:288
+#: tickle/models/products.py:171 tickle/models/products.py:265
+#: tickle/models/products.py:299
 msgid "person"
 msgstr "person"
 
@@ -402,7 +410,7 @@ msgstr "max antal"
 msgid "0 means there is no quota limit."
 msgstr "0 innebär att det inte finns någon maxgräns."
 
-#: tickle/models/products.py:89 tickle/models/products.py:166
+#: tickle/models/products.py:89 tickle/models/products.py:178
 msgid "transferable"
 msgstr "överlåtningsbar"
 
@@ -422,65 +430,61 @@ msgstr "biljettyp"
 msgid "ticket types"
 msgstr "biljettyper"
 
-#: tickle/models/products.py:162 tickle/models/products.py:296
+#: tickle/models/products.py:174 tickle/models/products.py:307
 msgid "purchase"
 msgstr "köp"
 
-#: tickle/models/products.py:164 tickle/models/products.py:257
+#: tickle/models/products.py:176 tickle/models/products.py:268
 msgid "shopping cart"
 msgstr "varukorg"
 
-#: tickle/models/products.py:167
+#: tickle/models/products.py:179
 msgid ""
 "If people should be able to transfer this product to other people. Note: "
 "this will override the product setting."
 msgstr ""
 
-#: tickle/models/products.py:169
+#: tickle/models/products.py:181
 msgid "quantity"
 msgstr "kvantitet"
 
-#: tickle/models/products.py:175 tickle/models/products.py:241
+#: tickle/models/products.py:187 tickle/models/products.py:252
 msgid "holdings"
 msgstr "ägandeskap"
 
-#: tickle/models/products.py:182
+#: tickle/models/products.py:194
 msgid "Quantity must be exactly 1 for un-quantitative products."
 msgstr ""
 
-#: tickle/models/products.py:188
+#: tickle/models/products.py:200
 msgid "Can't hold both a shopping cart and a purchase at the same time."
 msgstr ""
 
-#: tickle/models/products.py:190
-msgid "Holding must have either a shopping cart or a purchase."
-msgstr ""
+#: tickle/models/products.py:253
+msgid "timestamp"
+msgstr "tidstämpel"
 
-#: tickle/models/products.py:242
-msgid "delivered"
-msgstr "levererad"
-
-#: tickle/models/products.py:245
+#: tickle/models/products.py:256
 msgid "delivery"
 msgstr "leverans"
 
-#: tickle/models/products.py:246
+#: tickle/models/products.py:257
 msgid "deliveries"
 msgstr "leveranser"
 
-#: tickle/models/products.py:258
+#: tickle/models/products.py:269
 msgid "shopping carts"
 msgstr "varukorgar"
 
-#: tickle/models/products.py:289
+#: tickle/models/products.py:300
 msgid "purchased"
 msgstr "köpt"
 
-#: tickle/models/products.py:291
+#: tickle/models/products.py:302
 msgid "valid"
 msgstr "giltigt"
 
-#: tickle/models/products.py:297
+#: tickle/models/products.py:308
 msgid "purchases"
 msgstr "köp"
 
@@ -515,19 +519,6 @@ msgstr "Grundpris"
 #: tickle/templates/tickle/elements/price_table.html:17
 msgid "Your price"
 msgstr "Ditt pris"
-
-#: tickle/templates/tickle/elements/price_table.html:23
-#, python-format
-msgid ""
-"\n"
-"                <a href=\"%(register_functionary_url)s\">Become a "
-"functionary</a>, get a free Kravall and receive up to 60 percent discount!\n"
-"            "
-msgstr ""
-"\n"
-"                <a href=\"%(register_functionary_url)s\">Bli funktionär</a>, "
-"få en gratis kravall och upp till 60 procent rabatt!\n"
-"            "
 
 #: tickle/templates/tickle/elements/shopping_cart_table.html:4
 msgid "Product"
@@ -746,6 +737,41 @@ msgstr ""
 msgid "See you at SOF!"
 msgstr "Vi ses på SOF!"
 
+#: tickle/templates/tickle/turbo_delivery.html:4
+#: tickle/templates/tickle/turbo_delivery.html:6
+msgid "Turbo delivery"
+msgstr "Snabbutlämning"
+
+#: tickle/templates/tickle/turbo_delivery.html:15
+msgid "Search and deliver"
+msgstr "Sök och lämna ut"
+
+#: tickle/templates/tickle/turbo_delivery.html:22
+msgid ""
+"Begin by selecting one or more products and then placing the cursor in the "
+"RFID card number field."
+msgstr ""
+
+#: tickle/templates/tickle/turbo_delivery.html:35
+msgid "Please wait..."
+msgstr ""
+
+#: tickle/templates/tickle/turbo_delivery.html:46
+msgid "Something went wrong..."
+msgstr ""
+
+#: tickle/templates/tickle/turbo_delivery_ajax.html:15
+msgid "Delivered"
+msgstr "Utlämnad"
+
+#: tickle/templates/tickle/turbo_delivery_ajax.html:27
+msgid "Nothing to deliver to this person."
+msgstr "Inget att lämna ut till denna person."
+
+#: tickle/templates/tickle/turbo_delivery_ajax.html:33
+msgid "Historic deliveries"
+msgstr "Tidigare utlämnat"
+
 #: tickle/views/admin.py:18
 msgid "Added product to shopping cart(s)."
 msgstr "Produkten tillagd i varukorgarna."
@@ -775,26 +801,46 @@ msgstr "Det är tillfäligt inte möjligt att hämta information för LiU-id:n."
 msgid "Please enter your personal information yourself."
 msgstr "Vänligen fyll i dina personuppgifter själv."
 
-#: tickle/views/products.py:40
+#: tickle/views/products.py:38
+msgid "Person not found."
+msgstr "Personen kunde inte hittas."
+
+#: tickle/views/products.py:43
+msgid "Multiple people found."
+msgstr "Flera personer hittades."
+
+#: tickle/views/products.py:79
 msgid "Product not available."
 msgstr "Produkten är inte tillgänglig."
 
-#: tickle/views/products.py:44 tickle/views/products.py:111
+#: tickle/views/products.py:83 tickle/views/products.py:150
 #, python-format
 msgid "Sorry but %s is out of stock."
 msgstr "Tyvärr är %s slutsålda."
 
-#: tickle/views/products.py:53
+#: tickle/views/products.py:92
 msgid "Invalid quantity specified."
 msgstr "Ogiltigt antal angivet."
 
-#: tickle/views/products.py:66
+#: tickle/views/products.py:105
 #, python-format
 msgid "You can only buy one %s product."
 msgstr "Du kan bara köpa ett exemplar av produkten %s."
 
-#: tickle/views/products.py:105
+#: tickle/views/products.py:144
 msgid ""
 "Add at least one product to your shopping cart before you try to make a "
 "purchase."
 msgstr "Lägg till minst en produkt i din kundvagn innan du gör ett köp."
+
+#~ msgid ""
+#~ "\n"
+#~ "                <a href=\"%(register_functionary_url)s\">Become a "
+#~ "functionary</a>, get a free Kravall and receive up to 60 percent "
+#~ "discount!\n"
+#~ "            "
+#~ msgstr ""
+#~ "\n"
+#~ "                <a href=\"%(register_functionary_url)s\">Bli funktionär</"
+#~ "a>, få en gratis kravall och upp till 60 procent rabatt!\n"
+#~ "            "

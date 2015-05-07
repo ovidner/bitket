@@ -1,18 +1,52 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DeleteView
+from django.views.generic import ListView, DeleteView, FormView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
 from django.http import Http404
+from django.shortcuts import render_to_response
 
-from datetime import datetime
+from guardian.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-from guardian.mixins import LoginRequiredMixin
+from tickle.models import Holding, Product, ShoppingCart, Person, Delivery
+from tickle.forms import TurboDeliveryForm
 
-from tickle.models.products import Holding, Purchase, Product, ShoppingCart
-from tickle.utils.mail import TemplatedEmail
+
+class TurboDeliveryAjaxView(PermissionRequiredMixin, FormView):
+    form_class = TurboDeliveryForm
+    template_name = 'tickle/turbo_delivery_ajax.html'
+
+    accept_global_perms = True
+    permission_required = 'tickle.add_delivery'
+
+    def form_valid(self, form):
+        try:
+            person = form.get_person()
+            person_error = None
+            # Forces queryset evaluation by calling list()
+            historic_deliveries = list(form.get_auto_holdings().delivered())
+            delivery = form.deliver_auto_holdings()
+        except Person.DoesNotExist:
+            person = None
+            person_error = _('Person not found.')
+            delivery = None
+            historic_deliveries = None
+        except Person.MultipleObjectsReturned:
+            person = None
+            person_error = _('Multiple people found.')
+            delivery = None
+            historic_deliveries = None
+
+        return render_to_response(
+            self.get_template_names(),
+            self.get_context_data(person=person, person_error=person_error, delivery=delivery,
+                                  historic_deliveries=historic_deliveries))
+
+
+class TurboDeliveryView(TurboDeliveryAjaxView):
+    template_name = 'tickle/turbo_delivery.html'
 
 
 class PurchaseView(LoginRequiredMixin, ListView):
