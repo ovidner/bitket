@@ -81,8 +81,9 @@ class DeliveryAdmin(admin.ModelAdmin):
 
 class HoldingInline(admin.TabularInline):
     model = Holding
-    raw_id_fields = ('person',)
-    extra = 1
+    raw_id_fields = ('person', 'product', 'purchase', 'shopping_cart')
+    readonly_fields = ('shopping_cart',)
+    extra = 0
 
 
 @admin.register(Purchase)
@@ -182,7 +183,7 @@ class PersonChangeList(ChangeList):
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    inlines = (DiscountEligibilityInline, PurchaseInline, TickleUserInline,)
+    inlines = (DiscountEligibilityInline, PurchaseInline, HoldingInline, TickleUserInline,)
 
     list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'special_nutrition_render', 'notes')
     list_display_links = ('first_name', 'last_name', 'pid')
