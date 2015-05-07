@@ -14,7 +14,7 @@ from guardian.models import UserObjectPermission, GroupObjectPermission
 from suit.admin import SortableTabularInline, SortableModelAdmin
 
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, \
-    TickleUser, StudentUnionDiscount, ProductDiscount, Discount, HoldingDiscount, PersonalDiscount
+    TickleUser, StudentUnionDiscount, ProductDiscount, Discount, HoldingDiscount, PersonalDiscount, DiscountEligibility
 from tickle.views.admin import AddProductToShoppingCartAdminView
 
 
@@ -61,9 +61,12 @@ class HoldingDiscountInline(SortableTabularInline):
 @admin.register(Holding)
 class HoldingAdmin(admin.ModelAdmin):
     list_display = ('person', 'product',)
-
+    list_filter = ('product',)
+    
     raw_id_fields = ('person', 'purchase', 'shopping_cart',)
     inlines = (HoldingDiscountInline,)
+
+    search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__pid_code')
 
 
 @admin.register(TicketType)
@@ -87,6 +90,8 @@ class PurchaseAdmin(admin.ModelAdmin):
     inlines = (HoldingInline,)
     list_display = ('person', 'purchased')
     date_hierarchy = 'purchased'
+
+    search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__pid_code')
 
 
 @admin.register(SpecialNutrition)
@@ -141,6 +146,16 @@ class TickleUserInline(admin.StackedInline):
     exclude = ('password',)
 
 
+class DiscountEligibilityInline(admin.TabularInline):
+    model = DiscountEligibility
+    extra = 0
+    can_delete = 0
+    readonly_fields = ('discount',)
+
+    def has_add_permission(self, request):
+        return False
+
+
 class EventVisitorListFilter(admin.SimpleListFilter):
     title = _('event')
 
@@ -167,7 +182,7 @@ class PersonChangeList(ChangeList):
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    inlines = (TickleUserInline, PurchaseInline,)
+    inlines = (DiscountEligibilityInline, PurchaseInline, TickleUserInline,)
 
     list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'special_nutrition_render', 'notes')
     list_display_links = ('first_name', 'last_name', 'pid')
