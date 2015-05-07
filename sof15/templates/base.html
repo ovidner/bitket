@@ -56,6 +56,9 @@
                                     {% if user.is_staff %}
                                         <li><a href="{% url 'admin:index' %}">{% trans 'Administration' %}</a></li>
                                     {% endif %}
+                                    {% if perms.tickle.add_delivery %}
+                                        <li><a href="{% url 'tickle:turbo_delivery' %}">{% trans 'Turbo delivery' %}</a></li>
+                                    {% endif %}
                                     {% if user.has_usable_password %}
                                         <li><a href="{% url 'change_password' %}">{% trans 'Change password' %}</a></li>
                                     {% endif %}
