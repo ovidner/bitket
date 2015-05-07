@@ -311,7 +311,7 @@ class TickleUser(AbstractBaseUser, PermissionsMixin):
         self.set_password(password)
 
         msg = TemplatedEmail(
-            subject='Världens största ölprovning på SOF!',
+            subject='Användarkonto hos SOF',
             to=[self.person.pretty_email],
             body_template_html='tickle/email/tickle_user_account_created.html',
             context={
