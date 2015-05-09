@@ -116,10 +116,14 @@
 
                         {% if holding.transferable %}
                             <div class="panel-footer text-right">
-                                 {% if holding.transferee %}
-                                    <small class="text-muted text-left">{% trans 'Transfer pending'%} &nbsp;&nbsp;</small>
+                                {% if holding.transferee %}
+                                    <form action="{% url 'tickle:cancel_transfer' holding.pk %}" method="post">{% csrf_token %}
+                                        <small class="text-muted text-left">{% trans 'Transfer pending'%} &nbsp;&nbsp;</small>
+                                        <button type="submit" class="btn btn-xs btn-danger" name="_cancel_transfer">{% trans 'Cancle transfer' %}</button>
+                                    </form>
+                                {% else %}
+                                    <a href="{% url 'tickle:transfer_ticket' holding.pk %}" class="btn btn-xs btn-primary">{% trans 'Transfer ticket'%}</a>
                                 {% endif %}
-                                <a href="{% url 'tickle:transfer_ticket' holding.pk %}" class="btn btn-sm btn-primary">{% trans 'Transfer ticket'%}</a>
                             </div>
                         {% endif %}
                     </div>

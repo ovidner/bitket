@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DeleteView, UpdateView
+from django.views.generic import ListView, DeleteView, UpdateView, FormView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
@@ -152,6 +152,25 @@ class ExchangeView(LoginRequiredMixin, UpdateView):
             tags=['tickle', 'ticket', 'transfer'])
         msg.send()
         return redirect('tickle:transfer_ticket_success')
+
+
+@login_required()
+def cancel_transfer(request, pk):
+    if request.POST:
+        try:
+            holding = Holding.objects.get(pk=pk)
+        except Holding.DoesNotExist:
+            raise Http404()
+        person = request.user.person
+        if holding.person != person or holding.purchase.person != person or not holding.transferable:
+            raise PermissionDenied
+
+        holding.transferee = None
+        holding.save()
+        messages.info(request, _('Transfer of %s has been canceled.') % holding.product.public_name)
+        return redirect('profile', pk=person.pk)
+
+    raise Http404()
 
 
 class ConfirmExchangeView(LoginRequiredMixin, UpdateView):

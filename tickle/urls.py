@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
 from tickle.views.products import PurchaseView, ShoppingCartView, ShoppingCartDeleteView, add_to_shopping_cart, \
-    complete_purchase, ExchangeView, ConfirmExchangeView
+    complete_purchase, ExchangeView, ConfirmExchangeView, cancel_transfer
 
 urlpatterns = patterns(
     '',
@@ -14,11 +14,12 @@ urlpatterns = patterns(
 
     url(r'^shoppingcart/add/(?P<pk>\d+)$', add_to_shopping_cart, name='shopping_cart_add'),
     url(r'^shoppingcart/remove/(?P<pk>\d+)$', ShoppingCartDeleteView.as_view(), name='shopping_cart_remove'),
-    url(r'^purchase/exchange/(?P<pk>\d+)$', ExchangeView.as_view(), name='transfer_ticket'),
-    url(r'^purchase/exchange/confirm/(?P<pk>\d+)$', ConfirmExchangeView.as_view(), name='transfer_ticket_confirm'),
-    url(r'^purchase/exchange/success$', TemplateView.as_view(template_name='tickle/transfer_success.html'),
+    url(r'^purchase/transfer/(?P<pk>\d+)$', ExchangeView.as_view(), name='transfer_ticket'),
+    url(r'^purchase/transfer/cancel/(?P<pk>\d+)$', cancel_transfer, name='cancel_transfer'),
+    url(r'^purchase/transfer/confirm/(?P<pk>\d+)$', ConfirmExchangeView.as_view(), name='transfer_ticket_confirm'),
+    url(r'^purchase/transfer/success$', TemplateView.as_view(template_name='tickle/transfer_success.html'),
         name='transfer_ticket_success'),
-    url(r'^purchase/exchange/confirm/success$', TemplateView.as_view(template_name='tickle/transfer_confirm_success.html'),
+    url(r'^purchase/transfer/confirm/success$', TemplateView.as_view(template_name='tickle/transfer_confirm_success.html'),
         name='transfer_ticket_confirm_success'),
 
 )

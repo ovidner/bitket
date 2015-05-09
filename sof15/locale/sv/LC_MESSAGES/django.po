@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 12:48+0200\n"
+"POT-Creation-Date: 2015-05-09 11:15+0200\n"
 "PO-Revision-Date: 2015-05-04 13:34+0100\n"
+"Last-Translator: Olle Vidner <olle@vidner.se>\n"
+"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: Olle Vidner <olle@vidner.se>\n"
-"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "X-Generator: Poedit 1.7.6\n"
 
 #: sof15/settings.py:165
@@ -151,30 +151,34 @@ msgstr ""
 "\">registrering</a>.\n"
 "            "
 
-#: sof15/templates/people/profile.html:111
+#: sof15/templates/people/profile.html:110
 msgid "Quantity"
 msgstr "Kvantitet"
 
-#: sof15/templates/people/profile.html:113
+#: sof15/templates/people/profile.html:112
 msgid "Price"
 msgstr "Pris"
 
-#: sof15/templates/people/profile.html:121
+#: sof15/templates/people/profile.html:122
 msgid "Transfer pending"
 msgstr "Överlåtning väntar"
 
 #: sof15/templates/people/profile.html:123
+msgid "Cancle transfer"
+msgstr "Avbryt överlåtning"
+
+#: sof15/templates/people/profile.html:126
 msgid "Transfer ticket"
 msgstr "Överlåt biljett"
 
-#: sof15/templates/people/profile.html:160
+#: sof15/templates/people/profile.html:164
 msgid "Orchestra representative"
 msgstr "Orkesterrepresentant"
 
-#: sof15/templates/people/profile.html:164
+#: sof15/templates/people/profile.html:168
 msgid "Approve members"
 msgstr "Godkänn medlemmar"
 
-#: sof15/templates/people/profile.html:165
+#: sof15/templates/people/profile.html:169
 msgid "Review invoice data"
 msgstr "Granska fakturaunderlag"
