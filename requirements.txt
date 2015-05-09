@@ -1,3 +1,4 @@
+baluhn==0.1
 dj-database-url==0.3.0
 dj-email-url==0.0.2
 Django==1.8.1
