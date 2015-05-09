@@ -1,0 +1,18 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>{% trans "Ticket transfer" %}</h1>
+    <p><strong>{% trans "Hi" %} {{ holding.transferee.first_name }}!</strong></p>
+    <p>
+        {% blocktrans %}
+            {{ holding.person.full_name }} wants to transfer a {{ holding.product.public_name }} ticket to you. The
+            invoice for the ticket will also be transferred to you. If you agree to this and want to complete the
+            transfer, please follow the link below. You can also confirm the transfer from your profile.
+        {% endblocktrans %}
+    </p>
+
+    <a href="{% url 'tickle:transfer_ticket_confirm' holding.pk %}">{% trans "Proceed with transfer" %}</a>
+
+</body>
+</html>

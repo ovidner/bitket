@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} – {% trans 'Transfere completed' %}{% endblock %}
+
+{% block header %}{% trans 'Transfere completed' %}{% endblock %}
+
+{% block content %}
+    <p>
+        {% blocktrans %}
+            The ticket has been transferred to you. You will be receiving the ticket via email shortly.
+        {% endblocktrans %}
+    </p>
+{% endblock content %}

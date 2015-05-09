@@ -81,7 +81,9 @@ class HoldingPurchasedListFilter(admin.SimpleListFilter):
 class HoldingAdmin(admin.ModelAdmin):
     list_display = ('person', 'product',)
     list_filter = ('product', HoldingPurchasedListFilter)
-    
+
+    exclude = ('transferee',)
+
     raw_id_fields = ('person', 'purchase', 'shopping_cart',)
     inlines = (HoldingDiscountInline,)
 
@@ -118,8 +120,12 @@ class DeliveryAdmin(admin.ModelAdmin):
 class HoldingInline(admin.TabularInline):
     model = Holding
     raw_id_fields = ('person', 'product', 'purchase', 'shopping_cart')
-    readonly_fields = ('shopping_cart',)
+    readonly_fields = ('shopping_cart', 'transferee')
     extra = 0
+
+
+class PersonHoldingInline(HoldingInline):
+    fk_name = 'person'
 
 
 @admin.register(Purchase)
@@ -219,7 +225,7 @@ class PersonChangeList(ChangeList):
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    inlines = (DiscountEligibilityInline, PurchaseInline, HoldingInline, TickleUserInline,)
+    inlines = (DiscountEligibilityInline, PurchaseInline, PersonHoldingInline, TickleUserInline,)
 
     list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'special_nutrition_render', 'notes')
     list_display_links = ('first_name', 'last_name', 'pid')

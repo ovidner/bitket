@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DeleteView, FormView
+from django.views.generic import ListView, DeleteView, UpdateView, FormView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
+from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.http import Http404
+from django.db.transaction import atomic
 from django.shortcuts import render_to_response
 
 from guardian.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from tickle.models import Holding, Product, ShoppingCart, Person, Delivery, ReachedQuota
 from tickle.forms import TurboDeliveryForm
+
+from tickle.forms import SearchPersonForm
+from tickle.models.products import Holding, Purchase, Product, ShoppingCart, Discount
+from tickle.utils.mail import TemplatedEmail
 
 
 class TurboDeliveryAjaxView(PermissionRequiredMixin, FormView):
@@ -148,3 +154,104 @@ def complete_purchase(request):
         return redirect('tickle:purchase_completed_success')
 
     raise Http404()
+
+
+class ExchangeView(LoginRequiredMixin, UpdateView):
+    model = Holding
+    form_class = SearchPersonForm
+    template_name = 'tickle/transfer.html'
+
+    def verify(self, holding):
+        person = self.request.user.person
+        if holding.person != person or holding.purchase.person != person or not holding.transferable or holding.delivered:
+            raise PermissionDenied
+
+    def get(self, request, *args, **kwargs):
+        self.verify(self.get_object())
+        return super(ExchangeView, self).get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        holding = self.get_object()
+        self.verify(holding)
+
+        person = form.get_person()
+        holding.transferee = person
+        holding.save()
+
+        msg = TemplatedEmail(
+            to=[person.pretty_email],
+            from_email='Biljett SOF15 <biljett@sof15.se>',
+            subject_template='tickle/email/transfer_subject.txt',
+            body_template_html='tickle/email/transfer.html',
+            context={
+                'holding': holding,
+            },
+            tags=['tickle', 'ticket', 'transfer'])
+        msg.send()
+        return redirect('tickle:transfer_ticket_success')
+
+
+@login_required()
+def cancel_transfer(request, pk):
+    if request.POST:
+        try:
+            holding = Holding.objects.get(pk=pk)
+        except Holding.DoesNotExist:
+            raise Http404()
+        person = request.user.person
+        if holding.person != person or holding.purchase.person != person or not holding.transferable:
+            raise PermissionDenied
+
+        holding.transferee = None
+        holding.save()
+        messages.info(request, _('Transfer of %s has been canceled.') % holding.product.public_name)
+        return redirect('profile', pk=person.pk)
+
+    raise Http404()
+
+
+class ConfirmExchangeView(LoginRequiredMixin, UpdateView):
+    model = Holding
+    fields = []
+    template_name = 'tickle/transfer_confirm.html'
+
+    def verify(self, holding):
+        person = self.request.user.person
+        if holding.transferee != person or not holding.transferable or holding.delivered:
+            raise PermissionDenied
+
+    def get(self, request, *args, **kwargs):
+        self.verify(self.get_object())
+        return super(ConfirmExchangeView, self).get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        holding = self.get_object()
+        self.verify(holding)
+
+        if '_confirm' in self.request.POST:
+            transferee = holding.transferee
+            person = holding.person
+            purchase = holding.purchase
+            discounted_total = holding.discounted_total
+
+            with atomic():
+                holding.person = transferee
+                holding.transferee = None
+                if purchase.holdings.count() > 1:
+                    holding.purchase = Purchase.objects.create(person=transferee, purchased=purchase.purchased)  # Now or previous purchase time?
+                else:
+                    purchase.person = transferee
+                    purchase.save()
+                    holding.purchase = purchase
+                # Recalculate discounts.
+                holding.holding_discounts.all().delete()
+                Discount.objects.map_eligibilities(transferee)
+                holding.product.product_discounts.eligible(transferee).copy_to_holding_discounts(holding)
+                holding.invalidate_cached_discounts()
+                holding.save()
+
+            return redirect('tickle:transfer_ticket_confirm_success')
+        elif '_decline' in self.request.POST:
+            holding.transferee = None
+            holding.save()
+        return redirect('profile', pk=self.request.user.person.pk)
