@@ -8,14 +8,51 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.http import Http404
 from django.db.transaction import atomic
+from django.shortcuts import render_to_response
 
-from datetime import datetime
+from guardian.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-from guardian.mixins import LoginRequiredMixin
+from tickle.models import Holding, Product, ShoppingCart, Person, Delivery, ReachedQuota
+from tickle.forms import TurboDeliveryForm
 
 from tickle.forms import SearchPersonForm
 from tickle.models.products import Holding, Purchase, Product, ShoppingCart
 from tickle.utils.mail import TemplatedEmail
+
+
+class TurboDeliveryAjaxView(PermissionRequiredMixin, FormView):
+    form_class = TurboDeliveryForm
+    template_name = 'tickle/turbo_delivery_ajax.html'
+
+    accept_global_perms = True
+    permission_required = 'tickle.add_delivery'
+
+    def form_valid(self, form):
+        try:
+            person = form.get_person()
+            person_error = None
+            # Forces queryset evaluation by calling list()
+            historic_deliveries = list(form.get_auto_holdings().delivered())
+            delivery = form.deliver_auto_holdings()
+        except Person.DoesNotExist:
+            person = None
+            person_error = _('Person not found.')
+            delivery = None
+            historic_deliveries = None
+        except Person.MultipleObjectsReturned:
+            person = None
+            person_error = _('Multiple people found.')
+            delivery = None
+            historic_deliveries = None
+
+        return render_to_response(
+            self.get_template_names(),
+            self.get_context_data(person=person, person_error=person_error, delivery=delivery,
+                                  historic_deliveries=historic_deliveries))
+
+
+class TurboDeliveryView(TurboDeliveryAjaxView):
+    template_name = 'tickle/turbo_delivery.html'
 
 
 class PurchaseView(LoginRequiredMixin, ListView):
@@ -110,7 +147,7 @@ def complete_purchase(request):
 
         try:
             shopping_cart.purchase()
-        except Exception as e:
+        except ReachedQuota as e:
             messages.warning(request, _('Sorry but %s is out of stock.') % e.args)
             return redirect('tickle:purchase')
 
@@ -211,15 +248,6 @@ class ConfirmExchangeView(LoginRequiredMixin, UpdateView):
                 holding.product.product_discounts.eligible(transferee).copy_to_holding_discounts(holding)
                 holding.invalidate_cached_discounts()
                 holding.save()
-
-                diff = discounted_total - holding.discounted_total
-                if diff > 0:
-                    # Price difference, invoice original owner with the difference.
-                    product = Product.objects.get_or_create(name='Transfer difference', price=diff,
-                                                            defaults={'order': 100, 'published': False,
-                                                                      'transferable': False})[0]
-                    purchase = Purchase.objects.create(person=person, purchased=datetime.now())
-                    Holding.objects.create(person=person, purchase=purchase, product=product)
 
             return redirect('tickle:transfer_ticket_confirm_success')
         elif '_decline' in self.request.POST:

@@ -2,8 +2,8 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
-from tickle.views.products import PurchaseView, ShoppingCartView, ShoppingCartDeleteView, add_to_shopping_cart, \
-    complete_purchase, ExchangeView, ConfirmExchangeView, cancel_transfer
+from tickle.views.products import PurchaseView, ShoppingCartDeleteView, TurboDeliveryView, \
+    TurboDeliveryAjaxView, add_to_shopping_cart, complete_purchase, ExchangeView, ConfirmExchangeView, cancel_transfer
 
 urlpatterns = patterns(
     '',
@@ -22,4 +22,6 @@ urlpatterns = patterns(
     url(r'^purchase/transfer/confirm/success$', TemplateView.as_view(template_name='tickle/transfer_confirm_success.html'),
         name='transfer_ticket_confirm_success'),
 
+    url(r'^turbo-delivery/$', TurboDeliveryView.as_view(), name='turbo_delivery'),
+    url(r'^turbo-delivery/ajax/$', TurboDeliveryAjaxView.as_view(), name='turbo_delivery_ajax'),
 )

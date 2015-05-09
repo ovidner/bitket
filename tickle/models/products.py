@@ -128,6 +128,18 @@ class TicketType(Product):
 
 
 class HoldingQuerySet(models.QuerySet):
+    def deliverable(self):
+        # todo: define further
+        return self.purchased().undelivered()
+
+    def delivered(self):
+        # todo: extend for partial deliveries
+        return self.filter(deliveries__isnull=False)
+
+    def undelivered(self):
+        # todo: extend for partial deliveries
+        return self.filter(deliveries__isnull=True)
+
     def purchased(self):
         return self.filter(purchase__isnull=False)
 
@@ -252,15 +264,20 @@ class Holding(models.Model):
 
 @python_2_unicode_compatible
 class Delivery(models.Model):
-    holdings = models.ManyToManyField('Holding', verbose_name=_('holdings'))
-    delivered = models.DateTimeField(verbose_name=_('delivered'))
+    # todo: extend for partial deliveries
+    holdings = models.ManyToManyField('Holding', related_name='deliveries', verbose_name=_('holdings'))
+    timestamp = models.DateTimeField(default=now, verbose_name=_('timestamp'))
 
     class Meta:
         verbose_name = _('delivery')
         verbose_name_plural = _('deliveries')
 
     def __str__(self):
-        return u'{0}, {1}'.format(self.holdings, self.delivered)
+        return '{0}'.format(self.timestamp)
+
+
+class ReachedQuota(Exception):
+    pass
 
 
 @python_2_unicode_compatible
@@ -278,7 +295,7 @@ class ShoppingCart(models.Model):
         with atomic():
             for holding in self.holdings.all():
                 if holding.product.has_reached_quota():
-                    raise Exception(holding.product)
+                    raise ReachedQuota(holding.product)
 
             purchase = Purchase.objects.create(person=self.person, purchased=now())
 

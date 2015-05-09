@@ -69,6 +69,7 @@ class Functionary(models.Model):
 class FunctionaryDiscount(BaseDiscount):
     shifts = models.PositiveIntegerField(verbose_name=_('shifts'),
                                          help_text=_('Number of shifts to work to be eligible for this discount.'))
+    functionary = models.BooleanField(default=True, verbose_name=_('must be functionary'))
 
     class Meta:
         ordering = ('shifts',)
@@ -76,10 +77,15 @@ class FunctionaryDiscount(BaseDiscount):
         verbose_name_plural = _('functionary discounts')
 
     def __str__(self):
-        return '{0} {1}, {2}'.format(self.shifts, _('shift/s'), self.readable_discount())
+        return '{0} {1} ({2}), {3}'.format(self.shifts, _('shift/s'), self.functionary, self.readable_discount())
 
     def eligible(self, person):
-        return hasattr(person, 'functionary') and person.shift_registrations.count() == self.shifts
+        if self.functionary:
+            functionary = hasattr(person, 'functionary')
+        else:
+            functionary = True
+
+        return person.shift_registrations.count() == self.shifts and functionary
 
     def description(self):
         return '{0}, {1}'.format(self._meta.verbose_name, ungettext_lazy("%d shift", "%d shifts") % self.shifts)

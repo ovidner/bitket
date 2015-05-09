@@ -13,8 +13,50 @@ from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Div
 from crispy_forms.bootstrap import InlineCheckboxes
 
-from tickle.models import Person, Product, Holding, ShoppingCart
+from tickle.models import Person, Product, Holding, ShoppingCart, Delivery
 from tickle.fields import SEPersonalIdentityNumberField, LiUIDField
+
+
+class TurboDeliveryForm(forms.Form):
+    liu_card_rfid = forms.CharField(required=False, label=_('RFID card number'))
+    pid = SEPersonalIdentityNumberField(required=False, label=_('Personal identity number'))
+
+    auto_products = forms.ModelMultipleChoiceField(queryset=Product.objects.all(), label=_('Auto deliver products'))
+
+    def clean(self):
+        data = super(TurboDeliveryForm, self).clean()
+
+        if not data.get('liu_card_rfid') and data.get('pid') == (None, None, False):
+            msg = _('Must supply RFID number or PID.')
+            self.add_error('liu_card_rfid', msg)
+            self.add_error('pid', msg)
+
+        return data
+
+    def get_person(self):
+        liu_card_rfid = self.cleaned_data['liu_card_rfid']
+        pid = self.cleaned_data['pid']
+
+        if liu_card_rfid:
+            get_kwargs = {'liu_card_rfid': liu_card_rfid}
+        else:
+            get_kwargs = {'birth_date': pid[0], 'pid_code': pid[1], 'pid_coordination': pid[2]}
+
+        return Person.objects.get(**get_kwargs)
+
+    def get_auto_holdings(self):
+        return Holding.objects.filter(person=self.get_person(), product__in=self.cleaned_data['auto_products'])
+
+    def deliver_auto_holdings(self):
+        holdings = self.get_auto_holdings().deliverable()
+
+        if holdings:
+            delivery = Delivery.objects.create()
+            delivery.holdings = self.get_auto_holdings().deliverable()
+        else:
+            delivery = None
+
+        return delivery
 
 
 class AcceptForm(forms.Form):

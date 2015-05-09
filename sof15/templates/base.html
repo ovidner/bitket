@@ -42,7 +42,7 @@
                         <li><a href="{% url 'tickle:purchase' %}">{% trans 'Purchase tickets' %}</a></li>
                         {% comment %}<li><a href="{% url 'orchard:register_orchestra_member' %}">{% trans 'Orchestra member' %}</a></li>{% endcomment %}
                         {% comment %}<li><a href="{% url 'karthago:create_kartege_entry' %}">{% trans 'Kårtege applicant' %}</a></li>{% endcomment %}
-                        <li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>
+                        {% comment %}<li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>{% endcomment %}
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
@@ -55,6 +55,9 @@
                                     <li><a href="{% url 'profile' user.person.pk %}">{% trans 'Profile' %}</a></li>
                                     {% if user.is_staff %}
                                         <li><a href="{% url 'admin:index' %}">{% trans 'Administration' %}</a></li>
+                                    {% endif %}
+                                    {% if perms.tickle.add_delivery %}
+                                        <li><a href="{% url 'tickle:turbo_delivery' %}">{% trans 'Turbo delivery' %}</a></li>
                                     {% endif %}
                                     {% if user.has_usable_password %}
                                         <li><a href="{% url 'change_password' %}">{% trans 'Change password' %}</a></li>
@@ -100,7 +103,7 @@
                 <li><a href="{% url 'tickle:purchase' %}">{% trans 'Purchase tickets' %}</a></li>
                 {% comment %}<li><a href="{% url 'orchard:register_orchestra_member' %}">Anmälan av orkestermedlem</a></li>{% endcomment %}
                 {% comment %}<li><a href="{% url 'karthago:create_kartege_entry' %}">Ansökan om kårtegebidrag</a></li>{% endcomment %}
-                <li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>
+                {% comment %}<li><a href="{% url 'fungus:register_functionary' %}">{% trans 'Become a functionary' %}</a></li>{% endcomment %}
             </ul>
         {% endblock content %}
     </div>
