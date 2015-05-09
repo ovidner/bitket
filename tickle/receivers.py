@@ -30,4 +30,8 @@ def send_ticket(sender, instance, **kwargs):
         return
 
     if instance.product.is_ticket_type and instance.purchase:
-        instance.send_ticket()
+        if instance.transferee:
+            # todo: send something insightful
+            pass
+        else:
+            instance.send_ticket()

@@ -12,7 +12,7 @@
         {% endblocktrans %}
     </p>
 
-    <a href="{% url 'tickle:transfer_ticket_confirm' holding.pk %}">{% trans "Proceed with transfer" %}</a>
+    <a href="{{ host }}{% url 'tickle:transfer_ticket_confirm' holding.pk %}">{% trans "Proceed with transfer" %}</a>
 
 </body>
 </html>

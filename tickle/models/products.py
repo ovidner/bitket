@@ -8,6 +8,7 @@ from django.utils.functional import cached_property
 from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from django.db.transaction import atomic
+from django.conf import settings
 
 from mptt.models import MPTTModel, TreeForeignKey
 from decimal import Decimal
@@ -211,6 +212,7 @@ class Holding(models.Model):
             body_template_html='tickle/email/ticket.html',
             context={
                 'holding': self,
+                'host': settings.PRIMARY_HOST,
             },
             tags=['tickle', 'ticket'])
         msg.send()
