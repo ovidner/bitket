@@ -7,7 +7,7 @@ from datetime import timedelta
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.db import models
-from django.db.models import Sum, F
+from django.db.models import Sum, F, ExpressionWrapper
 from django.utils.timezone import now
 from django.conf import settings
 
@@ -52,7 +52,7 @@ class Invoice(models.Model):
 
     @property
     def total(self):
-        return self.rows.aggregate(total=Sum(F('price') * F('quantity')))['total']
+        return self.rows.aggregate(total=ExpressionWrapper(Sum(F('price') * F('quantity')), output_field=models.DecimalField()))['total']
 
     def send(self):
         if self.total != 0:
