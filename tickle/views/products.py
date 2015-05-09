@@ -16,7 +16,7 @@ from tickle.models import Holding, Product, ShoppingCart, Person, Delivery, Reac
 from tickle.forms import TurboDeliveryForm
 
 from tickle.forms import SearchPersonForm
-from tickle.models.products import Holding, Purchase, Product, ShoppingCart
+from tickle.models.products import Holding, Purchase, Product, ShoppingCart, Discount
 from tickle.utils.mail import TemplatedEmail
 
 
@@ -245,6 +245,7 @@ class ConfirmExchangeView(LoginRequiredMixin, UpdateView):
                     holding.purchase = purchase
                 # Recalculate discounts.
                 holding.holding_discounts.all().delete()
+                Discount.objects.map_eligibilities(transferee)
                 holding.product.product_discounts.eligible(transferee).copy_to_holding_discounts(holding)
                 holding.invalidate_cached_discounts()
                 holding.save()
