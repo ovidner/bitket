@@ -231,6 +231,10 @@ class Holding(models.Model):
         except AttributeError:
             pass
 
+    @property
+    def delivered(self):
+        return self.deliveries.exists()
+
     def _get_transferable(self):
         if self._transferable is None:
             return self.product.transferable

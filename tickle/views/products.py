@@ -126,7 +126,7 @@ class ExchangeView(LoginRequiredMixin, UpdateView):
 
     def verify(self, holding):
         person = self.request.user.person
-        if holding.person != person or holding.purchase.person != person or not holding.transferable:
+        if holding.person != person or holding.purchase.person != person or not holding.transferable or holding.delivered:
             raise PermissionDenied
 
     def get(self, request, *args, **kwargs):
@@ -180,7 +180,7 @@ class ConfirmExchangeView(LoginRequiredMixin, UpdateView):
 
     def verify(self, holding):
         person = self.request.user.person
-        if holding.transferee != person or not holding.transferable:
+        if holding.transferee != person or not holding.transferable or holding.delivered:
             raise PermissionDenied
 
     def get(self, request, *args, **kwargs):
