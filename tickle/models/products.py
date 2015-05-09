@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
@@ -9,13 +9,11 @@ from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from django.db.transaction import atomic
 
-from mptt.models import MPTTModel, TreeForeignKey
 from decimal import Decimal
 
 from tickle.models.people import Person
-from tickle.models.discounts import Discount
 from tickle.utils.mail import TemplatedEmail
-from tickle.utils.format import format_percent
+from invar.models import InvoiceRow, HoldingInvoiceRow
 
 
 @python_2_unicode_compatible
@@ -128,17 +126,42 @@ class TicketType(Product):
 
 
 class HoldingQuerySet(models.QuerySet):
+    # METHODS RETURNING HOLDING QUERYSETS #
+
+    def valid(self):
+        return self.filter(invalidated=False)
+
+    def invalid(self):
+        return self.filter(invalidated=True)
+
     def purchased(self):
         return self.filter(purchase__isnull=False)
 
-    def quantity(self):
-        return self.aggregate(Sum('quantity'))['quantity__sum'] or 0
+    def unpurchased(self):
+        return self.filter(purchase__isnull=True)
+
+    def invoiced(self):
+        return self.filter(
+            holding_invoice_rows__isnull=False,
+            holding_invoice_rows__invoice_row__invoice__invalidation__isnull=True).distinct()
+
+    def uninvoiced(self):
+        return self.filter(
+            Q(holding_invoice_rows__isnull=True) |
+            ~Q(holding_invoice_rows__invoice_row__invoice__invalidation__isnull=True)).distinct()
 
     def tickets(self):
         return self.filter(product__ticket_type__isnull=False)
 
     def gadgets(self):
         return self.filter(product__ticket_type__isnull=True)
+
+    # METHODS RETURNING OTHER QUERYSETS #
+
+    def holders(self):
+        return Person.objects.filter(holdings__in=self).distinct()
+
+    # METHODS RETURNING NUMERIC VALUES #
 
     def total_cost(self):
         return self.annotate(price=Sum('product__price')).aggregate(Sum('price', field='price*quantity'))['price__sum']\
@@ -150,8 +173,57 @@ class HoldingQuerySet(models.QuerySet):
             total += i.discounted_total
         return total
 
-    def holders(self):
-        return Person.objects.filter(holdings__in=self).distinct()
+    def quantity(self):
+        return self.aggregate(Sum('quantity'))['quantity__sum'] or 0
+
+    # METHODS MANIPULATING DATA #
+
+    def remap_discounts(self):
+        with atomic():
+            for i in self:
+                print i
+                i.remap_discounts()
+
+    def add_to_invoice(self, invoice):
+        for i in self:
+            HoldingInvoiceRow.objects.create(
+                holding=i,
+                invoice_row=InvoiceRow.objects.create(
+                    invoice=invoice,
+                    title=i.product.public_name,
+                    person='{0} ({1})'.format(i.person.full_name, i.person.pid),
+                    quantity=i.quantity,
+                    price=i.discounted_price),
+            )
+
+    def invoice_person(self, person, send=True):
+        if not self:
+            return
+
+        from invar.models import Invoice, PersonInvoiceHandle
+
+        invoice = Invoice(
+            receiver_name=person.full_name,
+            receiver_organisation='',
+            receiver_pid=person.pid or '',
+            receiver_email=person.email,
+        )
+
+        if not send:
+            invoice.issue_date = None
+            invoice.due_date = None
+
+        with atomic():
+            invoice.save()
+            invoice.connect_handle()
+            PersonInvoiceHandle.objects.create(handle=invoice.handle, person=person)
+            self.add_to_invoice(invoice)
+
+        # Problems with sending shouldn't break the transaction
+        if send:
+            invoice.send()
+
+        return invoice
 
 
 @python_2_unicode_compatible
@@ -167,6 +239,8 @@ class Holding(models.Model):
                                             help_text=_('If people should be able to transfer this product to other people. Note: this will override the product setting.'))
 
     quantity = models.PositiveIntegerField(default=1, verbose_name=_('quantity'))
+
+    invalidated = models.BooleanField(default=False, verbose_name=_('invalidated'))
 
     objects = HoldingQuerySet.as_manager()
 
@@ -217,6 +291,11 @@ class Holding(models.Model):
 
         return price
 
+    def remap_discounts(self):
+        if self.purchase:
+            self.holding_discounts.all().delete()
+            self.product.product_discounts.eligible(person=self.person).copy_to_holding_discounts(holding=self)
+
     @cached_property
     def discounted_total(self):
         return self.discounted_price * self.quantity
@@ -262,13 +341,15 @@ class ShoppingCart(models.Model):
 
     def purchase(self):
         with atomic():
-            for holding in self.holdings.all():
+            holdings = self.holdings.all()
+
+            for holding in holdings:
                 if holding.product.has_reached_quota():
                     raise Exception(holding.product)
 
             purchase = Purchase.objects.create(person=self.person, purchased=now())
 
-            for holding in self.holdings.all():
+            for holding in holdings:
                 holding.shopping_cart = None
                 holding.purchase = purchase
 
@@ -276,6 +357,8 @@ class ShoppingCart(models.Model):
                 holding.product.product_discounts.eligible(self.person).copy_to_holding_discounts(holding)
 
                 holding.save()
+
+            holdings.invoice_person(self.person)
 
 
 class PurchaseQuerySet(models.QuerySet):

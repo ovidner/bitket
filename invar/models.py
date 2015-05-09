@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
-from django.db import models
-import django.utils.timezone
-from django.utils.timezone import now
+from __future__ import unicode_literals
 import datetime
-from random import randint
-from tickle.models.products import Holding
-from enumfields import EnumField
-from enum import Enum
-import tickle.utils.mail as mail
+from copy import deepcopy
+
+from django.utils.encoding import python_2_unicode_compatible
+from django.utils.translation import ungettext_lazy, ugettext_lazy as _
+from django.db import models
+from django.db.models import Sum, F
+from django.utils.timezone import now
+from django.conf import settings
+
+from tickle.utils.mail import TemplatedEmail
+from invar.utils import ocr
 
 
-def default_invoice_creation_date():
+def default_invoice_issue_date():
     return now()
 
 
@@ -18,107 +22,186 @@ def default_invoice_due_date():
     return now() + datetime.timedelta(days=14)
 
 
+@python_2_unicode_compatible
 class Invoice(models.Model):
-    class OrderStatus(Enum):
-        GENERATED = 'g'
-        SENT = 's'
-        PAYED = 'p'
-        #makulerad!
-        OBLITERATED = 'o'
-        LATE = 'L'
+    receiver_name = models.CharField(max_length=255, blank=True, verbose_name=_('receiver name'))
+    receiver_organisation = models.CharField(max_length=255, blank=True, verbose_name=_('receiver organisation'))
+    receiver_pid = models.CharField(max_length=11, blank=True, verbose_name=_('receiver PID'))
+    receiver_email = models.EmailField(verbose_name=_('receiver email address'))
 
-    invoice_number = models.IntegerField(unique=True, verbose_name='Fakturanummer', null=True, default=None)
-    customer_name = models.CharField(max_length=255, verbose_name='Namn', default='')
-    customer_organization = models.CharField(max_length=255, default='', verbose_name='Förening')
-    customer_pid = models.CharField(max_length=10, verbose_name='Personnummer')
-    customer_email = models.EmailField(max_length=254, verbose_name='mail')
-    create_date = models.DateField(default=default_invoice_creation_date)
-    sent_date = models.DateField(default=default_invoice_due_date)
-    due_date = models.DateField(default=None, null=True)
-    current_status = EnumField(OrderStatus, max_length=1, default='g')
-    invoice_ocr = models.CharField(max_length=255, null=True, unique=True, verbose_name='OCR')
+    issue_date = models.DateField(null=True, blank=True, default=default_invoice_issue_date, verbose_name=_('issue date'))
+    due_date = models.DateField(null=True, blank=True, default=default_invoice_due_date, verbose_name=_('due date'))
 
-    def clean_invoice_ocr(self):
-        return self.cleaned_data['invoice_ocr'] or None
+    class Meta:
+        ordering = ('pk',)
 
-    def send_invoice(self):
-        self.sent_date = django.utils.timezone.now()
-        self.due_date = django.utils.timezone.now() + django.utils.timezone.timedelta(days=14)
-        self.current_status = self.OrderStatus.SENT
-        self.save()
-        self.send_invoice_mail()
+        verbose_name = _('invoice')
+        verbose_name_plural = _('invoices')
 
-    def send_invoice_mail(self):
-        #make data dict
-        invoice_data = self.get_invoice_data()
-        mail.TemplatedEmail(subject='SOF15 faktura', body_template_html='invar/email/invoice.html',
-                            context=invoice_data, from_email="sof15MONEHS@sof.se", to=self.customerEmail)
+    def __str__(self):
+        return str(self.pk)
 
-    def get_invoice_data(self):
-        data = dict()
-        data['customer_name'] = self.customer_name
-        data['customer_organization'] = self.customer_organization
-        data['customer_pid'] = self.customer_pid
-        data['sent_date'] = self.sent_date
-        data['due_date'] = self.due_date
-        data['invoice_number'] = self.invoice_number
-        #retrive the invoice rows
+    def connect_handle(self):
+        if not hasattr(self, 'invalidation') and not hasattr(self, 'handle'):
+            InvoiceHandle.objects.create(invoice=self)
 
-        products_specification = list()
-        total_sum = 0
-        for row in self.rows.all():
-            row_details = row.get_details()
-            row_details['row_total'] = row_details['item_price'] * row_details['num_items']
-            products_specification.append(row_details)
-            total_sum = row_details['item_price'] * row_details['num_items']
+    @property
+    def ocr(self):
+        return self.handle.ocr
+
+    @property
+    def total(self):
+        return self.rows.aggregate(total=Sum(F('price') * F('quantity')))['total']
+
+    def send(self):
+        if self.total != 0:
+            context = {
+                'invoice': self,
+                'bg': settings.INVAR_BG,
+                'iban': settings.INVAR_IBAN,
+                'bic_swift': settings.INVAR_BIC_SWIFT,
+            }
+
+            mail = TemplatedEmail(subject_template='invar/email/invoice_subject.txt',
+                                  body_template_html='invar/email/invoice.html', context=context,
+                                  from_email="Faktura SOF15 <faktura@sof15.se>", to=[self.receiver_email])
+
+            mail.send()
+
+    def _copy_rows(self, target):
+        for i in self.rows.all():
+            i._copy_to(target)
+
+    def copy(self):
+        rows = self.rows.all()
+        new = deepcopy(self)
+        new.pk = None
+
+        new.save()
+
+        for i in rows:
+            i._copy_to(new)
+
+        return new
+
+    def invalidate(self, replacement=None):
+        invalidation = InvoiceInvalidation(invoice=self)
+
+        if replacement:
+            invalidation.replacement = replacement
+            self.handle.invoice = replacement
+            self.handle.save()
+
+        invalidation.save()
+        return invalidation
 
 
-        data['products'] = products_specification
-        data['invoice_total'] = total_sum
-        return data
+class InvoiceInvalidation(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name=_('timestamp'))
+    invoice = models.OneToOneField('Invoice', related_name='invalidation', verbose_name=_('invoice'))
+    replacement = models.OneToOneField('Invoice', related_name='replacing_invalidation', verbose_name=_('replacement invoice'))
 
-    def get_luhn_check(self, invoice_id):
-        digits = str(invoice_id)
-        sum = 0
-        for number in digits:
-            sum = sum + int(number)
+    class Meta:
+        verbose_name = _('invoice invalidation')
+        verbose_name_plural = _('invoice invalidations')
 
-        return str(sum*9)[-1]
+
+class InvoiceHandle(models.Model):
+    invoice = models.OneToOneField('Invoice', related_name='handle', verbose_name=_('invoice'))
+
+    class Meta:
+        verbose_name = _('invoice handle')
+        verbose_name_plural = _('invoice handles')
+
+    def __str__(self):
+        return self.ocr
+
+    @property
+    def ocr(self):
+        return ocr.generate(self.id)
+
+
+class PersonInvoiceHandle(models.Model):
+    handle = models.OneToOneField('InvoiceHandle', related_name='person_handle', verbose_name=_('handle'))
+    person = models.ForeignKey('tickle.Person', related_name='invoice_handles', verbose_name=_('person'))
+
+    class Meta:
+        verbose_name = _('personal invoice handle')
+        verbose_name_plural = _('personal invoice handles')
+
+
+class InvoiceRowQuerySet(models.QuerySet):
+    pass
 
 
 class InvoiceRow(models.Model):
-    invoice = models.ForeignKey(Invoice,related_name='rows')
-    item_name = models.CharField(max_length=255, verbose_name='Pryl')
-    num_items = models.IntegerField(default=1, verbose_name='Antal')
-    item_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Pris')
-    holding = models.ForeignKey(Holding, null=True)
+    invoice = models.ForeignKey('Invoice', related_name='rows', verbose_name=_('invoice'))
+    title = models.CharField(max_length=255, verbose_name=_('title'))
+    description = models.TextField(blank=True, verbose_name=_('description'))
+    person = models.CharField(max_length=256, blank=True, verbose_name=_('person'))
+    quantity = models.PositiveIntegerField(default=1, verbose_name=_('quantity'))
+    price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name=_('price'))
 
-    def get_details(self):
-        details = dict()
-        if self.holding:
-            details['owner_id'] = self.holding.person.pk
-            details['owner_name'] = self.holding.person.full_name
+    objects = InvoiceRowQuerySet.as_manager()
 
-        details['item_name'] = self.item_name
-        details['num_items'] = self.num_items
-        details['item_price'] = self.item_price
-        return details
+    class Meta:
+        verbose_name = _('invoice row')
+        verbose_name_plural = _('invoice rows')
+
+    def __str__(self):
+        return str(self.pk)
+
+    @property
+    def subtotal(self):
+        return self.price * self.quantity
+
+    def _copy_to(self, invoice):
+        holding_row = self.holding_row
+        self.pk = None
+        self.invoice = invoice
+        self.save()
+
+        holding_row.pk = None
+        holding_row.invoice_row = self
+        holding_row.save()
+
+    def _set_person(self, person):
+        self.person = '{0} ({1})'.format(person.full_name, person.pid)
 
 
-def generate_invoice(name, email, orgName, id_nr, stuff):
-    invoice_offset = 100000
-    bill = Invoice(customer_name=name,
-                   customer_organization=orgName,
-                   customer_pid=id_nr,
-                   customer_email=email
-                   )
-    bill.save()
-    bill.invoice_number = bill.pk + invoice_offset
-    bill.invoice_ocr = str(bill.invoice_number) + bill.get_luhn_check(bill.invoice_number)
-    bill.save()
+class HoldingInvoiceRowQuerySet(models.QuerySet):
+    def current(self):
+        return self.get(invoice_row__invoice__invalidation__isnull=True)
 
-    for thing in stuff:
-        row = InvoiceRow(invoice=bill, item_name=thing[0].name, num_items=thing[1],
-                         item_price=thing[0].price, holding=thing[2])
-        row.save()
+    def invoice_rows(self):
+        return InvoiceRow.objects.filter(holding_row__in=self)
 
+
+class HoldingInvoiceRow(models.Model):
+    invoice_row = models.OneToOneField('InvoiceRow', related_name='holding_row', verbose_name=_('invoice row'))
+    holding = models.ForeignKey('tickle.Holding', related_name='holding_invoice_rows', verbose_name=_('holding'))
+
+    objects = HoldingInvoiceRowQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = _('holding invoice row')
+        verbose_name_plural = _('holding invoice rows')
+
+
+class Transaction(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True, verbose_name=_('timestamp'))
+    amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name=_('amount'))
+    reference = models.CharField(max_length=256, verbose_name=_('reference'))
+
+    class Meta:
+        verbose_name = _('transaction')
+        verbose_name_plural = _('transactions')
+
+
+class TransactionMatch(models.Model):
+    transaction = models.OneToOneField('Transaction', related_name='match', verbose_name=_('transaction'))
+    handle = models.ForeignKey('InvoiceHandle', related_name='transaction_matches', verbose_name=_('invoice handle'))
+
+    class Meta:
+        verbose_name = _('transaction match')
+        verbose_name_plural = _('transaction matches')
