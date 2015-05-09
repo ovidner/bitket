@@ -1,1 +1,1 @@
-Biljett överlåtning
+{% load i18n %}{% trans "Ticket transfer" %}

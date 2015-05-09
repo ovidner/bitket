@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15/Tickle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-09 14:07+0200\n"
-"PO-Revision-Date: 2015-05-07 14:13+0100\n"
+"POT-Creation-Date: 2015-05-09 14:48+0200\n"
+"PO-Revision-Date: 2015-05-09 15:11+0100\n"
 "Last-Translator: Olle Vidner <olle@vidner.se>\n"
 "Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "Language: sv\n"
@@ -31,66 +31,66 @@ msgstr "köpt"
 
 #: tickle/admin.py:68
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #: tickle/admin.py:69
 msgid "No"
-msgstr ""
+msgstr "Nej"
 
-#: tickle/admin.py:104
+#: tickle/admin.py:103
 msgid "PID"
-msgstr ""
+msgstr "Personnummer"
 
-#: tickle/admin.py:104
+#: tickle/admin.py:103
 msgid "Name"
-msgstr ""
+msgstr "Namn"
 
-#: tickle/admin.py:104
+#: tickle/admin.py:103
 #: tickle/templates/tickle/elements/shopping_cart_table.html:4
 msgid "Product"
 msgstr "Produkt"
 
-#: tickle/admin.py:181
+#: tickle/admin.py:184
 msgid "Permissions"
 msgstr "Rättigheter"
 
-#: tickle/admin.py:200 tickle/models/products.py:49
+#: tickle/admin.py:203 tickle/models/products.py:49
 msgid "event"
 msgstr "evenemang"
 
-#: tickle/admin.py:269 tickle/models/people.py:79 tickle/models/people.py:242
+#: tickle/admin.py:272 tickle/models/people.py:79 tickle/models/people.py:242
 msgid "special nutrition"
 msgstr "speciella kostvanor"
 
-#: tickle/admin.py:276
+#: tickle/admin.py:279
 msgid "Created user accounts."
 msgstr "Skapade användarkonto."
 
-#: tickle/admin.py:278
+#: tickle/admin.py:281
 msgid "Create user accounts (if not existing)"
 msgstr "Skapa användarkonton (om icke existerande)"
 
-#: tickle/admin.py:284
+#: tickle/admin.py:287
 msgid "Reset and sent passwords."
 msgstr "Nollställde och skickade lösenord."
 
-#: tickle/admin.py:286
+#: tickle/admin.py:289
 msgid "Reset passwords"
 msgstr "Nollställ och skicka lösenord"
 
-#: tickle/admin.py:290
+#: tickle/admin.py:293
 msgid "Fetched KOBRA data."
 msgstr "Hämtade data från KOBRA."
 
-#: tickle/admin.py:292
+#: tickle/admin.py:295
 msgid "Fetch KOBRA data (use with caution)"
 msgstr "Hämta data från KOBRA"
 
-#: tickle/admin.py:300
+#: tickle/admin.py:303
 msgid "Generate email recipient list"
 msgstr "Generera mottagarlista för e-post"
 
-#: tickle/admin.py:307
+#: tickle/admin.py:310
 msgid "Add product to shopping cart..."
 msgstr "Lägg till produkter i varukorg..."
 
@@ -186,7 +186,7 @@ msgstr "Vänligen ange LiU-id <em>eller</em> e-postadress."
 
 #: tickle/forms.py:344
 msgid "No person found with the entered LiU ID or email."
-msgstr ""
+msgstr "Ingen person med LiU-id:t eller e-postadressen hittades."
 
 #: tickle/models/discounts.py:28
 msgid "discount eligibility"
@@ -474,10 +474,8 @@ msgid ""
 msgstr ""
 
 #: tickle/models/products.py:181
-#, fuzzy
-#| msgid "transferable"
 msgid "transferee"
-msgstr "överlåtningsbar"
+msgstr "mottagare"
 
 #: tickle/models/products.py:183
 msgid "quantity"
@@ -568,6 +566,42 @@ msgstr "Ta bort"
 #: tickle/templates/tickle/elements/shopping_cart_table.html:37
 msgid "No products in the shopping cart."
 msgstr "Inga produkter i varukorgen."
+
+#: tickle/templates/tickle/email/transfer.html:5
+#: tickle/templates/tickle/email/transfer_subject.txt:1
+#: tickle/templates/tickle/transfer.html:4
+#: tickle/templates/tickle/transfer.html:6
+#: tickle/templates/tickle/transfer_confirm.html:4
+#: tickle/templates/tickle/transfer_confirm.html:6
+msgid "Ticket transfer"
+msgstr "Biljettöverföring"
+
+#: tickle/templates/tickle/email/transfer.html:6
+msgid "Hi"
+msgstr ""
+
+#: tickle/templates/tickle/email/transfer.html:8
+#, python-format
+msgid ""
+"\n"
+"            %(holding.person.full_name)s wants to transfer a "
+"%(holding.product.public_name)s ticket to you. The\n"
+"            invoice for the ticket will also be transferred to you. If you "
+"agree to this and want to complete the\n"
+"            transfer, please follow the link below. You can also confirm the "
+"transfer from your profile.\n"
+"        "
+msgstr ""
+"\n"
+"            %(holding.person.full_name)s vill överföra en biljett "
+"(%(holding.product.public_name)s) till dig. Fakturan för biljetten kommer "
+"också att överföras till dig. Om du godkänner detta och vill slutföra "
+"överföringen, följ länken nedan. Du kan också godkänna eller neka "
+"överföringen från din profil.        "
+
+#: tickle/templates/tickle/email/transfer.html:15
+msgid "Proceed with transfer"
+msgstr "Fortsätt till överföring"
 
 #: tickle/templates/tickle/purchase.html:4
 #: tickle/templates/tickle/purchase.html:6
@@ -723,7 +757,7 @@ msgstr ""
 "bekräftar att varukorgen ovan stämmer överens med vad du vill köpa."
 
 #: tickle/templates/tickle/purchase.html:149
-#: tickle/templates/tickle/transfer.html:60
+#: tickle/templates/tickle/transfer.html:53
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -766,15 +800,6 @@ msgstr ""
 msgid "See you at SOF!"
 msgstr "Vi ses på SOF!"
 
-#: tickle/templates/tickle/transfer.html:4
-#: tickle/templates/tickle/transfer.html:6
-#: tickle/templates/tickle/transfer_confirm.html:4
-#: tickle/templates/tickle/transfer_confirm.html:6
-#, fuzzy
-#| msgid "Tickets"
-msgid "Ticket transfer"
-msgstr "Biljetter"
-
 #: tickle/templates/tickle/transfer.html:12
 msgid ""
 "\n"
@@ -788,96 +813,69 @@ msgid ""
 "            difference that may occur.\n"
 "        "
 msgstr ""
+"\n"
+"För att kunna överlåta en biljett måste mottagaren ha loggat in med LiU-id "
+"eller skapat ett konto. Mottagaren måste godkänna överföringen – innan dess "
+"är biljetten fortfarande din. Rabatter är personliga och kommer inte att "
+"överföras med biljetten."
 
 #: tickle/templates/tickle/transfer.html:24
 #: tickle/templates/tickle/transfer.html:32
-#, fuzzy
-#| msgid "transferable"
 msgid "Transfer"
-msgstr "överlåtningsbar"
+msgstr "Överför"
 
 #: tickle/templates/tickle/transfer.html:35
-#, fuzzy
-#| msgid "discounts"
 msgid "Discounts"
-msgstr "rabatter"
+msgstr "Rabatter"
 
 #: tickle/templates/tickle/transfer.html:37
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "                            Please observe <strong>we do not refund "
-#| "tickets</strong>. However, we normally allow\n"
-#| "                            transferring tickets to other people.\n"
-#| "                        "
-msgid ""
-"\n"
-"                                Discounts are personal and won't be "
-"transferred with the ticket. You are obligated to\n"
-"                                pay for any price difference that may "
-"occur.\n"
-"                            "
+msgid "Discounts are personal and will not be transferred with the ticket."
+msgstr "Rabatter är personliga och kommer inte att överföras med biljetten."
+
+#: tickle/templates/tickle/transfer.html:38
+msgid "The receiving person will get the discounts he or she is eligible for."
 msgstr ""
-"\n"
-"                            Vänligen observera att vi <strong>inte köper "
-"tillbaka biljetter</strong>. Dock tillåter vi i vanliga fall överlåtelse av "
-"biljetter till andra.\n"
-"                        "
+"Den mottagande personen kommer få de rabatter han eller hon själv är "
+"berättigad till."
+
+#: tickle/templates/tickle/transfer.html:40
+msgid "Ownership"
+msgstr "Ägarskap"
 
 #: tickle/templates/tickle/transfer.html:42
-msgid "Ownership"
+msgid ""
+"The ticket's ownership will change and you can not use the ticket after "
+"transferring it."
 msgstr ""
+"Biljetten kommer helt att överföras och du kan inte använda den efter att "
+"överföringen slutförts."
 
 #: tickle/templates/tickle/transfer.html:44
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "                            Please observe <strong>we do not refund "
-#| "tickets</strong>. However, we normally allow\n"
-#| "                            transferring tickets to other people.\n"
-#| "                        "
-msgid ""
-"\n"
-"                                The tickets owner will change.\n"
-"                                It won't be your ticket anymore and you "
-"can't collect your festival band with it.\n"
-"                            "
-msgstr ""
-"\n"
-"                            Vänligen observera att vi <strong>inte köper "
-"tillbaka biljetter</strong>. Dock tillåter vi i vanliga fall överlåtelse av "
-"biljetter till andra.\n"
-"                        "
-
-#: tickle/templates/tickle/transfer.html:49
 msgid "Invoice"
-msgstr ""
+msgstr "Faktura"
 
-#: tickle/templates/tickle/transfer.html:51
+#: tickle/templates/tickle/transfer.html:46
 msgid ""
 "\n"
 "                                The invoice for the ticket will be "
-"transferred with the ticket. You won't have to pay\n"
-"                                it but you have to pay for any price "
-"difference that might occur from the discounts.\n"
+"transferred with the ticket.\n"
 "                            "
 msgstr ""
+"\n"
+"                            Fakturan för biljetten kommer att överföras "
+"tillsammans med biljetten."
 
-#: tickle/templates/tickle/transfer.html:57
-#, fuzzy
-#| msgid ""
-#| "By clicking <em>Confirm purchase</em> you agree to these terms and "
-#| "confirm that the shopping cart above is correct."
+#: tickle/templates/tickle/transfer.html:50
 msgid ""
 "By clicking <em>Transfer ticket</em> you agree to these terms and confirm "
 "that your ticket should be transferred."
 msgstr ""
 "Genom att klicka på <em>Bekräfta köp</em> godkänner du dessa villkor och "
-"bekräftar att varukorgen ovan stämmer överens med vad du vill köpa."
+"bekräftar att din biljett skall överföras."
 
-#: tickle/templates/tickle/transfer.html:61
+#: tickle/templates/tickle/transfer.html:54
 msgid "Transfer ticket"
-msgstr ""
+msgstr "Överför biljett"
 
 #: tickle/templates/tickle/transfer_confirm.html:26
 msgid ""
@@ -887,23 +885,23 @@ msgid ""
 "            You can't undo this purchase and the ticket is personal.\n"
 "        "
 msgstr ""
+"\n"
+"            Genom att godkänna att du vill att denna biljett ska överföras "
+"till dig går du med på att betala för dess faktura.\t\tDu kan inte häva "
+"detta köp och biljetten är personlig."
 
 #: tickle/templates/tickle/transfer_confirm.html:34
-#, fuzzy
-#| msgid "Confirm purchase"
 msgid "Confirm transfer"
-msgstr "Bekräfta köp"
+msgstr "Bekräfta överföring"
 
 #: tickle/templates/tickle/transfer_confirm.html:35
 msgid "Decline"
-msgstr ""
+msgstr "Neka"
 
 #: tickle/templates/tickle/transfer_confirm_success.html:4
 #: tickle/templates/tickle/transfer_confirm_success.html:6
-#, fuzzy
-#| msgid "Purchase completed"
 msgid "Transfere completed"
-msgstr "Köp slutfört"
+msgstr "Överföring avslutad"
 
 #: tickle/templates/tickle/transfer_confirm_success.html:10
 msgid ""
@@ -912,11 +910,14 @@ msgid ""
 "the ticket via email shortly.\n"
 "        "
 msgstr ""
+"\n"
+"            Biljetten har överförts till dig. Du kommer snart få biljetten "
+"till din mejladress."
 
 #: tickle/templates/tickle/transfer_success.html:4
 #: tickle/templates/tickle/transfer_success.html:6
 msgid "Transfer request sent"
-msgstr ""
+msgstr "Överföringsförfrågan skickad"
 
 #: tickle/templates/tickle/transfer_success.html:10
 msgid ""
@@ -927,6 +928,10 @@ msgid ""
 "completed.\n"
 "        "
 msgstr ""
+"\n"
+"            Du har begärt att denna biljett ska överföras och ett mejl har "
+"skickats till mottagaren. \t\tHan eller hon måste godkänna överföringen "
+"innan den slutförs."
 
 #: tickle/templates/tickle/turbo_delivery.html:4
 #: tickle/templates/tickle/turbo_delivery.html:6
@@ -992,42 +997,83 @@ msgstr "Det är tillfäligt inte möjligt att hämta information för LiU-id:n."
 msgid "Please enter your personal information yourself."
 msgstr "Vänligen fyll i dina personuppgifter själv."
 
-#: tickle/views/products.py:38
+#: tickle/views/products.py:39
 msgid "Person not found."
 msgstr "Personen kunde inte hittas."
 
-#: tickle/views/products.py:43
+#: tickle/views/products.py:44
 msgid "Multiple people found."
 msgstr "Flera personer hittades."
 
-#: tickle/views/products.py:79
+#: tickle/views/products.py:80
 msgid "Product not available."
 msgstr "Produkten är inte tillgänglig."
 
-#: tickle/views/products.py:83 tickle/views/products.py:150
+#: tickle/views/products.py:84 tickle/views/products.py:151
 #, python-format
 msgid "Sorry but %s is out of stock."
 msgstr "Tyvärr är %s slutsålda."
 
-#: tickle/views/products.py:92
+#: tickle/views/products.py:93
 msgid "Invalid quantity specified."
 msgstr "Ogiltigt antal angivet."
 
-#: tickle/views/products.py:105
+#: tickle/views/products.py:106
 #, python-format
 msgid "You can only buy one %s product."
 msgstr "Du kan bara köpa ett exemplar av produkten %s."
 
-#: tickle/views/products.py:144
+#: tickle/views/products.py:145
 msgid ""
 "Add at least one product to your shopping cart before you try to make a "
 "purchase."
 msgstr "Lägg till minst en produkt i din kundvagn innan du gör ett köp."
 
-#: tickle/views/products.py:206
+#: tickle/views/products.py:207
 #, python-format
 msgid "Transfer of %s has been canceled."
-msgstr ""
+msgstr "Överföring av %s har avbrutits."
+
+#, fuzzy
+#~| msgid ""
+#~| "\n"
+#~| "                            Please observe <strong>we do not refund "
+#~| "tickets</strong>. However, we normally allow\n"
+#~| "                            transferring tickets to other people.\n"
+#~| "                        "
+#~ msgid ""
+#~ "\n"
+#~ "                                Discounts are personal and won't be "
+#~ "transferred with the ticket. You are obligated to\n"
+#~ "                                pay for any price difference that may "
+#~ "occur.\n"
+#~ "                            "
+#~ msgstr ""
+#~ "\n"
+#~ "                            Vänligen observera att vi <strong>inte köper "
+#~ "tillbaka biljetter</strong>. Dock tillåter vi i vanliga fall överlåtelse "
+#~ "av biljetter till andra.\n"
+#~ "                        "
+
+#, fuzzy
+#~| msgid ""
+#~| "\n"
+#~| "                            Please observe <strong>we do not refund "
+#~| "tickets</strong>. However, we normally allow\n"
+#~| "                            transferring tickets to other people.\n"
+#~| "                        "
+#~ msgid ""
+#~ "\n"
+#~ "                                The tickets owner will change.\n"
+#~ "                                It won't be your ticket anymore and you "
+#~ "can't collect your festival band with it.\n"
+#~ "                            "
+#~ msgstr ""
+#~ "\n"
+#~ "                            Vänligen observera att vi <strong>inte köper "
+#~ "tillbaka biljetter</strong>. Dock tillåter vi i vanliga fall överlåtelse "
+#~ "av biljetter till andra.\n"
+#~ "                        "
 
 #~ msgid ""
 #~ "\n"

@@ -34,26 +34,19 @@
                     <div class="modal-body">
                         <h4>{% trans 'Discounts' %}</h4>
                         <p>
-                            {% blocktrans %}
-                                Discounts are personal and won't be transferred with the ticket. You are obligated to
-                                pay for any price difference that may occur.
-                            {% endblocktrans %}
+                            <em>{% trans "Discounts are personal and will not be transferred with the ticket." %}</em>
+                            {% trans "The receiving person will get the discounts he or she is eligible for." %}
                         </p>
                         <h4>{% trans 'Ownership' %}</h4>
                         <p>
-                            {% blocktrans %}
-                                The tickets owner will change.
-                                It won't be your ticket anymore and you can't collect your festival band with it.
-                            {% endblocktrans %}
+                            {% trans "The ticket's ownership will change and you can not use the ticket after transferring it." %}
                         </p>
                         <h4>{% trans 'Invoice' %}</h4>
                         <p>
                             {% blocktrans %}
-                                The invoice for the ticket will be transferred with the ticket. You won't have to pay
-                                it but you have to pay for any price difference that might occur from the discounts.
+                                The invoice for the ticket will be transferred with the ticket.
                             {% endblocktrans %}
                         </p>
-
                         <p><strong>{% trans 'By clicking <em>Transfer ticket</em> you agree to these terms and confirm that your ticket should be transferred.' %}</strong></p>
                     </div>
                     <div class="modal-footer">
