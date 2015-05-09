@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15/Invar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-09 17:52+0200\n"
-"PO-Revision-Date: 2015-05-06 01:34+0100\n"
+"POT-Creation-Date: 2015-05-09 20:11+0200\n"
+"PO-Revision-Date: 2015-05-09 20:13+0100\n"
 "Last-Translator: Olle Vidner <olle@vidner.se>\n"
 "Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "Language: sv\n"
@@ -18,235 +18,280 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.7.6\n"
 
-#: invar/models.py:27
+#: invar/models.py:28
 msgid "receiver name"
 msgstr "mottagarens namn"
 
-#: invar/models.py:28
+#: invar/models.py:29
 msgid "receiver organisation"
 msgstr "mottagarens organisation"
 
-#: invar/models.py:29
+#: invar/models.py:30
 msgid "receiver PID"
 msgstr "mottagarens person-/organisationsnummer"
 
-#: invar/models.py:30
+#: invar/models.py:31
 msgid "receiver email address"
 msgstr "mottagarens e-postadress"
 
-#: invar/models.py:32
+#: invar/models.py:33
 msgid "issue date"
 msgstr "fakturadatum"
 
-#: invar/models.py:33
+#: invar/models.py:34
 msgid "due date"
 msgstr "förfallodatum"
 
-#: invar/models.py:38 invar/models.py:101 invar/models.py:110
-#: invar/models.py:138
+#: invar/models.py:39 invar/models.py:132 invar/models.py:141
+#: invar/models.py:169
 msgid "invoice"
 msgstr "faktura"
 
-#: invar/models.py:39
+#: invar/models.py:40
 msgid "invoices"
 msgstr "fakturor"
 
-#: invar/models.py:100 invar/models.py:192
+#: invar/models.py:131 invar/models.py:226
 msgid "timestamp"
 msgstr "tidsstämpel"
 
-#: invar/models.py:102
+#: invar/models.py:133
 msgid "replacement invoice"
 msgstr "ersättande faktura"
 
-#: invar/models.py:105
+#: invar/models.py:136
 msgid "invoice invalidation"
 msgstr "fakturamakulering"
 
-#: invar/models.py:106
+#: invar/models.py:137
 msgid "invoice invalidations"
 msgstr "fakturamakuleringar"
 
-#: invar/models.py:113 invar/models.py:203
-#, fuzzy
-#| msgid "invoice"
+#: invar/models.py:144 invar/models.py:237
 msgid "invoice handle"
-msgstr "faktura"
+msgstr "fakturakoppling"
 
-#: invar/models.py:114
-#, fuzzy
-#| msgid "invoices"
+#: invar/models.py:145
 msgid "invoice handles"
-msgstr "fakturor"
+msgstr "fakturorkopplingar"
 
-#: invar/models.py:125
+#: invar/models.py:156
 msgid "handle"
-msgstr ""
+msgstr "koppling"
 
-#: invar/models.py:126 invar/models.py:141
+#: invar/models.py:157 invar/models.py:172
 msgid "person"
 msgstr "person"
 
-#: invar/models.py:129
-#, fuzzy
-#| msgid "personal invoice"
+#: invar/models.py:160
 msgid "personal invoice handle"
-msgstr "personlig faktura"
+msgstr "personlig fakturakoppling"
 
-#: invar/models.py:130
-#, fuzzy
-#| msgid "personal invoices"
+#: invar/models.py:161
 msgid "personal invoice handles"
-msgstr "personliga fakturor"
+msgstr "personliga fakturakopplingar"
 
-#: invar/models.py:139
+#: invar/models.py:170
 msgid "title"
 msgstr "titel"
 
-#: invar/models.py:140
+#: invar/models.py:171
 msgid "description"
 msgstr "beskrivning"
 
-#: invar/models.py:142
+#: invar/models.py:173
 msgid "quantity"
 msgstr "kvantitet"
 
-#: invar/models.py:143
+#: invar/models.py:174
 msgid "price"
 msgstr "pris"
 
-#: invar/models.py:148 invar/models.py:181
+#: invar/models.py:179 invar/models.py:215
 msgid "invoice row"
 msgstr "fakturarad"
 
-#: invar/models.py:149
+#: invar/models.py:180
 msgid "invoice rows"
 msgstr "fakturarader"
 
-#: invar/models.py:182
+#: invar/models.py:216
 msgid "holding"
 msgstr "ägandeskap"
 
-#: invar/models.py:187
+#: invar/models.py:221
 msgid "holding invoice row"
 msgstr "fakturarad för ägandeskap"
 
-#: invar/models.py:188
+#: invar/models.py:222
 msgid "holding invoice rows"
 msgstr "fakturarader för ägandeskap"
 
-#: invar/models.py:193
+#: invar/models.py:227
 msgid "amount"
 msgstr "belopp"
 
-#: invar/models.py:194
+#: invar/models.py:228
 msgid "reference"
 msgstr "referens"
 
-#: invar/models.py:197 invar/models.py:202
+#: invar/models.py:231 invar/models.py:236
 msgid "transaction"
 msgstr "transaktion"
 
-#: invar/models.py:198
+#: invar/models.py:232
 msgid "transactions"
 msgstr "transaktioner"
 
-#: invar/models.py:206
+#: invar/models.py:240
 msgid "transaction match"
 msgstr "transaktionsmatchning"
 
-#: invar/models.py:207
+#: invar/models.py:241
 msgid "transaction matches"
 msgstr "transaktionsmatchningar"
 
 #: invar/templates/invar/email/invoice.html:5
+#: invar/templates/invar/email/invoice_invalidation_subject.txt:1
 #: invar/templates/invar/email/invoice_subject.txt:1
+#: invar/templates/invar/email/invoice_update.html:5
 msgid "Invoice"
 msgstr "Faktura"
 
 #: invar/templates/invar/email/invoice.html:8
+#: invar/templates/invar/email/invoice_update.html:11
 msgid "Amount to pay"
 msgstr "Belopp att betala"
 
 #: invar/templates/invar/email/invoice.html:12
+#: invar/templates/invar/email/invoice_update.html:15
 msgid "OCR reference number"
 msgstr "OCR-nummer"
 
 #: invar/templates/invar/email/invoice.html:16
+#: invar/templates/invar/email/invoice_update.html:19
 msgid "Bankgiro number"
 msgstr "Bankgironummer"
 
 #: invar/templates/invar/email/invoice.html:20
+#: invar/templates/invar/email/invoice_update.html:23
 msgid "Invoice issued"
 msgstr "Fakturadatum"
 
 #: invar/templates/invar/email/invoice.html:24
+#: invar/templates/invar/email/invoice_update.html:27
 msgid "Payment due"
 msgstr "Betala senast"
 
 #: invar/templates/invar/email/invoice.html:28
+#: invar/templates/invar/email/invoice_update.html:31
 msgid "Receiver"
 msgstr "Mottagare"
 
 #: invar/templates/invar/email/invoice.html:31
+#: invar/templates/invar/email/invoice_update.html:34
 msgid "Name"
 msgstr "Namn"
 
 #: invar/templates/invar/email/invoice.html:36
+#: invar/templates/invar/email/invoice_update.html:39
 msgid "Organisation"
 msgstr "Organisation"
 
 #: invar/templates/invar/email/invoice.html:42
+#: invar/templates/invar/email/invoice_update.html:45
 msgid "Personal/Organisational identification number"
 msgstr "Person-/organisationsnummer"
 
 #: invar/templates/invar/email/invoice.html:47
+#: invar/templates/invar/email/invoice_update.html:50
 msgid "International payment info"
 msgstr "Information för internationella betalningar"
 
 #: invar/templates/invar/email/invoice.html:50
+#: invar/templates/invar/email/invoice_update.html:53
 msgid "IBAN"
 msgstr "IBAN"
 
 #: invar/templates/invar/email/invoice.html:54
+#: invar/templates/invar/email/invoice_update.html:57
 msgid "BIC/SWIFT"
 msgstr "BIC/SWIFT"
 
 #: invar/templates/invar/email/invoice.html:59
+#: invar/templates/invar/email/invoice_update.html:62
 msgid "Specification"
 msgstr "Specifikation"
 
 #: invar/templates/invar/email/invoice.html:62
+#: invar/templates/invar/email/invoice_update.html:65
 msgid "Product"
 msgstr "Produkt"
 
 #: invar/templates/invar/email/invoice.html:63
+#: invar/templates/invar/email/invoice_update.html:66
 msgid "Person"
 msgstr "Person"
 
 #: invar/templates/invar/email/invoice.html:64
+#: invar/templates/invar/email/invoice_update.html:67
 msgid "Price"
 msgstr "Pris"
 
 #: invar/templates/invar/email/invoice.html:65
+#: invar/templates/invar/email/invoice_update.html:68
 msgid "Quantity"
 msgstr "Kvantitet"
 
 #: invar/templates/invar/email/invoice.html:66
+#: invar/templates/invar/email/invoice_update.html:69
 msgid "Subtotal"
 msgstr "Subtotal"
 
 #: invar/templates/invar/email/invoice.html:78
+#: invar/templates/invar/email/invoice_update.html:81
 msgid "Total"
 msgstr "Totalt"
 
 #: invar/templates/invar/email/invoice.html:83
+#: invar/templates/invar/email/invoice_update.html:86
 msgid "See you at SOF!"
 msgstr "Vi ses på SOF!"
 
 #: invar/templates/invar/email/invoice.html:84
+#: invar/templates/invar/email/invoice_invalidation.html:13
+#: invar/templates/invar/email/invoice_update.html:87
 msgid "The SOF15 organisation"
 msgstr "SOF-organisationen 2015"
+
+#: invar/templates/invar/email/invoice_invalidation.html:5
+msgid "Invoice invalidated"
+msgstr "Faktura makulerad"
+
+#: invar/templates/invar/email/invoice_invalidation.html:7
+msgid ""
+"\n"
+"            Your invoice has been invalidated. If you have already payed any "
+"money, we will\n"
+"            contact you so that you can get your money back.\n"
+"        "
+msgstr ""
+"\n"
+"            Din faktura har makulerats. Om du betalat något på fakturan "
+"kommer vi snart höra av oss så du kan få tillbaka dina pengar.\n"
+"        "
+
+#: invar/templates/invar/email/invoice_invalidation_subject.txt:1
+msgid "invalidated"
+msgstr "makulerad"
+
+#: invar/templates/invar/email/invoice_update.html:7
+msgid "Your invoice has been changed. Please review the details below."
+msgstr "Din faktura har ändrats. Vänligen kontrollera uppgifterna nedan."
+
+#: invar/templates/invar/email/invoice_update_subject.txt:1
+msgid "Invoice change"
+msgstr "Fakturaändring"
 
 #~ msgid "invoice reference"
 #~ msgstr "fakturareferens"

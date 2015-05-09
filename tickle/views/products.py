@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import Http404
 from django.db.transaction import atomic
 from django.shortcuts import render_to_response
+from django.utils.timezone import now
 
 from guardian.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
@@ -234,21 +235,41 @@ class ConfirmExchangeView(LoginRequiredMixin, UpdateView):
             purchase = holding.purchase
             discounted_total = holding.discounted_total
 
+            # Ugly hack to avoid broken transactions
+            Discount.objects.map_eligibilities(transferee)
+
             with atomic():
+                # Invalidate (and update) the sender's invoice
+                sender_old_invoice = holding.holding_invoice_rows.current_invoice()
+                if sender_old_invoice.rows.count() > 1:
+                    sender_new_invoice = sender_old_invoice.invalidate(sender_old_invoice.copy()).replacement
+
+                    # Now we have a different current invoice row, let's delete it!
+                    holding.holding_invoice_rows.current().invoice_row.delete()
+                else:
+                    sender_old_invoice.invalidate()
+                    sender_new_invoice = None
+
                 holding.person = transferee
                 holding.transferee = None
                 if purchase.holdings.count() > 1:
-                    holding.purchase = Purchase.objects.create(person=transferee, purchased=purchase.purchased)  # Now or previous purchase time?
+                    holding.purchase = Purchase.objects.create(person=transferee, purchased=now())
                 else:
                     purchase.person = transferee
                     purchase.save()
                     holding.purchase = purchase
                 # Recalculate discounts.
-                holding.holding_discounts.all().delete()
-                Discount.objects.map_eligibilities(transferee)
-                holding.product.product_discounts.eligible(transferee).copy_to_holding_discounts(holding)
+                holding.remap_discounts()
                 holding.invalidate_cached_discounts()
                 holding.save()
+
+                # Ugh.
+                Holding.objects.filter(pk=holding.pk).invoice_person(transferee)
+
+                if sender_new_invoice:
+                    sender_new_invoice.send_update()
+                else:
+                    sender_old_invoice.send_invalidation()
 
             return redirect('tickle:transfer_ticket_confirm_success')
         elif '_decline' in self.request.POST:

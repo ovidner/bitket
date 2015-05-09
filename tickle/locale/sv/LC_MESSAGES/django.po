@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15/Tickle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-09 17:52+0200\n"
-"PO-Revision-Date: 2015-05-09 15:11+0100\n"
+"POT-Creation-Date: 2015-05-09 20:11+0200\n"
+"PO-Revision-Date: 2015-05-09 20:14+0100\n"
 "Last-Translator: Olle Vidner <olle@vidner.se>\n"
 "Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "Language: sv\n"
@@ -482,10 +482,8 @@ msgid "quantity"
 msgstr "kvantitet"
 
 #: tickle/models/products.py:258
-#, fuzzy
-#| msgid "valid"
 msgid "invalidated"
-msgstr "giltigt"
+msgstr "makulerad"
 
 #: tickle/models/products.py:264 tickle/models/products.py:349
 msgid "holdings"
@@ -584,7 +582,7 @@ msgstr "Biljettöverföring"
 
 #: tickle/templates/tickle/email/transfer.html:6
 msgid "Hi"
-msgstr ""
+msgstr "Hej"
 
 #: tickle/templates/tickle/email/transfer.html:8
 #, python-format
@@ -599,11 +597,11 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"            %(holding.person.full_name)s vill överföra en biljett "
-"(%(holding.product.public_name)s) till dig. Fakturan för biljetten kommer "
-"också att överföras till dig. Om du godkänner detta och vill slutföra "
-"överföringen, följ länken nedan. Du kan också godkänna eller neka "
-"överföringen från din profil.        "
+"            %(holding.person.full_name)s vill överföra en biljett till dig: "
+"%(holding.product.public_name)s. Fakturan för biljetten kommer också att "
+"överföras till dig. Om du godkänner detta och vill slutföra överföringen, "
+"följ länken nedan. Du kan också godkänna eller neka överföringen från din "
+"profil.        "
 
 #: tickle/templates/tickle/email/transfer.html:15
 msgid "Proceed with transfer"
@@ -1003,39 +1001,39 @@ msgstr "Det är tillfäligt inte möjligt att hämta information för LiU-id:n."
 msgid "Please enter your personal information yourself."
 msgstr "Vänligen fyll i dina personuppgifter själv."
 
-#: tickle/views/products.py:39
+#: tickle/views/products.py:40
 msgid "Person not found."
 msgstr "Personen kunde inte hittas."
 
-#: tickle/views/products.py:44
+#: tickle/views/products.py:45
 msgid "Multiple people found."
 msgstr "Flera personer hittades."
 
-#: tickle/views/products.py:80
+#: tickle/views/products.py:81
 msgid "Product not available."
 msgstr "Produkten är inte tillgänglig."
 
-#: tickle/views/products.py:84 tickle/views/products.py:151
+#: tickle/views/products.py:85 tickle/views/products.py:152
 #, python-format
 msgid "Sorry but %s is out of stock."
 msgstr "Tyvärr är %s slutsålda."
 
-#: tickle/views/products.py:93
+#: tickle/views/products.py:94
 msgid "Invalid quantity specified."
 msgstr "Ogiltigt antal angivet."
 
-#: tickle/views/products.py:106
+#: tickle/views/products.py:107
 #, python-format
 msgid "You can only buy one %s product."
 msgstr "Du kan bara köpa ett exemplar av produkten %s."
 
-#: tickle/views/products.py:145
+#: tickle/views/products.py:146
 msgid ""
 "Add at least one product to your shopping cart before you try to make a "
 "purchase."
 msgstr "Lägg till minst en produkt i din kundvagn innan du gör ett köp."
 
-#: tickle/views/products.py:207
+#: tickle/views/products.py:208
 #, python-format
 msgid "Transfer of %s has been canceled."
 msgstr "Överföring av %s har avbrutits."

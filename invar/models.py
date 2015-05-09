@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import datetime
 from copy import deepcopy
+from datetime import timedelta
 
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
@@ -19,7 +20,7 @@ def default_invoice_issue_date():
 
 
 def default_invoice_due_date():
-    return now() + datetime.timedelta(days=14)
+    return now() + timedelta(days=settings.INVAR_DUE_DAYS)
 
 
 @python_2_unicode_compatible
@@ -68,14 +69,43 @@ class Invoice(models.Model):
 
             mail.send()
 
+    def send_update(self):
+        context = {
+            'invoice': self,
+            'bg': settings.INVAR_BG,
+            'iban': settings.INVAR_IBAN,
+            'bic_swift': settings.INVAR_BIC_SWIFT,
+        }
+
+        mail = TemplatedEmail(subject_template='invar/email/invoice_update_subject.txt',
+                              body_template_html='invar/email/invoice_update.html', context=context,
+                              from_email="Faktura SOF15 <faktura@sof15.se>", to=[self.receiver_email])
+
+        mail.send()
+
+    def send_invalidation(self):
+        context = {
+            'invoice': self
+        }
+
+        mail = TemplatedEmail(subject_template='invar/email/invoice_invalidation_subject.txt',
+                              body_template_html='invar/email/invoice_invalidation.html', context=context,
+                              from_email="Faktura SOF15 <faktura@sof15.se>", to=[self.receiver_email])
+
+        mail.send()
+
     def _copy_rows(self, target):
         for i in self.rows.all():
             i._copy_to(target)
 
-    def copy(self):
+    def copy(self, keep_dates=False):
         rows = self.rows.all()
         new = deepcopy(self)
         new.pk = None
+
+        if not keep_dates:
+            new.issue_date = now()
+            new.due_date = now() + timedelta(days=settings.INVAR_DUE_DAYS)
 
         new.save()
 
@@ -93,13 +123,14 @@ class Invoice(models.Model):
             self.handle.save()
 
         invalidation.save()
+
         return invalidation
 
 
 class InvoiceInvalidation(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name=_('timestamp'))
     invoice = models.OneToOneField('Invoice', related_name='invalidation', verbose_name=_('invoice'))
-    replacement = models.OneToOneField('Invoice', related_name='replacing_invalidation', verbose_name=_('replacement invoice'))
+    replacement = models.OneToOneField('Invoice', related_name='replacing_invalidation', null=True, verbose_name=_('replacement invoice'))
 
     class Meta:
         verbose_name = _('invoice invalidation')
@@ -172,6 +203,9 @@ class InvoiceRow(models.Model):
 class HoldingInvoiceRowQuerySet(models.QuerySet):
     def current(self):
         return self.get(invoice_row__invoice__invalidation__isnull=True)
+
+    def current_invoice(self):
+        return self.current().invoice_row.invoice
 
     def invoice_rows(self):
         return InvoiceRow.objects.filter(holding_row__in=self)

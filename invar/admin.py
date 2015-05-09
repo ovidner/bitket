@@ -22,7 +22,7 @@ class InvoiceRowInline(admin.TabularInline):
     readonly_fields = ('pk',)
 
 
-class InvoiceReferenceInline(admin.TabularInline):
+class InvoiceHandleInline(admin.TabularInline):
     model = InvoiceHandle
     extra = 0
     max_num = 1
@@ -34,7 +34,7 @@ class InvoiceReferenceInline(admin.TabularInline):
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('pk', )
 
-    inlines = (InvoiceReferenceInline, InvoiceRowInline, )
+    inlines = (InvoiceHandleInline, InvoiceRowInline, )
 
 
 @admin.register(InvoiceInvalidation)

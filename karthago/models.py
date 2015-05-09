@@ -185,3 +185,12 @@ class KartegeMemberDiscount(BaseDiscount):
 
     def eligible(self, person):
         return EntryMembership.objects.filter(person=person, entry__approved=True).exists()
+
+
+class EntryInvoiceHandle(models.Model):
+    handle = models.OneToOneField('invar.InvoiceHandle', related_name='kartege_entry_handle', verbose_name=_('handle'))
+    entry = models.ForeignKey('Entry', related_name='invoice_handles', verbose_name=_('entry'))
+
+    class Meta:
+        verbose_name = _('Kårtege entry invoice handle')
+        verbose_name_plural = _('Kårtege entry invoice handles')

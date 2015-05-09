@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('timestamp', models.DateTimeField(auto_now_add=True, verbose_name='timestamp')),
                 ('invoice', models.OneToOneField(related_name='invalidation', verbose_name='invoice', to='invar.Invoice')),
-                ('replacement', models.OneToOneField(related_name='replacing_invalidation', verbose_name='replacement invoice', to='invar.Invoice')),
+                ('replacement', models.OneToOneField(related_name='replacing_invalidation', null=True, verbose_name='replacement invoice', to='invar.Invoice')),
             ],
             options={
                 'verbose_name': 'invoice invalidation',
