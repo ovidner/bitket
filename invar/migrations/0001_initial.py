@@ -8,7 +8,7 @@ import invar.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tickle', '0015_auto_20150509_1558'),
+        ('tickle', '0017_holding_invalidated'),
     ]
 
     operations = [

@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15/Karthago\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 12:48+0200\n"
+"POT-Creation-Date: 2015-05-09 17:52+0200\n"
 "PO-Revision-Date: 2015-05-04 13:33+0100\n"
+"Last-Translator: Olle Vidner <olle@vidner.se>\n"
+"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: Olle Vidner <olle@vidner.se>\n"
-"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "X-Generator: Poedit 1.7.6\n"
 
 #: karthago/admin.py:37
@@ -56,7 +56,7 @@ msgid "material roles"
 msgstr "materialroller"
 
 #: karthago/models.py:43 karthago/models.py:62 karthago/models.py:137
-#: karthago/models.py:150
+#: karthago/models.py:154 karthago/models.py:196
 msgid "entry"
 msgstr "bidrag"
 
@@ -193,30 +193,42 @@ msgstr "Något mer vi borde veta?"
 msgid "entries"
 msgstr "bidrag"
 
-#: karthago/models.py:149
+#: karthago/models.py:153
 msgid "person"
 msgstr "person"
 
-#: karthago/models.py:155
+#: karthago/models.py:159
 msgid "entry membership"
 msgstr "bidragsmedlemskap"
 
-#: karthago/models.py:156
+#: karthago/models.py:160
 msgid "entry memberships"
 msgstr "bidragsmedlemskap"
 
-#: karthago/models.py:173
+#: karthago/models.py:177
 msgid "Kårtege member"
 msgstr "Kårtegedeltagare"
 
-#: karthago/models.py:174
+#: karthago/models.py:178
 msgid "Kårtege members"
 msgstr "Kårtegedeltagare"
 
-#: karthago/models.py:180
+#: karthago/models.py:184
 msgid "Kårtege member discount"
 msgstr "Kårtegedeltagarrabatt"
 
-#: karthago/models.py:181
+#: karthago/models.py:185
 msgid "Kårtege member discounts"
 msgstr "Kårtegedeltagarrabatter"
+
+#: karthago/models.py:195
+msgid "handle"
+msgstr ""
+
+#: karthago/models.py:199
+msgid "Kårtege entry invoice handle"
+msgstr ""
+
+#: karthago/models.py:200
+msgid "Kårtege entry invoice handles"
+msgstr ""

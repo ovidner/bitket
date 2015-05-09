@@ -228,7 +228,7 @@ class WorkerAdmin(PersonAdmin):
     inlines = (FunctionaryInline, ShiftRegistrationInline, TickleUserInline, PurchaseInline,)
     list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'registration_count',
                     'functionary_registered', 'functionary_signed_contract', 'functionary_attended_info_meeting',
-                    'functionary_pledge_payed', 'functionary_pledge_returned', 'special_nutrition_render')
+                    'functionary_pledge_payed', 'functionary_pledge_returned', 'special_nutrition_render', 'notes')
 
     list_filter = ('special_nutrition', ShiftListFilter)
 

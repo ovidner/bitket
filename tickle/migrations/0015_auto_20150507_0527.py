@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -11,10 +12,19 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RemoveField(
+            model_name='delivery',
+            name='delivered',
+        ),
         migrations.AddField(
-            model_name='holding',
-            name='invalidated',
-            field=models.BooleanField(default=False, verbose_name='invalidated'),
+            model_name='delivery',
+            name='timestamp',
+            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='timestamp'),
+        ),
+        migrations.AlterField(
+            model_name='delivery',
+            name='holdings',
+            field=models.ManyToManyField(related_name='deliveries', verbose_name='holdings', to='tickle.Holding'),
         ),
         migrations.AlterField(
             model_name='person',

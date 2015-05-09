@@ -1,18 +1,58 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DeleteView
+from django.views.generic import ListView, DeleteView, UpdateView, FormView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
+from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.http import Http404
+from django.db.transaction import atomic
+from django.shortcuts import render_to_response
 
-from datetime import datetime
+from guardian.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-from guardian.mixins import LoginRequiredMixin
+from tickle.models import Holding, Product, ShoppingCart, Person, Delivery, ReachedQuota
+from tickle.forms import TurboDeliveryForm
 
-from tickle.models.products import Holding, Purchase, Product, ShoppingCart
+from tickle.forms import SearchPersonForm
+from tickle.models import Holding, Purchase, Product, ShoppingCart, Discount
 from tickle.utils.mail import TemplatedEmail
+
+
+class TurboDeliveryAjaxView(PermissionRequiredMixin, FormView):
+    form_class = TurboDeliveryForm
+    template_name = 'tickle/turbo_delivery_ajax.html'
+
+    accept_global_perms = True
+    permission_required = 'tickle.add_delivery'
+
+    def form_valid(self, form):
+        try:
+            person = form.get_person()
+            person_error = None
+            # Forces queryset evaluation by calling list()
+            historic_deliveries = list(form.get_auto_holdings().delivered())
+            delivery = form.deliver_auto_holdings()
+        except Person.DoesNotExist:
+            person = None
+            person_error = _('Person not found.')
+            delivery = None
+            historic_deliveries = None
+        except Person.MultipleObjectsReturned:
+            person = None
+            person_error = _('Multiple people found.')
+            delivery = None
+            historic_deliveries = None
+
+        return render_to_response(
+            self.get_template_names(),
+            self.get_context_data(person=person, person_error=person_error, delivery=delivery,
+                                  historic_deliveries=historic_deliveries))
+
+
+class TurboDeliveryView(TurboDeliveryAjaxView):
+    template_name = 'tickle/turbo_delivery.html'
 
 
 class PurchaseView(LoginRequiredMixin, ListView):
@@ -107,10 +147,111 @@ def complete_purchase(request):
 
         try:
             shopping_cart.purchase()
-        except Exception as e:
+        except ReachedQuota as e:
             messages.warning(request, _('Sorry but %s is out of stock.') % e.args)
             return redirect('tickle:purchase')
 
         return redirect('tickle:purchase_completed_success')
 
     raise Http404()
+
+
+class ExchangeView(LoginRequiredMixin, UpdateView):
+    model = Holding
+    form_class = SearchPersonForm
+    template_name = 'tickle/transfer.html'
+
+    def verify(self, holding):
+        person = self.request.user.person
+        if holding.person != person or holding.purchase.person != person or not holding.transferable or holding.delivered:
+            raise PermissionDenied
+
+    def get(self, request, *args, **kwargs):
+        self.verify(self.get_object())
+        return super(ExchangeView, self).get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        holding = self.get_object()
+        self.verify(holding)
+
+        person = form.get_person()
+        holding.transferee = person
+        holding.save()
+
+        msg = TemplatedEmail(
+            to=[person.pretty_email],
+            from_email='Biljett SOF15 <biljett@sof15.se>',
+            subject_template='tickle/email/transfer_subject.txt',
+            body_template_html='tickle/email/transfer.html',
+            context={
+                'holding': holding,
+            },
+            tags=['tickle', 'ticket', 'transfer'])
+        msg.send()
+        return redirect('tickle:transfer_ticket_success')
+
+
+@login_required()
+def cancel_transfer(request, pk):
+    if request.POST:
+        try:
+            holding = Holding.objects.get(pk=pk)
+        except Holding.DoesNotExist:
+            raise Http404()
+        person = request.user.person
+        if holding.person != person or holding.purchase.person != person or not holding.transferable:
+            raise PermissionDenied
+
+        holding.transferee = None
+        holding.save()
+        messages.info(request, _('Transfer of %s has been canceled.') % holding.product.public_name)
+        return redirect('profile', pk=person.pk)
+
+    raise Http404()
+
+
+class ConfirmExchangeView(LoginRequiredMixin, UpdateView):
+    model = Holding
+    fields = []
+    template_name = 'tickle/transfer_confirm.html'
+
+    def verify(self, holding):
+        person = self.request.user.person
+        if holding.transferee != person or not holding.transferable or holding.delivered:
+            raise PermissionDenied
+
+    def get(self, request, *args, **kwargs):
+        self.verify(self.get_object())
+        return super(ConfirmExchangeView, self).get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        holding = self.get_object()
+        self.verify(holding)
+
+        if '_confirm' in self.request.POST:
+            transferee = holding.transferee
+            person = holding.person
+            purchase = holding.purchase
+            discounted_total = holding.discounted_total
+
+            with atomic():
+                holding.person = transferee
+                holding.transferee = None
+                if purchase.holdings.count() > 1:
+                    holding.purchase = Purchase.objects.create(person=transferee, purchased=purchase.purchased)  # Now or previous purchase time?
+                else:
+                    purchase.person = transferee
+                    purchase.save()
+                    holding.purchase = purchase
+                # Recalculate discounts.
+                holding.holding_discounts.all().delete()
+                Discount.objects.map_eligibilities(transferee)
+                holding.product.product_discounts.eligible(transferee).copy_to_holding_discounts(holding)
+                holding.invalidate_cached_discounts()
+                holding.save()
+
+            return redirect('tickle:transfer_ticket_confirm_success')
+        elif '_decline' in self.request.POST:
+            holding.transferee = None
+            holding.save()
+        return redirect('profile', pk=self.request.user.person.pk)

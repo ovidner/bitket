@@ -7,22 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 12:48+0200\n"
-"PO-Revision-Date: 2015-05-04 13:34+0100\n"
+"POT-Creation-Date: 2015-05-09 17:52+0200\n"
+"PO-Revision-Date: 2015-05-09 14:09+0100\n"
+"Last-Translator: Olle Vidner <olle@vidner.se>\n"
+"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: Olle Vidner <olle@vidner.se>\n"
-"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "X-Generator: Poedit 1.7.6\n"
 
-#: sof15/settings.py:165
+#: sof15/settings.py:166
 msgid "Swedish"
 msgstr "Svenska"
 
-#: sof15/settings.py:166
+#: sof15/settings.py:167
 msgid "English"
 msgstr "Engelska"
 
@@ -38,46 +38,46 @@ msgstr "Växla navigation"
 msgid "SOF 2015 Tickets"
 msgstr "SOF 2015 Biljetter"
 
-#: sof15/templates/base.html:42 sof15/templates/base.html.py:102
+#: sof15/templates/base.html:42 sof15/templates/base.html.py:106
 msgid "Purchase tickets"
 msgstr "Köp biljetter"
 
-#: sof15/templates/base.html:47 sof15/templates/base.html.py:107
-msgid "Become a functionary"
-msgstr "Bli funktionär"
-
-#: sof15/templates/base.html:52 sof15/templates/people/login.html:4
+#: sof15/templates/base.html:53 sof15/templates/people/login.html:4
 #: sof15/templates/people/login.html:22
 msgid "Log in"
 msgstr "Logga in"
 
-#: sof15/templates/base.html:55
+#: sof15/templates/base.html:56
 msgid "Logged in as"
 msgstr "Inloggad som"
 
-#: sof15/templates/base.html:57
+#: sof15/templates/base.html:58
 msgid "Profile"
 msgstr "Profil"
 
-#: sof15/templates/base.html:59
+#: sof15/templates/base.html:60
 msgid "Administration"
 msgstr "Administration"
 
-#: sof15/templates/base.html:62 sof15/templates/people/change_password.html:4
+#: sof15/templates/base.html:63
+msgid "Turbo delivery"
+msgstr "Snabbutlämning"
+
+#: sof15/templates/base.html:66 sof15/templates/people/change_password.html:4
 #: sof15/templates/people/change_password.html:6
 #: sof15/templates/people/change_password.html:13
 msgid "Change password"
 msgstr "Ändra lösenord"
 
-#: sof15/templates/base.html:65
+#: sof15/templates/base.html:69
 msgid "Log out"
 msgstr "Logga ut"
 
-#: sof15/templates/base.html:74
+#: sof15/templates/base.html:78
 msgid "Language"
 msgstr "Språk"
 
-#: sof15/templates/base.html:86
+#: sof15/templates/base.html:90
 msgid "Select"
 msgstr "Välj"
 
@@ -151,22 +151,42 @@ msgstr ""
 "\">registrering</a>.\n"
 "            "
 
-#: sof15/templates/people/profile.html:111
+#: sof15/templates/people/profile.html:110
 msgid "Quantity"
 msgstr "Kvantitet"
 
-#: sof15/templates/people/profile.html:113
+#: sof15/templates/people/profile.html:112
 msgid "Price"
 msgstr "Pris"
 
-#: sof15/templates/people/profile.html:137
+#: sof15/templates/people/profile.html:122
+msgid "Transfer pending"
+msgstr "Överföring väntar"
+
+#: sof15/templates/people/profile.html:123
+msgid "Cancel transfer"
+msgstr "Avbryt överföring"
+
+#: sof15/templates/people/profile.html:127
+#: sof15/templates/people/profile.html:130
+msgid "Transfer ticket"
+msgstr "Överför biljett"
+
+#: sof15/templates/people/profile.html:129
+msgid "This ticket can't be transfered."
+msgstr "Denna biljett kan inte överföras."
+
+#: sof15/templates/people/profile.html:169
 msgid "Orchestra representative"
 msgstr "Orkesterrepresentant"
 
-#: sof15/templates/people/profile.html:141
+#: sof15/templates/people/profile.html:173
 msgid "Approve members"
 msgstr "Godkänn medlemmar"
 
-#: sof15/templates/people/profile.html:142
+#: sof15/templates/people/profile.html:174
 msgid "Review invoice data"
 msgstr "Granska fakturaunderlag"
+
+#~ msgid "Become a functionary"
+#~ msgstr "Bli funktionär"

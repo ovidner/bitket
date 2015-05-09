@@ -17,6 +17,7 @@
         <td colspan="2"><strong>{% trans 'Your price' %}</strong></td>
         <td align="right"><strong>{{ price }}</strong></td>
     </tr>
+    {% comment %}
     <tr class="info">
         {% url 'fungus:register_functionary' as register_functionary_url %}
         <td colspan="3">
@@ -25,6 +26,7 @@
             {% endblocktrans %}
         </td>
     </tr>
+    {% endcomment %}
     {% comment %}{% for teaser in teasers %}
         <tr class="info">
             <td colspan="3">{{ teaser.description|capfirst }}</td>

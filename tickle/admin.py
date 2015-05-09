@@ -6,15 +6,15 @@ from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.db.models import Count
 from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.template.response import TemplateResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 
 from guardian.models import UserObjectPermission, GroupObjectPermission
 from suit.admin import SortableTabularInline, SortableModelAdmin
 
 from tickle.models import Person, Event, Product, Holding, TicketType, Delivery, Purchase, SpecialNutrition, \
-    TickleUser, StudentUnionDiscount, ProductDiscount, Discount, HoldingDiscount, PersonalDiscount
+    TickleUser, StudentUnionDiscount, ProductDiscount, Discount, HoldingDiscount, PersonalDiscount, DiscountEligibility
 from tickle.views.admin import AddProductToShoppingCartAdminView
 
 
@@ -58,12 +58,53 @@ class HoldingDiscountInline(SortableTabularInline):
     sortable = 'order'
 
 
+class HoldingPurchasedListFilter(admin.SimpleListFilter):
+    title = _('purchased')
+
+    parameter_name = 'purchased'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('y', _('Yes')),
+            ('n', _('No'))
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'y':
+            return queryset.filter(purchase__isnull=False)
+        elif self.value() == 'n':
+            return queryset.filter(purchase__isnull=True)
+        return queryset
+
+
 @admin.register(Holding)
 class HoldingAdmin(admin.ModelAdmin):
     list_display = ('person', 'product',)
+    list_filter = ('product', HoldingPurchasedListFilter)
+
+    exclude = ('transferee',)
 
     raw_id_fields = ('person', 'purchase', 'shopping_cart',)
     inlines = (HoldingDiscountInline,)
+
+    search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__pid_code')
+    actions = ('csv_export_action',)
+
+    def csv_export_action(self, request, queryset):
+        import unicodecsv
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="holdings.csv"'
+
+        writer = unicodecsv.writer(response, delimiter=b';')
+
+        # We can't use lazy translation here.
+        writer.writerow(
+            (ugettext('PID'), ugettext('Name'), ugettext('Product')))
+        for h in queryset.order_by('person__birth_date', 'person__pid_code'):
+            writer.writerow([h.person.pid, h.person.full_name, h.product])
+
+        return response
 
 
 @admin.register(TicketType)
@@ -78,8 +119,13 @@ class DeliveryAdmin(admin.ModelAdmin):
 
 class HoldingInline(admin.TabularInline):
     model = Holding
-    raw_id_fields = ('person',)
-    extra = 1
+    raw_id_fields = ('person', 'product', 'purchase', 'shopping_cart')
+    readonly_fields = ('shopping_cart', 'transferee')
+    extra = 0
+
+
+class PersonHoldingInline(HoldingInline):
+    fk_name = 'person'
 
 
 @admin.register(Purchase)
@@ -87,6 +133,8 @@ class PurchaseAdmin(admin.ModelAdmin):
     inlines = (HoldingInline,)
     list_display = ('person', 'purchased')
     date_hierarchy = 'purchased'
+
+    search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__pid_code')
 
 
 @admin.register(SpecialNutrition)
@@ -141,6 +189,16 @@ class TickleUserInline(admin.StackedInline):
     exclude = ('password',)
 
 
+class DiscountEligibilityInline(admin.TabularInline):
+    model = DiscountEligibility
+    extra = 0
+    can_delete = 0
+    readonly_fields = ('discount',)
+
+    def has_add_permission(self, request):
+        return False
+
+
 class EventVisitorListFilter(admin.SimpleListFilter):
     title = _('event')
 
@@ -167,7 +225,7 @@ class PersonChangeList(ChangeList):
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    inlines = (TickleUserInline, PurchaseInline,)
+    inlines = (DiscountEligibilityInline, PurchaseInline, PersonHoldingInline, TickleUserInline,)
 
     list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'liu_id', 'special_nutrition_render', 'notes')
     list_display_links = ('first_name', 'last_name', 'pid')

@@ -8,6 +8,7 @@ from django.utils.functional import cached_property
 from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from django.db.transaction import atomic
+from django.conf import settings
 
 from decimal import Decimal
 
@@ -134,6 +135,18 @@ class HoldingQuerySet(models.QuerySet):
     def invalid(self):
         return self.filter(invalidated=True)
 
+    def deliverable(self):
+        # todo: define further
+        return self.purchased().undelivered()
+
+    def delivered(self):
+        # todo: extend for partial deliveries
+        return self.filter(deliveries__isnull=False)
+
+    def undelivered(self):
+        # todo: extend for partial deliveries
+        return self.filter(deliveries__isnull=True)
+
     def purchased(self):
         return self.filter(purchase__isnull=False)
 
@@ -237,6 +250,8 @@ class Holding(models.Model):
 
     _transferable = models.NullBooleanField(default=None, verbose_name=_('transferable'),
                                             help_text=_('If people should be able to transfer this product to other people. Note: this will override the product setting.'))
+    transferee = models.ForeignKey('Person', related_name='transferee', null=True, blank=True, default=None,
+                                   verbose_name=_('transferee'))
 
     quantity = models.PositiveIntegerField(default=1, verbose_name=_('quantity'))
 
@@ -260,8 +275,6 @@ class Holding(models.Model):
         purchase = getattr(self, 'purchase')
         if shopping_cart and purchase:
             raise ValidationError(_("Can't hold both a shopping cart and a purchase at the same time."))
-        elif not shopping_cart and not purchase:
-            raise ValidationError(_('Holding must have either a shopping cart or a purchase.'))
 
         return super(Holding, self).save(*args, **kwargs)
 
@@ -273,6 +286,7 @@ class Holding(models.Model):
             body_template_html='tickle/email/ticket.html',
             context={
                 'holding': self,
+                'host': settings.PRIMARY_HOST,
             },
             tags=['tickle', 'ticket'])
         msg.send()
@@ -300,6 +314,20 @@ class Holding(models.Model):
     def discounted_total(self):
         return self.discounted_price * self.quantity
 
+    def invalidate_cached_discounts(self):
+        try:
+            del self.discounted_total
+        except AttributeError:
+            pass
+        try:
+            del self.discounted_price
+        except AttributeError:
+            pass
+
+    @property
+    def delivered(self):
+        return self.deliveries.exists()
+
     def _get_transferable(self):
         if self._transferable is None:
             return self.product.transferable
@@ -317,15 +345,20 @@ class Holding(models.Model):
 
 @python_2_unicode_compatible
 class Delivery(models.Model):
-    holdings = models.ManyToManyField('Holding', verbose_name=_('holdings'))
-    delivered = models.DateTimeField(verbose_name=_('delivered'))
+    # todo: extend for partial deliveries
+    holdings = models.ManyToManyField('Holding', related_name='deliveries', verbose_name=_('holdings'))
+    timestamp = models.DateTimeField(default=now, verbose_name=_('timestamp'))
 
     class Meta:
         verbose_name = _('delivery')
         verbose_name_plural = _('deliveries')
 
     def __str__(self):
-        return u'{0}, {1}'.format(self.holdings, self.delivered)
+        return '{0}'.format(self.timestamp)
+
+
+class ReachedQuota(Exception):
+    pass
 
 
 @python_2_unicode_compatible
@@ -345,7 +378,7 @@ class ShoppingCart(models.Model):
 
             for holding in holdings:
                 if holding.product.has_reached_quota():
-                    raise Exception(holding.product)
+                    raise ReachedQuota(holding.product)
 
             purchase = Purchase.objects.create(person=self.person, purchased=now())
 
