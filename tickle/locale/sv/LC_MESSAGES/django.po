@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15/Tickle\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-07 05:49+0200\n"
-"PO-Revision-Date: 2015-05-07 05:49+0100\n"
+"POT-Creation-Date: 2015-05-07 14:11+0200\n"
+"PO-Revision-Date: 2015-05-07 14:13+0100\n"
 "Last-Translator: Olle Vidner <olle@vidner.se>\n"
 "Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "Language: sv\n"
@@ -25,47 +25,47 @@ msgstr "köpt kvantitet"
 msgid "total quantity"
 msgstr "total kvantitet"
 
-#: tickle/admin.py:136
+#: tickle/admin.py:142
 msgid "Permissions"
 msgstr "Rättigheter"
 
-#: tickle/admin.py:145 tickle/models/products.py:49
+#: tickle/admin.py:161 tickle/models/products.py:49
 msgid "event"
 msgstr "evenemang"
 
-#: tickle/admin.py:214 tickle/models/people.py:79 tickle/models/people.py:242
+#: tickle/admin.py:230 tickle/models/people.py:79 tickle/models/people.py:242
 msgid "special nutrition"
 msgstr "speciella kostvanor"
 
-#: tickle/admin.py:221
+#: tickle/admin.py:237
 msgid "Created user accounts."
 msgstr "Skapade användarkonto."
 
-#: tickle/admin.py:223
+#: tickle/admin.py:239
 msgid "Create user accounts (if not existing)"
 msgstr "Skapa användarkonton (om icke existerande)"
 
-#: tickle/admin.py:229
+#: tickle/admin.py:245
 msgid "Reset and sent passwords."
 msgstr "Nollställde och skickade lösenord."
 
-#: tickle/admin.py:231
+#: tickle/admin.py:247
 msgid "Reset passwords"
 msgstr "Nollställ och skicka lösenord"
 
-#: tickle/admin.py:235
+#: tickle/admin.py:251
 msgid "Fetched KOBRA data."
 msgstr "Hämtade data från KOBRA."
 
-#: tickle/admin.py:237
+#: tickle/admin.py:253
 msgid "Fetch KOBRA data (use with caution)"
 msgstr "Hämta data från KOBRA"
 
-#: tickle/admin.py:245
+#: tickle/admin.py:261
 msgid "Generate email recipient list"
 msgstr "Generera mottagarlista för e-post"
 
-#: tickle/admin.py:252
+#: tickle/admin.py:268
 msgid "Add product to shopping cart..."
 msgstr "Lägg till produkter i varukorg..."
 
@@ -107,7 +107,7 @@ msgstr "Produkter för autoutlämning"
 
 #: tickle/forms.py:30
 msgid "Must supply RFID number or PID."
-msgstr ""
+msgstr "RFID- eller personnummer måste anges."
 
 #: tickle/forms.py:66
 msgid "I accept that my personal information will be stored"
@@ -341,8 +341,8 @@ msgid "Can view person"
 msgstr "Kan visa person"
 
 #: tickle/models/people.py:109 tickle/models/people.py:282
-#: tickle/models/products.py:171 tickle/models/products.py:265
-#: tickle/models/products.py:299
+#: tickle/models/products.py:171 tickle/models/products.py:269
+#: tickle/models/products.py:303
 msgid "person"
 msgstr "person"
 
@@ -430,11 +430,11 @@ msgstr "biljettyp"
 msgid "ticket types"
 msgstr "biljettyper"
 
-#: tickle/models/products.py:174 tickle/models/products.py:307
+#: tickle/models/products.py:174 tickle/models/products.py:311
 msgid "purchase"
 msgstr "köp"
 
-#: tickle/models/products.py:176 tickle/models/products.py:268
+#: tickle/models/products.py:176 tickle/models/products.py:272
 msgid "shopping cart"
 msgstr "varukorg"
 
@@ -472,19 +472,19 @@ msgstr "leverans"
 msgid "deliveries"
 msgstr "leveranser"
 
-#: tickle/models/products.py:269
+#: tickle/models/products.py:273
 msgid "shopping carts"
 msgstr "varukorgar"
 
-#: tickle/models/products.py:300
+#: tickle/models/products.py:304
 msgid "purchased"
 msgstr "köpt"
 
-#: tickle/models/products.py:302
+#: tickle/models/products.py:306
 msgid "valid"
 msgstr "giltigt"
 
-#: tickle/models/products.py:308
+#: tickle/models/products.py:312
 msgid "purchases"
 msgstr "köp"
 
@@ -754,11 +754,11 @@ msgstr ""
 
 #: tickle/templates/tickle/turbo_delivery.html:35
 msgid "Please wait..."
-msgstr ""
+msgstr "Vänligen vänta..."
 
 #: tickle/templates/tickle/turbo_delivery.html:46
 msgid "Something went wrong..."
-msgstr ""
+msgstr "Något gick snett..."
 
 #: tickle/templates/tickle/turbo_delivery_ajax.html:15
 msgid "Delivered"
@@ -801,33 +801,33 @@ msgstr "Det är tillfäligt inte möjligt att hämta information för LiU-id:n."
 msgid "Please enter your personal information yourself."
 msgstr "Vänligen fyll i dina personuppgifter själv."
 
-#: tickle/views/products.py:38
+#: tickle/views/products.py:33
 msgid "Person not found."
 msgstr "Personen kunde inte hittas."
 
-#: tickle/views/products.py:43
+#: tickle/views/products.py:38
 msgid "Multiple people found."
 msgstr "Flera personer hittades."
 
-#: tickle/views/products.py:79
+#: tickle/views/products.py:74
 msgid "Product not available."
 msgstr "Produkten är inte tillgänglig."
 
-#: tickle/views/products.py:83 tickle/views/products.py:150
+#: tickle/views/products.py:78 tickle/views/products.py:145
 #, python-format
 msgid "Sorry but %s is out of stock."
 msgstr "Tyvärr är %s slutsålda."
 
-#: tickle/views/products.py:92
+#: tickle/views/products.py:87
 msgid "Invalid quantity specified."
 msgstr "Ogiltigt antal angivet."
 
-#: tickle/views/products.py:105
+#: tickle/views/products.py:100
 #, python-format
 msgid "You can only buy one %s product."
 msgstr "Du kan bara köpa ett exemplar av produkten %s."
 
-#: tickle/views/products.py:144
+#: tickle/views/products.py:139
 msgid ""
 "Add at least one product to your shopping cart before you try to make a "
 "purchase."

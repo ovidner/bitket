@@ -1,0 +1,182 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SOF15/Invar\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-07 14:11+0200\n"
+"PO-Revision-Date: 2015-05-06 01:34+0100\n"
+"Last-Translator: Olle Vidner <olle@vidner.se>\n"
+"Language-Team: SOF15 <it-utskottet@sof15.se>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.7.6\n"
+
+#: invar/templates/invar/email/invoice_subject.txt:1
+msgid "Invoice"
+msgstr "Faktura"
+
+#~ msgid "receiver name"
+#~ msgstr "mottagarens namn"
+
+#~ msgid "receiver organisation"
+#~ msgstr "mottagarens organisation"
+
+#~ msgid "receiver PID"
+#~ msgstr "mottagarens person-/organisationsnummer"
+
+#~ msgid "receiver email address"
+#~ msgstr "mottagarens e-postadress"
+
+#~ msgid "issue date"
+#~ msgstr "fakturadatum"
+
+#~ msgid "due date"
+#~ msgstr "förfallodatum"
+
+#~ msgid "invoice"
+#~ msgstr "faktura"
+
+#~ msgid "invoices"
+#~ msgstr "fakturor"
+
+#~ msgid "timestamp"
+#~ msgstr "tidsstämpel"
+
+#~ msgid "replacement invoice"
+#~ msgstr "ersättande faktura"
+
+#~ msgid "invoice invalidation"
+#~ msgstr "fakturamakulering"
+
+#~ msgid "invoice invalidations"
+#~ msgstr "fakturamakuleringar"
+
+#~ msgid "invoice reference"
+#~ msgstr "fakturareferens"
+
+#~ msgid "invoice references"
+#~ msgstr "fakturareferenser"
+
+#~ msgid "person"
+#~ msgstr "person"
+
+#~ msgid "personal invoice"
+#~ msgstr "personlig faktura"
+
+#~ msgid "personal invoices"
+#~ msgstr "personliga fakturor"
+
+#~ msgid "title"
+#~ msgstr "titel"
+
+#~ msgid "description"
+#~ msgstr "beskrivning"
+
+#~ msgid "quantity"
+#~ msgstr "kvantitet"
+
+#~ msgid "price"
+#~ msgstr "pris"
+
+#~ msgid "invoice row"
+#~ msgstr "fakturarad"
+
+#~ msgid "invoice rows"
+#~ msgstr "fakturarader"
+
+#~ msgid "holding"
+#~ msgstr "ägandeskap"
+
+#~ msgid "holding invoice row"
+#~ msgstr "fakturarad för ägandeskap"
+
+#~ msgid "holding invoice rows"
+#~ msgstr "fakturarader för ägandeskap"
+
+#~ msgid "amount"
+#~ msgstr "belopp"
+
+#~ msgid "reference"
+#~ msgstr "referens"
+
+#~ msgid "transaction"
+#~ msgstr "transaktion"
+
+#~ msgid "transactions"
+#~ msgstr "transaktioner"
+
+#~ msgid "transaction match"
+#~ msgstr "transaktionsmatchning"
+
+#~ msgid "transaction matches"
+#~ msgstr "transaktionsmatchningar"
+
+#~ msgid "Amount to pay"
+#~ msgstr "Belopp att betala"
+
+#~ msgid "OCR reference number"
+#~ msgstr "OCR-nummer"
+
+#~ msgid "Bankgiro number"
+#~ msgstr "Bankgironummer"
+
+#~ msgid "Invoice issued"
+#~ msgstr "Fakturadatum"
+
+#~ msgid "Payment due"
+#~ msgstr "Betala senast"
+
+#~ msgid "Receiver"
+#~ msgstr "Mottagare"
+
+#~ msgid "Name"
+#~ msgstr "Namn"
+
+#~ msgid "Organisation"
+#~ msgstr "Organisation"
+
+#~ msgid "Personal/Organisational identification number"
+#~ msgstr "Person-/organisationsnummer"
+
+#~ msgid "International payment info"
+#~ msgstr "Information för internationella betalningar"
+
+#~ msgid "IBAN"
+#~ msgstr "IBAN"
+
+#~ msgid "BIC/SWIFT"
+#~ msgstr "BIC/SWIFT"
+
+#~ msgid "Specification"
+#~ msgstr "Specifikation"
+
+#~ msgid "Product"
+#~ msgstr "Produkt"
+
+#~ msgid "Person"
+#~ msgstr "Person"
+
+#~ msgid "Price"
+#~ msgstr "Pris"
+
+#~ msgid "Quantity"
+#~ msgstr "Kvantitet"
+
+#~ msgid "Subtotal"
+#~ msgstr "Subtotal"
+
+#~ msgid "Total"
+#~ msgstr "Totalt"
+
+#~ msgid "See you at SOF!"
+#~ msgstr "Vi ses på SOF!"
+
+#~ msgid "The SOF15 organisation"
+#~ msgstr "SOF-organisationen 2015"
