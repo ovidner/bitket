@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15/Invar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-09 20:11+0200\n"
-"PO-Revision-Date: 2015-05-09 20:13+0100\n"
+"POT-Creation-Date: 2015-05-10 09:08+0200\n"
+"PO-Revision-Date: 2015-05-10 09:09+0100\n"
 "Last-Translator: Olle Vidner <olle@vidner.se>\n"
 "Language-Team: SOF15 <it-utskottet@sof15.se>\n"
 "Language: sv\n"
@@ -154,7 +154,6 @@ msgstr "transaktionsmatchningar"
 #: invar/templates/invar/email/invoice.html:5
 #: invar/templates/invar/email/invoice_invalidation_subject.txt:1
 #: invar/templates/invar/email/invoice_subject.txt:1
-#: invar/templates/invar/email/invoice_update.html:5
 msgid "Invoice"
 msgstr "Faktura"
 
@@ -255,12 +254,21 @@ msgstr "Totalt"
 
 #: invar/templates/invar/email/invoice.html:83
 #: invar/templates/invar/email/invoice_update.html:86
+msgid ""
+"Questions? Something's not right? Please contact us by replying to this "
+"email."
+msgstr ""
+"Frågor? Något som inte stämmer? Kontakta oss gärna genom att svara på det "
+"här mailet."
+
+#: invar/templates/invar/email/invoice.html:86
+#: invar/templates/invar/email/invoice_update.html:89
 msgid "See you at SOF!"
 msgstr "Vi ses på SOF!"
 
-#: invar/templates/invar/email/invoice.html:84
+#: invar/templates/invar/email/invoice.html:87
 #: invar/templates/invar/email/invoice_invalidation.html:13
-#: invar/templates/invar/email/invoice_update.html:87
+#: invar/templates/invar/email/invoice_update.html:90
 msgid "The SOF15 organisation"
 msgstr "SOF-organisationen 2015"
 
@@ -285,13 +293,14 @@ msgstr ""
 msgid "invalidated"
 msgstr "makulerad"
 
-#: invar/templates/invar/email/invoice_update.html:7
-msgid "Your invoice has been changed. Please review the details below."
-msgstr "Din faktura har ändrats. Vänligen kontrollera uppgifterna nedan."
-
+#: invar/templates/invar/email/invoice_update.html:5
 #: invar/templates/invar/email/invoice_update_subject.txt:1
 msgid "Invoice change"
 msgstr "Fakturaändring"
+
+#: invar/templates/invar/email/invoice_update.html:7
+msgid "Your invoice has been changed. Please review the details below."
+msgstr "Din faktura har ändrats. Vänligen kontrollera uppgifterna nedan."
 
 #~ msgid "invoice reference"
 #~ msgstr "fakturareferens"

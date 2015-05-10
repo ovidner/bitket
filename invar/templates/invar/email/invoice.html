@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <body style="font-family: sans-serif;">
-    <h1>{% trans 'Invoice' %}</h1>
+    <h1>{% trans 'Invoice' %} #{{ invoice.pk }}</h1>
     <table>
         <tr>
             <th align="left">{% trans 'Amount to pay' %}:</th>
@@ -25,7 +25,7 @@
             <td align="left">{{ invoice.due_date|date }}</td>
         </tr>
     </table>
-    <p>{% trans 'Receiver' %}:</p>
+    <h2>{% trans 'Receiver' %}:</h2>
     <table>
         <tr>
             <th align="left">{% trans 'Name' %}:</th>
@@ -44,7 +44,7 @@
             </tr>
         {% endif %}
     </table>
-    <p>{% trans 'International payment info' %}:</p>
+    <h2>{% trans 'International payment info' %}:</h2>
     <table>
         <tr>
             <th align="left">{% trans 'IBAN' %}:</th>
@@ -79,6 +79,9 @@
             <td align="right">{{ invoice.total }}</td>
         </tr>
     </table>
+    <p>
+        {% trans "Questions? Something's not right? Please contact us by replying to this email." %}
+    </p>
     <p>
         <strong>{% trans 'See you at SOF!' %}</strong><br>
         //{% trans 'The SOF15 organisation' %}
