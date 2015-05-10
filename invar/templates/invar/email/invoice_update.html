@@ -8,41 +8,41 @@
     </p>
     <table>
         <tr>
-            <th align="right">{% trans 'Amount to pay' %}:</th>
+            <th align="left">{% trans 'Amount to pay' %}:</th>
             <td align="left">{{ invoice.total }} kr.</td>
         </tr>
         <tr>
-            <th align="right">{% trans 'OCR reference number' %}:</th>
+            <th align="left">{% trans 'OCR reference number' %}:</th>
             <td align="left">{{ invoice.ocr }}</td>
         </tr>
         <tr>
-            <th align="right">{% trans 'Bankgiro number' %}:</th>
+            <th align="left">{% trans 'Bankgiro number' %}:</th>
             <td align="left">{{ bg }}</td>
         </tr>
         <tr>
-            <th align="right">{% trans 'Invoice issued' %}:</th>
+            <th align="left">{% trans 'Invoice issued' %}:</th>
             <td align="left">{{ invoice.issue_date|date }}</td>
         </tr>
         <tr>
-            <th align="right">{% trans 'Payment due' %}:</th>
+            <th align="left">{% trans 'Payment due' %}:</th>
             <td align="left">{{ invoice.due_date|date }}</td>
         </tr>
     </table>
     <p>{% trans 'Receiver' %}:</p>
     <table>
         <tr>
-            <th align="right">{% trans 'Name' %}:</th>
+            <th align="left">{% trans 'Name' %}:</th>
             <td align="left">{{ invoice.receiver_name }}</td>
         </tr>
         {% if invoice.receiver_organisation %}
             <tr>
-                <th align="right">{% trans 'Organisation' %}:</th>
+                <th align="left">{% trans 'Organisation' %}:</th>
                 <td align="left">{{ invoice.receiver_organisation }}</td>
             </tr>
         {% endif %}
         {% if invoice.receiver_pid %}
             <tr>
-                <th align="right">{% trans 'Personal/Organisational identification number' %}:</th>
+                <th align="left">{% trans 'Personal/Organisational identification number' %}:</th>
                 <td align="left">{{ invoice.receiver_pid }}</td>
             </tr>
         {% endif %}
