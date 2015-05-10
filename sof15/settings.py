@@ -167,6 +167,9 @@ LANGUAGES = (
     ('en', _('English')),
 )
 
+DATE_FORMAT = "Y-m-d"
+DATETIME_FORMAT = "Y-m-d H:i"
+
 TIME_ZONE = 'Europe/Stockholm'
 
 USE_I18N = True
