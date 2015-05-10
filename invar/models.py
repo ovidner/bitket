@@ -65,7 +65,8 @@ class Invoice(models.Model):
 
             mail = TemplatedEmail(subject_template='invar/email/invoice_subject.txt',
                                   body_template_html='invar/email/invoice.html', context=context,
-                                  from_email="Faktura SOF15 <faktura@sof15.se>", to=[self.receiver_email])
+                                  from_email="Faktura SOF15 <faktura@sof15.se>", to=[self.receiver_email],
+                                  tags=['invar', 'invoice'])
 
             mail.send()
 
@@ -79,7 +80,8 @@ class Invoice(models.Model):
 
         mail = TemplatedEmail(subject_template='invar/email/invoice_update_subject.txt',
                               body_template_html='invar/email/invoice_update.html', context=context,
-                              from_email="Faktura SOF15 <faktura@sof15.se>", to=[self.receiver_email])
+                              from_email="Faktura SOF15 <faktura@sof15.se>", to=[self.receiver_email],
+                              tags=['invar', 'invoice', 'update'])
 
         mail.send()
 
@@ -90,7 +92,8 @@ class Invoice(models.Model):
 
         mail = TemplatedEmail(subject_template='invar/email/invoice_invalidation_subject.txt',
                               body_template_html='invar/email/invoice_invalidation.html', context=context,
-                              from_email="Faktura SOF15 <faktura@sof15.se>", to=[self.receiver_email])
+                              from_email="Faktura SOF15 <faktura@sof15.se>", to=[self.receiver_email],
+                              tags=['invar', 'invoice', 'invalidation'])
 
         mail.send()
 
