@@ -194,8 +194,8 @@ class HoldingQuerySet(models.QuerySet):
     def remap_discounts(self):
         with atomic():
             for i in self:
-                print i
                 i.remap_discounts()
+                i.invalidate_cached_discounts()
 
     def add_to_invoice(self, invoice):
         for i in self:
