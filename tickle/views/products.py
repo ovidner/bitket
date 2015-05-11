@@ -10,6 +10,7 @@ from django.http import Http404
 from django.db.transaction import atomic
 from django.shortcuts import render_to_response
 from django.utils.timezone import now
+from django.conf import settings
 
 from guardian.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
@@ -185,6 +186,7 @@ class ExchangeView(LoginRequiredMixin, UpdateView):
             subject_template='tickle/email/transfer_subject.txt',
             body_template_html='tickle/email/transfer.html',
             context={
+                'host': settings.PRIMARY_HOST,
                 'holding': holding,
             },
             tags=['tickle', 'ticket', 'transfer'])
