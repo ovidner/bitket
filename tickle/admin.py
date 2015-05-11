@@ -114,7 +114,8 @@ class TicketTypeAdmin(ProductAdmin):
 
 @admin.register(Delivery)
 class DeliveryAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ('holdings__person__first_name',
+                     'holdings__person__last_name')
 
 
 class HoldingInline(admin.TabularInline):
