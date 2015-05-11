@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 from invar.models import Invoice, InvoiceRow, Transaction, TransactionMatch, InvoiceHandle, InvoiceInvalidation, HoldingInvoiceRow, PersonInvoiceHandle
+from tickle.admin import AlwaysChangedModelForm
 
 
 class HoldingInvoiceRowInline(admin.TabularInline):
@@ -24,6 +25,7 @@ class InvoiceRowInline(admin.TabularInline):
 
 class InvoiceHandleInline(admin.TabularInline):
     model = InvoiceHandle
+    form = AlwaysChangedModelForm
     extra = 0
     max_num = 1
 
