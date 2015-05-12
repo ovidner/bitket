@@ -350,4 +350,4 @@ class StudentUnionDiscountAdmin(admin.ModelAdmin):
 
 @admin.register(PersonalDiscount)
 class PersonalDiscountAdmin(admin.ModelAdmin):
-    filter_horizontal = ('people',)
+    raw_id_fields = ('people',)
