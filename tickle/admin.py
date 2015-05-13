@@ -116,6 +116,7 @@ class TicketTypeAdmin(ProductAdmin):
 class DeliveryAdmin(admin.ModelAdmin):
     search_fields = ('holdings__person__first_name',
                      'holdings__person__last_name')
+    filter_horizontal = ('holdings',)
 
 
 class HoldingInline(admin.TabularInline):
@@ -168,7 +169,7 @@ class TickleUserAdmin(UserAdmin):
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     raw_id_fields = ('person',)
     ordering = None  # Parent class uses 'username'
-    search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__notes', 'person__pid_code')
+    search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__pid_code')
 
 
 class AlwaysChangedModelForm(forms.ModelForm):
