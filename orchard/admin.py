@@ -52,6 +52,10 @@ class OrchardPersonAdmin(PersonAdmin):
         output += '</ul>'
         return output
 
+    special_nutrition_render.short_description = _('special nutrition')
+    special_nutrition_render.allow_tags = True
+    special_nutrition_render.admin_order_field = 'special_nutrition'
+
     def csv_export(self, request, queryset):
         import unicodecsv
 
