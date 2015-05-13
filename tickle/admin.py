@@ -168,6 +168,7 @@ class TickleUserAdmin(UserAdmin):
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     raw_id_fields = ('person',)
     ordering = None  # Parent class uses 'username'
+    search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__notes', 'person__pid_code')
 
 
 class AlwaysChangedModelForm(forms.ModelForm):
