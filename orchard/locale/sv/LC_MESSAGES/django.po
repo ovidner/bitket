@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15/Orchard\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-13 14:33+0200\n"
+"POT-Creation-Date: 2015-05-13 14:46+0200\n"
 "PO-Revision-Date: 2015-05-04 13:34+0100\n"
 "Last-Translator: Olle Vidner <olle@vidner.se>\n"
 "Language-Team: SOF15 <it-utskottet@sof15.se>\n"
@@ -21,35 +21,39 @@ msgstr ""
 msgid "holds product"
 msgstr "produktägarskap"
 
-#: orchard/admin.py:55
+#: orchard/admin.py:32
+msgid "event"
+msgstr "evenemang"
+
+#: orchard/admin.py:71
 msgid "special nutrition"
 msgstr "speciella kostvanor"
 
-#: orchard/admin.py:69
+#: orchard/admin.py:85
 msgid "Name"
 msgstr "Namn"
 
-#: orchard/admin.py:69
+#: orchard/admin.py:85
 msgid "PID"
 msgstr "Personnummer"
 
-#: orchard/admin.py:69
+#: orchard/admin.py:85
 msgid "Primary orchestra"
 msgstr "Primär orkester"
 
-#: orchard/admin.py:69
+#: orchard/admin.py:85
 msgid "Other orchestras"
 msgstr "Andra orkestrar"
 
-#: orchard/admin.py:76
+#: orchard/admin.py:92
 msgid "Export selected objects as CSV file"
 msgstr "Exportera markerade objekt i CSV-format"
 
-#: orchard/admin.py:101
+#: orchard/admin.py:117
 msgid "Invoice orchestra"
 msgstr "Fakturera orkester"
 
-#: orchard/admin.py:117
+#: orchard/admin.py:133
 msgid "invoicable quantity"
 msgstr "fakturerbar kvantitet"
 

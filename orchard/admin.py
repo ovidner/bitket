@@ -7,7 +7,7 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 
 from guardian.admin import GuardedModelAdmin
 
-from tickle.models import Product
+from tickle.models import Product, Event
 from tickle.admin import PersonAdmin
 from orchard.models import OrchardPerson, Orchestra, OrchestraMembership, OrchestraTicketType, OrchestraProduct, \
     OrchestraMemberRegistration
@@ -28,11 +28,27 @@ class ProductFilter(admin.SimpleListFilter):
             return queryset
 
 
+class EventVisitorListFilter(admin.SimpleListFilter):
+    title = _('event')
+
+    parameter_name = 'event'
+
+    def lookups(self, request, model_admin):
+        return [(i.pk, i.name) for i in Event.objects.all()]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            event = Event.objects.get(pk=self.value())
+            return queryset.filter(holdings__product__ticket_type__events=event)
+        else:
+            return queryset
+
+
 @admin.register(OrchardPerson)
 class OrchardPersonAdmin(PersonAdmin):
     actions = ('csv_export',)
     list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'special_nutrition_render', 'primary_orchestra', 'notes')
-    list_filter = ('orchestra_memberships__orchestra', 'special_nutrition', ProductFilter)
+    list_filter = ('orchestra_memberships__orchestra', 'special_nutrition', ProductFilter, EventVisitorListFilter)
 
     def has_add_permission(self, request):
         # We should not add people from here.
