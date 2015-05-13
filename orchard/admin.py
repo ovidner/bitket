@@ -31,7 +31,7 @@ class ProductFilter(admin.SimpleListFilter):
 @admin.register(OrchardPerson)
 class OrchardPersonAdmin(PersonAdmin):
     actions = ('csv_export',)
-    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'primary_orchestra', 'notes')
+    list_display = ('first_name', 'last_name', 'pid', 'email', 'phone', 'special_nutrition_render', 'primary_orchestra', 'notes')
     list_filter = ('orchestra_memberships__orchestra', 'special_nutrition', ProductFilter)
 
     def has_add_permission(self, request):
@@ -40,6 +40,17 @@ class OrchardPersonAdmin(PersonAdmin):
 
     def get_queryset(self, request):
         return OrchardPerson.objects.exclude(orchestra_memberships__isnull=True)
+
+    def special_nutrition_render(self, obj):
+        items = obj.special_nutrition.values_list('name', flat=True)
+        if not items:
+            return ''
+
+        output = '<ul>'
+        for i in items:
+            output += '<li>{0}</li>'.format(i)
+        output += '</ul>'
+        return output
 
     def csv_export(self, request, queryset):
         import unicodecsv
