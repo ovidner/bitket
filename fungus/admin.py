@@ -190,6 +190,7 @@ class ShiftRegistrationPersonListFilter(admin.SimpleListFilter):
 class ShiftRegistrationAdmin(admin.ModelAdmin):
     list_display = ('person', 'shift', 'checked_in', 'checked_out')
     list_filter = (ShiftRegistrationPersonListFilter,)
+    search_fields = ('person__liu_card_rfid', 'person__liu_id', 'person__first_name', 'person__last_name', 'person__pid_code')
 
     actions = ['change_pass_action']
 
