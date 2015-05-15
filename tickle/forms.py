@@ -21,7 +21,8 @@ class TurboDeliveryForm(forms.Form):
     liu_card_rfid = forms.CharField(required=False, label=_('RFID card number'))
     pid = SEPersonalIdentityNumberField(required=False, label=_('Personal identity number'))
 
-    auto_products = forms.ModelMultipleChoiceField(queryset=Product.objects.all(), label=_('Auto deliver products'))
+    auto_products = forms.ModelMultipleChoiceField(queryset=Product.objects.all(), label=_('Auto deliver products'),
+                                                   widget=forms.CheckboxSelectMultiple())
 
     def clean(self):
         data = super(TurboDeliveryForm, self).clean()
