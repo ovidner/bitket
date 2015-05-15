@@ -114,6 +114,7 @@ class TicketTypeAdmin(ProductAdmin):
 
 @admin.register(Delivery)
 class DeliveryAdmin(admin.ModelAdmin):
+    list_filter = ('holdings__product',)
     search_fields = ('holdings__person__first_name',
                      'holdings__person__last_name')
     filter_horizontal = ('holdings',)
