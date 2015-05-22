@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 
 from invar.models import Invoice, InvoiceRow, Transaction, TransactionMatch, InvoiceHandle, InvoiceInvalidation, HoldingInvoiceRow, PersonInvoiceHandle
 from tickle.admin import AlwaysChangedModelForm
@@ -38,6 +39,16 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     inlines = (InvoiceHandleInline, InvoiceRowInline, )
 
+    search_fields = ('id', )
+    
+    actions = ['send_invoice', ]
+
+    def send_invoice(self, request, queryset):
+        for invoice in queryset:
+            invoice.send()
+        self.message_user(request, _('Invoice sent.'))
+
+    send_invoice.short_description = _('Resend invoice (Used for lost invoices).')
 
 @admin.register(InvoiceInvalidation)
 class InvoiceInvalidationAdmin(admin.ModelAdmin):
