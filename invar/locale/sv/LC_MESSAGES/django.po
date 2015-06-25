@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15/Invar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-10 09:08+0200\n"
+"POT-Creation-Date: 2015-05-22 14:23+0200\n"
 "PO-Revision-Date: 2015-05-10 09:09+0100\n"
 "Last-Translator: Olle Vidner <olle@vidner.se>\n"
 "Language-Team: SOF15 <it-utskottet@sof15.se>\n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.7.6\n"
+
+#: invar/admin.py:47
+msgid "Invoice sent."
+msgstr "Faktura skickad."
+
+#: invar/admin.py:49
+msgid "Resend invoice (Used for lost invoices)."
+msgstr "Skicka faktura igen (Används för borttappade fakturor)."
 
 #: invar/models.py:28
 msgid "receiver name"
@@ -42,8 +50,8 @@ msgstr "fakturadatum"
 msgid "due date"
 msgstr "förfallodatum"
 
-#: invar/models.py:39 invar/models.py:132 invar/models.py:141
-#: invar/models.py:169
+#: invar/models.py:39 invar/models.py:135 invar/models.py:144
+#: invar/models.py:172
 msgid "invoice"
 msgstr "faktura"
 
@@ -51,103 +59,103 @@ msgstr "faktura"
 msgid "invoices"
 msgstr "fakturor"
 
-#: invar/models.py:131 invar/models.py:226
+#: invar/models.py:134 invar/models.py:229
 msgid "timestamp"
 msgstr "tidsstämpel"
 
-#: invar/models.py:133
+#: invar/models.py:136
 msgid "replacement invoice"
 msgstr "ersättande faktura"
 
-#: invar/models.py:136
+#: invar/models.py:139
 msgid "invoice invalidation"
 msgstr "fakturamakulering"
 
-#: invar/models.py:137
+#: invar/models.py:140
 msgid "invoice invalidations"
 msgstr "fakturamakuleringar"
 
-#: invar/models.py:144 invar/models.py:237
+#: invar/models.py:147 invar/models.py:240
 msgid "invoice handle"
 msgstr "fakturakoppling"
 
-#: invar/models.py:145
+#: invar/models.py:148
 msgid "invoice handles"
 msgstr "fakturorkopplingar"
 
-#: invar/models.py:156
+#: invar/models.py:159
 msgid "handle"
 msgstr "koppling"
 
-#: invar/models.py:157 invar/models.py:172
+#: invar/models.py:160 invar/models.py:175
 msgid "person"
 msgstr "person"
 
-#: invar/models.py:160
+#: invar/models.py:163
 msgid "personal invoice handle"
 msgstr "personlig fakturakoppling"
 
-#: invar/models.py:161
+#: invar/models.py:164
 msgid "personal invoice handles"
 msgstr "personliga fakturakopplingar"
 
-#: invar/models.py:170
+#: invar/models.py:173
 msgid "title"
 msgstr "titel"
 
-#: invar/models.py:171
+#: invar/models.py:174
 msgid "description"
 msgstr "beskrivning"
 
-#: invar/models.py:173
+#: invar/models.py:176
 msgid "quantity"
 msgstr "kvantitet"
 
-#: invar/models.py:174
+#: invar/models.py:177
 msgid "price"
 msgstr "pris"
 
-#: invar/models.py:179 invar/models.py:215
+#: invar/models.py:182 invar/models.py:218
 msgid "invoice row"
 msgstr "fakturarad"
 
-#: invar/models.py:180
+#: invar/models.py:183
 msgid "invoice rows"
 msgstr "fakturarader"
 
-#: invar/models.py:216
+#: invar/models.py:219
 msgid "holding"
 msgstr "ägandeskap"
 
-#: invar/models.py:221
+#: invar/models.py:224
 msgid "holding invoice row"
 msgstr "fakturarad för ägandeskap"
 
-#: invar/models.py:222
+#: invar/models.py:225
 msgid "holding invoice rows"
 msgstr "fakturarader för ägandeskap"
 
-#: invar/models.py:227
+#: invar/models.py:230
 msgid "amount"
 msgstr "belopp"
 
-#: invar/models.py:228
+#: invar/models.py:231
 msgid "reference"
 msgstr "referens"
 
-#: invar/models.py:231 invar/models.py:236
+#: invar/models.py:234 invar/models.py:239
 msgid "transaction"
 msgstr "transaktion"
 
-#: invar/models.py:232
+#: invar/models.py:235
 msgid "transactions"
 msgstr "transaktioner"
 
-#: invar/models.py:240
+#: invar/models.py:243
 msgid "transaction match"
 msgstr "transaktionsmatchning"
 
-#: invar/models.py:241
+#: invar/models.py:244
 msgid "transaction matches"
 msgstr "transaktionsmatchningar"
 

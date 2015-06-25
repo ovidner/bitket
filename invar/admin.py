@@ -63,6 +63,16 @@ class InvoiceAdmin(admin.ModelAdmin):
         elif status == 'overdue':
             return _('Overdue')
 
+    search_fields = ('id', )
+    
+    actions = ['send_invoice', ]
+
+    def send_invoice(self, request, queryset):
+        for invoice in queryset:
+            invoice.send()
+        self.message_user(request, _('Invoice sent.'))
+
+    send_invoice.short_description = _('Resend invoice (Used for lost invoices).')
 
 @admin.register(InvoiceInvalidation)
 class InvoiceInvalidationAdmin(admin.ModelAdmin):
