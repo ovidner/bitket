@@ -2,10 +2,12 @@
 from __future__ import unicode_literals
 import datetime
 from copy import deepcopy
-from datetime import timedelta
+from datetime import timedelta, date
+from decimal import Decimal
 
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
+from django.utils.functional import cached_property
 from django.db import models
 from django.db.models import Sum, F, ExpressionWrapper
 from django.utils.timezone import now
@@ -46,13 +48,41 @@ class Invoice(models.Model):
         if not hasattr(self, 'invalidation') and not hasattr(self, 'handle'):
             InvoiceHandle.objects.create(invoice=self)
 
-    @property
+    @cached_property
     def ocr(self):
         return self.handle.ocr
 
-    @property
+    @cached_property
     def total(self):
-        return self.rows.aggregate(total=ExpressionWrapper(Sum(F('price') * F('quantity')), output_field=models.DecimalField()))['total']
+        return self.rows.aggregate(total=ExpressionWrapper(Sum(F('price') * F('quantity')), output_field=models.DecimalField(decimal_places=2)))['total']
+
+    @cached_property
+    def payed(self):
+        return self.handle.transaction_matches.all().aggregate(total=Sum('transaction__amount'))['total'] or Decimal('0.00')
+
+    @cached_property
+    def status(self):
+        invalidation = getattr(self, 'invalidation', None)
+
+        if invalidation:
+            if getattr(invalidation, 'replacement', None):
+                return 'replaced'
+            else:
+                return 'invalidated'
+        else:
+            return 'current'
+
+    @cached_property
+    def payment_status(self):
+        if self.payed == self.total:
+            return 'payed'
+        elif self.payed > self.total:
+            return 'overpayed'
+        elif self.payed < self.total:
+            if now().date() <= self.due_date:
+                return 'pending'
+            else:
+                return 'overdue'
 
     def send(self):
         if self.total != 0:
@@ -140,8 +170,20 @@ class InvoiceInvalidation(models.Model):
         verbose_name_plural = _('invoice invalidations')
 
 
+class InvoiceHandleQuerySet(models.QuerySet):
+    def get_ocr(self, n):
+        if not ocr.verify(n):
+            raise InvoiceHandle.DoesNotExist('Not a valid OCR number.')
+
+        pk = int(ocr.strip(n))
+
+        return self.get(pk=pk)
+
+
 class InvoiceHandle(models.Model):
     invoice = models.OneToOneField('Invoice', related_name='handle', verbose_name=_('invoice'))
+
+    objects = InvoiceHandleQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('invoice handle')
@@ -225,14 +267,41 @@ class HoldingInvoiceRow(models.Model):
         verbose_name_plural = _('holding invoice rows')
 
 
+class TransactionQuerySet(models.QuerySet):
+    def match_ocr(self):
+        for i in self:
+            i.match_ocr()
+
+        return self
+
+
 class Transaction(models.Model):
-    timestamp = models.DateTimeField(auto_now_add=True, verbose_name=_('timestamp'))
+    timestamp = models.DateTimeField(default=now, verbose_name=_('timestamp'))
     amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name=_('amount'))
     reference = models.CharField(max_length=256, verbose_name=_('reference'))
+    uid = models.CharField(max_length=256, unique=True, null=True, blank=True, verbose_name=_('unique identifier'))
+
+    objects = TransactionQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('transaction')
         verbose_name_plural = _('transactions')
+
+    def match_ocr(self, fail_silently=True):
+        try:
+            handle = InvoiceHandle.objects.get_ocr(self.reference)
+        except InvoiceHandle.DoesNotExist as e:
+            if fail_silently:
+                return None
+            raise e
+
+        match, created = TransactionMatch.objects.get_or_create(transaction=self, defaults={'handle': handle})
+
+        if not created:
+            match.handle = handle
+            match.save()
+
+        return match
 
 
 class TransactionMatch(models.Model):
@@ -242,3 +311,19 @@ class TransactionMatch(models.Model):
     class Meta:
         verbose_name = _('transaction match')
         verbose_name_plural = _('transaction matches')
+
+
+class BgMaxImport(models.Model):
+    file_name = models.CharField(max_length=256, verbose_name=_('file name'))
+    file_sha1 = models.CharField(max_length=40, unique=True, verbose_name=_('file SHA1'))
+    import_timestamp = models.DateTimeField(auto_now_add=True, verbose_name=_('import timestamp'))
+    creation_timestamp = models.DateTimeField(verbose_name=_('creation timestamp'))
+
+    # transactions = models.ManyToManyField('Transaction', related_name='bgmax_imports', verbose_name=_('transactions'))
+
+    class Meta:
+        verbose_name = _('BgMax import')
+        verbose_name_plural = _('BgMax imports')
+
+    def __str__(self):
+        return '{0}'.format(self.import_timestamp)

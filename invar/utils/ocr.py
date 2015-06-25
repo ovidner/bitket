@@ -14,3 +14,20 @@ def generate(reference, check_length=settings.INVAR_OCR_CHECK_LENGTH):
         return long_reference + baluhn_generate(long_reference)
 
 
+def strip(ocr, check_length=settings.INVAR_OCR_CHECK_LENGTH):
+    ocr = str(ocr)
+    assert check_length == 1 or check_length == 2
+
+    return ocr[:-check_length]
+
+
+def verify(ocr, check_length=settings.INVAR_OCR_CHECK_LENGTH):
+    ocr = str(ocr)
+    assert check_length == 1 or check_length == 2
+
+    if baluhn_verify(ocr):
+        if check_length == 1:
+            return True
+        elif check_length == 2 and str(len(ocr)) == ocr[-2]:
+            return True
+    return False
