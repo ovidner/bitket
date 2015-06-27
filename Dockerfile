@@ -1,13 +1,5 @@
-FROM phusion/baseimage:0.9.16
+FROM ubuntu-debootstrap:vivid
 MAINTAINER Olle Vidner <olle.vidner@sof15.se>
-
-# We specify this here so it is cached by Docker, no need to run it more often than necessary.
-# Running gunicorn also enters the virtualenv, so we don't have to do that explicitly
-CMD ["/home/sof15/bin/newrelic-admin", "run-program", "/home/sof15/bin/gunicorn", "sof15.wsgi", "-c", "/home/sof15/app/_conf/gunicorn.py"]
-EXPOSE 8080
-
-# Disable SSH
-RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
 
 RUN apt-get update -y && apt-get install -y \
     python-dev \
@@ -55,3 +47,7 @@ ENV DEBUG false
 USER sof15
 ENV HOME /home/sof15
 WORKDIR /home/sof15/app
+
+# Running gunicorn also enters the virtualenv, so we don't have to do that explicitly
+CMD ["/home/sof15/bin/newrelic-admin", "run-program", "/home/sof15/bin/gunicorn", "sof15.wsgi", "-c", "/home/sof15/app/_conf/gunicorn.py"]
+EXPOSE 8080
