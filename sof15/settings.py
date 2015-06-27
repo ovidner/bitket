@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 """
 Django settings for sof15 project.
 
@@ -10,32 +9,51 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
-import django12factor
-
-d12f = django12factor.factorise(
-    custom_settings=[
-        'KOBRA_USER',
-        'KOBRA_API_KEY',
-        'SENTRY_DSN',
-        'MANDRILL_API_KEY',
-    ]
-)
+from __future__ import unicode_literals
+import os
+from six import text_type
 
 from django.utils.translation import ugettext_lazy as _
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+import environ
+
+
+env = environ.Env(
+    DEBUG=(bool, False),
+    SECRET_KEY=text_type,
+    ALLOWED_HOSTS=(list, []),
+    KOBRA_USER=text_type,
+    KOBRA_API_KEY=text_type,
+    SENTRY_DSN=text_type,
+    MANDRILL_API_KEY=text_type
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+DEV_ENV = os.path.join(BASE_DIR, 'dev.env')
 
-SECRET_KEY = d12f['SECRET_KEY']
-# SECRET_KEY = 'wu*4qyzkc9r5at0j=8qqz&)yjuq&kze_ip71khzdfv0g(^(m-_'
+# If there is a dev.env file, we go into developer mode
+if os.path.isfile(DEV_ENV):
+    # Reads the DEV_ENV file and sets any variables defined there.
+    env.read_env(DEV_ENV)
 
-DEBUG = d12f['DEBUG']
+    # Sets some sane defaults suitable for development IF these are not already
+    # set by environmental variables or the env file.
+    os.environ.setdefault('DEBUG', 'true')
+    os.environ.setdefault('SECRET_KEY', 'dev')
+    os.environ.setdefault('DATABASE_URL', 'sqlite:///db.sqlite3')
+    os.environ.setdefault('CACHE_URL', 'locmemcache://')
+    os.environ.setdefault('KOBRA_USER', '')
+    os.environ.setdefault('KOBRA_API_KEY', '')
+    os.environ.setdefault('SENTRY_DSN', '')
+    os.environ.setdefault('MANDRILL_API_KEY', '')
+
+SECRET_KEY = env('SECRET_KEY')
+
+DEBUG = env('DEBUG')
 
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = d12f['ALLOWED_HOSTS']
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 
 # Public URL to the system root, without trailing slash.
 PRIMARY_HOST = 'https://tickle.sof15.se'
@@ -152,10 +170,14 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = d12f['DATABASES']
+DATABASES = {
+    'default': env.db()
+}
 DATABASES['default']['CONN_MAX_AGE'] = 60
 
-CACHES = d12f['CACHES']
+CACHES = {
+    'default': env.cache()
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -205,14 +227,14 @@ TEMPLATE_DIRS = (
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-KOBRA_USER = d12f['KOBRA_USER']
-KOBRA_KEY = d12f['KOBRA_API_KEY']
+KOBRA_USER = env('KOBRA_USER')
+KOBRA_KEY = env('KOBRA_API_KEY')
 
 SERVER_EMAIL = 'Tickle SOF15 <tickle@sof15.se>'
 DEFAULT_FROM_EMAIL = 'Tickle SOF15 <tickle@sof15.se>'
 
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
-MANDRILL_API_KEY = d12f['MANDRILL_API_KEY']
+MANDRILL_API_KEY = env('MANDRILL_API_KEY')
 
 ADMINS = (
     ('Olle Vidner', 'olle.vidner@sof15.se'),
@@ -221,7 +243,7 @@ ADMINS = (
 )
 
 RAVEN_CONFIG = {
-    'dsn': d12f['SENTRY_DSN'],
+    'dsn': env('SENTRY_DSN')
 }
 
 LOGGING = {
