@@ -9,7 +9,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.db import models
-from django.db.models import Sum, F, ExpressionWrapper
+from django.db.models import Sum, F, Q, ExpressionWrapper
 from django.utils.timezone import now
 from django.conf import settings
 
@@ -25,6 +25,62 @@ def default_invoice_due_date():
     return now() + timedelta(days=settings.INVAR_DUE_DAYS)
 
 
+class InvoiceQuerySet(models.QuerySet):
+    def annotate_total(self):
+        return self.annotate(
+            annotated_total=ExpressionWrapper(
+                Sum(F('rows__price') * F('rows__quantity')),
+                # output_field MUST NOT have a max_digits specified!
+                output_field=models.DecimalField(decimal_places=2)
+            )
+        )
+
+    def annotate_payed(self):
+        return self.annotate(
+            annotated_payed=ExpressionWrapper(
+                Sum('handle__transaction_matches__transaction__amount'),
+                output_field=models.DecimalField(decimal_places=2)
+            )
+        )
+
+    def payed(self):
+        return self.annotate_total().annotate_payed().filter(
+            Q(annotated_payed__exact=F('annotated_total')) |
+            Q(annotated_payed__exact=None, annotated_total__exact=None) |
+            Q(annotated_payed__exact=None, annotated_total__exact=0) |
+            Q(annotated_payed__exact=0, annotated_total__exact=None)
+        )
+
+    def _unpayed(self):
+        return self.annotate_total().annotate_payed().filter(
+            Q(annotated_payed__lt=F('annotated_total')) |
+            Q(annotated_payed__exact=None, annotated_total__gt=0)
+        )
+
+    def overdue(self):
+        return self._unpayed().filter(due_date__lt=now().date())
+
+    def pending(self):
+        return self._unpayed().filter(due_date__gte=now().date())
+
+    def overpayed(self):
+        return self.annotate_total().annotate_payed().filter(
+            Q(annotated_payed__gt=F('annotated_total')) |
+            Q(annotated_payed__exact=None, annotated_total__lt=0)
+        )
+
+    def current(self):
+        return self.filter(invalidation__isnull=True)
+
+    def invalidated(self):
+        return self.filter(invalidation__isnull=False,
+                           invalidation__replacement__isnull=True)
+
+    def replaced(self):
+        return self.filter(invalidation__isnull=False,
+                           invalidation__replacement__isnull=False)
+
+
 @python_2_unicode_compatible
 class Invoice(models.Model):
     receiver_name = models.CharField(max_length=255, blank=True, verbose_name=_('receiver name'))
@@ -34,6 +90,8 @@ class Invoice(models.Model):
 
     issue_date = models.DateField(null=True, blank=True, default=default_invoice_issue_date, verbose_name=_('issue date'))
     due_date = models.DateField(null=True, blank=True, default=default_invoice_due_date, verbose_name=_('due date'))
+
+    objects = InvoiceQuerySet.as_manager()
 
     class Meta:
         ordering = ('pk',)

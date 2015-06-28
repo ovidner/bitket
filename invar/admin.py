@@ -34,10 +34,54 @@ class InvoiceHandleInline(admin.TabularInline):
     readonly_fields = ('ocr',)
 
 
+class InvoiceStatusFilter(admin.SimpleListFilter):
+    title = _('status')
+    parameter_name = 'status'
+
+    def lookups(self, request, model_admin):
+        return [
+            ['current', _('Current')],
+            ['invalidated', _('Invalidated')],
+            ['replaced', _('Replaced')]
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == 'current':
+            return queryset.current()
+        elif self.value() == 'invalidated':
+            return queryset.invalidated()
+        elif self.value() == 'replaced':
+            return queryset.replaced()
+
+
+class InvoicePaymentStatusFilter(admin.SimpleListFilter):
+    title = _('payment status')
+    parameter_name = 'payment_status'
+
+    def lookups(self, request, model_admin):
+        return [
+            ['pending', _('Pending')],
+            ['payed', _('Payed')],
+            ['overdue', _('Overdue')],
+            ['overpayed', _('Overpayed')],
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == 'pending':
+            return queryset.pending()
+        elif self.value() == 'payed':
+            return queryset.payed()
+        elif self.value() == 'overdue':
+            return queryset.overdue()
+        elif self.value() == 'overpayed':
+            return queryset.overpayed()
+
+
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'receiver_name', 'due_date', 'total', 'payed', 'status_render', 'payment_status_render')
     list_display_links = ('id', 'receiver_name')
+    list_filter = [InvoiceStatusFilter, InvoicePaymentStatusFilter]
 
     inlines = (InvoiceHandleInline, InvoiceRowInline)
 
@@ -64,7 +108,7 @@ class InvoiceAdmin(admin.ModelAdmin):
             return _('Overdue')
 
     search_fields = ('id', )
-    
+
     actions = ['send_invoice', ]
 
     def send_invoice(self, request, queryset):
@@ -73,6 +117,7 @@ class InvoiceAdmin(admin.ModelAdmin):
         self.message_user(request, _('Invoice sent.'))
 
     send_invoice.short_description = _('Resend invoice (Used for lost invoices).')
+
 
 @admin.register(InvoiceInvalidation)
 class InvoiceInvalidationAdmin(admin.ModelAdmin):
