@@ -20,6 +20,7 @@ import environ
 
 env = environ.Env(
     DEBUG=(bool, False),
+    BUILD=(bool, False),
     SECRET_KEY=text_type,
     ALLOWED_HOSTS=(list, []),
     KOBRA_USER=text_type,
@@ -29,13 +30,19 @@ env = environ.Env(
 )
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-DEV_ENV = os.path.join(BASE_DIR, 'dev.env')
+DEV_ENVFILE = os.path.join(BASE_DIR, 'dev.env')
+DEV = os.path.isfile(DEV_ENVFILE)
+
+# Build mode tells Django to set defaults for needed settings so we can run
+# build related tasks, such as collectstatic
+BUILD = env('BUILD')
 
 # If there is a dev.env file, we go into developer mode
-if os.path.isfile(DEV_ENV):
-    # Reads the DEV_ENV file and sets any variables defined there.
-    env.read_env(DEV_ENV)
+if DEV:
+    # Reads the DEV env file and sets any variables defined there.
+    env.read_env(DEV_ENVFILE)
 
+if DEV or BUILD:
     # Sets some sane defaults suitable for development IF these are not already
     # set by environmental variables or the env file.
     os.environ.setdefault('DEBUG', 'true')
