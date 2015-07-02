@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from hashlib import sha1
 
-from django.utils.translation import ungettext_lazy, ugettext_lazy as _
+from django.db.transaction import atomic
 from django import forms
 
 from invar.models import BgMaxImport, Transaction
@@ -43,17 +43,20 @@ class BgMaxImportForm(forms.Form):
     def save_transactions(self):
         for section in self.parse_cache['sections']:
             for payment in section['payments']:
-                Transaction.objects.create(timestamp=section['deposit_date'],
-                                           amount=payment['amount'],
-                                           reference=payment['reference'],
-                                           uid=payment['uid'])
+                # Uuh, a bit ugly. To get around some duplicate entries that occured due to the transactions being
+                # non-atomic.
+                Transaction.objects.get_or_create(timestamp=section['deposit_date'],
+                                                  amount=payment['amount'],
+                                                  reference=payment['reference'] or '',
+                                                  uid=payment['uid'])
 
     def save(self):
         # We are not overriding the `save` method here because `form.Form` does not have it.
         # We just add it for convenience.
         instance = getattr(self, "instance", None)
         if instance:
-            instance.save()
-            self.save_transactions()
+            with atomic():
+                instance.save()
+                self.save_transactions()
 
         return instance
