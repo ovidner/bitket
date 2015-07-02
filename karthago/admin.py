@@ -8,6 +8,11 @@ from .models import *
 from tickle.admin import PersonAdmin
 
 
+@admin.register(EntryType)
+class EntryTypeAdmin(admin.ModelAdmin):
+    pass
+
+
 class EntryMaterialInlineAdmin(admin.TabularInline):
     model = EntryMaterial
 
@@ -28,8 +33,13 @@ class EntryAdmin(admin.ModelAdmin):
     list_editable = ('approved',)
     list_display_links = ('constellation', 'name')
 
+    actions = ('invoice_action',)
+
     def get_queryset(self, request):
         return super(EntryAdmin, self).get_queryset(request).annotate(Count('memberships'))
+
+    def invoice_action(self, request, queryset):
+        queryset.invoice()
 
     def memberships_count(self, obj):
         return obj.memberships__count

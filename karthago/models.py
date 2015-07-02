@@ -4,6 +4,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
+from django.db.transaction import atomic
 
 from tickle.models import Person, PersonQuerySet, BaseDiscount
 
@@ -79,6 +80,7 @@ class EntryType(models.Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
     description = models.CharField(max_length=256, verbose_name=_('description'))
     max_members = models.PositiveIntegerField(verbose_name=_('max members'))
+    price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name=_('price'))
 
     class Meta:
         ordering = ('max_members', 'name',)
@@ -89,6 +91,13 @@ class EntryType(models.Model):
     def __str__(self):
         return '%s (%s)' % (self.name, self.description)
 
+
+class EntryQuerySet(models.QuerySet):
+    def invoice(self, send=True):
+        for i in self:
+            i.invoice(send=send)
+
+        return self
 
 @python_2_unicode_compatible
 class Entry(models.Model):
@@ -133,6 +142,8 @@ class Entry(models.Model):
 
     submitted = models.DateTimeField(auto_now_add=True)
 
+    objects = EntryQuerySet.as_manager()
+
     class Meta:
         verbose_name = _('entry')
         verbose_name_plural = _('entries')
@@ -142,6 +153,41 @@ class Entry(models.Model):
 
     def __str__(self):
         return self.constellation
+
+    def invoice(self, send=True):
+        from invar.models import Invoice, InvoiceRow
+
+        invoice = Invoice(
+            receiver_name=self.primary_contact_name,
+            receiver_organisation=self.constellation,
+            receiver_pid='',
+            receiver_email=self.primary_contact_email,
+        )
+
+        invoice_row = InvoiceRow(
+            title=self.entry_type.name,
+            person=self.constellation,
+            price=self.entry_type.price,
+        )
+
+        if not send:
+            invoice.issue_date = None
+            invoice.due_date = None
+
+        with atomic():
+            invoice.save()
+            invoice.connect_handle()
+
+            invoice_row.invoice = invoice
+            invoice_row.save()
+
+            EntryInvoiceHandle.objects.create(handle=invoice.handle, entry=self)
+
+        # Problems with sending shouldn't break the transaction
+        if send:
+            invoice.send()
+
+        return invoice
 
 
 @python_2_unicode_compatible
