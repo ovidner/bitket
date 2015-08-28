@@ -142,7 +142,7 @@ class Invoice(models.Model):
             else:
                 return 'overdue'
 
-    def send(self):
+    def send(self, email=None):
         if self.total != 0:
             context = {
                 'invoice': self,
@@ -151,9 +151,12 @@ class Invoice(models.Model):
                 'bic_swift': settings.INVAR_BIC_SWIFT,
             }
 
+            if not email:
+                email = self.receiver_email
+
             mail = TemplatedEmail(subject_template='invar/email/invoice_subject.txt',
                                   body_template_html='invar/email/invoice.html', context=context,
-                                  from_email="Faktura SOF15 <faktura@sof15.se>", to=[self.receiver_email],
+                                  from_email="Faktura SOF15 <faktura@sof15.se>", to=[email],
                                   tags=['invar', 'invoice'])
 
             mail.send()

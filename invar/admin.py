@@ -3,11 +3,14 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.admin.helpers import ActionForm
+from django import forms
+from django.template.response import TemplateResponse
 
 from invar.models import Invoice, InvoiceRow, Transaction, TransactionMatch, InvoiceHandle, InvoiceInvalidation, HoldingInvoiceRow
 from tickle.admin import AlwaysChangedModelForm
 from invar.views import BgMaxImportView
-
+from invar.forms import EmailInvoiceForm
 
 class HoldingInvoiceRowInline(admin.TabularInline):
     model = HoldingInvoiceRow
@@ -77,6 +80,10 @@ class InvoicePaymentStatusFilter(admin.SimpleListFilter):
             return queryset.overpayed()
 
 
+class InvoiceActionForm(ActionForm):
+    email = forms.EmailField(required=False, label='email')
+
+
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'receiver_name', 'due_date', 'total', 'payed', 'status_render', 'payment_status_render')
@@ -109,7 +116,7 @@ class InvoiceAdmin(admin.ModelAdmin):
 
     search_fields = ('id', )
 
-    actions = ['send_invoice', ]
+    actions = ['send_invoice', 'mail_invoice', ]
 
     def send_invoice(self, request, queryset):
         for invoice in queryset:
@@ -117,6 +124,26 @@ class InvoiceAdmin(admin.ModelAdmin):
         self.message_user(request, _('Invoice sent.'))
 
     send_invoice.short_description = _('Resend invoice (Used for lost invoices).')
+
+    def mail_invoice(self, request, queryset):
+        if request.POST.get('post'):
+            form = EmailInvoiceForm(request.POST)
+            if form.is_valid():
+                email = form.cleaned_data['email']
+                for invoice in queryset:
+                    invoice.send(email=email)
+                self.message_user(request, _('Invoices sent to %s.') % email)
+                return
+        else:
+            form = EmailInvoiceForm(initial={'_selected_action': request.POST.getlist(admin.ACTION_CHECKBOX_NAME)})
+
+        context = {
+            'objects': queryset,
+            'form': form
+        }
+        return TemplateResponse(request, 'admin/invar/email_invoice.html', context)
+
+    mail_invoice.short_description = _('Email invoices')
 
 
 @admin.register(InvoiceInvalidation)

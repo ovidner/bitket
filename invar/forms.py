@@ -5,6 +5,8 @@ from hashlib import sha1
 from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django import forms
 
+from crispy_forms.helper import FormHelper
+
 from invar.models import BgMaxImport, Transaction
 from invar.utils.bgmax import parse_file
 
@@ -57,3 +59,13 @@ class BgMaxImportForm(forms.Form):
             self.save_transactions()
 
         return instance
+
+
+class EmailInvoiceForm(forms.Form):
+    _selected_action = forms.CharField(widget=forms.MultipleHiddenInput)
+    email = forms.EmailField()
+
+    def __init__(self,  *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        super(EmailInvoiceForm, self).__init__(*args, **kwargs)
