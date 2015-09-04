@@ -28,6 +28,9 @@ def verify(ocr, check_length=settings.INVAR_OCR_CHECK_LENGTH):
     if baluhn_verify(ocr):
         if check_length == 1:
             return True
-        elif check_length == 2 and str(len(ocr)) == ocr[-2]:
-            return True
+        elif check_length == 2:
+            if len(ocr) < 3:
+                return False
+            if str(len(ocr)) == ocr[-2]:
+                return True
     return False
