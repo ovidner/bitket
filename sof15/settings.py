@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 from __future__ import unicode_literals
 import os
 from six import text_type
+from decimal import Decimal
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -291,3 +292,5 @@ INVAR_IBAN = 'SE48 1200 0000 0131 6018 5524'
 INVAR_BIC_SWIFT = 'DABASESX'
 INVAR_DUE_DAYS = 14
 INVAR_BGMAX_TIMEZONE = 'Europe/Stockholm'
+INVAR_UPPER_PAYED_OFFSET = Decimal(2.50)
+INVAR_LOWER_PAYED_OFFSET = Decimal(2.50)

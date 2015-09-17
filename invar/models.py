@@ -45,7 +45,10 @@ class InvoiceQuerySet(models.QuerySet):
 
     def payed(self):
         return self.annotate_total().annotate_payed().filter(
-            Q(annotated_payed__exact=F('annotated_total')) |
+            Q(annotated_payed__lte=(
+                F('annotated_total') + settings.INVAR_UPPER_PAYED_OFFSET),
+              annotated_payed__gte=(
+                F('annotated_total') - settings.INVAR_LOWER_PAYED_OFFSET)) |
             Q(annotated_payed__exact=None, annotated_total__exact=None) |
             Q(annotated_payed__exact=None, annotated_total__exact=0) |
             Q(annotated_payed__exact=0, annotated_total__exact=None)
@@ -53,7 +56,8 @@ class InvoiceQuerySet(models.QuerySet):
 
     def _unpayed(self):
         return self.annotate_total().annotate_payed().filter(
-            Q(annotated_payed__lt=F('annotated_total')) |
+            Q(annotated_payed__lt=(
+                F('annotated_total') - settings.INVAR_LOWER_PAYED_OFFSET)) |
             Q(annotated_payed__exact=None, annotated_total__gt=0)
         )
 
@@ -132,11 +136,11 @@ class Invoice(models.Model):
 
     @cached_property
     def payment_status(self):
-        if self.payed == self.total:
+        if self.total - settings.INVAR_LOWER_PAYED_OFFSET <= self.payed <= self.total + settings.INVAR_UPPER_PAYED_OFFSET:
             return 'payed'
-        elif self.payed > self.total:
+        elif self.payed > self.total + settings.INVAR_UPPER_PAYED_OFFSET:
             return 'overpayed'
-        elif self.payed < self.total:
+        elif self.payed < self.total - settings.INVAR_LOWER_PAYED_OFFSET:
             if now().date() <= self.due_date:
                 return 'pending'
             else:
