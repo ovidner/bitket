@@ -61,6 +61,13 @@ class ProductAdmin(SortableModelAdmin):
 class HoldingDiscountInline(SortableTabularInline):
     model = HoldingDiscount
     sortable = 'order'
+    extra = 0
+
+
+class HoldingDeliveryInline(admin.TabularInline):
+    model = Delivery.holdings.through
+    extra = 0
+    raw_id_fields = ['delivery']
 
 
 class HoldingPurchasedListFilter(admin.SimpleListFilter):
@@ -90,7 +97,7 @@ class HoldingAdmin(admin.ModelAdmin):
     exclude = ('transferee',)
 
     raw_id_fields = ('person', 'purchase', 'shopping_cart',)
-    inlines = (HoldingDiscountInline,)
+    inlines = (HoldingDiscountInline, HoldingDeliveryInline)
 
     search_fields = ('person__first_name', 'person__last_name', 'person__email', 'person__liu_id', 'person__pid_code')
     actions = ('csv_export_action',)
