@@ -1,6 +1,0 @@
-.idea
-.git
-db.sqlite3
-*.iml
-*.pyc
-dev.env
