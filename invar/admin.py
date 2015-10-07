@@ -86,7 +86,7 @@ class InvoiceActionForm(ActionForm):
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'receiver_name', 'due_date', 'total', 'payed', 'status_render', 'payment_status_render')
+    list_display = ('id', 'handle', 'receiver_name', 'issue_date', 'reminder_issue_date', 'total', 'payed', 'status_render', 'payment_status_render')
     list_display_links = ('id', 'receiver_name')
     list_filter = [InvoiceStatusFilter, InvoicePaymentStatusFilter]
 
@@ -114,9 +114,9 @@ class InvoiceAdmin(admin.ModelAdmin):
         elif status == 'overdue':
             return _('Overdue')
 
-    search_fields = ('id', )
+    search_fields = ('id', 'handle__pk', 'receiver_name', 'receiver_organisation', 'receiver_email')
 
-    actions = ['send_invoice', 'mail_invoice', ]
+    actions = ['send_invoice', 'mail_invoice', 'remind', 'invalidate']
 
     def send_invoice(self, request, queryset):
         for invoice in queryset:
@@ -144,6 +144,18 @@ class InvoiceAdmin(admin.ModelAdmin):
         return TemplateResponse(request, 'admin/invar/email_invoice.html', context)
 
     mail_invoice.short_description = _('Email invoices')
+
+    def remind(self, request, queryset):
+        queryset.remind()
+        self.message_user(request, _('Invoice reminders issued.'))
+
+    remind.short_description = _('Issue reminders')
+
+    def invalidate(self, request, queryset):
+        queryset.invalidate()
+        self.message_user(request, _('Invoices invalidated.'))
+
+    invalidate.short_description = _('Invalidate invoices')
 
 
 @admin.register(InvoiceInvalidation)

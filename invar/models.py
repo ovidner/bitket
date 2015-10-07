@@ -25,6 +25,14 @@ def default_invoice_due_date():
     return now() + timedelta(days=settings.INVAR_DUE_DAYS)
 
 
+def default_invoice_reminder_issue_date():
+    return now()
+
+
+def default_invoice_reminder_due_date():
+    return now() + timedelta(days=settings.INVAR_REMINDER_DUE_DAYS)
+
+
 class InvoiceQuerySet(models.QuerySet):
     def annotate_total(self):
         return self.annotate(
@@ -45,7 +53,10 @@ class InvoiceQuerySet(models.QuerySet):
 
     def payed(self):
         return self.annotate_total().annotate_payed().filter(
-            Q(annotated_payed__exact=F('annotated_total')) |
+            Q(annotated_payed__lte=(
+                F('annotated_total') + settings.INVAR_UPPER_PAYED_OFFSET),
+              annotated_payed__gte=(
+                F('annotated_total') - settings.INVAR_LOWER_PAYED_OFFSET)) |
             Q(annotated_payed__exact=None, annotated_total__exact=None) |
             Q(annotated_payed__exact=None, annotated_total__exact=0) |
             Q(annotated_payed__exact=0, annotated_total__exact=None)
@@ -53,7 +64,8 @@ class InvoiceQuerySet(models.QuerySet):
 
     def _unpayed(self):
         return self.annotate_total().annotate_payed().filter(
-            Q(annotated_payed__lt=F('annotated_total')) |
+            Q(annotated_payed__lt=(
+                F('annotated_total') - settings.INVAR_LOWER_PAYED_OFFSET)) |
             Q(annotated_payed__exact=None, annotated_total__gt=0)
         )
 
@@ -80,6 +92,14 @@ class InvoiceQuerySet(models.QuerySet):
         return self.filter(invalidation__isnull=False,
                            invalidation__replacement__isnull=False)
 
+    def remind(self):
+        for i in self:
+            i.remind()
+
+    def invalidate(self):
+        for i in self:
+            i.invalidate()
+
 
 @python_2_unicode_compatible
 class Invoice(models.Model):
@@ -90,6 +110,9 @@ class Invoice(models.Model):
 
     issue_date = models.DateField(null=True, blank=True, default=default_invoice_issue_date, verbose_name=_('issue date'))
     due_date = models.DateField(null=True, blank=True, default=default_invoice_due_date, verbose_name=_('due date'))
+
+    reminder_issue_date = models.DateField(null=True, blank=True, verbose_name=_('reminder issue date'))
+    reminder_due_date = models.DateField(null=True, blank=True, verbose_name=_('reminder due date'))
 
     objects = InvoiceQuerySet.as_manager()
 
@@ -119,6 +142,10 @@ class Invoice(models.Model):
         return self.handle.transaction_matches.all().aggregate(total=Sum('transaction__amount'))['total'] or Decimal('0.00')
 
     @cached_property
+    def remainder(self):
+        return self.total - self.payed
+
+    @cached_property
     def status(self):
         invalidation = getattr(self, 'invalidation', None)
 
@@ -132,11 +159,11 @@ class Invoice(models.Model):
 
     @cached_property
     def payment_status(self):
-        if self.payed == self.total:
+        if self.total - settings.INVAR_LOWER_PAYED_OFFSET <= self.payed <= self.total + settings.INVAR_UPPER_PAYED_OFFSET:
             return 'payed'
-        elif self.payed > self.total:
+        elif self.payed > self.total + settings.INVAR_UPPER_PAYED_OFFSET:
             return 'overpayed'
-        elif self.payed < self.total:
+        elif self.payed < self.total - settings.INVAR_LOWER_PAYED_OFFSET:
             if now().date() <= self.due_date:
                 return 'pending'
             else:
@@ -158,6 +185,25 @@ class Invoice(models.Model):
                                   body_template_html='invar/email/invoice.html', context=context,
                                   from_email="Faktura SOF15 <faktura@sof15.se>", to=[email],
                                   tags=['invar', 'invoice'])
+
+            mail.send()
+
+    def send_reminder(self, email=None):
+        if self.total != 0:
+            context = {
+                'invoice': self,
+                'bg': settings.INVAR_BG,
+                'iban': settings.INVAR_IBAN,
+                'bic_swift': settings.INVAR_BIC_SWIFT,
+            }
+
+            if not email:
+                email = self.receiver_email
+
+            mail = TemplatedEmail(subject_template='invar/email/invoice_reminder_subject.txt',
+                                  body_template_html='invar/email/invoice_reminder.html', context=context,
+                                  from_email="Faktura SOF15 <faktura@sof15.se>", to=[email],
+                                  tags=['invar', 'invoice', 'reminder'])
 
             mail.send()
 
@@ -188,6 +234,13 @@ class Invoice(models.Model):
 
         mail.send()
 
+    def remind(self):
+        self.reminder_issue_date = default_invoice_reminder_issue_date()
+        self.reminder_due_date = default_invoice_reminder_due_date()
+        self.save()
+
+        self.send_reminder()
+
     def _copy_rows(self, target):
         for i in self.rows.all():
             i._copy_to(target)
@@ -217,6 +270,9 @@ class Invoice(models.Model):
             self.handle.save()
 
         invalidation.save()
+
+        if not replacement:
+            self.send_invalidation()
 
         return invalidation
 
