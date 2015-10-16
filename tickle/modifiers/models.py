@@ -11,6 +11,23 @@ from tickle.common.db.fields import MoneyField, DescriptionField
 from tickle.common.behaviors import NameMixin, OrderedMixin
 
 
+class ProductModifierQuerySet(models.QuerySet):
+    def met(self, person):
+        met_pks = []
+        for i in self:
+            if i.is_met(person):
+                met_pks.append(i.pk)
+
+        return self.filter(pk__in=met_pks)
+
+
+    def real_delta(self):
+        delta = Decimal(0)
+        for i in self:
+            delta += i.real_delta()
+        return delta
+
+
 class ProductModifier(OrderedMixin, models.Model):
     condition = models.ForeignKey(
         'conditions.Condition',
@@ -35,6 +52,8 @@ class ProductModifier(OrderedMixin, models.Model):
         help_text=_('A factor of the price (after previous modifiers). For '
                     'discount, enter a negative value. E.g. -0.25 for 25% '
                     'discount.'))
+
+    objects = ProductModifierQuerySet.as_manager()
 
     class Meta:
         ordering = ['order']

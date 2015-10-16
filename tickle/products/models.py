@@ -5,7 +5,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from tickle.common.db.fields import MoneyField, NameField, SlugField, DescriptionField
-from tickle.common.behaviors import NameSlugMixin, NameSlugDescriptionMixin
+from tickle.common.behaviors import NameMixin, NameSlugMixin, NameSlugDescriptionMixin
 from .querysets import ProductQuerySet, HoldingQuerySet, CartQuerySet
 
 
@@ -47,6 +47,10 @@ class Holding(models.Model):
         'Product',
         related_name='holdings',
         verbose_name=_('product'))
+    product_variation_choices = models.ManyToManyField(
+        'ProductVariationChoice',
+        related_name='holdings',
+        verbose_name=_('product variation choices'))
     quantity = models.PositiveIntegerField(
         default=1,
         verbose_name=_('quantity'))
@@ -57,7 +61,8 @@ class Holding(models.Model):
         verbose_name=_('cart'))
 
     utilized = models.DateTimeField(
-        default=now,
+        null=True,
+        blank=True,
         verbose_name=_('utilized'))
 
     purchase_price = MoneyField(
@@ -169,12 +174,46 @@ class Product(NameSlugDescriptionMixin, models.Model):
             ['main_event', 'slug']
         ]
         ordering = ['name']
-
         verbose_name = _('product')
         verbose_name_plural = _('products')
+
+    def price(self, person):
+        self.base_price + self.product_modifiers.met().real_delta()
 
     def has_reached_limit(self):
         return self.limit and self.holdings.purchased().quantity() >= self.limit
 
 
+class ProductVariation(NameMixin, models.Model):
+    name = NameField()
 
+    product = models.ForeignKey(
+        'Product',
+        related_name='variations',
+        verbose_name=_('product'))
+
+    class Meta:
+        ordering = ['name']
+        unique_together = [
+            ['name', 'product']
+        ]
+        verbose_name = _('product variation')
+        verbose_name_plural = _('product variations')
+
+
+class ProductVariationChoice(NameMixin, models.Model):
+    name = NameField()
+    order = models.PositiveIntegerField(verbose_name=_('order'))
+
+    product_variation = models.ForeignKey(
+        'ProductVariation',
+        related_name='choices',
+        verbose_name=_('product variation'))
+
+    class Meta:
+        ordering = ['order']
+        unique_together = [
+            ['name', 'product_variation']
+        ]
+        verbose_name = _('product variation choice')
+        verbose_name_plural = _('product variation choices')
