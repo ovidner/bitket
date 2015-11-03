@@ -9,6 +9,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 from __future__ import absolute_import, unicode_literals
+import logging
 
 import environ
 
@@ -35,7 +36,12 @@ DJANGO_APPS = (
     'django.contrib.admin',
 )
 THIRD_PARTY_APPS = (
-    'crispy_forms',  # Form layouts
+    'djangosecure',
+    'gunicorn',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'raven.contrib.django.raven_compat'
     #'allauth',  # registration
     #'allauth.account',  # registration
     #'allauth.socialaccount',  # registration
@@ -48,6 +54,7 @@ LOCAL_APPS = (
     'tickle.conditions',
     'tickle.events',
     'tickle.modifiers',
+    'tickle.organizers',
     'tickle.payments',
     'tickle.people',
     'tickle.products',
@@ -60,6 +67,9 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # ------------------------------------------------------------------------------
 MIDDLEWARE_CLASSES = (
     # Make sure djangosecure.middleware.SecurityMiddleware is listed first
+    'djangosecure.middleware.SecurityMiddleware',
+    'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',
+    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,6 +88,13 @@ MIGRATION_MODULES = {
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env.bool('DJANGO_DEBUG', False)
+ALLOWED_HOSTS = ["*"]
+
+# SECRET CONFIGURATION
+# ------------------------------------------------------------------------------
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
+# Raises ImproperlyConfigured exception if DJANGO_SECRET_KEY not in os.environ
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # FIXTURE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -86,9 +103,27 @@ FIXTURE_DIRS = (
     str(APPS_DIR.path('fixtures')),
 )
 
+# set this to 60 seconds and then to 518400 when you can prove it works
+SECURE_HSTS_SECONDS = env.int('DJANGO_SECURE_HSTS_SECONDS', 0)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
+    'DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS', False)
+SECURE_FRAME_DENY = env.bool('DJANGO_SECURE_FRAME_DENY', True)
+SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
+    'DJANGO_SECURE_CONTENT_TYPE_NOSNIFF', True)
+SECURE_BROWSER_XSS_FILTER = True
+SESSION_COOKIE_SECURE = env.bool('DJANGO_COOKIE_SECURE', False)
+SESSION_COOKIE_HTTPONLY = True
+SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', True)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
+                         default='liubiljett.se <info@liubiljett.se>')
+EMAIL_SUBJECT_PREFIX = env('DJANGO_EMAIL_SUBJECT_PREFIX', default='[liubiljett.se] ')
+SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -104,14 +139,21 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'default': env.db("DATABASE_URL", default="postgres:///tickle"),
+    'default': env.db('DATABASE_URL'),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
-# CELERY CONFIGURATION
+# CACHING
 # ------------------------------------------------------------------------------
-# if you are not using the django database broker (e.g. rabbitmq, redis, memcached), you can remove the next line.
-BROKER_URL = env('CELERY_BROKER_URL', default='django://')
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': env.cache('REDIS_URL'),
+        'OPTIONS': {
+            "CLIENT_CLASS": 'django_redis.client.DefaultClient',
+        }
+    }
+}
 
 # GENERAL CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -172,16 +214,21 @@ TEMPLATES = [
     },
 ]
 
-# See: http://django-crispy-forms.readthedocs.org/en/latest/install.html#template-packs
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+if env.bool('DJANGO_CACHE_TEMPLATES', True):
+    TEMPLATES[0]['OPTIONS']['loaders'] = [
+        ('django.template.loaders.cached.Loader', TEMPLATES[0]['OPTIONS']['loaders']),
+    ]
 
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
 STATIC_ROOT = str(ROOT_DIR('staticfiles'))
 
+# See: http://whitenoise.evans.io/en/latest/django.html#cdn
+STATIC_HOST = env.str('DJANGO_STATIC_HOST', '')
+
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = '/static/'
+STATIC_URL = STATIC_HOST + '/static/'
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
@@ -193,6 +240,8 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # MEDIA CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -213,7 +262,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 # Some really nice defaults
@@ -224,45 +272,71 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # Custom user app defaults
 # Select the correct user model
 AUTH_USER_MODEL = 'people.Person'
-LOGIN_REDIRECT_URL = 'users:redirect'
-LOGIN_URL = 'account_login'
+#LOGIN_REDIRECT_URL = 'users:redirect'
+#LOGIN_URL = 'account_login'
 
-# SLUGLIFIER
+# SLUGIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
+# Sentry Configuration
+# SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT')
+SENTRY_CELERY_LOGLEVEL = env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
+RAVEN_CONFIG = {
+    'DSN': env.url('DJANGO_SENTRY_DSN', ''),
+    'CELERY_LOGLEVEL': env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
+}
 
 # LOGGING CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
+    'disable_existing_loggers': True,
+    'root': {
+        'level': 'WARNING',
+        'handlers': ['sentry'],
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s '
+                      '%(process)d %(thread)d %(message)s'
+        },
     },
     'handlers': {
-        'mail_admins': {
+        'sentry': {
             'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         }
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
+        'django.db.backends': {
             'level': 'ERROR',
-            'propagate': True,
+            'handlers': ['console'],
+            'propagate': False,
         },
-    }
+        'raven': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+    },
 }
 
-STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY', str, '')
+STRIPE_OAUTH_AUTHORIZE_URL = 'https://connect.stripe.com/oauth/authorize'
+STRIPE_OAUTH_TOKEN_URL = 'https://connect.stripe.com/oauth/token'
+STRIPE_OAUTH_SIGN_MAX_AGE = 5 * 60
+STRIPE_PUBLIC_KEY = env('STRIPE_PUBLIC_KEY', str, '')
 STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', str, '')
+STRIPE_CLIENT_ID = env('STRIPE_CLIENT_ID', str, '')
 CURRENCY = 'SEK'
+CACHE_TIMEOUT_PERSON_CONDITIONS = 10 * 60
