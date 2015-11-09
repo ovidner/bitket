@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models, transaction
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
@@ -68,6 +70,7 @@ class Holding(models.Model):
 
     objects = HoldingQuerySet.as_manager()
 
+
     class Meta:
         verbose_name = _('holding')
         verbose_name_plural = _('holdings')
@@ -92,42 +95,16 @@ class Holding(models.Model):
             tags=['tickle', 'ticket'])
         msg.send()
 
-    @cached_property
-    def discounted_price(self):
-        price = self.product.price
-        if getattr(self, 'purchase'):
-            # Calculate by HoldingDiscounts if purchased
-            for i in self.holding_discounts.all():
-                price += i.discount.delta(price)
-        else:
-            # Else calculate by ProductDiscounts
-            for i in self.product.product_discounts.eligible(self.person):
-                price += i.discount.delta(price)
+    #Discount from product variations
+    def product_variation_choice_delta(self):
+        delta = Decimal (0)
+        for choice in self.product_variation_choices:
+            delta += choice.delta()
 
-        return price
-
-    def remap_discounts(self):
-        if self.purchase:
-            self.holding_discounts.all().delete()
-            self.product.product_discounts.eligible(person=self.person).copy_to_holding_discounts(holding=self)
-
-    @cached_property
-    def discounted_total(self):
-        return self.discounted_price * self.quantity
-
-    def invalidate_cached_discounts(self):
-        try:
-            del self.discounted_total
-        except AttributeError:
-            pass
-        try:
-            del self.discounted_price
-        except AttributeError:
-            pass
-
-    @property
-    def total(self):
-        return self.product.price * self.quantity
+    #The final price of the holding.
+    #Should only be used when all ProducVariationChoices have been added properly
+    def price(self):
+        return self.product.base_price + self.product.modifier_delta(self.person) + self.product_variation_choice_delta()
 
 
 class Product(NameSlugDescriptionMixin, models.Model):
@@ -173,12 +150,15 @@ class Product(NameSlugDescriptionMixin, models.Model):
         verbose_name = _('product')
         verbose_name_plural = _('products')
 
-    def price(self, person):
-        self.base_price + self.product_modifiers.met().real_delta()
+    def modifier_delta(self, person):
+        return self.product_modifiers.met(person).real_delta()
+
+    #Not used for calculating final price.
+    def modified_price(self, person):
+        self.base_price + self.product_modifiers.met(person).real_delta()
 
     def has_reached_limit(self):
         return self.limit and self.holdings.purchased().quantity() >= self.limit
-
 
 class ProductVariation(NameMixin, models.Model):
     name = NameField()
@@ -195,11 +175,15 @@ class ProductVariation(NameMixin, models.Model):
         ]
         verbose_name = _('product variation')
         verbose_name_plural = _('product variations')
-
-
-class ProductVariationChoice(NameMixin, models.Model):
+:
+class ProductVariationChoice(NameMixin, models.Model)
     name = NameField()
     order = models.PositiveIntegerField(verbose_name=_('order'))
+    delta_amount = MoneyField(
+        null=True,
+        blank=True,
+        verbose_name=_('delta (amount)'),
+        help_text=_('For discount, enter a negative value.'))
 
     product_variation = models.ForeignKey(
         'ProductVariation',
@@ -213,3 +197,13 @@ class ProductVariationChoice(NameMixin, models.Model):
         ]
         verbose_name = _('product variation choice')
         verbose_name_plural = _('product variation choices')
+
+    def delta(self):
+        return self.delta_amount
+
+
+
+
+
+
+
