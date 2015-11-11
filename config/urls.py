@@ -11,12 +11,17 @@ from tickle.common.views import ClientView
 from tickle.organizers.views import (StripeConnectCallbackView,
                                      StripeConnectRequestView)
 
+api_urlpatterns = [
+    url(r'^auth/', include('rest_auth.urls')),
+]
+
 client_urlpatterns = [
     url(r'^$', ClientView.as_view(), name='home'),
     url(r'^.*/$', ClientView.as_view())
 ]
 
 urlpatterns = [
+    url(r'^api/', include(api_urlpatterns)),
 
     # Django Admin
     url(r'^admin/', include(admin.site.urls)),
