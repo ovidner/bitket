@@ -287,7 +287,7 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 # SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT')
 SENTRY_CELERY_LOGLEVEL = env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 RAVEN_CONFIG = {
-    'DSN': env.url('DJANGO_SENTRY_DSN', ''),
+    'dsn': env.str('DJANGO_SENTRY_DSN', ''),
     'CELERY_LOGLEVEL': env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 }
 
@@ -340,9 +340,9 @@ LOGGING = {
 STRIPE_OAUTH_AUTHORIZE_URL = 'https://connect.stripe.com/oauth/authorize'
 STRIPE_OAUTH_TOKEN_URL = 'https://connect.stripe.com/oauth/token'
 STRIPE_OAUTH_SIGN_MAX_AGE = 5 * 60
-STRIPE_PUBLIC_KEY = env('STRIPE_PUBLIC_KEY', str, '')
-STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', str, '')
-STRIPE_CLIENT_ID = env('STRIPE_CLIENT_ID', str, '')
+STRIPE_PUBLIC_KEY = env.str('STRIPE_PUBLIC_KEY', '')
+STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY', '')
+STRIPE_CLIENT_ID = env.str('STRIPE_CLIENT_ID', '')
 CURRENCY = 'SEK'
 CACHE_TIMEOUT_PERSON_CONDITIONS = 10 * 60
 SAML_SP_CERT = env.str('SAML_SP_CERT', '')
