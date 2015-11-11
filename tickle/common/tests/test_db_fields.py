@@ -1,11 +1,13 @@
 from __future__ import absolute_import, unicode_literals
+from django.contrib.auth.hashers import make_password, check_password, \
+    is_password_usable
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from hamcrest import *
 
-from ..db.fields import DescriptionField, MoneyField, NameField, NullCharField, SlugField
+from ..db.fields import DescriptionField, MoneyField, NameField, NullCharField, SlugField, PasswordField
 
 
 class DescriptionFieldTests(TestCase):
@@ -79,3 +81,25 @@ class SlugFieldTests(TestCase):
 
         field = SlugField(max_length=32)
         assert_that(field.max_length, equal_to(32))
+
+
+class PasswordFieldTests(TestCase):
+    def test_clean(self):
+        field = PasswordField()
+
+        value = None
+        clean_value = field.clean(value=value, model_instance=None)
+        assert_that(clean_value, not_(equal_to(None)))
+        assert_that(clean_value, not_(equal_to('')))
+        assert_that(not_(is_password_usable(clean_value)))
+
+        value = ''
+        clean_value = field.clean(value=value, model_instance=None)
+        assert_that(clean_value, not_(equal_to(None)))
+        assert_that(clean_value, not_(equal_to('')))
+        assert_that(not_(is_password_usable(clean_value)))
+
+        value = make_password('test')
+        clean_value = field.clean(value=value, model_instance=None)
+        assert_that(clean_value, equal_to(value))
+        assert_that(is_password_usable(clean_value))

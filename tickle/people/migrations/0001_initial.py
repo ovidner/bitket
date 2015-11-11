@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import tickle.people.models
 import tickle.common.db.fields
 
 
@@ -24,7 +25,6 @@ class Migration(migrations.Migration):
                 ('pid_coordination', models.BooleanField(default=False, help_text='Designates if national identity number is a <em>samordningsnummer</em>.', verbose_name='coordination number')),
                 ('first_name', tickle.common.db.fields.NameField(max_length=64, verbose_name='first name')),
                 ('last_name', tickle.common.db.fields.NameField(max_length=64, verbose_name='last name')),
-                ('stripe_customer_id', models.CharField(max_length=64, verbose_name='Stripe customer ID')),
                 ('liu_id', models.CharField(null=True, default=None, max_length=10, blank=True, unique=True, verbose_name='LiU ID')),
                 ('liu_id_blocked', models.NullBooleanField(verbose_name='LiU ID blocked')),
                 ('liu_card_magnet', models.CharField(max_length=32, verbose_name='magnet/barcode card number', blank=True)),
@@ -39,6 +39,7 @@ class Migration(migrations.Migration):
                 'verbose_name': 'person',
                 'verbose_name_plural': 'people',
             },
+            bases=(tickle.people.models.PasswordFieldMixin, models.Model),
         ),
         migrations.CreateModel(
             name='SpecialNutrition',
@@ -59,6 +60,10 @@ class Migration(migrations.Migration):
                 ('name', tickle.common.db.fields.NameField(unique=True, max_length=64, verbose_name='name')),
                 ('slug', tickle.common.db.fields.SlugField(unique=True, max_length=64, verbose_name='slug')),
             ],
+            options={
+                'verbose_name': 'student union',
+                'verbose_name_plural': 'student unions',
+            },
         ),
         migrations.AddField(
             model_name='person',

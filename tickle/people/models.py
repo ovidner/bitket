@@ -1,15 +1,20 @@
 from __future__ import absolute_import, unicode_literals
 
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
+                                        PermissionsMixin)
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
-from tickle.common.db.fields import NameField, SlugField
 from tickle.common.behaviors import NameSlugMixin
+from tickle.common.db.fields import NameField, SlugField, PasswordField
+from tickle.common.fields import PidField
 from tickle.common.models import TickleModel
 from tickle.common.utils import generate_pretty_email
+from tickle.conditions.models import Condition
 
 
 class PidMixin(models.Model):
@@ -22,8 +27,7 @@ class PidMixin(models.Model):
         null=True,  # This is needed for the uniqueness check. (NULL != NULL but '' == '')
         blank=True,
         verbose_name=_('national identity code'),
-        help_text=_('Last 4 digits in Swedish national identity number.'),
-    )
+        help_text=_('Last 4 digits in Swedish national identity number.'))
     pid_coordination = models.BooleanField(
         default=False,
         verbose_name=_('coordination number'),
@@ -45,8 +49,8 @@ class PidMixin(models.Model):
             if self.pid_coordination:
                 day += 60
 
-            return '{0:0>2}{1:0>2}{2:0>2}-{3}'.format(
-                str(self.birth_date.year)[-2:],
+            return '{0:0>4}{1:0>2}{2:0>2}-{3}'.format(
+                self.birth_date.year,
                 self.birth_date.month,
                 day,
                 self.pid_code or '0000',
@@ -55,9 +59,16 @@ class PidMixin(models.Model):
             return None
 
     def _set_pid(self, value):
-        self.birth_date, self.pid_code, self.pid_coordination = SEPersonalIdentityNumberField().clean(value)
+        self.birth_date, self.pid_code, self.pid_coordination = PidField().clean(value)
 
     pid = property(_get_pid, _set_pid)
+
+
+class PasswordFieldMixin(object):
+    """
+    Placed in a mixin since we can't override a Django field.
+    """
+    password = PasswordField()
 
 
 class PersonQuerySet(models.QuerySet):
@@ -81,44 +92,45 @@ class PersonQuerySet(models.QuerySet):
 
 class PersonManager(models.Manager.from_queryset(PersonQuerySet),
                     BaseUserManager):
-    def create_user(self, username, password=None):
+    def create_user(self, first_name, last_name, email, password):
         """
         Creates and saves a User with the given email and password.
         """
-        if not username:
+        if not first_name:
+            raise ValueError('Users must have a first name')
+        if not last_name:
+            raise ValueError('Users must have a last name')
+        if not email:
             raise ValueError('Users must have a username')
         if not password:
             raise ValueError('Users must have a password')
 
-        user = self.model(username=username)
+        user = self.model(
+            first_name=first_name, last_name=last_name, email=email)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, password):
+    def create_superuser(self, first_name, last_name, email, password):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
         """
-        user = self.create_user(username, password=password)
-        user.is_admin = True
+        user = self.create_user(
+            first_name, last_name, email, password)
+        user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
 
 
 @python_2_unicode_compatible
-class Person(PidMixin, AbstractBaseUser, PermissionsMixin, TickleModel):
+class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
+             TickleModel):
     first_name = NameField(
         verbose_name=_('first name'))
     last_name = NameField(
         verbose_name=_('last name'))
-
-    stripe_customer_id = models.CharField(
-        max_length=64,
-        null=True,
-        blank=True,
-        verbose_name=_('Stripe customer ID'))
 
     liu_id = models.CharField(
         max_length=10,
@@ -173,7 +185,6 @@ class Person(PidMixin, AbstractBaseUser, PermissionsMixin, TickleModel):
             # dates with NULL as pid_code should pass as we want it to.
             ['birth_date', 'pid_code', 'pid_coordination']
         ]
-
         ordering = ['first_name', 'last_name']
 
         verbose_name = _('person')
@@ -181,12 +192,6 @@ class Person(PidMixin, AbstractBaseUser, PermissionsMixin, TickleModel):
 
     def __str__(self):
         return self.get_full_name()
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        self.full_clean()
-        super(Person, self).save(force_insert, force_update, using,
-                                 update_fields)
 
     def get_full_name(self):
         return '{} {}'.format(self.first_name, self.last_name)
@@ -199,6 +204,15 @@ class Person(PidMixin, AbstractBaseUser, PermissionsMixin, TickleModel):
         if not password:
             password = make_password(None)
         return password
+
+    def met_conditions(self):
+        cache_key = 'people.person.{}.met_conditions'.format(self.pk)
+        conditions = cache.get(cache_key)
+        if conditions is None:
+            conditions = Condition.objects.met(person=self)
+            cache.set(cache_key, conditions,
+                      timeout=settings.CACHE_PERSON_CONDITIONS_TIMEOUT)
+        return conditions
 
     def get_kobra_data(self, fail_silently=False):
         """
@@ -264,15 +278,6 @@ class Person(PidMixin, AbstractBaseUser, PermissionsMixin, TickleModel):
 
         return self
 
-    def create_user_and_login(self, request):
-        # Create user
-        user = TickleUser.objects.create(person=self)
-        password = user.generate_and_send_password()
-        user.save()
-        # Login
-        user = authenticate(username=self.email, password=password)
-        login(request, user)
-
     @property
     def pretty_email(self):
         return generate_pretty_email(self.first_name, self.last_name, self.email)
@@ -295,3 +300,7 @@ class SpecialNutrition(models.Model):
 class StudentUnion(models.Model):
     name = NameField(unique=True)
     slug = SlugField(unique=True)
+
+    class Meta:
+        verbose_name = _('student union')
+        verbose_name_plural = _('student unions')

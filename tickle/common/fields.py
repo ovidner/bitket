@@ -49,7 +49,7 @@ def id_number_checksum(gd):
     return (((s // 10) + 1) * 10) - s
 
 
-class SEPersonalIdentityNumberField(forms.CharField):
+class PidField(forms.CharField):
     """
     A form field that validates input as a Swedish personal identity number
     (personnummer).
@@ -73,7 +73,7 @@ class SEPersonalIdentityNumberField(forms.CharField):
     def __init__(self, coordination_number=True, interim_number=True, *args, **kwargs):
         self.coordination_number = coordination_number
         self.interim_number = interim_number
-        super(SEPersonalIdentityNumberField, self).__init__(*args, **kwargs)
+        super(PidField, self).__init__(*args, **kwargs)
 
     default_error_messages = {
         'invalid': _('Enter a valid Swedish personal identity number or YYMMDD-0000.'),
@@ -82,7 +82,7 @@ class SEPersonalIdentityNumberField(forms.CharField):
         }
 
     def clean(self, value):
-        value = super(SEPersonalIdentityNumberField, self).clean(value)
+        value = super(PidField, self).clean(value)
 
         if value in EMPTY_VALUES:
             return None, None, False
@@ -95,13 +95,14 @@ class SEPersonalIdentityNumberField(forms.CharField):
 
         code = str(gd['serial'] + gd['checksum'])
         is_coordination_number = int(gd['day']) > 60
+        is_interim_number = gd['serial'][0].isalpha()
 
         # make sure that co-ordination numbers do not pass if not allowed
         if not self.coordination_number and is_coordination_number:
             raise forms.ValidationError(self.error_messages['coordination_number'])
 
         # make sure that interim numbers do not pass if not allowed
-        if not self.interim_number and gd['serial'][0].isalpha():
+        if not self.interim_number and is_interim_number:
             raise forms.ValidationError(self.error_messages['interim_number'])
 
         # compare the calculated value with the checksum, only if other than 0000
@@ -120,7 +121,7 @@ class SEPersonalIdentityNumberField(forms.CharField):
         return birth_day, code, is_coordination_number
 
 
-class LiUIDField(forms.CharField):
+class LiuIdField(forms.CharField):
     """
     A form field that validates input as a LiU id.
     """
@@ -128,7 +129,7 @@ class LiUIDField(forms.CharField):
     def __init__(self, employee_id=True, student_id=True, *args, **kwargs):
         self.employee_id = employee_id
         self.student_id = student_id
-        super(LiUIDField, self).__init__(*args, **kwargs)
+        super(LiuIdField, self).__init__(*args, **kwargs)
 
     default_error_messages = {
         'invalid': _('Enter a valid LiU ID.'),
@@ -137,7 +138,7 @@ class LiUIDField(forms.CharField):
         }
 
     def clean(self, value):
-        value = super(LiUIDField, self).clean(value)
+        value = super(LiuIdField, self).clean(value)
 
         if value in EMPTY_VALUES:
             return None
