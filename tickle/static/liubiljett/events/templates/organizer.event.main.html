@@ -1,0 +1,23 @@
+<md-list>
+  <md-list-item class="md-2-line">
+    <md-icon class="md-avatar">help</md-icon>
+    <div class="md-list-item-text" layout="column">
+      <h3>Arrangör</h3>
+      <p>LiTHe Blås</p>
+    </div>
+  </md-list-item>
+  <md-list-item class="md-2-line">
+    <md-icon class="md-avatar">today</md-icon>
+    <div class="md-list-item-text" layout="column">
+      <h3>Datum</h3>
+      <p>12 december 2015</p>
+    </div>
+  </md-list-item>
+</md-list>
+Luciafesten är det ballaste du varit med om!
+<div layout="row" layout-wrap>
+  <div ng-repeat="i in [1,2,3,4,5]"
+       flex-sm="100" flex-md="50" flex-gt-md="50" flex-gt-lg="33">
+    <lb-product-card product="{name: 'Festbiljett', description: 'test'}"></lb-product-card>
+  </div>
+</div>

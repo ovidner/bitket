@@ -1,103 +1,123 @@
 {% load staticfiles i18n %}<!DOCTYPE html>
-<html lang="en" ng-app>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{% block title %}Tickle{% endblock title %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<html lang="en" ng-app="liubiljett">
+<head>
+  <base href="{% url 'client:home' %}">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>{% block title %}liubiljett.se{% endblock title %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    {% block css %}
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
-
-    <!-- Your stuff: Third-party css libraries go here -->
-
-    <!-- This file store project specific CSS -->
+  {% block css %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/0.11.4/angular-material.min.css" rel="stylesheet">
     <link href="{% static 'css/project.css' %}" rel="stylesheet">
-    {% endblock %}
+    <script src="https://use.typekit.net/vtj4cvq.js"></script>
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+  {% endblock %}
+</head>
 
-    {% block angular %}
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-    {% endblock %}
-
-  </head>
-
-  <body>
-
-    <div class="navbar navbar-default">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse-1" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/">Tickle</a>
+<body layout="row">
+<md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-1dp"
+            md-component-id="left"
+            md-is-locked-open="$mdMedia('gt-md')" layout="column">
+  <md-toolbar md-theme="inverted">
+    <div class="md-toolbar-tools">
+      <h1 class="tk-plume-advertising"><a ui-sref="liubiljett.home">liubiljett.se</a></h1>
+    </div>
+  </md-toolbar>
+  <md-content>
+    <md-list>
+      <md-list-item class="md-2-line" ui-sref="liubiljett.organizer.event({organizerId: 'lithe-blas', eventId: 'luciafest-2015'})">
+        <md-icon class="md-avatar-icon">event</md-icon>
+        <div class="md-list-item-text" layout="column">
+          <h3 class="md-accent">Luciafesten</h3>
+          <p>12 december 2015</p>
         </div>
-          
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'about' %}">About</a></li>
-          </ul>
-        
-          <ul class="nav navbar-nav navbar-right">
-            {% if request.user.is_authenticated %}
-              <li><a href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a></li>
-              <li><a href="{% url 'account_logout' %}">{% trans "Logout" %}</a></li>
-            {% else %}
-              <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
-              <li><a href="{% url 'account_login' %}">{% trans "Log In" %}</a></li>
-            {% endif %}
-          </ul>
+      </md-list-item>
+    </md-list>
+    <md-divider></md-divider>
+    <md-subheader>Ditt konto</md-subheader>
+    <md-list>
+      <md-list-item class="md-2-line">
+        <md-icon class="md-avatar-icon">person</md-icon>
+        <div class="md-list-item-text" layout="column">
+          <h3>Olle Vidner</h3>
+          <p>oller120@student.liu.se</p>
+        </div>
+      </md-list-item>
+      <md-list-item ng-click="alert()">
+        <md-icon class="md-avatar-icon">shopping_cart</md-icon>
+        <p>Kundvagn</p>
+      </md-list-item>
+      <md-list-item ng-click="alert()">
+        <md-icon class="md-avatar-icon">history</md-icon>
+        <p>Tidigare köp</p>
+      </md-list-item>
+      <md-list-item ng-click="alert()">
+        <md-icon class="md-avatar-icon">settings</md-icon>
+        <p>Inställningar</p>
+      </md-list-item>
+      <md-list-item ng-click="console.log('click')">
+        <md-icon class="md-avatar-icon">power_settings_new</md-icon>
+        <p>Logga ut</p>
+      </md-list-item>
+    </md-list>
+  </md-content>
+</md-sidenav>
+
+<section layout="column" layout-fill>
+  <md-toolbar class="md-whiteframe-2dp" ng-controller="MainToolbarCtrl as mainToolbar">
+    <div class="md-toolbar-tools" layout="row">
+      <md-button class="md-icon-button" ng-click="mainToolbar.toggleSidenav('left')" hide-gt-md>
+        <md-icon>menu</md-icon>
+      </md-button>
+      <h1>Luciafesten</h1>
+      <span flex></span>
+      <md-button class="md-fab md-mini">
+        <md-icon>shopping_cart</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-content layout="row">
+      <div ui-view="main" flex-gt-md="80" flex-offset-gt-md="10" flex layout-padding>
+        <div layout="column" layout-align="center center">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
         </div>
       </div>
-    </div>
+  </md-content>
+</section>
+{% block javascript %}
+  <script>
+    StaticFile = function (path) {
+      return '{{ STATIC_URL|escapejs }}' + path
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-animate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-aria.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.0-rc3/angular-material.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ui-router-extras/0.1.0/ct-ui-router-extras.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+  <script src="https://cdn.rawgit.com/Hypercubed/angular-marked/v1.0.0/dist/angular-marked.min.js"></script>
+  <script src="https://js.stripe.com/v2/"></script>
 
-    <div class="container">
-
-      {% if messages %}
-          {% for message in messages %}
-              <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
-          {% endfor %}
-      {% endif %}
-
-      {% block content %}
-        <p>Use this document as a way to quick start any new project.</p>
-      {% endblock content %}
-
-    </div> <!-- /container -->
-
-    {% block modal %}{% endblock modal %}
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    {% block javascript %}
-      <!-- Latest JQuery -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
-      <!-- Latest compiled and minified JavaScript -->
-      <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-
-      <!-- Your stuff: Third-party javascript libraries go here -->
-
-      <!-- place project specific Javascript in this file -->
-      <script src="{% static 'js/project.js' %}"></script>
-    {% endblock javascript %}
-  </body>
+  <!-- place project specific Javascript in this file -->
+  <script src="{% static 'liubiljett/_.js' %}"></script>
+  <script src="{% static 'liubiljett/common/_.js' %}"></script>
+  <script src="{% static 'liubiljett/common/controllers.js' %}"></script>
+  <script src="{% static 'liubiljett/common/directives.js' %}"></script>
+  <script src="{% static 'liubiljett/common/states.js' %}"></script>
+  <script src="{% static 'liubiljett/events/_.js' %}"></script>
+  <script src="{% static 'liubiljett/events/controllers.js' %}"></script>
+  <script src="{% static 'liubiljett/events/states.js' %}"></script>
+  <script src="{% static 'liubiljett/home/_.js' %}"></script>
+  <script src="{% static 'liubiljett/home/states.js' %}"></script>
+  <script src="{% static 'liubiljett/products/_.js' %}"></script>
+  <script src="{% static 'liubiljett/products/directives.js' %}"></script>
+{% endblock javascript %}
+</body>
 </html>
- 
+

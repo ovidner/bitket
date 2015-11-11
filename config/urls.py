@@ -7,13 +7,18 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 
+from tickle.common.views import TickleView
+client_urlpatterns = [
+    url(r'^$', TickleView.as_view(), name='home'),
+    url(r'^.*/$', TickleView.as_view())
+]
+
 urlpatterns = [
-    url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name="home"),
-    url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
     # Django Admin
     url(r'^admin/', include(admin.site.urls)),
 
+    url(r'^', include(client_urlpatterns, namespace='client'))
     # User management
     #url(r'^accounts/', include('allauth.urls')),
 

@@ -1,0 +1,50 @@
+<md-card layout-padding>
+  <md-card-content>
+    <h3 class="md-title">{{product.name}}</h3>
+    <div marked="product.description"></div>
+    <form>
+      <md-input-container flex>
+        <label>Dryck</label>
+        <md-select placeholder="Välj dryck" ng-model="test1">
+          <md-option value="a">Öl</md-option>
+          <md-option value="b">Cider</md-option>
+          <md-option value="c">Alkoholfritt <span class="md-caption">(&ndash; 50 kr)</span></md-option>
+        </md-select>
+      </md-input-container>
+
+      <md-input-container flex>
+        <label>Mat</label>
+        <md-select placeholder="Välj mat" ng-model="test2">
+          <md-option value="a">Kött</md-option>
+          <md-option value="b">Vegetariskt</md-option>
+          <md-option value="c">Veganskt</md-option>
+        </md-select>
+      </md-input-container>
+    </form>
+  </md-card-content>
+  <md-card-footer layout="column">
+    <div layout="row">
+      <span class="md-body-1" flex>Grundpris</span>
+      <span class="md-body-1" layout-align="right">250 kr</span>
+    </div>
+    <div layout="row">
+      <span class="md-body-1" flex>Dryck: Öl</span>
+      <span class="md-body-1" layout-align="right">&mdash;</span>
+    </div>
+    <div layout="row">
+      <span class="md-body-1" flex>Kårrabatt</span>
+      <span class="md-body-1" layout-align="right">&ndash; 50 kr</span>
+    </div>
+    <md-divider></md-divider>
+    <div layout="row">
+      <span class="md-body-2" flex>Ditt pris</span>
+      <span class="md-body-2" layout-align="right">200 kr</span>
+    </div>
+  </md-card-footer>
+  <div class="md-actions" layout="row" layout-align="end center">
+    <md-button class="md-raised md-accent">
+      <md-icon>add_shopping_cart</md-icon>
+      Lägg i kundvagn
+    </md-button>
+  </div>
+</md-card>
