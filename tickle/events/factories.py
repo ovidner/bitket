@@ -4,7 +4,8 @@ import factory, factory.fuzzy
 
 from tickle.common.factories import NameSlugFactoryMixin
 
-from .models import Organizer, MainEvent
+from .models import MainEvent
+from tickle.organizers.models import Organizer
 
 
 class OrganizerFactory(NameSlugFactoryMixin, factory.DjangoModelFactory):

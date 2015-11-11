@@ -6,15 +6,6 @@ from tickle.common.db.fields import NameField, SlugField, DescriptionField
 from tickle.common.behaviors import NameSlugMixin
 
 
-class Organizer(NameSlugMixin, models.Model):
-    name = NameField(unique=True)
-    slug = SlugField(unique=True)
-
-    stripe_account_id = models.CharField(
-        max_length=32,
-        verbose_name=_('Stripe account ID'))
-
-
 class EventQuerySet(models.QuerySet):
     def holdings(self):
         return Holding.objects.filter(product__ticket_type__events__in=self)
@@ -30,7 +21,7 @@ class MainEvent(models.Model):
     description = DescriptionField()
 
     organizer = models.ForeignKey(
-        'Organizer',
+        'organizers.Organizer',
         verbose_name=_('organizer'))
 
     objects = EventQuerySet.as_manager()

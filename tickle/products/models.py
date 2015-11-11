@@ -15,10 +15,6 @@ class Cart(models.Model):
         'people.Person',
         related_name='carts',
         verbose_name=_('person'))
-    seller = models.ForeignKey(
-        'events.Organizer',
-        related_name='carts',
-        verbose_name=_('organizer'))
     purchased = models.DateTimeField(
         null=True,
         blank=True,

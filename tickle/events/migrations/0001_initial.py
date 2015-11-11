@@ -8,6 +8,7 @@ import tickle.common.db.fields
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('organizers', '0001_initial'),
     ]
 
     operations = [
@@ -18,29 +19,13 @@ class Migration(migrations.Migration):
                 ('name', tickle.common.db.fields.NameField(max_length=64, verbose_name='name')),
                 ('slug', tickle.common.db.fields.SlugField(max_length=64, verbose_name='slug')),
                 ('description', tickle.common.db.fields.DescriptionField(verbose_name='description', blank=True)),
+                ('organizer', models.ForeignKey(verbose_name='organizer', to='organizers.Organizer')),
             ],
             options={
                 'ordering': ('name',),
                 'verbose_name': 'event',
                 'verbose_name_plural': 'events',
             },
-        ),
-        migrations.CreateModel(
-            name='Organizer',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', tickle.common.db.fields.NameField(unique=True, max_length=64, verbose_name='name')),
-                ('slug', tickle.common.db.fields.SlugField(unique=True, max_length=64, verbose_name='slug')),
-                ('stripe_account_id', models.CharField(max_length=32, verbose_name='Stripe account ID')),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
-        migrations.AddField(
-            model_name='mainevent',
-            name='organizer',
-            field=models.ForeignKey(verbose_name='organizer', to='events.Organizer'),
         ),
         migrations.AlterUniqueTogether(
             name='mainevent',

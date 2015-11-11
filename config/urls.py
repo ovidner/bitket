@@ -8,6 +8,9 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 
 from tickle.common.views import ClientView
+from tickle.organizers.views import (StripeConnectCallbackView,
+                                     StripeConnectRequestView)
+
 client_urlpatterns = [
     url(r'^$', ClientView.as_view(), name='home'),
     url(r'^.*/$', ClientView.as_view())
@@ -17,6 +20,8 @@ urlpatterns = [
 
     # Django Admin
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^stripe/connect/(?P<organizer>[\w-]+)/$', StripeConnectRequestView.as_view()),
+    url(r'^stripe/connect-callback/$', StripeConnectCallbackView.as_view()),
 
     url(r'^_saml/', include('tickle.people.saml.urls', namespace='saml')),
 
