@@ -2,6 +2,7 @@
 django==1.8.5
 
 django-localflavor==1.1
+git+https://github.com/ovidner/django-saml-service-provider.git@71bce932726ed932e9616594bfe744e072c6a16a#egg=django_saml_service_provider-master
 
 # REST Framework
 djangorestframework==3.3.0
@@ -53,9 +54,3 @@ PyHamcrest==1.8.5
 
 # django-debug-toolbar that works with Django 1.5+
 django-debug-toolbar==1.3.2
-
-# improved REPL
-ipdb==0.8.1
-
-# Required by maildump. Need to pin dependency to gevent beta to be Python 3-compatible.
-gevent==1.1b2

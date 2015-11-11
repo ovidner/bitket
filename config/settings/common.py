@@ -9,9 +9,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 from __future__ import absolute_import, unicode_literals
+
 import logging
 
 import environ
+
+from tickle.people.saml.constants import claims
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
 APPS_DIR = ROOT_DIR.path('tickle')
@@ -57,6 +60,7 @@ LOCAL_APPS = (
     'tickle.organizers',
     'tickle.payments',
     'tickle.people',
+    'tickle.people.saml',
     'tickle.products',
 )
 
@@ -262,6 +266,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'tickle.people.saml.backends.LiuAdfsBackend',
 )
 
 # Some really nice defaults
@@ -340,3 +345,10 @@ STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', str, '')
 STRIPE_CLIENT_ID = env('STRIPE_CLIENT_ID', str, '')
 CURRENCY = 'SEK'
 CACHE_TIMEOUT_PERSON_CONDITIONS = 10 * 60
+SAML_SP_CERT = env.str('SAML_SP_CERT', '')
+SAML_SP_KEY = env.str('SAML_SP_KEY', '')
+SAML_USER_ATTRIBUTE_MAPPINGS = {
+    'email': claims.CLAIM_EMAIL,
+    'first_name': claims.CLAIM_GIVEN_NAME,
+    'last_name': claims.CLAIM_SURNAME,
+}

@@ -10,3 +10,6 @@ libfreetype6-dev
 
 ##django-extensions
 graphviz-dev
+
+# SAML
+libxmlsec1-dev

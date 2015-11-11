@@ -18,6 +18,8 @@ urlpatterns = [
     # Django Admin
     url(r'^admin/', include(admin.site.urls)),
 
+    url(r'^_saml/', include('tickle.people.saml.urls', namespace='saml')),
+
     url(r'^', include(client_urlpatterns, namespace='client'))
     # User management
     #url(r'^accounts/', include('allauth.urls')),
