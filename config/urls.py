@@ -7,10 +7,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 
-from tickle.common.views import TickleView
+from tickle.common.views import ClientView
 client_urlpatterns = [
-    url(r'^$', TickleView.as_view(), name='home'),
-    url(r'^.*/$', TickleView.as_view())
+    url(r'^$', ClientView.as_view(), name='home'),
+    url(r'^.*/$', ClientView.as_view())
 ]
 
 urlpatterns = [
