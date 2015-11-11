@@ -13,6 +13,7 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 import environ
+import raven
 
 from tickle.people.saml.constants import claims
 
@@ -288,6 +289,7 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 SENTRY_CELERY_LOGLEVEL = env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 RAVEN_CONFIG = {
     'dsn': env.str('DJANGO_SENTRY_DSN', ''),
+    'release': raven.fetch_git_sha(str(ROOT_DIR)),
     'CELERY_LOGLEVEL': env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 }
 
