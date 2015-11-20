@@ -29,7 +29,7 @@ class Cart(models.Model):
         verbose_name_plural = _('carts')
 
     def __str__(self):
-        return '{} / {}'.format(self.seller, self.person)
+        return '{} / {}'.format(self.person)
 
     def purchase(self):
         self.purchased = now()
