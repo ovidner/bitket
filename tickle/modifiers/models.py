@@ -15,11 +15,10 @@ class ProductModifierQuerySet(models.QuerySet):
     def met(self, person):
         met_pks = []
         for i in self:
-            if i.is_met(person):
+            if i.condition.is_met(person):
                 met_pks.append(i.pk)
 
         return self.filter(pk__in=met_pks)
-
 
     def total_delta(self):
         total_delta = Decimal(0)

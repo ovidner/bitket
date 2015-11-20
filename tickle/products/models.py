@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from tickle.common.db.fields import MoneyField, NameField, SlugField, DescriptionField
 from tickle.common.behaviors import NameMixin, NameSlugMixin, NameSlugDescriptionMixin
+from tickle.modifiers.models import HoldingModifier
 from .querysets import ProductQuerySet, HoldingQuerySet, CartQuerySet
 
 
@@ -32,7 +33,10 @@ class Cart(models.Model):
         return '{} / {}'.format(self.person)
 
     def purchase(self):
+        for holding in self.holdings:
+            holding.purchase()
         self.purchased = now()
+        self.save() #Necessary?
 
 
 @python_2_unicode_compatible
@@ -105,6 +109,19 @@ class Holding(models.Model):
     #Should only be used when all ProducVariationChoices have been added properly
     def price(self):
         return self.product.base_price + self.product.modifier_delta(self.person) + self.product_variation_choice_delta()
+
+    #Creates HoldingModifiers for the holding, and sets purchase_price
+    def purchase(self):
+        temp_price = self.product.base_price
+        #Best way to check product_modifiers?
+        for condition in self.person.met_conditions():
+            for product_modifier in condition.product_modifiers:
+                holding_modifier = HoldingModifier(product_modifier = product_modifier, holding = self)
+                holding_modifier.save()
+                temp_price += product_modifier.delta()
+        self.purchase_price = temp_price
+        self.save() #Necessary?
+
 
 
 class Product(NameSlugDescriptionMixin, models.Model):
