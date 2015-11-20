@@ -175,13 +175,12 @@ class ProductVariation(NameMixin, models.Model):
         ]
         verbose_name = _('product variation')
         verbose_name_plural = _('product variations')
-:
-class ProductVariationChoice(NameMixin, models.Model)
+
+class ProductVariationChoice(NameMixin, models.Model):
     name = NameField()
     order = models.PositiveIntegerField(verbose_name=_('order'))
     delta_amount = MoneyField(
-        null=True,
-        blank=True,
+        amount_default = Decimal(0),
         verbose_name=_('delta (amount)'),
         help_text=_('For discount, enter a negative value.'))
 
