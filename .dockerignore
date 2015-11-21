@@ -1,0 +1,3 @@
+# Keep certain git files for relase tracking
+!.git/HEAD
+!.git/refs/
