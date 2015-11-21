@@ -15,6 +15,7 @@ import logging
 import environ
 import raven
 
+from tickle.common.versioning import fetch_git_sha
 from tickle.people.saml.constants import claims
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
@@ -289,7 +290,7 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 SENTRY_CELERY_LOGLEVEL = env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 RAVEN_CONFIG = {
     'dsn': env.str('DJANGO_SENTRY_DSN', ''),
-    'release': raven.fetch_git_sha(str(ROOT_DIR)),
+    'release': fetch_git_sha(str(ROOT_DIR)),
     'CELERY_LOGLEVEL': env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 }
 
