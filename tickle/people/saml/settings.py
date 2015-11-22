@@ -47,7 +47,7 @@ MIIFOTCCBCGgAwIBAgIQAdlHVjMUXk6RFVjqYeenpjANBgkqhkiG9w0BAQsFADBkMQswCQYDVQQGEwJO
 
         'signMetadata': True,
         'wantAssertionsSigned': True,
-        'wantMessagesSigned': True,
+        'wantMessagesSigned': False,
         'wantNameIdEncrypted': False,
         'requestedAuthnContext': False,
         'signatureAlgorithm': OneLogin_Saml2_Constants.RSA_SHA256
