@@ -1,6 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template import Context
 from django.template.loader import render_to_string
@@ -10,17 +9,6 @@ def generate_pretty_email(first_name, last_name, email):
     return '"{0} {1}" <{2}>; '.format(first_name.replace('"', '\\"'),
                                       last_name.replace('"', '\\"'),
                                       email)
-
-
-def init_anonymous_user(user_cls):
-    """
-    Utilty function used by Guardian to create user object in the correct way.
-    """
-
-    return user_cls(
-        id=settings.ANONYMOUS_USER_ID,
-        name='<Anonymous Person>',
-        email='')
 
 
 class TemplatedEmail(EmailMultiAlternatives):

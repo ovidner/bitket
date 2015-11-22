@@ -340,6 +340,9 @@ LOGGING = {
     },
 }
 
+KOBRA_USER = env.str('KOBRA_USER', '')
+KOBRA_KEY = env.str('KOBRA_KEY', '')
+
 STRIPE_OAUTH_AUTHORIZE_URL = 'https://connect.stripe.com/oauth/authorize'
 STRIPE_OAUTH_TOKEN_URL = 'https://connect.stripe.com/oauth/token'
 STRIPE_OAUTH_SIGN_MAX_AGE = 5 * 60
