@@ -8,8 +8,8 @@ from onelogin.saml2.constants import OneLogin_Saml2_Constants
 
 
 LIU_ADFS_SETTINGS = {
-    'strict': not settings.DEBUG,
-    'debug': settings.DEBUG,
+    'strict': settings.SAML_STRICT,
+    'debug': settings.SAML_DEBUG,
     'sp': {
         'entityId': 'https://www.liubiljett.se/_saml/metadata/',
         'assertionConsumerService': {

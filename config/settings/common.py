@@ -350,6 +350,8 @@ CURRENCY = 'SEK'
 CACHE_TIMEOUT_PERSON_CONDITIONS = 10 * 60
 SAML_SP_CERT = env.str('SAML_SP_CERT', '')
 SAML_SP_KEY = env.str('SAML_SP_KEY', '')
+SAML_DEBUG = env.bool('SAML_DEBUG', DEBUG)
+SAML_STRICT = env.bool('SAML_STRICT', True)
 SAML_USER_ATTRIBUTE_MAPPINGS = {
     'email': claims.CLAIM_EMAIL,
     'first_name': claims.CLAIM_GIVEN_NAME,
