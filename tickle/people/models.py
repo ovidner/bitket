@@ -13,7 +13,9 @@ from tickle.common.behaviors import NameSlugMixin
 from tickle.common.db.fields import NameField, SlugField, PasswordField
 from tickle.common.fields import PidField
 from tickle.common.models import TickleModel
-from tickle.common.utils import generate_pretty_email
+from tickle.common.utils.email import generate_pretty_email
+from tickle.common.utils.kobra import (KobraClient, StudentNotFound,
+                                       Unauthorized)
 from tickle.conditions.models import Condition
 
 
