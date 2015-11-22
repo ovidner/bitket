@@ -25,7 +25,7 @@ LIU_ADFS_SETTINGS = {
         'privateKey': settings.SAML_SP_KEY
     },
     'idp': {
-        'entityId': 'https://fs.liu.se/FederationMetadata/2007-06/FederationMetadata.xml',
+        'entityId': 'http://fs.liu.se/adfs/services/trust',
         'singleSignOnService': {
             'url': 'https://fs.liu.se/adfs/ls/',
             'binding': OneLogin_Saml2_Constants.BINDING_HTTP_REDIRECT
