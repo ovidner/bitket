@@ -20,7 +20,7 @@ DEBUG_TOOLBAR_CONFIG = {
         'debug_toolbar.panels.redirects.RedirectsPanel',
     ],
     'SHOW_TEMPLATE_CONTEXT': True,
-    'SHOW_TOOLBAR_CALLBACK': lambda x: True,
+    'SHOW_TOOLBAR_CALLBACK': lambda x: DEBUG,
 }
 
 # django-extensions
