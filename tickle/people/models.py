@@ -10,7 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
 from tickle.common.behaviors import NameSlugMixin
-from tickle.common.db.fields import NameField, SlugField, PasswordField
+from tickle.common.db.fields import (NameField, SlugField, PasswordField,
+                                     NullCharField)
 from tickle.common.fields import PidField
 from tickle.common.models import TickleModel
 from tickle.common.utils.email import generate_pretty_email
@@ -24,10 +25,8 @@ class PidMixin(models.Model):
         null=True,
         blank=True,
         verbose_name=_('birth date'))
-    pid_code = models.CharField(
+    pid_code = NullCharField(
         max_length=4,
-        null=True,  # This is needed for the uniqueness check. (NULL != NULL but '' == '')
-        blank=True,
         verbose_name=_('national identity code'),
         help_text=_('Last 4 digits in Swedish national identity number.'))
     pid_coordination = models.BooleanField(
@@ -38,11 +37,6 @@ class PidMixin(models.Model):
 
     class Meta:
         abstract = True
-
-    def clean_pid_code(self):
-        # If pid_code == '' then we should actually save NULL for uniqueness
-        # check, see above.
-        return self.cleaned_data['pid_code'] or None
 
     def _get_pid(self):
         if self.birth_date:
@@ -103,7 +97,7 @@ class PersonManager(models.Manager.from_queryset(PersonQuerySet),
         if not last_name:
             raise ValueError('Users must have a last name')
         if not email:
-            raise ValueError('Users must have a username')
+            raise ValueError('Users must have an email address')
         if not password:
             raise ValueError('Users must have a password')
 
@@ -134,23 +128,14 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
     last_name = NameField(
         verbose_name=_('last name'))
 
-    liu_id = models.CharField(
-        max_length=10,
+    liu_id = NullCharField(
+        max_length=8,
         unique=True,
-        default=None,
-        null=True,
-        blank=True,
         verbose_name=_('LiU ID'))
-    liu_id_blocked = models.NullBooleanField(
-        verbose_name=_('LiU ID blocked'))
-    liu_card_magnet = models.CharField(
-        max_length=32,
-        blank=True,
-        verbose_name=_('magnet/barcode card number'))
     liu_card_rfid = models.CharField(
         max_length=32,
         blank=True,
-        verbose_name=_('RFID card number'))
+        verbose_name=_('LiU card number'))
     liu_student_union = models.ForeignKey(
         'StudentUnion',
         related_name='members',
@@ -224,7 +209,6 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
             1. LiU ID
             2. PID
             3. RFID card number
-            4. Magnet card number
 
         Returns a dictionary.
         """
@@ -236,14 +220,12 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
             request = {'personal_number': self.pid}
         elif self.liu_card_rfid:
             request = {'rfid_number': self.liu_card_rfid}
-        elif self.liu_card_magnet:
-            request = {'magnet_number': self.liu_card_magnet}
         else:
             if fail_silently:
                 return
             else:
-                raise KeyError('Person object must have LiU id, PID, RFID card'
-                               'number or magnet card number defined.')
+                raise KeyError('Person object must have LiU id, PID or RFID '
+                               'card number defined.')
 
         data = KobraClient().get_student(**request)
 
@@ -268,8 +250,6 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
             # We always overwrite these.
             self.pid = data['personal_number']
             self.liu_id = data['liu_id']
-            self.liu_id_blocked = data['blocked']
-            self.liu_card_magnet = data['barcode_number'] or ''  # Some people actually have no LiU card
             self.liu_card_rfid = data['rfid_number'] or ''  # Some people actually have no LiU card
 
             if data['union']:
