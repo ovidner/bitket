@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from __future__ import absolute_import, unicode_literals
 
 import logging
+import os
 
 import environ
 import raven
@@ -22,6 +23,13 @@ ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
 APPS_DIR = ROOT_DIR.path('tickle')
 
 env = environ.Env()
+USING_ENV_FILE = False
+
+# Read env file if it exists
+ENV_FILE = str(ROOT_DIR.path(env.str('DJANGO_ENV_FILE', '.env')))
+if os.path.isfile(ENV_FILE):
+    env.read_env(ENV_FILE)
+    USING_ENV_FILE = True
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -113,11 +121,10 @@ FIXTURE_DIRS = (
 SECURE_HSTS_SECONDS = env.int('DJANGO_SECURE_HSTS_SECONDS', 0)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
     'DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS', False)
-SECURE_FRAME_DENY = env.bool('DJANGO_SECURE_FRAME_DENY', True)
-SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
-    'DJANGO_SECURE_CONTENT_TYPE_NOSNIFF', True)
+SECURE_FRAME_DENY = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
-SESSION_COOKIE_SECURE = env.bool('DJANGO_COOKIE_SECURE', False)
+SESSION_COOKIE_SECURE = env.bool('DJANGO_SESSION_COOKIE_SECURE', True)
 SESSION_COOKIE_HTTPONLY = True
 SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', True)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -125,11 +132,13 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
-DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
-                         default='liubiljett.se <info@liubiljett.se>')
-EMAIL_SUBJECT_PREFIX = env('DJANGO_EMAIL_SUBJECT_PREFIX', default='[liubiljett.se] ')
-SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
+EMAIL_BACKEND = env.str('DJANGO_EMAIL_BACKEND',
+                        'django.core.mail.backends.smtp.EmailBackend')
+DEFAULT_FROM_EMAIL = env.str('DJANGO_DEFAULT_FROM_EMAIL',
+                             'liubiljett.se <info@liubiljett.se>')
+EMAIL_SUBJECT_PREFIX = env.str('DJANGO_EMAIL_SUBJECT_PREFIX',
+                               '[liubiljett.se] ')
+SERVER_EMAIL = env.str('DJANGO_SERVER_EMAIL', DEFAULT_FROM_EMAIL)
 
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -145,7 +154,7 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'default': env.db('DATABASE_URL'),
+    'default': env.db('DJANGO_DATABASE_URL'),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
@@ -154,12 +163,14 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': env.str('REDIS_URL'),
+        'LOCATION': env.str('DJANGO_REDIS_URL'),
         'OPTIONS': {
             "CLIENT_CLASS": 'django_redis.client.DefaultClient',
         }
     }
 }
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 # GENERAL CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -282,6 +293,12 @@ AUTH_USER_MODEL = 'people.Person'
 #LOGIN_REDIRECT_URL = 'users:redirect'
 #LOGIN_URL = 'account_login'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
 # SLUGIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
@@ -289,7 +306,7 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 # SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT')
 SENTRY_CELERY_LOGLEVEL = env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 RAVEN_CONFIG = {
-    'dsn': env.str('DJANGO_SENTRY_DSN', ''),
+    'dsn': env.str('DJANGO_SENTRY_DSN', 'https://'),
     'release': fetch_git_sha(str(ROOT_DIR)),
     'CELERY_LOGLEVEL': env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 }
@@ -349,8 +366,11 @@ STRIPE_OAUTH_SIGN_MAX_AGE = 5 * 60
 STRIPE_PUBLIC_KEY = env.str('STRIPE_PUBLIC_KEY', '')
 STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY', '')
 STRIPE_CLIENT_ID = env.str('STRIPE_CLIENT_ID', '')
+
 CURRENCY = 'SEK'
+
 CACHE_TIMEOUT_PERSON_CONDITIONS = 10 * 60
+
 SAML_SP_CERT = env.str('SAML_SP_CERT', '')
 SAML_SP_KEY = env.str('SAML_SP_KEY', '')
 SAML_DEBUG = env.bool('SAML_DEBUG', DEBUG)

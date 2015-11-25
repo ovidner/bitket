@@ -2,25 +2,30 @@ postgres:
   environment:
     POSTGRES_USER: 'tickle'
     POSTGRES_PASSWORD: 'tickle'
+  ports:
+    - '5432:5432'
+
+redis:
+  ports:
+    - '6379:6379'
 
 django:
   volumes:
     - .:/app
   environment:
     CELERY_BROKER_URL: 'redis://redis:6379/1'
-    DATABASE_URL: 'postgres://tickle:tickle@postgres:5432/tickle'
     DJANGO_CACHE_TEMPLATES: 'false'
+    DJANGO_DATABASE_URL: 'postgres://tickle:tickle@postgres:5432/tickle'
     DJANGO_DEBUG: 'true'
+    DJANGO_REDIS_URL: 'redis://redis:6379/0'
     DJANGO_SECURE_SSL_REDIRECT: 'false'
     DJANGO_SECRET_KEY: 'dev'
-    DJANGO_SENTRY_DSN: ''
-    DJANGO_SESSION_COOKIE_HTTPONLY: 'true'
-    DJANGO_SESSION_COOKIE_SECURE: 'true'
+    DJANGO_SENTRY_DSN: 'https://'
+    DJANGO_SESSION_COOKIE_SECURE: 'false'
     DJANGO_SETTINGS_MODULE: 'config.settings.local'
     GUNICORN_RELOAD: 'true'
     KOBRA_USER: ''
     KOBRA_KEY: ''
-    REDIS_URL: 'redis://redis:6379/0'
     SAML_DEBUG: 'true'
     SAML_STRICT: 'false'
     SAML_SP_KEY: '-----BEGIN RSA PRIVATE KEY----- -----END RSA PRIVATE KEY-----'
@@ -29,18 +34,18 @@ django:
     STRIPE_PUBLIC_KEY: ''
     STRIPE_SECRET_KEY: ''
 
-celeryworker:
+celerybeat:
   environment:
     CELERY_BROKER_URL: 'redis://redis:6379/1'
-    DATABASE_URL: 'postgres://tickle:tickle@postgres:5432/tickle'
+    DJANGO_DATABASE_URL: 'postgres://tickle:tickle@postgres:5432/tickle'
     DJANGO_DEBUG: 'true'
     DJANGO_SECRET_KEY: 'dev'
     REDIS_URL: 'redis://redis:6379/0'
 
-celerybeat:
+celeryworker:
   environment:
     CELERY_BROKER_URL: 'redis://redis:6379/1'
-    DATABASE_URL: 'postgres://tickle:tickle@postgres:5432/tickle'
+    DJANGO_DATABASE_URL: 'postgres://tickle:tickle@postgres:5432/tickle'
     DJANGO_DEBUG: 'true'
     DJANGO_SECRET_KEY: 'dev'
     REDIS_URL: 'redis://redis:6379/0'
