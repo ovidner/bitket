@@ -1,12 +1,12 @@
 # Bleeding edge Django
-django==1.8.6
+django==1.8.7
 
 django-localflavor==1.1
 git+https://github.com/ovidner/django-saml-service-provider.git@71bce932726ed932e9616594bfe744e072c6a16a#egg=django_saml_service_provider-master
 
 # REST Framework
 djangorestframework==3.3.1
-django-rest-auth==0.5.0
+django-rest-auth==0.6.0
 
 # Configuration
 django-environ==0.4.0
@@ -14,7 +14,7 @@ django-secure==1.0.1
 whitenoise==2.0.6
 
 gunicorn==19.3.0
-raven
+raven==5.8.1
 
 # Forms
 django-braces==1.8.1
@@ -37,18 +37,18 @@ django-autoslug==1.9.3
 pytz==2015.7
 
 # Redis support
-django-redis==4.2.0
+django-redis==4.3.0
 
-celery==3.1.18
+celery==3.1.19
 
 stripe==1.27.1
 
-coverage==4.0b1
-flake8==2.4.1
+coverage==4.0.3
+flake8==2.5.0
 Sphinx
 django-extensions==1.5.9
-Werkzeug==0.10.4
-django-test-plus==1.0.7
+Werkzeug==0.11.2
+django-test-plus==1.0.11
 factory_boy==2.5.2
 PyHamcrest==1.8.5
 
