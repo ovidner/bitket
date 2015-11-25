@@ -13,11 +13,11 @@ LIU_ADFS_SETTINGS = {
     'sp': {
         'entityId': 'https://www.liubiljett.se/_saml/metadata/',
         'assertionConsumerService': {
-            'url': 'https://www.liubiljett.se/_saml/login/complete/',
+            'url': settings.SAML_SP_ACS_URL,
             'binding': OneLogin_Saml2_Constants.BINDING_HTTP_POST
         },
         'singleLogoutService': {
-            'url': 'https://www.liubiljett.se/_saml/logout/',
+            'url': settings.SAML_SP_SLO_URL,
             'binding': OneLogin_Saml2_Constants.BINDING_HTTP_REDIRECT
         },
         'NameIDFormat': OneLogin_Saml2_Constants.NAMEID_UNSPECIFIED,
@@ -35,9 +35,37 @@ LIU_ADFS_SETTINGS = {
             'binding': OneLogin_Saml2_Constants.BINDING_HTTP_REDIRECT
         },
         # CN=fssigning.liu.se
-        'x509cert': """-----BEGIN CERTIFICATE-----
-MIIFOTCCBCGgAwIBAgIQAdlHVjMUXk6RFVjqYeenpjANBgkqhkiG9w0BAQsFADBkMQswCQYDVQQGEwJOTDEWMBQGA1UECBMNTm9vcmQtSG9sbGFuZDESMBAGA1UEBxMJQW1zdGVyZGFtMQ8wDQYDVQQKEwZURVJFTkExGDAWBgNVBAMTD1RFUkVOQSBTU0wgQ0EgMzAeFw0xNTAxMDcwMDAwMDBaFw0xODAxMTExMjAwMDBaMIGJMQswCQYDVQQGEwJTRTEXMBUGA1UECAwOw5ZzdGVyZ8O2dGxhbmQxEzARBgNVBAcMCkxpbmvDtnBpbmcxIDAeBgNVBAoMF0xpbmvDtnBpbmdzIHVuaXZlcnNpdGV0MQ8wDQYDVQQLEwZMaVUtSVQxGTAXBgNVBAMTEGZzc2lnbmluZy5saXUuc2UwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCS5bpEkEcbJAsNdgyK1QYAbuq5PKl8bAcujqKIRZAr4uixWudDxRVhwOxDyZMTZGN0vNVdf+ZtUZQ9NWYaLcgEvzxhNbsA0fmTSwRlMvxj0R/JbDs5Slmew11wZ6rxgX7wRv8rjB3PSdf/SVc5LKgcDuCCGCLv+OE7d4K13OfKBxUv/vrD7upz6lgT79OWX6udFhU8sXmP8u8P/mID83o5N32hwxymRuEmjnLiVIrUR4cF5EwgblrpoqQKeGKdkroZApU0EJxvtopesVgUEGXW4tkogTJ8qtSPQK8iPEeteR6YpFCIxIbE0gpwDgo0bubt8T+FkQE71SLvbhv9RcZBAgMBAAGjggG/MIIBuzAfBgNVHSMEGDAWgBRn/YggFCeYxwnSJRm76VERY3VQYjAdBgNVHQ4EFgQU8vPdaPx+JhyN970NWqrTcbU/c0MwGwYDVR0RBBQwEoIQZnNzaWduaW5nLmxpdS5zZTAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMGsGA1UdHwRkMGIwL6AtoCuGKWh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9URVJFTkFTU0xDQTMuY3JsMC+gLaArhilodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vVEVSRU5BU1NMQ0EzLmNybDBCBgNVHSAEOzA5MDcGCWCGSAGG/WwBATAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5kaWdpY2VydC5jb20vQ1BTMG4GCCsGAQUFBwEBBGIwYDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMDgGCCsGAQUFBzAChixodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vVEVSRU5BU1NMQ0EzLmNydDAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBCwUAA4IBAQCgqdZfizsQZYpLif+sV+mgkkln6WVGv1KVw2xvRDO9jF192qjkL9zmB081qOydPtt8aLbXQHp13M/URoFK2Vvdikq5WQMkGxJu3zLtQD4lJsJXAaGdm7nSwWS4NHHIf5yg0rWC5kQBJnWhAHhPedFzfgGR9lUohhvnLJJ/PFuvN0sCsYYpRraQT880RdTq1imsFB3wAUHjN9tQCS3Ss9Cf6MOvwHb3flDe4OLwxxMZfI3oGwoUJHltib7xFuT7w5hOYts3Js+BBtsSskGSp/dz8PiH6NDQZG/9USNN1biuUCDxrhTBgSHIAeB3h7k6wue5C30EE8SCLfZ6Xxsmk1rn
------END CERTIFICATE-----"""
+        'x509cert': (
+            '-----BEGIN CERTIFICATE-----'
+            'MIIFOTCCBCGgAwIBAgIQAdlHVjMUXk6RFVjqYeenpjANBgkqhkiG9w0BAQsFADBkM'
+            'QswCQYDVQQGEwJOTDEWMBQGA1UECBMNTm9vcmQtSG9sbGFuZDESMBAGA1UEBxMJQW'
+            '1zdGVyZGFtMQ8wDQYDVQQKEwZURVJFTkExGDAWBgNVBAMTD1RFUkVOQSBTU0wgQ0E'
+            'gMzAeFw0xNTAxMDcwMDAwMDBaFw0xODAxMTExMjAwMDBaMIGJMQswCQYDVQQGEwJT'
+            'RTEXMBUGA1UECAwOw5ZzdGVyZ8O2dGxhbmQxEzARBgNVBAcMCkxpbmvDtnBpbmcxI'
+            'DAeBgNVBAoMF0xpbmvDtnBpbmdzIHVuaXZlcnNpdGV0MQ8wDQYDVQQLEwZMaVUtSV'
+            'QxGTAXBgNVBAMTEGZzc2lnbmluZy5saXUuc2UwggEiMA0GCSqGSIb3DQEBAQUAA4I'
+            'BDwAwggEKAoIBAQCS5bpEkEcbJAsNdgyK1QYAbuq5PKl8bAcujqKIRZAr4uixWudD'
+            'xRVhwOxDyZMTZGN0vNVdf+ZtUZQ9NWYaLcgEvzxhNbsA0fmTSwRlMvxj0R/JbDs5S'
+            'lmew11wZ6rxgX7wRv8rjB3PSdf/SVc5LKgcDuCCGCLv+OE7d4K13OfKBxUv/vrD7u'
+            'pz6lgT79OWX6udFhU8sXmP8u8P/mID83o5N32hwxymRuEmjnLiVIrUR4cF5Ewgblr'
+            'poqQKeGKdkroZApU0EJxvtopesVgUEGXW4tkogTJ8qtSPQK8iPEeteR6YpFCIxIbE'
+            '0gpwDgo0bubt8T+FkQE71SLvbhv9RcZBAgMBAAGjggG/MIIBuzAfBgNVHSMEGDAWg'
+            'BRn/YggFCeYxwnSJRm76VERY3VQYjAdBgNVHQ4EFgQU8vPdaPx+JhyN970NWqrTcb'
+            'U/c0MwGwYDVR0RBBQwEoIQZnNzaWduaW5nLmxpdS5zZTAOBgNVHQ8BAf8EBAMCBaA'
+            'wHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMGsGA1UdHwRkMGIwL6AtoCuG'
+            'KWh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9URVJFTkFTU0xDQTMuY3JsMC+gLaArh'
+            'ilodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vVEVSRU5BU1NMQ0EzLmNybDBCBgNVHS'
+            'AEOzA5MDcGCWCGSAGG/WwBATAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5kaWd'
+            'pY2VydC5jb20vQ1BTMG4GCCsGAQUFBwEBBGIwYDAkBggrBgEFBQcwAYYYaHR0cDov'
+            'L29jc3AuZGlnaWNlcnQuY29tMDgGCCsGAQUFBzAChixodHRwOi8vY2FjZXJ0cy5ka'
+            'WdpY2VydC5jb20vVEVSRU5BU1NMQ0EzLmNydDAMBgNVHRMBAf8EAjAAMA0GCSqGSI'
+            'b3DQEBCwUAA4IBAQCgqdZfizsQZYpLif+sV+mgkkln6WVGv1KVw2xvRDO9jF192qj'
+            'kL9zmB081qOydPtt8aLbXQHp13M/URoFK2Vvdikq5WQMkGxJu3zLtQD4lJsJXAaGd'
+            'm7nSwWS4NHHIf5yg0rWC5kQBJnWhAHhPedFzfgGR9lUohhvnLJJ/PFuvN0sCsYYpR'
+            'raQT880RdTq1imsFB3wAUHjN9tQCS3Ss9Cf6MOvwHb3flDe4OLwxxMZfI3oGwoUJH'
+            'ltib7xFuT7w5hOYts3Js+BBtsSskGSp/dz8PiH6NDQZG/9USNN1biuUCDxrhTBgSH'
+            'IAeB3h7k6wue5C30EE8SCLfZ6Xxsmk1rn'
+            '-----END CERTIFICATE-----')
     },
     'security': {
         'nameIdEncrypted': False,
