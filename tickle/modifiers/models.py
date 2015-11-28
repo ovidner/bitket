@@ -14,18 +14,18 @@ from tickle.common.behaviors import NameMixin, OrderedMixin
 class ProductModifierQuerySet(models.QuerySet):
     def met(self, person):
         met_pks = []
-        for i in self:
-            if i.is_met(person):
-                met_pks.append(i.pk)
+        for condition in person.met_conditions():
+            for product_modifier in condition.product_modifiers:
+                met_pks.append(product_modifier.pk)
 
         return self.filter(pk__in=met_pks)
 
-
-    def real_delta(self):
-        delta = Decimal(0)
+    def total_delta(self):
+        total_delta = Decimal(0)
         for i in self:
-            delta += i.real_delta()
-        return delta
+            total_delta += i.delta()
+        return total_delta
+
 
 
 class ProductModifier(OrderedMixin, models.Model):
@@ -43,15 +43,6 @@ class ProductModifier(OrderedMixin, models.Model):
         blank=True,
         verbose_name=_('delta (amount)'),
         help_text=_('For discount, enter a negative value.'))
-    delta_factor = models.DecimalField(
-        max_digits=3,
-        decimal_places=2,
-        null=True,
-        blank=True,
-        verbose_name=_('delta (factor)'),
-        help_text=_('A factor of the price (after previous modifiers). For '
-                    'discount, enter a negative value. E.g. -0.25 for 25% '
-                    'discount.'))
 
     objects = ProductModifierQuerySet.as_manager()
 
@@ -74,28 +65,7 @@ class ProductModifier(OrderedMixin, models.Model):
                                           update_fields)
 
     def delta(self):
-        """
-        Returns a tuple. The first element is a Decimal object with the delta.
-        The other element is a boolean telling if the delta is a factor or not.
-        :return:
-        """
-        if self.delta_amount and not self.delta_factor:
-            return self.delta_amount, False
-        elif self.delta_factor and not self.delta_amount:
-            return self.delta_factor, True
-        return None, None
-
-    def real_delta(self, price=None):
-        if not price:
-            price = self.product.base_price
-
-        delta, factor = self.delta()
-        if delta is None and factor is None:
-            return None
-        elif not factor:
-            return delta
-        elif factor:
-            return Decimal(price * delta).quantize(Decimal('.01'))
+        return self.delta_amount
 
 
 class HoldingModifier(models.Model):

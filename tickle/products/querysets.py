@@ -67,6 +67,11 @@ class HoldingQuerySet(models.QuerySet):
                 i.invalidate_cached_discounts()
 
 
+    def purchase(self):
+        for i in self:
+            i.purchase()
+
+
 class CartQuerySet(models.QuerySet):
     def holdings(self):
         return Holding.objects.filter(cart__in=self)
