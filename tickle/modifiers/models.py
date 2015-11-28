@@ -14,9 +14,9 @@ from tickle.common.behaviors import NameMixin, OrderedMixin
 class ProductModifierQuerySet(models.QuerySet):
     def met(self, person):
         met_pks = []
-        for i in self:
-            if i.condition.is_met(person):
-                met_pks.append(i.pk)
+        for condition in person.met_conditions():
+            for product_modifier in condition.product_modifiers:
+                met_pks.append(product_modifier.pk)
 
         return self.filter(pk__in=met_pks)
 

@@ -33,10 +33,9 @@ class Cart(models.Model):
         return '{} / {}'.format(self.person)
 
     def purchase(self):
-        for holding in self.holdings:
-            holding.purchase()
+        self.holdings.purchase()
         self.purchased = now()
-        self.save() #Necessary?
+        self.save()
 
 
 @python_2_unicode_compatible
@@ -113,14 +112,13 @@ class Holding(models.Model):
     #Creates HoldingModifiers for the holding, and sets purchase_price
     def purchase(self):
         temp_price = self.product.base_price
-        #Best way to check product_modifiers?
-        for condition in self.person.met_conditions():
-            for product_modifier in condition.product_modifiers:
-                holding_modifier = HoldingModifier(product_modifier = product_modifier, holding = self)
-                holding_modifier.save()
-                temp_price += product_modifier.delta()
+
+        for product_modifier in self.product_modifiers.met(self.person):
+            holding_modifier = HoldingModifier(product_modifier = product_modifier, holding = self)
+            holding_modifier.save()
+            temp_price += product_modifier.delta()
         self.purchase_price = temp_price
-        self.save() #Necessary?
+        self.save()
 
 
 
