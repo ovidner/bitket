@@ -13,6 +13,9 @@ class EventQuerySet(models.QuerySet):
     def visitors(self):
         return self.holdings().purchased().holders()
 
+    def organizers(self):
+        return Organizer.object.filter(events__in = self).distinct()
+
 
 @python_2_unicode_compatible
 class MainEvent(models.Model):

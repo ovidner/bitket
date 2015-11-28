@@ -9,7 +9,10 @@ from django.utils.translation import ugettext_lazy as _
 from tickle.common.db.fields import MoneyField, NameField, SlugField, DescriptionField
 from tickle.common.behaviors import NameMixin, NameSlugMixin, NameSlugDescriptionMixin
 from tickle.modifiers.models import HoldingModifier
+from tickle.payments.models import Transaction
 from .querysets import ProductQuerySet, HoldingQuerySet, CartQuerySet
+
+import stripe
 
 
 @python_2_unicode_compatible
@@ -32,8 +35,32 @@ class Cart(models.Model):
     def __str__(self):
         return '{} / {}'.format(self.person)
 
-    def purchase(self):
+    def purchase(self, stripe_token):
         self.holdings.purchase()
+
+        for organizer in self.holdings.products().events().organizers():
+            charge_amount = self.holdings.organized_by(organizer).purchased_total_cost()
+            try:
+                charge = stripe.Charge.create(
+                    api_key='pk_test_crwDnA9V1JrrxQ8DB6H0JtFq', #Needs to be changed
+                    amount=charge_amount, #Stripe takes a price argument in ore. Are the product prices in ore or kroner?
+                    currency='sek', #Defined elsewhere?
+                    source=stripe_token,
+                    stripe_account=organizer.stripe_account_id,
+                    description="Charge for \organizer 's event." #Add a real message
+                )
+                transaction=Transaction(amount=charge_amount, stripe_charge=charge)
+                transaction.save()
+            except stripe.error.CardError:
+                #The payment to the current organizer has failed.
+                #In the scope of Luciafesten this means nothing has been bought,
+                # so we can undo everything done in the purchase method
+                # with no consequences.
+
+                #Should this be done by setting capture = false,
+                #and only capture the charges if they all go through?
+                pass
+
         self.purchased = now()
         self.save()
 
@@ -195,10 +222,9 @@ class ProductVariationChoice(NameMixin, models.Model):
     name = NameField()
     order = models.PositiveIntegerField(verbose_name=_('order'))
     delta_amount = MoneyField(
-        amount_default = Decimal(0),
+        default = Decimal(0),
         verbose_name=_('delta (amount)'),
         help_text=_('For discount, enter a negative value.'))
-
     product_variation = models.ForeignKey(
         'ProductVariation',
         related_name='choices',

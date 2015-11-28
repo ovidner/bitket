@@ -16,6 +16,9 @@ class ProductQuerySet(models.QuerySet):
         from .models import Holding
         return Holding.objects.filter(product__in=self)
 
+    def events(self):
+        return Event.objects.filter(products__in = self).distinct()
+
 
 class HoldingQuerySet(models.QuerySet):
     # METHODS RETURNING HOLDING QUERYSETS #
@@ -38,10 +41,16 @@ class HoldingQuerySet(models.QuerySet):
     def unpurchased(self):
         return self.filter(purchase__isnull=True)
 
+    def organized_by(self, organizer):
+        return self.filter(product__main_event__organizer = organizer)
+
     # METHODS RETURNING OTHER QUERYSETS #
 
     def holders(self):
         return Person.objects.filter(holdings__in=self).distinct()
+
+    def products(self):
+        return Product.objects.filter(holdings__in=self).distinct()
 
     # METHODS RETURNING NUMERIC VALUES #
 
@@ -58,6 +67,10 @@ class HoldingQuerySet(models.QuerySet):
     def quantity(self):
         return self.aggregate(models.Sum('quantity'))['quantity__sum'] or 0
 
+
+    def purchased_total_cost(self):
+        return self.annotate(price=models.Sum('purchased_price * quantity')).aggregate(models.Sum('price'))['price_sum'] or 0
+
     # METHODS MANIPULATING DATA #
 
     def remap_discounts(self):
@@ -70,6 +83,8 @@ class HoldingQuerySet(models.QuerySet):
     def purchase(self):
         for i in self:
             i.purchase()
+
+
 
 
 class CartQuerySet(models.QuerySet):
