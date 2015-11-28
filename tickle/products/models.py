@@ -42,7 +42,8 @@ class Cart(models.Model):
             charge_amount = self.holdings.organized_by(organizer).purchased_total_cost()
             try:
                 charge = stripe.Charge.create(
-                    amount=charge_amount, #Stripe takes a price argument in öre. Are the product prices in öre or kroner?
+                    api_key='pk_test_crwDnA9V1JrrxQ8DB6H0JtFq', #Needs to be changed
+                    amount=charge_amount, #Stripe takes a price argument in ore. Are the product prices in ore or kroner?
                     currency='sek', #Defined elsewhere?
                     source=stripe_token,
                     stripe_account=organizer.stripe_account_id,
@@ -221,10 +222,9 @@ class ProductVariationChoice(NameMixin, models.Model):
     name = NameField()
     order = models.PositiveIntegerField(verbose_name=_('order'))
     delta_amount = MoneyField(
-        amount_default = Decimal(0),
+        default = Decimal(0),
         verbose_name=_('delta (amount)'),
         help_text=_('For discount, enter a negative value.'))
-
     product_variation = models.ForeignKey(
         'ProductVariation',
         related_name='choices',
