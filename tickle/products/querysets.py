@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from decimal import Decimal
 
 from django.db import models
+from tickle import products, people, events
 
 
 class ProductQuerySet(models.QuerySet):
@@ -14,10 +15,10 @@ class ProductQuerySet(models.QuerySet):
 
     def holdings(self):
         from .models import Holding
-        return Holding.objects.filter(product__in=self)
+        return Holding.objects.filter(products__in=self)
 
     def events(self):
-        return Event.objects.filter(products__in = self).distinct()
+        return events.models.MainEvent.objects.filter(products__in = self).distinct()
 
 
 class HoldingQuerySet(models.QuerySet):
@@ -47,10 +48,10 @@ class HoldingQuerySet(models.QuerySet):
     # METHODS RETURNING OTHER QUERYSETS #
 
     def holders(self):
-        return Person.objects.filter(holdings__in=self).distinct()
+        return people.models.Person.objects.filter(holdings__in=self).distinct()
 
     def products(self):
-        return Product.objects.filter(holdings__in=self).distinct()
+        return products.models.Product.objects.filter(holdings__in=self).distinct()
 
     # METHODS RETURNING NUMERIC VALUES #
 
@@ -69,7 +70,7 @@ class HoldingQuerySet(models.QuerySet):
 
 
     def purchased_total_cost(self):
-        return self.annotate(price=models.Sum('purchased_price * quantity')).aggregate(models.Sum('price'))['price_sum'] or 0
+        return self.annotate(price=models.Sum('purchase_price')).aggregate(models.Sum('price', field='price*quantity'))['price__sum'] or 0
 
     # METHODS MANIPULATING DATA #
 
@@ -89,4 +90,4 @@ class HoldingQuerySet(models.QuerySet):
 
 class CartQuerySet(models.QuerySet):
     def holdings(self):
-        return Holding.objects.filter(cart__in=self)
+        return products.models.Holding.objects.filter(cart__in=self)

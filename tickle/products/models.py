@@ -1,16 +1,21 @@
 from decimal import Decimal
 
-from django.db import models, transaction
+from django.db import models
+from django.db import transaction as db_transaction
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 from tickle.common.db.fields import MoneyField, NameField, SlugField, DescriptionField
 from tickle.common.behaviors import NameMixin, NameSlugMixin, NameSlugDescriptionMixin
 from tickle.modifiers.models import HoldingModifier
 from tickle.payments.models import Transaction
 from .querysets import ProductQuerySet, HoldingQuerySet, CartQuerySet
+
+import logging
+logger = logging.getLogger(__name__)
 
 import stripe
 
@@ -33,36 +38,46 @@ class Cart(models.Model):
         verbose_name_plural = _('carts')
 
     def __str__(self):
-        return '{} / {}'.format(self.person)
+        return '{}'.format(self.person)
 
     def purchase(self, stripe_token):
-        self.holdings.purchase()
+        stripe.api_key = settings.STRIPE_SECRET_KEY
 
-        for organizer in self.holdings.products().events().organizers():
-            charge_amount = self.holdings.organized_by(organizer).purchased_total_cost()
-            try:
+        completed_charges = []
+        try:
+            self.holdings.purchase()
+
+            for organizer in self.holdings.products().events().organizers():
+                charge_amount = self.holdings.organized_by(organizer).purchased_total_cost()
+
                 charge = stripe.Charge.create(
-                    api_key='pk_test_crwDnA9V1JrrxQ8DB6H0JtFq', #Needs to be changed
-                    amount=charge_amount, #Stripe takes a price argument in ore. Are the product prices in ore or kroner?
-                    currency='sek', #Defined elsewhere?
+                    amount=int(charge_amount*100), #Convert price from kr to ore.
+                    currency=settings.CURRENCY,
                     source=stripe_token,
-                    stripe_account=organizer.stripe_account_id,
-                    description="Charge for \organizer 's event." #Add a real message
+                    stripe_account=organizer.stripe_account_id
                 )
-                transaction=Transaction(amount=charge_amount, stripe_charge=charge)
-                transaction.save()
-            except stripe.error.CardError:
-                #The payment to the current organizer has failed.
-                #In the scope of Luciafesten this means nothing has been bought,
-                # so we can undo everything done in the purchase method
-                # with no consequences.
+                if charge.status == "succeeded":
+                    completed_charges.append(charge)
+                    transaction=Transaction(amount=charge_amount, stripe_charge=charge.id)
+                    transaction.save()
+            self.purchased = now()
+            self.save()
+        except stripe.error.CardError:
+            #The payment to the current organizer has failed.
+            #Roll back the database transaction.
+            logger.exception("A charge failed.")
+        except:
+            logger.exception("Refunding charges")
+            for charge in completed_charges:
+                try:
+                    stripe.Refund.create(charge) #Save?
+                except stripe.error.StripeError:
+                    logger.exception("An error occured while refunding charges.")
 
-                #Should this be done by setting capture = false,
-                #and only capture the charges if they all go through?
-                pass
 
-        self.purchased = now()
-        self.save()
+
+
+
 
 
 @python_2_unicode_compatible
@@ -140,7 +155,7 @@ class Holding(models.Model):
     def purchase(self):
         temp_price = self.product.base_price
 
-        for product_modifier in self.product_modifiers.met(self.person):
+        for product_modifier in self.product.product_modifiers.met(self.person):
             holding_modifier = HoldingModifier(product_modifier = product_modifier, holding = self)
             holding_modifier.save()
             temp_price += product_modifier.delta()
@@ -156,6 +171,7 @@ class Product(NameSlugDescriptionMixin, models.Model):
 
     main_event = models.ForeignKey(
         'events.MainEvent',
+        related_name='products',
         verbose_name=_('main event'))
 
     base_price = MoneyField(

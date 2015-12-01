@@ -10,7 +10,6 @@ from .models import Cart, Holding, Product
 
 class CartFactory(factory.DjangoModelFactory):
     person = factory.SubFactory(PersonFactory)
-    seller = factory.SubFactory(OrganizerFactory)
 
     class Meta:
         model = Cart
