@@ -198,7 +198,7 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
         if conditions is None:
             conditions = Condition.objects.met(person=self)
             cache.set(cache_key, conditions,
-                      timeout=settings.CACHE_PERSON_CONDITIONS_TIMEOUT)
+                      timeout=settings.CACHE_TIMEOUT_PERSON_CONDITIONS)
         return conditions
 
     def get_kobra_data(self, fail_silently=False):
