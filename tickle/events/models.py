@@ -4,6 +4,8 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from tickle.common.db.fields import NameField, SlugField, DescriptionField
 from tickle.common.behaviors import NameSlugMixin
+from tickle.organizers.models import Organizer
+from tickle.products.models import Holding
 
 
 class EventQuerySet(models.QuerySet):
@@ -14,7 +16,7 @@ class EventQuerySet(models.QuerySet):
         return self.holdings().purchased().holders()
 
     def organizers(self):
-        return Organizer.object.filter(events__in = self).distinct()
+        return Organizer.objects.filter(events__in = self).distinct()
 
 
 @python_2_unicode_compatible
@@ -25,6 +27,7 @@ class MainEvent(models.Model):
 
     organizer = models.ForeignKey(
         'organizers.Organizer',
+        related_name='events',
         verbose_name=_('organizer'))
 
     objects = EventQuerySet.as_manager()
