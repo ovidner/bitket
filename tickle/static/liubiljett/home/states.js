@@ -16,8 +16,6 @@ angular.module('liubiljett.home.states', [])
       }
     ];
 
-    angular.forEach(states, function (state) {
-      $stateProvider.state(state);
-    });
+    states.forEach($stateProvider.state);
   }
 ]);

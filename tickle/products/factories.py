@@ -15,13 +15,6 @@ class CartFactory(factory.DjangoModelFactory):
         model = Cart
 
 
-class HoldingFactory(factory.DjangoModelFactory):
-    cart = factory.SubFactory(CartFactory)
-
-    class Meta:
-        model = Holding
-
-
 class ProductFactory(NameSlugDescriptionFactoryMixin):
     main_event = factory.SubFactory(MainEventFactory)
     base_price = factory.fuzzy.FuzzyDecimal(10, 1000)
@@ -29,3 +22,12 @@ class ProductFactory(NameSlugDescriptionFactoryMixin):
 
     class Meta:
         model = Product
+
+
+class HoldingFactory(factory.DjangoModelFactory):
+    cart = factory.SubFactory(CartFactory)
+    person = factory.SubFactory(PersonFactory)
+    product = factory.SubFactory(ProductFactory)
+
+    class Meta:
+        model = Holding

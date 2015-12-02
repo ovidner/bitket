@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SOF15/Orchard\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-13 14:46+0200\n"
+"POT-Creation-Date: 2015-12-02 01:34+0100\n"
 "PO-Revision-Date: 2015-05-04 13:34+0100\n"
 "Last-Translator: Olle Vidner <olle@vidner.se>\n"
 "Language-Team: SOF15 <it-utskottet@sof15.se>\n"
@@ -17,251 +17,252 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.7.6\n"
 
-#: orchard/admin.py:17
+#: tickle/sof/orchestras/admin.py:16
 msgid "holds product"
 msgstr "produktägarskap"
 
-#: orchard/admin.py:32
+#: tickle/sof/orchestras/admin.py:31
 msgid "event"
 msgstr "evenemang"
 
-#: orchard/admin.py:71
+#: tickle/sof/orchestras/admin.py:70
 msgid "special nutrition"
 msgstr "speciella kostvanor"
 
-#: orchard/admin.py:85
+#: tickle/sof/orchestras/admin.py:84
 msgid "Name"
 msgstr "Namn"
 
-#: orchard/admin.py:85
+#: tickle/sof/orchestras/admin.py:84
 msgid "PID"
 msgstr "Personnummer"
 
-#: orchard/admin.py:85
+#: tickle/sof/orchestras/admin.py:84
 msgid "Primary orchestra"
 msgstr "Primär orkester"
 
-#: orchard/admin.py:85
+#: tickle/sof/orchestras/admin.py:84
 msgid "Other orchestras"
 msgstr "Andra orkestrar"
 
-#: orchard/admin.py:92
+#: tickle/sof/orchestras/admin.py:91
 msgid "Export selected objects as CSV file"
 msgstr "Exportera markerade objekt i CSV-format"
 
-#: orchard/admin.py:117
+#: tickle/sof/orchestras/admin.py:116
 msgid "Invoice orchestra"
 msgstr "Fakturera orkester"
 
-#: orchard/admin.py:133
+#: tickle/sof/orchestras/admin.py:132
 msgid "invoicable quantity"
 msgstr "fakturerbar kvantitet"
 
-#: orchard/forms.py:21
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:18
-#: orchard/views.py:96
+#: tickle/sof/orchestras/forms.py:17
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:18
+#: tickle/sof/orchestras/views.py:95
 msgid "Product"
 msgstr "Produkt"
 
-#: orchard/forms.py:52
+#: tickle/sof/orchestras/forms.py:48
 msgid "Approved"
 msgstr "Godkänd"
 
-#: orchard/forms.py:65
+#: tickle/sof/orchestras/forms.py:61
 msgid "Yes"
 msgstr "Ja"
 
-#: orchard/forms.py:65
+#: tickle/sof/orchestras/forms.py:61
 msgid "No"
 msgstr "Nej"
 
-#: orchard/forms.py:68
+#: tickle/sof/orchestras/forms.py:64
 msgid "Primary"
 msgstr "Primär"
 
-#: orchard/forms.py:82
+#: tickle/sof/orchestras/forms.py:78
 msgid "Ticket type"
 msgstr "Biljettyp"
 
-#: orchard/forms.py:83
+#: tickle/sof/orchestras/forms.py:79
 msgid "Food"
 msgstr "Mat"
 
-#: orchard/forms.py:84
+#: tickle/sof/orchestras/forms.py:80
 msgid "Meals as described above."
 msgstr "Måltider enligt ovan."
 
-#: orchard/forms.py:86
+#: tickle/sof/orchestras/forms.py:82
 msgid "Accommodation"
 msgstr "Boende"
 
-#: orchard/forms.py:87
+#: tickle/sof/orchestras/forms.py:83
 msgid "Place on floor &ndash; bring your own bedroll. Breakfast included."
 msgstr ""
 "Plats på golv i sovsal &ndash; ta med dig sovsäck och liggunderlag. Frukost "
 "ingår."
 
-#: orchard/forms.py:88
+#: tickle/sof/orchestras/forms.py:84
 msgid "10th festival in a row"
 msgstr "10-årsjubilar"
 
-#: orchard/forms.py:89
+#: tickle/sof/orchestras/forms.py:85
 msgid "Will this be your 10th SOF/STORK in a row?"
 msgstr ""
 "Blir detta din tionde studentorkesterfestival i följd? Kryssa inte i detta "
 "om du redan firat detta en gång tidigare."
 
-#: orchard/forms.py:90
+#: tickle/sof/orchestras/forms.py:86
 msgid "25th festival"
 msgstr "25-årsjubilar"
 
-#: orchard/forms.py:91
+#: tickle/sof/orchestras/forms.py:87
 msgid "Will this be your 25th SOF/STORK in all?"
 msgstr "Blir detta din 25:e studentorkesterfestival totalt?"
 
-#: orchard/forms.py:98
+#: tickle/sof/orchestras/forms.py:94
 msgid "Can't add food to this ticket type."
 msgstr "Mat kan inte väljas till denna biljett."
 
-#: orchard/forms.py:101
+#: tickle/sof/orchestras/forms.py:97
 msgid "Can't add accommodation to this ticket type."
 msgstr "Boende kan inte väljas till denna biljett."
 
-#: orchard/forms.py:104 orchard/forms.py:107
+#: tickle/sof/orchestras/forms.py:100 tickle/sof/orchestras/forms.py:103
 msgid "Can't choose this with this ticket type."
 msgstr "Kan inte välja detta till denna biljett."
 
-#: orchard/models.py:15
+#: tickle/sof/orchestras/models.py:15
 msgid "orchestra member"
 msgstr "orkestermedlem"
 
-#: orchard/models.py:16
+#: tickle/sof/orchestras/models.py:16
 msgid "orchestra members"
 msgstr "orkestermedlemmar"
 
-#: orchard/models.py:33
+#: tickle/sof/orchestras/models.py:33
 msgid "name"
 msgstr "namn"
 
-#: orchard/models.py:34
+#: tickle/sof/orchestras/models.py:34
 msgid "organisation number"
 msgstr "organisationsnummer"
 
-#: orchard/models.py:37
+#: tickle/sof/orchestras/models.py:37
 msgid "members"
 msgstr "medlemmar"
 
-#: orchard/models.py:47 orchard/templates/orchard/approve_members.html:4
+#: tickle/sof/orchestras/models.py:47
+#: tickle/sof/orchestras/templates/orchard/approve_members.html:4
 msgid "Approve orchestra members"
 msgstr "Godkänn orkestermedlemmar"
 
-#: orchard/models.py:50 orchard/models.py:89
+#: tickle/sof/orchestras/models.py:50 tickle/sof/orchestras/models.py:89
 msgid "orchestra"
 msgstr "orkester"
 
-#: orchard/models.py:51
+#: tickle/sof/orchestras/models.py:51
 msgid "orchestras"
 msgstr "orkestrar"
 
-#: orchard/models.py:90
+#: tickle/sof/orchestras/models.py:90
 msgid "person"
 msgstr "person"
 
-#: orchard/models.py:92
+#: tickle/sof/orchestras/models.py:92
 msgid "primary orchestra"
 msgstr "primär orkester"
 
-#: orchard/models.py:101
+#: tickle/sof/orchestras/models.py:101
 msgid "orchestra membership"
 msgstr "orkestermedlemskap"
 
-#: orchard/models.py:102
+#: tickle/sof/orchestras/models.py:102
 msgid "orchestra memberships"
 msgstr "orkestermedlemskap"
 
-#: orchard/models.py:115
+#: tickle/sof/orchestras/models.py:115
 msgid "purchase"
 msgstr "köp"
 
-#: orchard/models.py:118
+#: tickle/sof/orchestras/models.py:118
 msgid "orchestra member registration"
 msgstr "orkestermedlemsregistrering"
 
-#: orchard/models.py:119
+#: tickle/sof/orchestras/models.py:119
 msgid "orchestra member registrations"
 msgstr "orkestermedlemsregistreringar"
 
-#: orchard/models.py:128
+#: tickle/sof/orchestras/models.py:128
 msgid "ticket type"
 msgstr "biljettyp"
 
-#: orchard/models.py:132
+#: tickle/sof/orchestras/models.py:132
 msgid "food ticket type"
 msgstr "biljettyp för mat"
 
-#: orchard/models.py:136
+#: tickle/sof/orchestras/models.py:136
 msgid "accommodation ticket type"
 msgstr "biljettyp för boende"
 
-#: orchard/models.py:139
+#: tickle/sof/orchestras/models.py:139
 msgid "10th festival ticket type"
 msgstr "biljettyp för 10-årsjubilarer"
 
-#: orchard/models.py:141
+#: tickle/sof/orchestras/models.py:141
 msgid "25th festival ticket type"
 msgstr "biljettyp för 25-årsjubilarer"
 
-#: orchard/models.py:144
+#: tickle/sof/orchestras/models.py:144
 msgid "orchestra ticket type"
 msgstr "biljettpaket för orkestrar"
 
-#: orchard/models.py:145
+#: tickle/sof/orchestras/models.py:145
 msgid "orchestra ticket types"
 msgstr "biljettpaket för orkestrar"
 
-#: orchard/models.py:162
+#: tickle/sof/orchestras/models.py:162
 msgid "product"
 msgstr "produkt"
 
-#: orchard/models.py:163
+#: tickle/sof/orchestras/models.py:163
 msgid "products"
 msgstr "produkter"
 
-#: orchard/templates/orchard/approve_members.html:6
+#: tickle/sof/orchestras/templates/orchard/approve_members.html:6
 msgid "Orchestra members"
 msgstr "Orkestermedlemmar"
 
-#: orchard/templates/orchard/approve_members.html:9
+#: tickle/sof/orchestras/templates/orchard/approve_members.html:9
 msgid "When you have approved your members, you may also review your"
 msgstr "När du godkänt dina medlemmar, ta gärna en titt på ditt"
 
-#: orchard/templates/orchard/approve_members.html:9
+#: tickle/sof/orchestras/templates/orchard/approve_members.html:9
 msgid "invoice data"
 msgstr "fakturaunderlag"
 
-#: orchard/templates/orchard/approve_members.html:12
+#: tickle/sof/orchestras/templates/orchard/approve_members.html:12
 msgid "Save"
 msgstr "Spara"
 
-#: orchard/templates/orchard/register_member.html:4
-#: orchard/templates/orchard/register_member.html:6
-#: orchard/templates/orchard/register_member_closed.html:4
-#: orchard/templates/orchard/register_member_closed.html:6
+#: tickle/sof/orchestras/templates/orchard/register_member.html:4
+#: tickle/sof/orchestras/templates/orchard/register_member.html:6
+#: tickle/sof/orchestras/templates/orchard/register_member_closed.html:4
+#: tickle/sof/orchestras/templates/orchard/register_member_closed.html:6
 msgid "Orchestra member registration"
 msgstr "Orkestermedlemsregistrering"
 
-#: orchard/templates/orchard/register_member.html:16
-#: orchard/templates/orchard/register_oldie.html:31
+#: tickle/sof/orchestras/templates/orchard/register_member.html:16
+#: tickle/sof/orchestras/templates/orchard/register_oldie.html:31
 msgid "Personal information"
 msgstr "Personuppgifter"
 
-#: orchard/templates/orchard/register_member.html:19
-#: orchard/templates/orchard/register_oldie.html:34
+#: tickle/sof/orchestras/templates/orchard/register_member.html:19
+#: tickle/sof/orchestras/templates/orchard/register_oldie.html:34
 msgid "Orchestra membership"
 msgstr "Orkestermedlemskap"
 
-#: orchard/templates/orchard/register_member.html:22
-#: orchard/templates/orchard/register_oldie.html:37
+#: tickle/sof/orchestras/templates/orchard/register_member.html:22
+#: tickle/sof/orchestras/templates/orchard/register_oldie.html:37
 msgid ""
 "\n"
 "                        Specify the orchestra(s) with which you will attend "
@@ -277,16 +278,16 @@ msgstr ""
 "ska behöva välja vilka du ska spela med, men vi kan tyvärr inte garantera "
 "något."
 
-#: orchard/templates/orchard/register_member.html:29
-#: orchard/templates/orchard/register_oldie.html:44
+#: tickle/sof/orchestras/templates/orchard/register_member.html:29
+#: tickle/sof/orchestras/templates/orchard/register_oldie.html:44
 msgid "All the orchestras you specify will have to verify your membership."
 msgstr "Alla orkestrar du anger kommer behöva bekräfta ditt medlemskap."
 
-#: orchard/templates/orchard/register_member.html:34
+#: tickle/sof/orchestras/templates/orchard/register_member.html:34
 msgid "Payment"
 msgstr "Betalning"
 
-#: orchard/templates/orchard/register_member.html:37
+#: tickle/sof/orchestras/templates/orchard/register_member.html:37
 msgid ""
 "\n"
 "                        Your primary orchestra will receive an invoice for "
@@ -302,13 +303,13 @@ msgstr ""
 "ser vi gärna att du i första hand vänder dig till din orkester med frågor om "
 "betalning."
 
-#: orchard/templates/orchard/register_member.html:46
-#: orchard/templates/orchard/register_oldie.html:52
+#: tickle/sof/orchestras/templates/orchard/register_member.html:46
+#: tickle/sof/orchestras/templates/orchard/register_oldie.html:52
 msgid "Ticket, food and accommodation"
 msgstr "Biljett, mat och boende"
 
-#: orchard/templates/orchard/register_member.html:47
-#: orchard/templates/orchard/register_oldie.html:53
+#: tickle/sof/orchestras/templates/orchard/register_member.html:47
+#: tickle/sof/orchestras/templates/orchard/register_oldie.html:53
 msgid ""
 "\n"
 "                    <p>\n"
@@ -367,69 +368,69 @@ msgstr ""
 "dd>                    </dl>\n"
 "                "
 
-#: orchard/templates/orchard/register_member.html:75
-#: orchard/templates/orchard/register_oldie.html:81
+#: tickle/sof/orchestras/templates/orchard/register_member.html:75
+#: tickle/sof/orchestras/templates/orchard/register_oldie.html:81
 msgid "Gadgets"
 msgstr "Prylar"
 
-#: orchard/templates/orchard/register_member.html:91
-#: orchard/templates/orchard/register_oldie.html:98
+#: tickle/sof/orchestras/templates/orchard/register_member.html:91
+#: tickle/sof/orchestras/templates/orchard/register_oldie.html:98
 msgid "Unfortunately, there are no gadgets available."
 msgstr "Tyvärr går det ej att beställa några prylar."
 
-#: orchard/templates/orchard/register_member.html:97
-#: orchard/templates/orchard/register_oldie.html:104
+#: tickle/sof/orchestras/templates/orchard/register_member.html:97
+#: tickle/sof/orchestras/templates/orchard/register_oldie.html:104
 msgid "Submit registration"
 msgstr "Skicka anmälan"
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:4
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:6
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:4
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:6
 msgid "Invoice data"
 msgstr "Fakturaunderlag"
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:10
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:10
 msgid "Please note that this invoice data is based only on your"
 msgstr "Vänligen observera att detta underlag baseras enbart på dina"
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:11
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:11
 msgid "approved members"
 msgstr "godkända medlemmar"
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:12
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:12
 msgid ""
 "You may download this data in CSV format and import it in an application "
 "like Excel."
 msgstr ""
 "Ladda gärna ned underlaget i CSV-format och importera i till exempel Excel."
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:13
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:13
 msgid "Download as CSV"
 msgstr "Ladda ned som CSV"
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:17
-#: orchard/views.py:96
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:17
+#: tickle/sof/orchestras/views.py:95
 msgid "Person"
 msgstr "Person"
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:19
-#: orchard/views.py:96
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:19
+#: tickle/sof/orchestras/views.py:95
 msgid "Price"
 msgstr "Pris"
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:20
-#: orchard/views.py:96
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:20
+#: tickle/sof/orchestras/views.py:95
 msgid "Quantity"
 msgstr "Antal"
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:21
-#: orchard/views.py:96
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:21
+#: tickle/sof/orchestras/views.py:95
 msgid "Total"
 msgstr "Totalt"
 
-#: orchard/templates/orchard/view_orchestra_invoice_data.html:35
+#: tickle/sof/orchestras/templates/orchard/view_orchestra_invoice_data.html:35
 msgid "No members approved."
 msgstr "Inga medlemmar verifierade."
 
-#: orchard/views.py:62
+#: tickle/sof/orchestras/views.py:61
 msgid "The members you selected have been successfully approved."
 msgstr "De medlemmar du valt har verifierats."

@@ -15,6 +15,7 @@ import os
 
 import environ
 import raven
+import stripe
 
 from tickle.common.versioning import fetch_git_sha
 from tickle.people.saml.constants import claims
@@ -38,7 +39,6 @@ DJANGO_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
@@ -54,6 +54,7 @@ THIRD_PARTY_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
+    'dry_rest_permissions',
     'raven.contrib.django.raven_compat'
     #'allauth',  # registration
     #'allauth.account',  # registration
@@ -181,7 +182,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 TIME_ZONE = 'Europe/Stockholm'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'sv-se'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
@@ -296,7 +297,7 @@ AUTH_USER_MODEL = 'people.Person'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
-    )
+    ),
 }
 
 # SLUGIFIER
@@ -306,7 +307,7 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 # SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT')
 SENTRY_CELERY_LOGLEVEL = env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 RAVEN_CONFIG = {
-    'dsn': env.str('DJANGO_SENTRY_DSN', 'https://'),
+    'dsn': env.str('DJANGO_SENTRY_DSN', 'https://a:b@dummydsn.com/1'),
     'release': fetch_git_sha(str(ROOT_DIR)),
     'CELERY_LOGLEVEL': env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 }
@@ -319,7 +320,7 @@ LOGGING = {
     'disable_existing_loggers': True,
     'root': {
         'level': 'WARNING',
-        'handlers': ['sentry'],
+        'handlers': ['console', 'sentry'],
     },
     'formatters': {
         'verbose': {
@@ -366,6 +367,7 @@ STRIPE_OAUTH_SIGN_MAX_AGE = 5 * 60
 STRIPE_PUBLIC_KEY = env.str('STRIPE_PUBLIC_KEY', '')
 STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY', '')
 STRIPE_CLIENT_ID = env.str('STRIPE_CLIENT_ID', '')
+stripe.api_key = STRIPE_SECRET_KEY
 
 CURRENCY = 'SEK'
 

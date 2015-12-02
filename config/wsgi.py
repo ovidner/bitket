@@ -33,7 +33,10 @@ application = get_wsgi_application()
 # Use Whitenoise to serve static files
 # See: https://whitenoise.readthedocs.org/
 application = DjangoWhiteNoise(application)
-application = Sentry(application)
+
+# Seems buggy.
+# todo: investigate.
+# application = Sentry(application)
 
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication

@@ -10,9 +10,11 @@ from django.views.generic import TemplateView
 from tickle.common.views import ClientView
 from tickle.organizers.views import (StripeConnectCallbackView,
                                      StripeConnectRequestView)
+from tickle.common.routers import urlpatterns as api_router_urlpatterns
 
 api_urlpatterns = [
     url(r'^auth/', include('rest_auth.urls')),
+    url(r'^', include(api_router_urlpatterns))
 ]
 
 client_urlpatterns = [

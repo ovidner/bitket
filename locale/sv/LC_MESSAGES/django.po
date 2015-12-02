@@ -1,0 +1,621 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-12-02 01:34+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: tickle/common/behaviors.py:29 tickle/products/models.py:281
+msgid "order"
+msgstr ""
+
+#: tickle/common/db/fields.py:21
+msgid "description"
+msgstr ""
+
+#: tickle/common/db/fields.py:35 tickle/people/models.py:293
+msgid "name"
+msgstr ""
+
+#: tickle/common/db/fields.py:54
+msgid "slug"
+msgstr ""
+
+#: tickle/common/db/fields.py:62 tickle/people/models.py:136
+msgid "LiU ID"
+msgstr ""
+
+#: tickle/common/db/fields.py:69
+msgid "password"
+msgstr ""
+
+#: tickle/common/fields.py:79
+msgid "Enter a valid Swedish personal identity number or YYMMDD-0000."
+msgstr ""
+
+#: tickle/common/fields.py:80
+msgid "Co-ordination numbers are not allowed."
+msgstr ""
+
+#: tickle/common/fields.py:81
+msgid "Interim numbers are not allowed."
+msgstr ""
+
+#: tickle/common/fields.py:135
+msgid "Enter a valid LiU ID."
+msgstr ""
+
+#: tickle/common/fields.py:136
+msgid "Employee LiU IDs are not allowed."
+msgstr ""
+
+#: tickle/common/fields.py:137
+msgid "Student LiU IDs are not allowed."
+msgstr ""
+
+#: tickle/conditions/models.py:16
+msgid "active"
+msgstr ""
+
+#: tickle/conditions/models.py:17
+msgid ""
+"Determines whether the condition should be displayed and included in queries."
+msgstr ""
+
+#: tickle/conditions/models.py:22
+msgid "Condition"
+msgstr ""
+
+#: tickle/conditions/models.py:25 tickle/modifiers/models.py:34
+msgid "condition"
+msgstr ""
+
+#: tickle/conditions/models.py:26
+msgid "conditions"
+msgstr ""
+
+#: tickle/conditions/models.py:43 tickle/people/models.py:146
+#: tickle/people/models.py:310
+msgid "student union"
+msgstr "studentkår"
+
+#: tickle/conditions/models.py:45
+msgid "Student union member"
+msgstr "Kårmedlem"
+
+#: tickle/conditions/models.py:48
+msgid "student union member condition"
+msgstr ""
+
+#: tickle/conditions/models.py:49
+msgid "student union member conditions"
+msgstr ""
+
+#: tickle/events/models.py:33
+msgid "organizer"
+msgstr "arrangör"
+
+#: tickle/events/models.py:44
+msgid "event"
+msgstr ""
+
+#: tickle/events/models.py:45
+msgid "events"
+msgstr ""
+
+#: tickle/modifiers/models.py:38 tickle/products/models.py:86
+#: tickle/products/models.py:242 tickle/products/models.py:265
+msgid "product"
+msgstr ""
+
+#: tickle/modifiers/models.py:41 tickle/products/models.py:284
+msgid "delta (amount)"
+msgstr ""
+
+#: tickle/modifiers/models.py:42 tickle/products/models.py:285
+msgid "For discount, enter a negative value."
+msgstr ""
+
+#: tickle/modifiers/models.py:51 tickle/modifiers/models.py:66
+msgid "product modifier"
+msgstr ""
+
+#: tickle/modifiers/models.py:52
+msgid "product modifiers"
+msgstr ""
+
+#: tickle/modifiers/models.py:70 tickle/products/models.py:113
+msgid "holding"
+msgstr ""
+
+#: tickle/modifiers/models.py:77
+msgid "holding modifier"
+msgstr ""
+
+#: tickle/modifiers/models.py:78
+msgid "holding modifiers"
+msgstr ""
+
+#: tickle/organizers/forms.py:15
+msgid "Read Only"
+msgstr ""
+
+#: tickle/organizers/forms.py:16
+msgid "Read/Write"
+msgstr ""
+
+#: tickle/organizers/forms.py:29
+msgid "Request signature has expired. Please try again."
+msgstr ""
+
+#: tickle/organizers/forms.py:32
+msgid "Invalid request signature."
+msgstr ""
+
+#: tickle/organizers/models.py:20
+msgid "Stripe authorization timestamp"
+msgstr ""
+
+#: tickle/organizers/models.py:24
+msgid "Stripe live mode"
+msgstr ""
+
+#: tickle/organizers/models.py:29
+msgid "Stripe account ID"
+msgstr ""
+
+#: tickle/organizers/models.py:34
+msgid "Stripe refresh token"
+msgstr ""
+
+#: tickle/organizers/models.py:38
+msgid "Stripe public key"
+msgstr ""
+
+#: tickle/organizers/models.py:42
+msgid "Stripe secret key"
+msgstr ""
+
+#: tickle/organizers/models.py:45
+msgid "Stripe read only access"
+msgstr ""
+
+#: tickle/organizers/models.py:51
+msgid "Can manage Stripe for organizer"
+msgstr ""
+
+#: tickle/organizers/views.py:71
+msgid "Invalid or expired request signature. Cannot connect account."
+msgstr ""
+
+#: tickle/organizers/views.py:76
+msgid "Invalid session key in request. Cannot connect account."
+msgstr ""
+
+#: tickle/organizers/views.py:82
+msgid "Cannot find organizer."
+msgstr ""
+
+#: tickle/organizers/views.py:92
+msgid "Required parameters missing from request."
+msgstr ""
+
+#: tickle/people/models.py:29
+msgid "birth date"
+msgstr ""
+
+#: tickle/people/models.py:32
+msgid "national identity code"
+msgstr ""
+
+#: tickle/people/models.py:33
+msgid "Last 4 digits in Swedish national identity number."
+msgstr ""
+
+#: tickle/people/models.py:36
+msgid "coordination number"
+msgstr ""
+
+#: tickle/people/models.py:37
+msgid "Designates if national identity number is a <em>samordningsnummer</em>."
+msgstr ""
+
+#: tickle/people/models.py:129
+msgid "first name"
+msgstr ""
+
+#: tickle/people/models.py:131
+msgid "last name"
+msgstr ""
+
+#: tickle/people/models.py:140
+msgid "LiU card number"
+msgstr ""
+
+#: tickle/people/models.py:151
+msgid "email address"
+msgstr ""
+
+#: tickle/people/models.py:156 tickle/people/models.py:298
+msgid "special nutrition"
+msgstr ""
+
+#: tickle/people/models.py:157
+msgid "Specify any special nutritional needs or habits."
+msgstr ""
+
+#: tickle/people/models.py:161
+msgid "is active"
+msgstr ""
+
+#: tickle/people/models.py:164
+msgid "is staff"
+msgstr ""
+
+#: tickle/people/models.py:179 tickle/products/models.py:28
+#: tickle/products/models.py:82
+msgid "person"
+msgstr ""
+
+#: tickle/people/models.py:180
+msgid "people"
+msgstr ""
+
+#: tickle/people/models.py:299
+msgid "special nutritions"
+msgstr ""
+
+#: tickle/people/models.py:311
+msgid "student unions"
+msgstr "studentkårer"
+
+#: tickle/products/models.py:32
+msgid "purchased"
+msgstr ""
+
+#: tickle/products/models.py:37 tickle/products/models.py:98
+msgid "cart"
+msgstr ""
+
+#: tickle/products/models.py:38
+msgid "carts"
+msgstr ""
+
+#: tickle/products/models.py:90 tickle/products/models.py:297
+msgid "product variation choices"
+msgstr ""
+
+#: tickle/products/models.py:93
+msgid "quantity"
+msgstr ""
+
+#: tickle/products/models.py:103
+msgid "utilized"
+msgstr ""
+
+#: tickle/products/models.py:108
+msgid "purchase price"
+msgstr ""
+
+#: tickle/products/models.py:114
+msgid "holdings"
+msgstr ""
+
+#: tickle/products/models.py:123
+msgid "Holding has conflicting product variation choices."
+msgstr ""
+
+#: tickle/products/models.py:125
+msgid "Exceeding personal quantity limit."
+msgstr ""
+
+#: tickle/products/models.py:128
+msgid "This will change history of purchased objects. Denied."
+msgstr ""
+
+#: tickle/products/models.py:209
+msgid "main event"
+msgstr ""
+
+#: tickle/products/models.py:212
+msgid "base price"
+msgstr ""
+
+#: tickle/products/models.py:216
+msgid "published"
+msgstr ""
+
+#: tickle/products/models.py:221
+msgid "personal limit"
+msgstr ""
+
+#: tickle/products/models.py:222 tickle/products/models.py:227
+msgid "Blank means no limit."
+msgstr ""
+
+#: tickle/products/models.py:226
+msgid "total limit"
+msgstr ""
+
+#: tickle/products/models.py:230
+msgid "transferable"
+msgstr ""
+
+#: tickle/products/models.py:231
+msgid "If people should be able to transfer this product to other people."
+msgstr ""
+
+#: tickle/products/models.py:243
+msgid "products"
+msgstr ""
+
+#: tickle/products/models.py:272 tickle/products/models.py:289
+msgid "product variation"
+msgstr ""
+
+#: tickle/products/models.py:273
+msgid "product variations"
+msgstr ""
+
+#: tickle/products/models.py:296
+msgid "product variation choice"
+msgstr ""
+
+#: tickle/templates/account/email.html:7
+msgid "Account"
+msgstr ""
+
+#: tickle/templates/account/email.html:13
+msgid "E-mail Addresses"
+msgstr ""
+
+#: tickle/templates/account/email.html:15
+msgid "The following e-mail addresses are associated with your account:"
+msgstr ""
+
+#: tickle/templates/account/email.html:29
+msgid "Verified"
+msgstr ""
+
+#: tickle/templates/account/email.html:31
+msgid "Unverified"
+msgstr ""
+
+#: tickle/templates/account/email.html:33
+msgid "Primary"
+msgstr ""
+
+#: tickle/templates/account/email.html:39
+msgid "Make Primary"
+msgstr ""
+
+#: tickle/templates/account/email.html:40
+msgid "Re-send Verification"
+msgstr ""
+
+#: tickle/templates/account/email.html:41
+msgid "Remove"
+msgstr ""
+
+#: tickle/templates/account/email.html:48
+msgid "Warning:"
+msgstr ""
+
+#: tickle/templates/account/email.html:48
+msgid ""
+"You currently do not have any e-mail address set up. You should really add "
+"an e-mail address so you can receive notifications, reset your password, etc."
+msgstr ""
+
+#: tickle/templates/account/email.html:53
+msgid "Add E-mail Address"
+msgstr ""
+
+#: tickle/templates/account/email.html:58
+msgid "Add E-mail"
+msgstr ""
+
+#: tickle/templates/account/email.html:69
+msgid "Do you really want to remove the selected e-mail address?"
+msgstr ""
+
+#: tickle/templates/account/email_confirm.html:7
+#: tickle/templates/account/email_confirm.html:14
+#: tickle/templates/account/email_confirmed.html:6
+#: tickle/templates/account/email_confirmed.html:13
+msgid "Confirm E-mail Address"
+msgstr ""
+
+#: tickle/templates/account/email_confirm.html:20
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
+"address for user %(user_display)s."
+msgstr ""
+
+#: tickle/templates/account/email_confirm.html:24
+msgid "Confirm"
+msgstr ""
+
+#: tickle/templates/account/email_confirm.html:31
+#, python-format
+msgid ""
+"This e-mail confirmation link expired or is invalid. Please <a href="
+"\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+msgstr ""
+
+#: tickle/templates/account/email_confirmed.html:17
+#, python-format
+msgid ""
+"You have confirmed that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-"
+"mail address for user %(user_display)s."
+msgstr ""
+
+#: tickle/templates/account/login.html:8 tickle/templates/account/login.html:14
+#: tickle/templates/account/login.html:41
+msgid "Sign In"
+msgstr ""
+
+#: tickle/templates/account/login.html:17
+#, python-format
+msgid ""
+"Please sign in with one\n"
+"      of your existing third party accounts. Or, <a href=\"%(signup_url)s"
+"\">sign up</a>\n"
+"      for a %(site_name)s account and sign in below:"
+msgstr ""
+
+#: tickle/templates/account/login.html:27
+msgid "or"
+msgstr ""
+
+#: tickle/templates/account/login.html:42
+msgid "Forgot Password?"
+msgstr ""
+
+#: tickle/templates/account/logout.html:6
+#: tickle/templates/account/logout.html:13
+#: tickle/templates/account/logout.html:22
+msgid "Sign Out"
+msgstr ""
+
+#: tickle/templates/account/logout.html:15
+msgid "Are you sure you want to sign out?"
+msgstr ""
+
+#: tickle/templates/account/password_change.html:5
+#: tickle/templates/account/password_change.html:11
+#: tickle/templates/account/password_change.html:16
+#: tickle/templates/account/password_reset_from_key.html:7
+#: tickle/templates/account/password_reset_from_key.html:13
+#: tickle/templates/account/password_reset_from_key_done.html:5
+#: tickle/templates/account/password_reset_from_key_done.html:11
+msgid "Change Password"
+msgstr ""
+
+#: tickle/templates/account/password_reset.html:7
+#: tickle/templates/account/password_reset.html:14
+#: tickle/templates/account/password_reset_done.html:6
+#: tickle/templates/account/password_reset_done.html:12
+msgid "Password Reset"
+msgstr ""
+
+#: tickle/templates/account/password_reset.html:19
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll send you "
+"an e-mail allowing you to reset it."
+msgstr ""
+
+#: tickle/templates/account/password_reset.html:24
+msgid "Reset My Password"
+msgstr ""
+
+#: tickle/templates/account/password_reset.html:27
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr ""
+
+#: tickle/templates/account/password_reset_done.html:18
+msgid ""
+"We have sent you an e-mail. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+
+#: tickle/templates/account/password_reset_from_key.html:13
+msgid "Bad Token"
+msgstr ""
+
+#: tickle/templates/account/password_reset_from_key.html:17
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
+"a>."
+msgstr ""
+
+#: tickle/templates/account/password_reset_from_key.html:23
+msgid "change password"
+msgstr ""
+
+#: tickle/templates/account/password_reset_from_key.html:26
+#: tickle/templates/account/password_reset_from_key_done.html:12
+msgid "Your password is now changed."
+msgstr ""
+
+#: tickle/templates/account/password_set.html:6
+#: tickle/templates/account/password_set.html:12
+#: tickle/templates/account/password_set.html:17
+msgid "Set Password"
+msgstr ""
+
+#: tickle/templates/account/signup.html:7
+msgid "Signup"
+msgstr ""
+
+#: tickle/templates/account/signup.html:14
+#: tickle/templates/account/signup.html:24
+msgid "Sign Up"
+msgstr ""
+
+#: tickle/templates/account/signup.html:16
+#, python-format
+msgid ""
+"Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>."
+msgstr ""
+
+#: tickle/templates/account/signup_closed.html:6
+#: tickle/templates/account/signup_closed.html:12
+msgid "Sign Up Closed"
+msgstr ""
+
+#: tickle/templates/account/signup_closed.html:14
+msgid "We are sorry, but the sign up is currently closed."
+msgstr ""
+
+#: tickle/templates/account/verification_sent.html:5
+#: tickle/templates/account/verification_sent.html:11
+#: tickle/templates/account/verified_email_required.html:6
+#: tickle/templates/account/verified_email_required.html:12
+msgid "Verify Your E-mail Address"
+msgstr ""
+
+#: tickle/templates/account/verification_sent.html:13
+#, python-format
+msgid ""
+"We have sent an e-mail to <a href=\"mailto:%(email)s\">%(email)s</a> for "
+"verification. Follow the link provided to finalize the signup process. "
+"Please contact us if you do not receive it within a few minutes."
+msgstr ""
+
+#: tickle/templates/account/verified_email_required.html:16
+msgid ""
+"This part of the site requires us to verify that\n"
+"        you are who you claim to be. For this purpose, we require that you\n"
+"        verify ownership of your e-mail address. "
+msgstr ""
+
+#: tickle/templates/account/verified_email_required.html:20
+msgid ""
+"We have sent an e-mail to you for\n"
+"        verification. Please click on the link inside this e-mail. Please\n"
+"        contact us if you do not receive it within a few minutes."
+msgstr ""
+
+#: tickle/templates/account/verified_email_required.html:24
+#, python-format
+msgid ""
+"<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
+"mail address</a>."
+msgstr ""

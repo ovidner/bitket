@@ -1,9 +1,16 @@
 from __future__ import absolute_import, unicode_literals
+import logging
+logger = logging.getLogger(__name__)
 
 from decimal import Decimal
 
+from django.conf import settings
 from django.db import models
+
+import stripe
+
 from tickle import products, people, events
+from tickle.payments.models import Transaction
 
 
 class ProductQuerySet(models.QuerySet):
@@ -24,23 +31,11 @@ class ProductQuerySet(models.QuerySet):
 class HoldingQuerySet(models.QuerySet):
     # METHODS RETURNING HOLDING QUERYSETS #
 
-    def deliverable(self):
-        # todo: define further
-        return self.purchased().undelivered()
-
-    def delivered(self):
-        # todo: extend for partial deliveries
-        return self.filter(deliveries__isnull=False)
-
-    def undelivered(self):
-        # todo: extend for partial deliveries
-        return self.filter(deliveries__isnull=True)
-
     def purchased(self):
-        return self.filter(purchase__isnull=False)
+        return self.filter(purchased__isnull=False)
 
     def unpurchased(self):
-        return self.filter(purchase__isnull=True)
+        return self.filter(purchased__isnull=True)
 
     def organized_by(self, organizer):
         return self.filter(product__main_event__organizer = organizer)
@@ -59,12 +54,6 @@ class HoldingQuerySet(models.QuerySet):
         return self.annotate(price=models.Sum('product__price')).aggregate(models.Sum('price', field='price*quantity'))['price__sum']\
             or 0
 
-    def discounted_total(self):
-        total = Decimal("0.00")
-        for i in self:
-            total += i.discounted_total
-        return total
-
     def quantity(self):
         return self.aggregate(models.Sum('quantity'))['quantity__sum'] or 0
 
@@ -72,22 +61,54 @@ class HoldingQuerySet(models.QuerySet):
     def purchased_total_cost(self):
         return self.annotate(price=models.Sum('purchase_price')).aggregate(models.Sum('price', field='price*quantity'))['price__sum'] or 0
 
-    # METHODS MANIPULATING DATA #
 
-    def remap_discounts(self):
-        with atomic():
-            for i in self:
-                i.remap_discounts()
-                i.invalidate_cached_discounts()
-
-
-    def purchase(self):
+    def prepare_for_purchase(self):
         for i in self:
-            i.purchase()
+            i.prepare_for_purchase()
+
+    def charge(self, person, stripe_token):
+        stripe_customer = stripe.Customer.create(
+            source=stripe_token,
+            description=person.get_full_name(),
+            email=person.email,
+            metadata={'liubiljett_person_id': person.pk}
+        )
+        completed_charges = []
+        try:
+            for organizer in self.products().events().organizers():
+                charge_amount = self.organized_by(organizer).purchased_total_cost()
+
+                charge = stripe.Charge.create(
+                    customer=stripe_customer,
+                    amount=int(charge_amount*100), #Convert price from kr to ore.
+                    currency=settings.CURRENCY,
+                    destination=organizer.stripe_account_id
+                )
+                if charge.status == "succeeded":
+                    completed_charges.append(charge)
+                    Transaction.objects.create(amount=charge_amount, stripe_charge=charge.id)
+        except stripe.error.CardError as e:
+            # The payment to the current organizer has failed.
+            # Roll back the database transaction.
+            logger.exception("A charge failed.")
+            for charge in completed_charges:
+                try:
+                    stripe.Refund.create(charge=charge.id)
+                except stripe.error.StripeError:
+                    logger.exception("An error occured while refunding charges.")
+            raise e
+        finally:
+            stripe_customer.delete()
 
 
 
 
 class CartQuerySet(models.QuerySet):
+    def purchased(self):
+        return self.filter(purchased__isnull=False)
+
+    def unpurchased(self):
+        return self.filter(purchased__isnull=True)
+
     def holdings(self):
         return products.models.Holding.objects.filter(cart__in=self)

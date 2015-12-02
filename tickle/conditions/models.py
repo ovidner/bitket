@@ -1,14 +1,16 @@
 from __future__ import absolute_import, unicode_literals
 
+from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 
+from tickle.common.models import Model
 from .querysets import ConditionQuerySet
 
 
 @python_2_unicode_compatible
-class Condition(models.Model):
+class Condition(Model):
     active = models.BooleanField(
         default=True,
         verbose_name=_('active'),
@@ -17,7 +19,7 @@ class Condition(models.Model):
 
     objects = ConditionQuerySet.as_manager()
 
-    type_str = _('condition')
+    type_str = _('Condition')
 
     class Meta:
         verbose_name = _('condition')
@@ -40,14 +42,15 @@ class StudentUnionMemberCondition(Condition):
         related_name='+',
         verbose_name=_('student union'))
 
-    type_str = _('student union member')
+    type_str = ugettext('Student union member')
 
     class Meta:
         verbose_name = _('student union member condition')
         verbose_name_plural = _('student union member conditions')
 
+    @property
     def condition_str(self):
         return '{}'.format(self.student_union)
 
     def is_met(self, person):
-        return person.liu_student_union_id == self.student_union_id
+        return person.student_union_id == self.student_union_id

@@ -4,6 +4,7 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from tickle.common.db.fields import NameField, SlugField, DescriptionField
 from tickle.common.behaviors import NameSlugMixin
+from tickle.common.models import Model
 from tickle.organizers.models import Organizer
 from tickle.products.models import Holding
 
@@ -20,9 +21,12 @@ class EventQuerySet(models.QuerySet):
 
 
 @python_2_unicode_compatible
-class MainEvent(models.Model):
+class MainEvent(Model):
     name = NameField()
-    slug = SlugField()
+    slug = SlugField(
+        unique_with='organizer__slug',
+        populate_from='name',
+        editable=True)
     description = DescriptionField()
 
     organizer = models.ForeignKey(

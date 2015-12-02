@@ -12,7 +12,9 @@ from django.views.generic.detail import SingleObjectMixin
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
+from tickle.common.views import ModelViewSet
 from .models import Organizer
+from .serializers import OrganizerSerializer
 
 
 def sign_state(organizer_pk, session_key):
@@ -95,3 +97,9 @@ class StripeConnectCallbackView(StripeConnectPermissionMixin,
 
         return super(StripeConnectCallbackView, self).get(
             request, *args, **kwargs)
+
+
+class OrganizerViewSet(ModelViewSet):
+    queryset = Organizer.objects.all()
+    serializer_class = OrganizerSerializer
+    lookup_field = 'slug'

@@ -1,16 +1,16 @@
-'use strict';
+'use strict'
 
 angular.module('liubiljett.people.states', [])
 
 .config(['$stateProvider',
   function ($stateProvider) {
     var states = [
-    {
-      name: ''
-    }];
+      {
+        name: 'liubiljett.person',
+        abstract: true
+      }
+    ]
 
-    angular.forEach(states, function (state) {
-      $stateProvider.state(state);
-    });
+    states.forEach($stateProvider.state)
   }
-]);
+])

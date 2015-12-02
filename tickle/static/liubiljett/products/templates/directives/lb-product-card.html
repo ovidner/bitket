@@ -1,50 +1,52 @@
-<md-card layout-padding>
-  <md-card-content>
-    <h3 class="md-title">{{product.name}}</h3>
-    <div marked="product.description"></div>
-    <form>
-      <md-input-container flex>
-        <label>Dryck</label>
-        <md-select placeholder="Välj dryck" ng-model="test1">
-          <md-option value="a">Öl</md-option>
-          <md-option value="b">Cider</md-option>
-          <md-option value="c">Alkoholfritt <span class="md-caption">(&ndash; 50 kr)</span></md-option>
-        </md-select>
-      </md-input-container>
+<form name="productForm">
+  <md-card layout-padding>
+    <md-card-content>
+      <h3 class="md-title">{{ctrl.product.name}}</h3>
+      <div marked="ctrl.product.description"></div>
 
-      <md-input-container flex>
-        <label>Mat</label>
-        <md-select placeholder="Välj mat" ng-model="test2">
-          <md-option value="a">Kött</md-option>
-          <md-option value="b">Vegetariskt</md-option>
-          <md-option value="c">Veganskt</md-option>
-        </md-select>
-      </md-input-container>
-    </form>
-  </md-card-content>
-  <md-card-footer layout="column">
-    <div layout="row">
-      <span class="md-body-1" flex>Grundpris</span>
-      <span class="md-body-1" layout-align="right">250 kr</span>
+        <md-input-container flex
+                            ng-repeat="variation in ctrl.product.variations">
+          <label>{{variation.name}}</label>
+          <md-select placeholder="Välj dryck"
+                     ng-model="variation._selectedChoice"
+                     ng-model-options="{getterSetter: true}" required>
+            <md-option ng-repeat="choice in variation.choices"
+                       ng-value="choice">
+              {{choice.name}} <span class="md-caption" ng-if="choice.delta_amount != 0">({{choice.delta_amount | currency}})</span>
+            </md-option>
+          </md-select>
+        </md-input-container>
+
+    </md-card-content>
+    <md-card-footer layout="column">
+      <div layout="row">
+        <span class="md-body-1" flex>Grundpris</span>
+        <span class="md-body-1" layout-align="right">{{ctrl.product.base_price | currency}}</span>
+      </div>
+      <div layout="row" ng-repeat="variation in ctrl.product.variations">
+        <span class="md-body-1" flex>
+          {{variation.name}}: {{variation.selectedChoice.name}}
+          <i ng-if="!variation.selectedChoice">Inte valt</i>
+        </span>
+        <span class="md-body-1" layout-align="right">
+          {{variation.selectedChoice.delta_amount | currency}}
+        </span>
+      </div>
+      <div layout="row" ng-repeat="modifier in ctrl.product.modifiers">
+        <span class="md-body-1" flex>{{modifier.condition}}</span>
+        <span class="md-body-1" layout-align="right">{{modifier.delta_amount | currency}}</span>
+      </div>
+      <md-divider></md-divider>
+      <div layout="row">
+        <span class="md-body-2" flex>Ditt pris</span>
+        <span class="md-body-2" layout-align="right">{{ctrl.product.price | currency}}</span>
+      </div>
+    </md-card-footer>
+    <div class="md-actions" layout="row" layout-align="end center">
+      <md-button class="md-raised md-accent" ng-click="ctrl.product.addToCart()" ng-disabled="productForm.$invalid">
+        <md-icon>add_shopping_cart</md-icon>
+        Lägg i kundvagn
+      </md-button>
     </div>
-    <div layout="row">
-      <span class="md-body-1" flex>Dryck: Öl</span>
-      <span class="md-body-1" layout-align="right">&mdash;</span>
-    </div>
-    <div layout="row">
-      <span class="md-body-1" flex>Kårrabatt</span>
-      <span class="md-body-1" layout-align="right">&ndash; 50 kr</span>
-    </div>
-    <md-divider></md-divider>
-    <div layout="row">
-      <span class="md-body-2" flex>Ditt pris</span>
-      <span class="md-body-2" layout-align="right">200 kr</span>
-    </div>
-  </md-card-footer>
-  <div class="md-actions" layout="row" layout-align="end center">
-    <md-button class="md-raised md-accent">
-      <md-icon>add_shopping_cart</md-icon>
-      Lägg i kundvagn
-    </md-button>
-  </div>
-</md-card>
+  </md-card>
+</form>

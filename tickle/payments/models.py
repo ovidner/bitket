@@ -5,8 +5,10 @@ from django.utils.translation import ungettext_lazy, ugettext_lazy as _
 from django.db import models
 from django.utils.timezone import now
 
+from tickle.common.models import Model
 
-class Transaction(models.Model):
+
+class Transaction(Model):
     timestamp = models.DateTimeField(
         default=now,
         verbose_name=_('timestamp'))
