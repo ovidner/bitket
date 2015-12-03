@@ -32,10 +32,10 @@ class HoldingQuerySet(models.QuerySet):
     # METHODS RETURNING HOLDING QUERYSETS #
 
     def purchased(self):
-        return self.filter(purchased__isnull=False)
+        return self.filter(cart__purchased__isnull=False)
 
     def unpurchased(self):
-        return self.filter(purchased__isnull=True)
+        return self.filter(cart__purchased__isnull=True)
 
     def organized_by(self, organizer):
         return self.filter(product__main_event__organizer = organizer)

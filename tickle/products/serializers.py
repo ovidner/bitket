@@ -146,6 +146,7 @@ class ProductModifierSerializer(serializers.ModelSerializer):
 class ProductSerializer(HyperlinkedModelSerializer):
     modifiers = serializers.SerializerMethodField()
     variations = _ProductVariationSerializer(many=True)
+    is_available = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -155,9 +156,10 @@ class ProductSerializer(HyperlinkedModelSerializer):
             'name',
             'description',
             'base_price',
+            'is_available',
             'personal_limit',
             'modifiers',
-            'variations'
+            'variations',
         ]
         extra_kwargs = {
             'url': {
@@ -173,3 +175,6 @@ class ProductSerializer(HyperlinkedModelSerializer):
         modifiers = obj.product_modifiers.eligible(self.get_person()).select_related('condition')
         serializer = ProductModifierSerializer(modifiers, read_only=True, many=True)
         return serializer.data
+
+    def get_is_available(self, obj):
+        return obj.is_available

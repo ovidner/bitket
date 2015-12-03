@@ -227,6 +227,12 @@ class Product(NameSlugDescriptionMixin, Model):
         verbose_name = _('product')
         verbose_name_plural = _('products')
 
+    @property
+    def is_available(self):
+        if self.total_limit is None:
+            return True
+        return self.holdings.purchased().quantity() < self.total_limit
+
     def modifier_delta(self, person):
         return self.product_modifiers.eligible(person).real_delta()
 
