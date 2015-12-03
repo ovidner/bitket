@@ -26,6 +26,9 @@ RUN chmod +x /entrypoint.sh /gunicorn.sh /celery-beat.sh /celery-worker.sh && \
     chown django /entrypoint.sh /gunicorn.sh /celery-beat.sh /celery-worker.sh
 
 WORKDIR /app
+
+RUN django-admin compilemessages
+
 USER django
 EXPOSE $GUNICORN_PORT
 ENTRYPOINT ["/entrypoint.sh"]

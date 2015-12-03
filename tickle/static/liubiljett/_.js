@@ -8,9 +8,10 @@ angular.module('liubiljett', [
   'ct.ui.router.extras',
   'hc.marked',
   'restangular',
+  'credit-cards',
+  'angular-stripe',
 
   // liubiljett modules
-  'liubiljett.carts',
   'liubiljett.common',
   'liubiljett.events',
   'liubiljett.home',
@@ -49,4 +50,14 @@ angular.module('liubiljett', [
     $mdThemingProvider.theme('inverted')
       .primaryPalette('pink')
       .accentPalette('blue')
+
+    $mdThemingProvider.theme('dark')
+      .primaryPalette('blue')
+      .accentPalette('pink')
+      .warnPalette('yellow')
+      .dark()
   }])
+
+.run(['$rootScope', function ($rootScope) {
+  $rootScope.$on('$stateChangeError', console.log.bind(console))
+}])

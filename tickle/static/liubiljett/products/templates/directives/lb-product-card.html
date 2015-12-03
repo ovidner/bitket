@@ -8,7 +8,7 @@
                             ng-repeat="variation in ctrl.product.variations">
           <label>{{variation.name}}</label>
           <md-select placeholder="Välj dryck"
-                     ng-model="variation._selectedChoice"
+                     ng-model="variation.getSetSelectedChoice"
                      ng-model-options="{getterSetter: true}" required>
             <md-option ng-repeat="choice in variation.choices"
                        ng-value="choice">

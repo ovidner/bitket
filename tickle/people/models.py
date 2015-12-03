@@ -282,10 +282,7 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
 
     @property
     def default_cart(self):
-        try:
-            return self.carts.get(person=self, purchased=None)
-        except models.ObjectDoesNotExist:
-            return None
+        return self.carts.get_or_create(person=self, purchased=None)[0]
 
 
 @python_2_unicode_compatible

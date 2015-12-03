@@ -15,6 +15,7 @@ class ClientView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ClientView, self).get_context_data(**kwargs)
+        context['stripe_public_key'] = settings.STRIPE_PUBLIC_KEY
         context['sentry_release'] = settings.RAVEN_CONFIG['release']
         return context
 

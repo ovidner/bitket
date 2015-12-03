@@ -7,6 +7,7 @@ angular.module('liubiljett.common.states', [])
     [
       {
         name: 'liubiljett',
+        url: '/',
         abstract: true
       }
     ].forEach($stateProvider.state)

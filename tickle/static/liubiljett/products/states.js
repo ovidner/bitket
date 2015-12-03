@@ -1,6 +1,6 @@
 'use strict'
 
-angular.module('liubiljett.carts.states', [])
+angular.module('liubiljett.products.states', [])
 
 .config(['$stateProvider',
   function ($stateProvider) {
@@ -10,7 +10,7 @@ angular.module('liubiljett.carts.states', [])
         url: 'cart/',
         views: {
           'main@': {
-            templateUrl: StaticFile('liubiljett/carts/templates/cart.main.html'),
+            templateUrl: StaticFile('liubiljett/products/templates/cart.main.html'),
             controller: 'CartController as ctrl'
           }
         },

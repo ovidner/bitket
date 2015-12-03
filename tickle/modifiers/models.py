@@ -65,7 +65,7 @@ class HoldingModifier(Model):
         related_name='holding_modifiers',
         verbose_name=_('product modifier'))
     holding = models.ForeignKey(
-        'products.Product',
+        'products.Holding',
         related_name='holding_modifiers',
         verbose_name=_('holding'))
 
@@ -79,7 +79,7 @@ class HoldingModifier(Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if not self.holding.product != self.product_modifier.product:
+        if not self.holding.product == self.product_modifier.product:
             raise ValidationError('Impossible holding/modifier combination. '
                                   'Products not matching.')
 

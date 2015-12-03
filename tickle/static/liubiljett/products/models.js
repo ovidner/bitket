@@ -52,5 +52,15 @@ angular.module('liubiljett.products.models', [])
 
       return product
     })
+
+    Restangular.extendModel('carts', function (cart) {
+      cart.purchase = function (stripeToken) {
+        return cart.one('purchase').patch({'stripe_token': stripeToken}).then(function (response) {
+          return response
+        })
+      }
+
+      return cart
+    })
   }
 ])

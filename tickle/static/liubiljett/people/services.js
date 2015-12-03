@@ -23,7 +23,7 @@ angular.module('liubiljett.people.services', [
             return currentPerson
           },
           function (response) {
-            if (response.status === 401) {
+            if (response.status === 403) {
               currentPerson = null
               return currentPerson
             } else {
