@@ -8,19 +8,21 @@ from django.core.cache import cache
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
+from dry_rest_permissions.generics import unauthenticated_users, \
+    authenticated_users
 
 from tickle.common.behaviors import NameSlugMixin
 from tickle.common.db.fields import (NameField, SlugField, PasswordField,
                                      NullCharField)
 from tickle.common.fields import PidField
-from tickle.common.models import TickleModel
+from tickle.common.models import Model
 from tickle.common.utils.email import generate_pretty_email
 from tickle.common.utils.kobra import (KobraClient, StudentNotFound,
                                        Unauthorized)
 from tickle.conditions.models import Condition
 
 
-class PidMixin(models.Model):
+class PidMixin(Model):
     birth_date = models.DateField(
         null=True,
         blank=True,
@@ -122,7 +124,7 @@ class PersonManager(models.Manager.from_queryset(PersonQuerySet),
 
 @python_2_unicode_compatible
 class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
-             TickleModel):
+             Model):
     first_name = NameField(
         verbose_name=_('first name'))
     last_name = NameField(
@@ -136,7 +138,7 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
         max_length=32,
         blank=True,
         verbose_name=_('LiU card number'))
-    liu_student_union = models.ForeignKey(
+    student_union = models.ForeignKey(
         'StudentUnion',
         related_name='members',
         null=True,
@@ -180,17 +182,27 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
     def __str__(self):
         return self.get_full_name()
 
+    @staticmethod
+    @unauthenticated_users
+    def has_create_permission(request):
+        return True
+
+    @staticmethod
+    @authenticated_users
+    def has_current_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return request.user == self
+
+    def has_object_write_permission(self, request):
+        return request.user == self
+
     def get_full_name(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
     def get_short_name(self):
         return '{} {}.'.format(self.first_name, self.last_name[0])
-
-    def clean_password(self):
-        password = self.cleaned_data['password']
-        if not password:
-            password = make_password(None)
-        return password
 
     def met_conditions(self):
         cache_key = 'people.person.{}.met_conditions'.format(self.pk)
@@ -253,7 +265,7 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
             self.liu_card_rfid = data['rfid_number'] or ''  # Some people actually have no LiU card
 
             if data['union']:
-                self.liu_student_union = StudentUnion.objects.get_or_create(name=data['union'])[0]
+                self.student_union = StudentUnion.objects.get_or_create(name=data['union'])[0]
 
             if save:
                 self.save()
@@ -264,9 +276,17 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
     def pretty_email(self):
         return generate_pretty_email(self.first_name, self.last_name, self.email)
 
+    def create_default_cart(self):
+        if not self.default_cart:
+            self.carts.create(person=self)
+
+    @property
+    def default_cart(self):
+        return self.carts.get_or_create(person=self, purchased=None)[0]
+
 
 @python_2_unicode_compatible
-class SpecialNutrition(models.Model):
+class SpecialNutrition(Model):
     name = models.CharField(max_length=256, verbose_name=_('name'))
 
     class Meta:
@@ -279,9 +299,9 @@ class SpecialNutrition(models.Model):
         return self.name
 
 
-class StudentUnion(models.Model):
+class StudentUnion(NameSlugMixin, Model):
     name = NameField(unique=True)
-    slug = SlugField(unique=True)
+    slug = SlugField(unique=True, populate_from='name')
 
     class Meta:
         verbose_name = _('student union')

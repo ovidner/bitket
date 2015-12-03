@@ -9,9 +9,10 @@ import requests
 
 from tickle.common.behaviors import NameSlugMixin
 from tickle.common.db.fields import NameField, SlugField
+from tickle.common.models import Model
 
 
-class OrganizerStripeMixin(models.Model):
+class OrganizerStripeMixin(Model):
     stripe_authorized = models.DateTimeField(
         null=True,
         blank=True,
@@ -70,9 +71,12 @@ class OrganizerStripeMixin(models.Model):
         self.save()
 
 
-class Organizer(NameSlugMixin, OrganizerStripeMixin, models.Model):
-    name = NameField(unique=True)
-    slug = SlugField(unique=True)
+class Organizer(NameSlugMixin, OrganizerStripeMixin, Model):
+    name = NameField(
+        unique=True)
+    slug = SlugField(
+        unique=True,
+        populate_from='name')
 
     class Meta:
         pass

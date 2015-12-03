@@ -1,16 +1,34 @@
-'use strict';
+'use strict'
 
 angular.module('liubiljett.people.states', [])
 
 .config(['$stateProvider',
   function ($stateProvider) {
-    var states = [
-    {
-      name: ''
-    }];
-
-    angular.forEach(states, function (state) {
-      $stateProvider.state(state);
-    });
+    [
+      {
+        name: 'liubiljett.person',
+        abstract: true
+      },
+      {
+        name: 'liubiljett.login',
+        abstract: true,
+        resolve: {
+          redirectUrl: ['$state',
+            function ($state) {
+              return $state.href($state.current.name, $state.current.params)
+            }
+          ]
+        }
+      },
+      {
+        name: 'liubiljett.login.liu',
+        url: '_saml/login/',
+        onEnter: ['redirectUrl',
+          function (redirectUrl) {
+            window.location = '/_saml/login/?next=' + redirectUrl
+          }
+        ]
+      }
+    ].forEach($stateProvider.state)
   }
-]);
+])

@@ -1,8 +1,10 @@
 from __future__ import absolute_import, unicode_literals
-from django.contrib.auth.hashers import make_password
 
+from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
+from autoslug import AutoSlugField
 
 
 class StripValueMixin(object):
@@ -46,7 +48,7 @@ class NullCharField(models.CharField):
         return value or None
 
 
-class SlugField(models.SlugField):
+class SlugField(AutoSlugField):
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = kwargs.get('max_length', 64)
         kwargs['verbose_name'] = kwargs.get('verbose_name', _('slug'))

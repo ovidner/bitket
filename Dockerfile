@@ -20,13 +20,15 @@ RUN groupadd -r django && useradd -r -g django django
 ADD . /app
 RUN chown -R django /app
 
-ADD ./docker/gunicorn.sh /gunicorn.sh
-ADD ./docker/entrypoint.sh /entrypoint.sh
+COPY ./docker/gunicorn.sh ./docker/entrypoint.sh ./docker/celery-beat.sh ./docker/celery-worker.sh /
 
-RUN chmod +x /entrypoint.sh && chown django /entrypoint.sh
-RUN chmod +x /gunicorn.sh && chown django /gunicorn.sh
+RUN chmod +x /entrypoint.sh /gunicorn.sh /celery-beat.sh /celery-worker.sh && \
+    chown django /entrypoint.sh /gunicorn.sh /celery-beat.sh /celery-worker.sh
 
 WORKDIR /app
+
+RUN django-admin compilemessages
+
 USER django
 EXPOSE $GUNICORN_PORT
 ENTRYPOINT ["/entrypoint.sh"]

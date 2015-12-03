@@ -9,16 +9,16 @@ from django.utils.translation import ugettext_lazy as _
 
 from tickle.common.db.fields import MoneyField, DescriptionField
 from tickle.common.behaviors import NameMixin, OrderedMixin
+from tickle.common.models import Model
+from tickle.conditions.models import Condition
 
 
 class ProductModifierQuerySet(models.QuerySet):
-    def met(self, person):
-        met_pks = []
-        for condition in person.met_conditions():
-            for product_modifier in condition.product_modifiers:
-                met_pks.append(product_modifier.pk)
+    def eligible(self, person):
+        if person.is_anonymous():
+            return self.none()
 
-        return self.filter(pk__in=met_pks)
+        return self.filter(condition__in=person.met_conditions())
 
     def total_delta(self):
         total_delta = Decimal(0)
@@ -27,8 +27,7 @@ class ProductModifierQuerySet(models.QuerySet):
         return total_delta
 
 
-
-class ProductModifier(OrderedMixin, models.Model):
+class ProductModifier(Model):
     condition = models.ForeignKey(
         'conditions.Condition',
         related_name='product_modifiers',
@@ -39,15 +38,12 @@ class ProductModifier(OrderedMixin, models.Model):
         verbose_name=_('product'))
 
     delta_amount = MoneyField(
-        null=True,
-        blank=True,
         verbose_name=_('delta (amount)'),
         help_text=_('For discount, enter a negative value.'))
 
     objects = ProductModifierQuerySet.as_manager()
 
     class Meta:
-        ordering = ['order']
         unique_together = [
             ['condition', 'product']
         ]
@@ -55,26 +51,21 @@ class ProductModifier(OrderedMixin, models.Model):
         verbose_name = _('product modifier')
         verbose_name_plural = _('product modifiers')
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if ((self.delta_amount and self.delta_factor) or
-                (not self.delta_amount and not self.delta_factor)):
-            raise ValidationError(_("Please specify amount or percent."))
-
-        super(ProductModifier, self).save(force_insert, force_update, using,
-                                          update_fields)
-
     def delta(self):
         return self.delta_amount
 
+    @property
+    def condition_subclass(self):
+        return Condition.objects.get_subclass(id=self.condition_id)
 
-class HoldingModifier(models.Model):
+
+class HoldingModifier(Model):
     product_modifier = models.ForeignKey(
         'ProductModifier',
         related_name='holding_modifiers',
         verbose_name=_('product modifier'))
     holding = models.ForeignKey(
-        'products.Product',
+        'products.Holding',
         related_name='holding_modifiers',
         verbose_name=_('holding'))
 
@@ -88,15 +79,9 @@ class HoldingModifier(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        if not self.holding.product != self.product_modifier.product:
+        if not self.holding.product == self.product_modifier.product:
             raise ValidationError('Impossible holding/modifier combination. '
                                   'Products not matching.')
 
         super(HoldingModifier, self).save(force_insert, force_update, using,
                                           update_fields)
-
-
-class ProductDiscountQuerySet(models.QuerySet):
-    def copy_to_holding_discounts(self, holding):
-        for i in self:
-            HoldingDiscount.objects.create(holding=holding, discount=i.discount, order=i.order)

@@ -6,14 +6,16 @@ git+https://github.com/ovidner/django-saml-service-provider.git@71bce932726ed932
 
 # REST Framework
 djangorestframework==3.3.1
+drf-nested-routers==0.11.1
 django-rest-auth==0.6.0
+dry-rest-permissions==0.1.4
 
 # Configuration
 django-environ==0.4.0
 django-secure==1.0.1
 whitenoise==2.0.6
 
-gunicorn==19.3.0
+gunicorn==19.4.1
 raven==5.8.1
 
 # Forms
@@ -56,3 +58,4 @@ PyHamcrest==1.8.5
 django-debug-toolbar==1.4.0
 
 requests==2.8.1
+newrelic

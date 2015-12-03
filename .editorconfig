@@ -19,6 +19,16 @@ known_first_party=tickle
 multi_line_output=3
 default_section=THIRDPARTY
 
+[*.js]
+indent_style = space
+indent_size = 2
+continuation_indent_size = 2
+
+[*.html]
+indent_style = space
+indent_size = 2
+continuation_indent_size = 2
+
 [*.yml]
 indent_style = space
 indent_size = 2

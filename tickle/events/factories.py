@@ -11,11 +11,10 @@ from tickle.organizers.models import Organizer
 
 
 class OrganizerFactory(NameSlugFactoryMixin, factory.DjangoModelFactory):
-    stripe_account_id = "acct_16oBUPJyXU6ClYwv"
-    stripe_refresh_token = "rt_7SBELttVfPJZutvQGpMPXQfytec6rFEHNLT9cWTG0aV2nhsn"
-    stripe_public_key = 'sk_test_mxObDuXVzXMZywWT1FiCcmBe'
-    stripe_secret_key = 'pk_test_YssxGJY7xNnFSwuWB0kH355m'
-
+    stripe_account_id = 'acct_15UmhTBnmRVIEGOy'
+    stripe_refresh_token = 'rt_7BKd3RoiAGmUTFinVXmDG7UtY2uiWdHWEqCHzjfbRAe6PIsc'
+    stripe_public_key = 'pk_test_ylCgAtl19NyJSCvrH7hR75F0'
+    stripe_secret_key = 'sk_test_b6ayEDgcfTYU9j5GxTZYclfl'
 
     class Meta:
         model = Organizer
