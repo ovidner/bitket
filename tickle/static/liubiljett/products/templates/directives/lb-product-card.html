@@ -1,21 +1,21 @@
 <form name="productForm">
   <md-card layout-padding>
-    <md-card-content>
+    <md-card-content layout="column">
       <h3 class="md-title">{{ctrl.product.name}}</h3>
       <div marked="ctrl.product.description"></div>
 
-        <md-input-container flex
-                            ng-repeat="variation in ctrl.product.variations">
-          <label>{{variation.name}}</label>
-          <md-select placeholder="Välj dryck"
-                     ng-model="variation.getSetSelectedChoice"
-                     ng-model-options="{getterSetter: true}" required>
-            <md-option ng-repeat="choice in variation.choices"
-                       ng-value="choice">
-              {{choice.name}} <span class="md-caption" ng-if="choice.delta_amount != 0">({{choice.delta_amount | currency}})</span>
-            </md-option>
-          </md-select>
-        </md-input-container>
+      <md-input-container flex
+                          ng-repeat="variation in ctrl.product.variations">
+        <label>{{variation.name}}</label>
+        <md-select placeholder="Välj dryck"
+                   ng-model="variation.getSetSelectedChoice"
+                   ng-model-options="{getterSetter: true}" required>
+          <md-option ng-repeat="choice in variation.choices"
+                     ng-value="choice">
+            {{choice.name}} <span class="md-caption" ng-if="choice.delta_amount != 0">({{choice.delta_amount | currency}})</span>
+          </md-option>
+        </md-select>
+      </md-input-container>
 
     </md-card-content>
     <md-card-footer layout="column">
