@@ -15,7 +15,6 @@ angular.module('liubiljett.products.controllers', [])
       autoWrap: false,
       clickOutsideToClose: false,
       controller: function () {
-        console.log(this)
         this.hide = function () {
           $mdDialog.hide()
         }
@@ -45,12 +44,9 @@ angular.module('liubiljett.products.controllers', [])
         }, function (error) {
           ctrl.purchaseProgress.status = 'failed'
           ctrl.purchaseProgress.statusMessage = error.data.detail
-          console.log(error.message)
-          console.log(error.data)
         })
         .catch(function (err) {
           ctrl.purchaseProgress.status = 'failed'
-          console.log(err)
           console.error('Other error occurred, possibly with your API', err.message)
         })
     }

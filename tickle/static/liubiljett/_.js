@@ -57,7 +57,3 @@ angular.module('liubiljett', [
       .warnPalette('yellow')
       .dark()
   }])
-
-.run(['$rootScope', function ($rootScope) {
-  $rootScope.$on('$stateChangeError', console.log.bind(console))
-}])
