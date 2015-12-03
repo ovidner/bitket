@@ -1,19 +1,4 @@
-<md-list>
-  <md-list-item class="md-2-line">
-    <md-icon class="md-avatar">help</md-icon>
-    <div class="md-list-item-text" layout="column">
-      <h3>Arrangör</h3>
-      <p>LiTHe Blås</p>
-    </div>
-  </md-list-item>
-  <md-list-item class="md-2-line">
-    <md-icon class="md-avatar">today</md-icon>
-    <div class="md-list-item-text" layout="column">
-      <h3>Datum</h3>
-      <p>12 december 2015</p>
-    </div>
-  </md-list-item>
-</md-list>
+<h1>{{ctrl.event.name}}</h1>
 <div marked="ctrl.event.description"></div>
 <div layout="row" layout-wrap>
   <div ng-repeat="product in ctrl.event.products track by $index"
