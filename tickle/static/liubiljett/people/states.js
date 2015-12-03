@@ -15,7 +15,7 @@ angular.module('liubiljett.people.states', [])
         resolve: {
           redirectUrl: ['$state',
             function ($state) {
-              return $state.current.href
+              return $state.href($state.current.name, $state.current.params)
             }
           ]
         }
@@ -25,7 +25,7 @@ angular.module('liubiljett.people.states', [])
         url: '_saml/login/',
         onEnter: ['redirectUrl',
           function (redirectUrl) {
-            window.location = '/_saml/login/' + '?next=' + redirectUrl
+            window.location = '/_saml/login/?next=' + redirectUrl
           }
         ]
       }
