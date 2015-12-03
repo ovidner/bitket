@@ -20,11 +20,11 @@ celeryworker:
   links:
    - postgres
    - redis
-  command: celery -A tickle.common.celery.apps worker -l INFO
+  command: /celery-worker.sh
 
 celerybeat:
   build: .
   links:
     - postgres
     - redis
-  command: celery -A tickle.common.celery.apps beat -l INFO
+  command: /celery-beat.sh
