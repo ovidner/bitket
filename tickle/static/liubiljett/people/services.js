@@ -9,6 +9,17 @@ angular.module('liubiljett.people.services', [
     var currentCart
     var currentPerson
 
+    function reloadCurrentPerson () {
+      Restangular.one('people', 'current').get().then(
+        function (person) {
+          currentPerson = person
+          Raven.setUserContext({
+            'id': currentPerson.id,
+            'email': currentPerson.email
+          })
+        })
+    }
+
     function getCurrentPerson () {
       if (angular.isDefined(currentPerson)) {
         return $q.when(currentPerson)
@@ -45,6 +56,7 @@ angular.module('liubiljett.people.services', [
 
     return {
       getCurrentCart: getCurrentCart,
-      getCurrentPerson: getCurrentPerson
+      getCurrentPerson: getCurrentPerson,
+      reloadCurrentPerson: reloadCurrentPerson
     }
   }])

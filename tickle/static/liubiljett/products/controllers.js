@@ -2,8 +2,10 @@
 
 angular.module('liubiljett.products.controllers', [])
 
-.controller('CartController', ['$scope', '$mdDialog', '$mdMedia', 'Restangular', 'Holding', 'stripe', 'cart',
-  function ($scope, $mdDialog, $mdMedia, Restangular, Holding, stripe, cart) {
+.controller('CartController', ['$scope', '$state', '$mdDialog', '$mdMedia',
+  'Restangular', 'SessionService', 'Holding', 'stripe', 'cart',
+  function ($scope, $state, $mdDialog, $mdMedia, Restangular, SessionService,
+            Holding, stripe, cart) {
     var ctrl = this
     ctrl.cart = cart
     ctrl.cart.updateTotal()
@@ -28,19 +30,23 @@ angular.module('liubiljett.products.controllers', [])
     ctrl.purchase = function () {
       ctrl.purchaseProgress.status = 'working'
       ctrl.purchaseProgress.statusMessage = null
-      $mdDialog.show(ctrl.purchaseProgressDialog)
+      $mdDialog.show(ctrl.purchaseProgressDialog).then(function (response) {
+        if (ctrl.purchaseProgress.status === 'succeeded') {
+          SessionService.reloadCurrentPerson()
+          $state.go('liubiljett.home')
+        }
+      })
 
       return stripe.card.createToken(ctrl.card)
         .then(function (response) {
           ctrl.purchaseProgress.status = 'working'
           return ctrl.cart.purchase(response.id)
         }, function (error) {
-          ctrl.purchaseProgress.status = 'failed'
           ctrl.purchaseProgress.statusMessage = error.message
+          ctrl.purchaseProgress.status = 'failed'
         })
         .then(function (purchasedCart) {
           ctrl.purchaseProgress.status = 'succeeded'
-          $mdDialog.hide(ctrl.purchaseProgressDialog)
           return purchasedCart
         }, function (error) {
           ctrl.purchaseProgress.status = 'failed'
@@ -75,6 +81,11 @@ angular.module('liubiljett.products.controllers', [])
         }
       })
     }
+
+    SessionService.getCurrentPerson().then(function (person) {
+      ctrl.loggedIn = (person !== null)
+    })
+
     ctrl.product.updatePrice()
   }
 ])
