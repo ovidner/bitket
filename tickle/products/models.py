@@ -13,11 +13,13 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from dry_rest_permissions.generics import allow_staff_or_superuser
 
+from tickle.common import exceptions
 from tickle.common.db.fields import MoneyField, NameField, SlugField, DescriptionField
 from tickle.common.behaviors import NameMixin, NameSlugMixin, NameSlugDescriptionMixin
 from tickle.modifiers.models import HoldingModifier
 from tickle.payments.models import Transaction
 from tickle.common.models import Model
+from tickle.common.utils.email import TemplatedEmail
 from tickle.organizers.models import Organizer
 from .exceptions import (ConflictingProductVariationChoices, ExceedsLimit,
                          ModifiesHistory)
@@ -56,6 +58,7 @@ class Cart(Model):
         self.purchased = now()
         self.save()
         self.holdings.charge(self.person, stripe_token)
+        self.holdings.email_ticket()
 
 
 @python_2_unicode_compatible
@@ -105,8 +108,6 @@ class Holding(Model):
         if self._has_conflicting_product_variation_choices():
             raise ConflictingProductVariationChoices(
                 _('Holding has conflicting product variation choices.'))
-        #if self._will_exceed_personal_limit():
-        #    raise ExceedsLimit(_('Exceeding personal quantity limit.'))
         if self.is_purchased:
             raise ModifiesHistory(
                 _('This will change history of purchased objects. Denied.'))
@@ -127,10 +128,15 @@ class Holding(Model):
     def _will_modify_purchased_holding(self):
         return self.cart.purchased
 
+    def _will_exceed_total_limit(self):
+        if self.product.total_limit is None:
+            return False
+        return (self.product.holdings.purchased().quantity() + self.quantity) > self.product.total_limit
+
     def _will_exceed_personal_limit(self):
-        # todo: make this work for other quantities than 1
-        return (self.product.holdings.filter(person=self.person).exclude(
-            pk=self.pk).quantity() + self.quantity) <= self.product.personal_limit
+        if self.product.personal_limit is None:
+            return False
+        return (self.product.holdings.filter(person=self.person).purchased().quantity() + self.quantity) > self.product.personal_limit
 
     def _has_conflicting_product_variation_choices(self):
         if not self.pk:
@@ -139,17 +145,15 @@ class Holding(Model):
             'variation').annotate(count=models.Count('id')).order_by().filter(
             count__gt=1).exists()
 
-    def send_ticket(self):
+    def email_ticket(self):
         msg = TemplatedEmail(
             to=[self.person.pretty_email],
-            from_email='Biljett SOF15 <biljett@sof15.se>',
-            subject_template='tickle/email/ticket_subject.txt',
-            body_template_html='tickle/email/ticket.html',
+            subject_template='email/litheblas-mail.subject.txt',
+            body_template_html='email/litheblas-mail.body.txt',
             context={
                 'holding': self,
-                'host': settings.PRIMARY_HOST,
             },
-            tags=['tickle', 'ticket'])
+            tags=['ticket'])
         msg.send()
 
     #The final price of the holding.
@@ -160,6 +164,11 @@ class Holding(Model):
 
     #Creates HoldingModifiers for the holding, and sets purchase_price
     def prepare_for_purchase(self):
+        if self._will_exceed_total_limit():
+            raise exceptions.TotalProductLimitExceeded()
+        if self._will_exceed_personal_limit():
+            raise exceptions.PersonalProductLimitExceeded()
+
         for product_modifier in self.product.product_modifiers.eligible(self.person):
             HoldingModifier.objects.create(product_modifier = product_modifier, holding = self)
         self.purchase_price = self.price

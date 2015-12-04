@@ -19,5 +19,11 @@ class PaymentDenied(DefaultException):
     default_detail = _('The payment was denied.')
 
 
-class ProductLimitExceeded(DefaultException):
+class PersonalProductLimitExceeded(DefaultException):
     status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = _('Exceeding personal quantity limit.')
+
+
+class TotalProductLimitExceeded(DefaultException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = _('Exceeding total quantity limit.')

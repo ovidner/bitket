@@ -61,7 +61,6 @@ class HoldingQuerySet(models.QuerySet):
     def purchased_total_cost(self):
         return self.annotate(price=models.Sum('purchase_price')).aggregate(models.Sum('price', field='price*quantity'))['price__sum'] or 0
 
-
     def prepare_for_purchase(self):
         for i in self:
             i.prepare_for_purchase()
@@ -100,7 +99,9 @@ class HoldingQuerySet(models.QuerySet):
         finally:
             stripe_customer.delete()
 
-
+    def email_ticket(self):
+        for i in self:
+            i.email_ticket()
 
 
 class CartQuerySet(models.QuerySet):
