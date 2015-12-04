@@ -20,12 +20,12 @@ class StudentUnionMemberConditionTests(TestCase):
         condition = StudentUnionMemberConditionFactory(
             student_union=student_union)
         person = PersonFactory(
-            liu_student_union=None)
+            student_union=None)
         assert_that(condition.is_met(person), equal_to(False))
 
         other_student_union = StudentUnionFactory()
-        person.liu_student_union = other_student_union
+        person.student_union = other_student_union
         assert_that(condition.is_met(person), equal_to(False))
 
-        person.liu_student_union = student_union
+        person.student_union = student_union
         assert_that(condition.is_met(person), equal_to(True))
