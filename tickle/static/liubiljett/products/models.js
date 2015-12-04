@@ -35,7 +35,7 @@ angular.module('liubiljett.products.models', [])
       }
 
       product.addToCart = function () {
-        SessionService.getCurrentPerson().then(function (currentPerson) {
+        return SessionService.getCurrentPerson().then(function (currentPerson) {
           var holding = {
             'cart': currentPerson.default_cart,
             'person': currentPerson.url,
@@ -46,7 +46,7 @@ angular.module('liubiljett.products.models', [])
           product.variations.forEach(function (variation) {
             holding.product_variation_choices.push(variation.selectedChoice.url)
           })
-          Holding.post(holding)
+          return Holding.post(holding)
         })
       }
 
@@ -58,6 +58,14 @@ angular.module('liubiljett.products.models', [])
         return cart.one('purchase').patch({'stripe_token': stripeToken}).then(function (response) {
           return response
         })
+      }
+
+      cart.updateTotal = function () {
+        var total = Money('0.00')
+        cart.holdings.forEach(function (holding) {
+          total = total.plus(holding.price)
+        })
+        cart.total = total.toFixed(2)
       }
 
       return cart

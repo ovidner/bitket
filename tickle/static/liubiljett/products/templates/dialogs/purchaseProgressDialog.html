@@ -1,16 +1,19 @@
 <md-dialog aria-label="Genomför köp...">
     <md-dialog-content class="md-dialog-content">
       <div ng-if="dialog.progress.status === 'working'">
-        <h2>Genomför köp...</h2>
-        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+        <div layout="column" layout-align="start center">
+          <h2>Genomför köp...</h2>
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+        </div>
         <p>
           Ditt köp bearbetas. Undvik att stänga eller ladda om sidan.
         </p>
       </div>
       <div ng-if="dialog.progress.status === 'failed'">
-
+        <p>
+          Köpet misslyckades av följande skäl: {{dialog.progress.statusMessage}}
+        </p>
       </div>
-      <p>{{dialog.progress}}</p>
     </md-dialog-content>
     <md-dialog-actions class="md-actions">
       <md-button ng-click="dialog.hide()" ng-if="dialog.progress.status !== 'working'">

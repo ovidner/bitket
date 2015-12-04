@@ -2,10 +2,11 @@
 
 angular.module('liubiljett.products.controllers', [])
 
-.controller('CartController', ['$scope', '$mdDialog', '$mdMedia', 'stripe', 'cart',
-  function ($scope, $mdDialog, $mdMedia, stripe, cart) {
+.controller('CartController', ['$scope', '$mdDialog', '$mdMedia', 'Restangular', 'Holding', 'stripe', 'cart',
+  function ($scope, $mdDialog, $mdMedia, Restangular, Holding, stripe, cart) {
     var ctrl = this
     ctrl.cart = cart
+    ctrl.cart.updateTotal()
     ctrl.card = {}
     ctrl.purchaseProgress = {
       status: null,
@@ -50,12 +51,30 @@ angular.module('liubiljett.products.controllers', [])
           console.error('Other error occurred, possibly with your API', err.message)
         })
     }
+    ctrl.deleteHolding = function (holding) {
+      return Restangular.oneUrl('holdings', holding.url).remove().then(function (response) {
+        return Restangular.oneUrl('carts', ctrl.cart.url).get()
+      }).then(function (response) {
+        ctrl.cart = response
+        ctrl.cart.updateTotal()
+      })
+    }
   }
 ])
 
-.controller('ProductController', ['Money', 'SessionService', 'Holding',
-  function (Money, SessionService, Holding) {
+.controller('ProductController', ['$state', '$mdToast', 'Money', 'SessionService', 'Holding',
+  function ($state, $mdToast, Money, SessionService, Holding) {
     var ctrl = this
+    ctrl.addToCart = function () {
+      ctrl.product.addToCart().then(function (holding) {
+        var toast = $mdToast.simple().content(ctrl.product.name + ' tillagd!').action('Gå till kundvagnen').highlightAction(false).position('bottom right').hideDelay(10000)
+        return $mdToast.show(toast)
+      }).then(function (response) {
+        if (response === 'ok') {
+          $state.go('liubiljett.cart')
+        }
+      })
+    }
     ctrl.product.updatePrice()
   }
 ])
