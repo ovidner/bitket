@@ -45,15 +45,9 @@ angular.module('liubiljett', [
     $mdThemingProvider.theme('default')
       .primaryPalette('blue')
       .accentPalette('pink')
-      .warnPalette('yellow')
+      .warnPalette('amber')
 
     $mdThemingProvider.theme('inverted')
       .primaryPalette('pink')
       .accentPalette('blue')
-
-    $mdThemingProvider.theme('dark')
-      .primaryPalette('blue')
-      .accentPalette('pink')
-      .warnPalette('yellow')
-      .dark()
   }])
