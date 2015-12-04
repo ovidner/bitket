@@ -152,26 +152,16 @@ class Holding(Model):
             tags=['tickle', 'ticket'])
         msg.send()
 
-    #Discount from product variations
-    def product_variation_choice_delta(self):
-        delta = Decimal(0)
-        for choice in self.product_variation_choices.all():
-            delta += choice.delta()
-
     #The final price of the holding.
     #Should only be used when all ProducVariationChoices have been added properly
     def price(self):
-        return self.product.base_price + self.product.modifier_delta(self.person) + self.product_variation_choice_delta()
+        return self.product.base_price + self.product.modifier_delta(self.person) + self.product_variation_choices.delta()
 
     #Creates HoldingModifiers for the holding, and sets purchase_price
     def prepare_for_purchase(self):
-        temp_price = self.product.base_price
-
         for product_modifier in self.product.product_modifiers.eligible(self.person):
-            holding_modifier = HoldingModifier(product_modifier = product_modifier, holding = self)
-            holding_modifier.save()
-            temp_price += product_modifier.delta()
-        self.purchase_price = temp_price
+            HoldingModifier.objects.create(product_modifier = product_modifier, holding = self)
+        self.purchase_price = self.price
         self.save()
 
     @property
@@ -234,17 +224,10 @@ class Product(NameSlugDescriptionMixin, Model):
         return self.holdings.purchased().quantity() < self.total_limit
 
     def modifier_delta(self, person):
-        return self.product_modifiers.eligible(person).real_delta()
-
-    #Not used for calculating final price.
-    def modified_price(self, person):
-        self.base_price + self.product_modifiers.eligible(person).real_delta()
+        return self.product_modifiers.eligible(person).delta()
 
     def has_reached_limit(self):
         return self.limit and self.holdings.purchased().quantity() >= self.limit
-
-    def eligible_product_modifiers(self, person):
-        return self.product_modifiers.eligible(person)
 
 
 class ProductVariation(NameMixin, Model):
@@ -267,6 +250,11 @@ class ProductVariation(NameMixin, Model):
         return '{} > {}'.format(self.product, self.name)
 
 
+class ProductVariationChoiceQuerySet(models.QuerySet):
+    def delta(self):
+        return self.aggregate(delta=models.Sum('delta_amount'))['delta'] or Decimal('0.00')
+
+
 class ProductVariationChoice(NameMixin, Model):
     name = NameField()
     order = models.PositiveIntegerField(verbose_name=_('order'))
@@ -278,6 +266,8 @@ class ProductVariationChoice(NameMixin, Model):
         'ProductVariation',
         related_name='choices',
         verbose_name=_('product variation'))
+
+    objects = ProductVariationChoiceQuerySet.as_manager()
 
     class Meta:
         ordering = ['order']

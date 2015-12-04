@@ -20,11 +20,8 @@ class ProductModifierQuerySet(models.QuerySet):
 
         return self.filter(condition__in=person.met_conditions())
 
-    def total_delta(self):
-        total_delta = Decimal(0)
-        for i in self:
-            total_delta += i.delta()
-        return total_delta
+    def delta(self):
+        return self.aggregate(delta=models.Sum('delta_amount'))['delta'] or Decimal('0.00')
 
 
 class ProductModifier(Model):
