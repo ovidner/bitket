@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.views.generic import TemplateView
+from django.contrib.auth.views import logout
 
 from tickle.common.views import ClientView
 from tickle.organizers.views import (StripeConnectCallbackView,
@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^stripe/connect-callback/$', StripeConnectCallbackView.as_view()),
 
     url(r'^_saml/', include('tickle.people.saml.urls', namespace='saml')),
+    url(r'^logout/$', logout, name='logout'),
 
     url(r'^', include(client_urlpatterns, namespace='client'))
     # User management

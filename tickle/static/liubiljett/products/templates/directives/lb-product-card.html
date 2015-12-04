@@ -41,9 +41,13 @@
         <span class="md-body-2" flex>Ditt pris</span>
         <span class="md-body-2" layout-align="right">{{ctrl.product.price | currency}}</span>
       </div>
+      <p ng-if="!ctrl.loggedIn">
+        För att kunna visa rätt priser och rätt information behöver du logga in
+        för att fortsätta. Det gör du i menyn till vänster.
+      </p>
     </md-card-footer>
     <div class="md-actions" layout="row" layout-align="end center">
-      <md-button class="md-raised md-accent" ng-click="ctrl.addToCart()" ng-disabled="productForm.$invalid">
+      <md-button class="md-raised md-accent" ng-click="ctrl.addToCart()" ng-disabled="productForm.$invalid || !ctrl.loggedIn">
         <md-icon>add_shopping_cart</md-icon>
         Lägg i kundvagn
       </md-button>

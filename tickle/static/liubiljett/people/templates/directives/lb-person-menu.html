@@ -13,11 +13,11 @@
   <md-icon class="md-avatar-icon">history</md-icon>
   <p>Tidigare köp</p>
 </md-list-item>
-<md-list-item ng-if="person" ng-click="console.log('click')">
+<md-list-item ng-if="person" ui-sref="liubiljett.auth.logout">
   <md-icon class="md-avatar-icon">power_settings_new</md-icon>
   <p>Logga ut</p>
 </md-list-item>
-<md-list-item ng-if="!person" ui-sref="liubiljett.login.liu">
+<md-list-item ng-if="!person" ui-sref="liubiljett.auth.login.liu">
   <md-icon class="md-avatar-icon">power_settings_new</md-icon>
   <p>Logga in (LiU-student)</p>
 </md-list-item>

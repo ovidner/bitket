@@ -10,7 +10,7 @@ angular.module('liubiljett.people.states', [])
         abstract: true
       },
       {
-        name: 'liubiljett.login',
+        name: 'liubiljett.auth',
         abstract: true,
         resolve: {
           redirectUrl: ['$state',
@@ -21,11 +21,24 @@ angular.module('liubiljett.people.states', [])
         }
       },
       {
-        name: 'liubiljett.login.liu',
+        name: 'liubiljett.auth.login',
+        abstract: true
+      },
+      {
+        name: 'liubiljett.auth.login.liu',
         url: '_saml/login/',
         onEnter: ['redirectUrl',
           function (redirectUrl) {
             window.location = '/_saml/login/?next=' + redirectUrl
+          }
+        ]
+      },
+      {
+        name: 'liubiljett.auth.logout',
+        url: 'logout/',
+        onEnter: ['redirectUrl',
+          function (redirectUrl) {
+            window.location = '/logout/?next=' + redirectUrl
           }
         ]
       }
