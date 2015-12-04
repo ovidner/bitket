@@ -55,6 +55,9 @@ class Cart(Model):
 
     def purchase(self, stripe_token):
         self.holdings.prepare_for_purchase()
+        # This is ugly. fixme!
+        if self.person.holdings.quantity() > 1:
+            raise exceptions.EventProductLimitExceeded()
         self.purchased = now()
         self.save()
         self.holdings.charge(self.person, stripe_token)
