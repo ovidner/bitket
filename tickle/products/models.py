@@ -154,6 +154,7 @@ class Holding(Model):
 
     #The final price of the holding.
     #Should only be used when all ProducVariationChoices have been added properly
+    @property
     def price(self):
         return self.product.base_price + self.product.modifier_delta(self.person) + self.product_variation_choices.delta()
 
@@ -170,7 +171,7 @@ class Holding(Model):
 
     @property
     def total(self):
-        return self.product.price * self.quantity
+        return self.price * self.quantity
 
 
 class Product(NameSlugDescriptionMixin, Model):

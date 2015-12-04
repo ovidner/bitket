@@ -16,6 +16,9 @@ from .models import Cart, Holding, Product, ProductVariation, ProductVariationCh
 
 
 class HoldingSerializer(HyperlinkedModelSerializer):
+    price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    product_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Holding
         fields = [
@@ -24,10 +27,12 @@ class HoldingSerializer(HyperlinkedModelSerializer):
             'cart',
             'person',
             'product',
+            'product_name',  # Bluuh! fixme!
             'product_variation_choices',
             'quantity',
+            'price',
+            'purchase_price',
             'utilized',
-            'purchase_price'
         ]
         extra_kwargs = {
             'product': {
@@ -45,6 +50,9 @@ class HoldingSerializer(HyperlinkedModelSerializer):
                 'read_only': True
             }
         }
+
+    def get_product_name(self, obj):
+        return obj.product.name
 
 
 class CartSerializer(HyperlinkedModelSerializer):
