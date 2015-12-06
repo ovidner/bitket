@@ -9,7 +9,3 @@ class ConflictingProductVariationChoices(ValidationError):
 
 class ExceedsLimit(ValidationError):
     pass
-
-
-class ModifiesHistory(ValidationError):
-    pass

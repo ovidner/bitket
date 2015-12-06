@@ -32,3 +32,8 @@ class PersonalProductLimitExceeded(DefaultException):
 class TotalProductLimitExceeded(DefaultException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = _('Exceeding total quantity limit.')
+
+
+class ModifiesHistory(DefaultException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = _('Modifies history.')

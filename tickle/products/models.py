@@ -21,8 +21,7 @@ from tickle.payments.models import Transaction
 from tickle.common.models import Model
 from tickle.common.utils.email import TemplatedEmail
 from tickle.organizers.models import Organizer
-from .exceptions import (ConflictingProductVariationChoices, ExceedsLimit,
-                         ModifiesHistory)
+from .exceptions import ConflictingProductVariationChoices, ExceedsLimit
 from .querysets import ProductQuerySet, HoldingQuerySet, CartQuerySet
 
 
@@ -111,9 +110,6 @@ class Holding(Model):
         if self._has_conflicting_product_variation_choices():
             raise ConflictingProductVariationChoices(
                 _('Holding has conflicting product variation choices.'))
-        if self.is_purchased:
-            raise ModifiesHistory(
-                _('This will change history of purchased objects. Denied.'))
 
         super(Holding, self).save(force_insert, force_update, using,
                                   update_fields)
@@ -166,11 +162,13 @@ class Holding(Model):
         return self.product.base_price + self.product.modifier_delta(self.person) + self.product_variation_choices.delta()
 
     #Creates HoldingModifiers for the holding, and sets purchase_price
-    def prepare_for_purchase(self):
+    def prepare_for_purchase(self, modify_history_allowed=False):
         if self._will_exceed_total_limit():
             raise exceptions.TotalProductLimitExceeded()
         if self._will_exceed_personal_limit():
             raise exceptions.PersonalProductLimitExceeded()
+        if self.is_purchased and not modify_history_allowed:
+            raise exceptions.ModifiesHistory()
 
         for product_modifier in self.product.product_modifiers.eligible(self.person):
             HoldingModifier.objects.create(product_modifier = product_modifier, holding = self)
