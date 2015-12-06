@@ -170,8 +170,11 @@ class Holding(Model):
         if self.is_purchased and not modify_history_allowed:
             raise exceptions.ModifiesHistory()
 
-        for product_modifier in self.product.product_modifiers.eligible(self.person):
-            HoldingModifier.objects.create(product_modifier = product_modifier, holding = self)
+        eligible_product_modifiers = self.product.product_modifiers.eligible(
+            self.person, force_reevaluation=True)
+        for product_modifier in eligible_product_modifiers:
+            HoldingModifier.objects.create(product_modifier=product_modifier,
+                                           holding=self)
         self.purchase_price = self.price
         self.save()
 

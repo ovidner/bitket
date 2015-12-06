@@ -204,10 +204,10 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
     def get_short_name(self):
         return '{} {}.'.format(self.first_name, self.last_name[0])
 
-    def met_conditions(self):
+    def get_met_conditions(self, force_reevaluation=False):
         cache_key = 'people.person.{}.met_conditions'.format(self.pk)
         conditions = cache.get(cache_key)
-        if conditions is None:
+        if force_reevaluation or conditions is None:
             conditions = Condition.objects.met(person=self)
             cache.set(cache_key, conditions,
                       timeout=settings.CACHE_TIMEOUT_PERSON_CONDITIONS)

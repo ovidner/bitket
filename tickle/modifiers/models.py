@@ -14,11 +14,12 @@ from tickle.conditions.models import Condition
 
 
 class ProductModifierQuerySet(models.QuerySet):
-    def eligible(self, person):
+    def eligible(self, person, force_reevaluation=False):
         if person.is_anonymous():
             return self.none()
 
-        return self.filter(condition__in=person.met_conditions())
+        return self.filter(condition__in=person.get_met_conditions(
+            force_reevaluation=force_reevaluation))
 
     def delta(self):
         return self.aggregate(delta=models.Sum('delta_amount'))['delta'] or Decimal('0.00')
