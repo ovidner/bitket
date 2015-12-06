@@ -17,6 +17,7 @@ class LiuAdfsUserProxy(SAMLUserProxy):
     def get_or_create_user(self):
         user = super(LiuAdfsUserProxy, self).get_or_create_user()
         user.fill_kobra_data()
+        user.save()
         return user
 
 
