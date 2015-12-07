@@ -78,5 +78,10 @@ class Organizer(NameSlugMixin, OrganizerStripeMixin, Model):
         unique=True,
         populate_from='name')
 
+    admins = models.ManyToManyField(
+        'people.Person',
+        related_name='admin_for_organizers',
+        verbose_name=_('admins'))
+
     class Meta:
         pass
