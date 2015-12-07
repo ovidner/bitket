@@ -183,12 +183,12 @@ class Holding(Model):
         return self.product.base_price + self.product.modifier_delta(self.person) + self.product_variation_choices.delta()
 
     #Creates HoldingModifiers for the holding, and sets purchase_price
-    def prepare_for_purchase(self, modify_history_allowed=False):
-        if self._will_exceed_total_limit():
+    def prepare_for_purchase(self, ignore_limits=False, modify_history_allowed=False):
+        if not ignore_limits and self._will_exceed_total_limit():
             raise exceptions.TotalProductLimitExceeded()
-        if self._will_exceed_personal_limit():
+        if not ignore_limits and self._will_exceed_personal_limit():
             raise exceptions.PersonalProductLimitExceeded()
-        if self.is_purchased and not modify_history_allowed:
+        if not modify_history_allowed and self.is_purchased:
             raise exceptions.ModifiesHistory()
 
         eligible_product_modifiers = self.product.product_modifiers.eligible(
