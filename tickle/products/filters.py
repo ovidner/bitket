@@ -16,6 +16,8 @@ class CartFilterBackend(DRYPermissionFiltersBase):
 
 class HoldingPermissionFilterBackend(DRYPermissionFiltersBase):
     def filter_list_queryset(self, request, queryset, view):
+        if request.user.is_anonymous():
+            return queryset.none()
         return queryset.filter(
             Q(person=request.user) |
             Q(cart__person=request.user) |
