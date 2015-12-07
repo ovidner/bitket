@@ -61,9 +61,10 @@ class HoldingQuerySet(models.QuerySet):
     def purchased_total_cost(self):
         return self.annotate(price=models.Sum('purchase_price')).aggregate(models.Sum('price', field='price*quantity'))['price__sum'] or 0
 
-    def prepare_for_purchase(self):
+    def prepare_for_purchase(self, modify_history_allowed=False):
         for i in self:
-            i.prepare_for_purchase()
+            i.prepare_for_purchase(
+                modify_history_allowed=modify_history_allowed)
 
     def charge(self, person, stripe_token):
         stripe_customer = stripe.Customer.create(
