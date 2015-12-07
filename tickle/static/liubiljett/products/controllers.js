@@ -89,3 +89,26 @@ angular.module('liubiljett.products.controllers', [])
     ctrl.product.updatePrice()
   }
 ])
+
+.controller('UtilizeController', ['Holding',
+  function (Holding) {
+    var ctrl = this
+    ctrl.holdings = null
+    ctrl.loading = false
+    ctrl.resetQueryParams = function () {
+      ctrl.queryParams = {purchased: 'True'}
+    }
+    ctrl.resetQueryParams()
+
+    ctrl.submit = function () {
+      ctrl.loading = true
+
+      Holding.getList(ctrl.queryParams).then(function (holdings) {
+        ctrl.holdings = holdings
+      }).finally(function (response) {
+        ctrl.loading = false
+        ctrl.resetQueryParams()
+      })
+    }
+  }
+])

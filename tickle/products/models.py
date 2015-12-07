@@ -170,6 +170,12 @@ class Holding(Model):
             tags=['ticket'])
         msg.send()
 
+    def utilize(self):
+        self.utilized = now()
+
+    def unutilize(self):
+        self.utilized = None
+
     #The final price of the holding.
     #Should only be used when all ProducVariationChoices have been added properly
     @property

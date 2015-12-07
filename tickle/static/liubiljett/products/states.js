@@ -20,6 +20,20 @@ angular.module('liubiljett.products.states', [])
               return SessionService.getCurrentCart()
             }]
         }
+      },
+      {
+        name: 'liubiljett.holding',
+        abstract: true
+      },
+      {
+        name: 'liubiljett.holding.utilize',
+        url: 'utilize/',
+        views: {
+          'main@': {
+            templateUrl: StaticFile('liubiljett/products/templates/holding.utilize.main.html'),
+            controller: 'UtilizeController as ctrl'
+          }
+        }
       }
     ].forEach($stateProvider.state)
   }

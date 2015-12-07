@@ -2,11 +2,13 @@ from __future__ import absolute_import, unicode_literals
 
 from rest_framework.generics import UpdateAPIView
 from rest_framework.decorators import detail_route
+from rest_framework.filters import DjangoFilterBackend
 from rest_framework.response import Response
 
 from tickle.common.routers import parent_lookups
 from tickle.common.views import ModelViewSet
-from .filters import CartFilterBackend, HoldingFilterBackend
+from .filters import (CartFilterBackend, HoldingFilterSet,
+                      HoldingPermissionFilterBackend)
 from .models import (Cart, Holding, Product, ProductVariation,
                      ProductVariationChoice)
 from .serializers import (CartSerializer, CartPurchaseSerializer,
@@ -40,8 +42,23 @@ class CartViewSet(ModelViewSet):
 class HoldingViewSet(ModelViewSet):
     queryset = Holding.objects.all()
     serializer_class = HoldingSerializer
-    filter_backends = (HoldingFilterBackend,)
+    filter_backends = (HoldingPermissionFilterBackend, DjangoFilterBackend)
+    filter_class = HoldingFilterSet
     parent_lookups = parent_lookups.HOLDING
+
+    @detail_route(['post', 'patch'])
+    def utilize(self, request, pk=None):
+        instance = self.get_object()
+        instance.utilize()
+        instance.save()
+        return self.retrieve(request, pk=pk)
+
+    @detail_route(['post', 'patch'])
+    def unutilize(self, request, pk=None):
+        instance = self.get_object()
+        instance.unutilize()
+        instance.save()
+        return self.retrieve(request, pk=pk)
 
 
 class ProductViewSet(ModelViewSet):
