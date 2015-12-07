@@ -18,7 +18,7 @@
     </md-button>
   </form>
 </div>
-<div>
+<div style="height:300px"><!-- Workaround for Firefox. fixme! -->
   <md-progress-circular md-mode="indeterminate" ng-if="ctrl.loading"></md-progress-circular>
   <md-card ng-repeat="holding in ctrl.holdings">
     <md-card-content>
