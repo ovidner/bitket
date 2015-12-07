@@ -70,5 +70,21 @@ angular.module('liubiljett.products.models', [])
 
       return cart
     })
+
+    Restangular.extendModel('holdings', function (holding) {
+      holding.utilize = function () {
+        return holding.one('utilize').patch({}).then(function (response) {
+          holding.utilized = response.utilized
+        })
+      }
+
+      holding.unutilize = function () {
+        return holding.one('unutilize').patch({}).then(function (response) {
+          holding.utilized = response.utilized
+        })
+      }
+
+      return holding
+    })
   }
 ])

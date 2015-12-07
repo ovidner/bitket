@@ -118,8 +118,23 @@ class Holding(Model):
     def has_create_permission(request):
         return True
 
+    def _user_is_organizer_admin(self, user):
+        return self.product.main_event.organizer.admins.filter(
+            pk=user.pk).exists()
+
+    def has_object_read_permission(self, request):
+        return (request.user == self.person or
+                request.user == self.cart.person or
+                self._user_is_organizer_admin(request.user))
+
     def has_object_write_permission(self, request):
-        return request.user == self.person and not self.is_purchased
+        return self.has_object_read_permission(request) and not self.is_purchased
+
+    def has_object_utilize_permission(self, request):
+        return self._user_is_organizer_admin(request.user)
+
+    def has_object_unutilize_permission(self, request):
+        return self.has_object_utilize_permission(request)
 
     def has_object_destroy_permission(self, request):
         return self.has_object_write_permission(request)
@@ -154,6 +169,12 @@ class Holding(Model):
             },
             tags=['ticket'])
         msg.send()
+
+    def utilize(self):
+        self.utilized = now()
+
+    def unutilize(self):
+        self.utilized = None
 
     #The final price of the holding.
     #Should only be used when all ProducVariationChoices have been added properly
