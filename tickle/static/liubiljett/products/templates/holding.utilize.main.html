@@ -1,24 +1,24 @@
-<div layout="row" layout-fill>
-  <form ng-submit="ctrl.submit()">
-    <md-input-container flex>
-      <label>LiU-kortnummer</label>
-      <input name="liuCard" ng-model="ctrl.queryParams.liu_card">
-    </md-input-container>
-    <md-input-container flex>
-      <label>LiU-id</label>
-      <input name="liuId" ng-model="ctrl.queryParams.liu_id">
-    </md-input-container>
-    <md-input-container flex>
-      <label>Biljettnummer</label>
-      <input name="holdingId" ng-model="ctrl.queryParams.id">
-    </md-input-container>
-    <md-button class="md-raised" ng-click="ctrl.submit()">
-      <md-icon>search</md-icon>
-      Sök
-    </md-button>
-  </form>
-</div>
-<div style="height:300px"><!-- Workaround for Firefox. fixme! -->
+<div>
+  <div layout="row" layout-fill>
+    <form ng-submit="ctrl.submit()">
+      <md-input-container flex>
+        <label>LiU-kortnummer</label>
+        <input name="liuCard" ng-model="ctrl.queryParams.liu_card">
+      </md-input-container>
+      <md-input-container flex>
+        <label>LiU-id</label>
+        <input name="liuId" ng-model="ctrl.queryParams.liu_id">
+      </md-input-container>
+      <md-input-container flex>
+        <label>Biljettnummer</label>
+        <input name="holdingId" ng-model="ctrl.queryParams.id">
+      </md-input-container>
+      <md-button class="md-raised" ng-click="ctrl.submit()">
+        <md-icon>search</md-icon>
+        Sök
+      </md-button>
+    </form>
+  </div>
   <md-progress-circular md-mode="indeterminate" ng-if="ctrl.loading"></md-progress-circular>
   <md-card ng-repeat="holding in ctrl.holdings">
     <md-card-content>
@@ -33,4 +33,5 @@
       <md-button class="md-raised md-primary" ng-if="!holding.utilized" ng-click="holding.utilize()">Lämna ut</md-button>
     </div>
   </md-card>
+
 </div>
