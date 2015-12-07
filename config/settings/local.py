@@ -24,10 +24,6 @@ DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': lambda x: DEBUG,
 }
 
-# django-extensions
-# ------------------------------------------------------------------------------
-INSTALLED_APPS += ('django_extensions', )
-
 # TESTING
 # ------------------------------------------------------------------------------
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'

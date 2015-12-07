@@ -55,7 +55,8 @@ THIRD_PARTY_APPS = (
     'rest_framework.authtoken',
     'rest_auth',
     'dry_rest_permissions',
-    'raven.contrib.django.raven_compat'
+    'raven.contrib.django.raven_compat',
+    'django_extensions',
     #'allauth',  # registration
     #'allauth.account',  # registration
     #'allauth.socialaccount',  # registration
