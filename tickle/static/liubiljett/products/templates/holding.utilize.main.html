@@ -24,7 +24,7 @@
     <md-card-content>
       <h2 class="md-title">{{holding.product_name}}</h2>
       <p>
-        Biljettnummer: {{holding.id}}<br>
+        Biljettnummer: {{holding.id}}
       </p>
     </md-card-content>
     <div class="md-actions" layout="row" layout-align="end center">
@@ -33,5 +33,4 @@
       <md-button class="md-raised md-primary" ng-if="!holding.utilized" ng-click="holding.utilize()">Lämna ut</md-button>
     </div>
   </md-card>
-
 </div>
