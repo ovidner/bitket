@@ -61,3 +61,4 @@ django-debug-toolbar==1.4.0
 requests==2.8.1
 newrelic
 djrill==2.0
+unicodecsv==0.14.1
