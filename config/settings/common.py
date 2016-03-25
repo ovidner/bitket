@@ -308,7 +308,7 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 SENTRY_CELERY_LOGLEVEL = env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 RAVEN_CONFIG = {
     'dsn': env.str('DJANGO_SENTRY_DSN', 'https://a:b@dummydsn.com/1'),
-    'release': raven.fetch_git_sha((str(ROOT_DIR)),
+    'release': raven.fetch_git_sha(str(ROOT_DIR)),
     'CELERY_LOGLEVEL': env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 }
 
