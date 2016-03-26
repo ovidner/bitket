@@ -25,11 +25,11 @@ RUN groupadd -r django && useradd -r -g django django
 ADD . /app
 RUN chown -R django /app
 
-RUN chmod +x /app/docker/entrypoint.sh /app/docker/gunicorn.sh /app/docker/celery-beat.sh /app/docker/celery-worker.sh
+RUN chmod +x /app/run/django /app/run/celery-beat /app/run/celery-worker /app/run/tests
 
 RUN django-admin compilemessages
 
 USER django
 EXPOSE $GUNICORN_PORT
 
-CMD ["/app/docker/gunicorn.sh"]
+CMD ["/app/run/django"]
