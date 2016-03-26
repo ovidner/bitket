@@ -19,7 +19,7 @@ before_script:
   - sleep 5  # Postgres needs a few seconds to start and Django hard crashes without it
 
 script:
-  - true
+  - docker-compose run tests
 
 after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`

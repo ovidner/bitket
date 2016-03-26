@@ -6,30 +6,30 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=true \
     PYTHONWARNINGS=ignore::DeprecationWarning
 
-ADD ./requirements.apt /requirements.apt
+WORKDIR /app
+
+ADD ./requirements.apt /app/requirements.apt
 
 # See http://askubuntu.com/questions/252734/apt-get-mass-install-packages-from-a-file
 RUN apt-get update && \
-    apt-get install -y $(grep -vE "^\s*#" /requirements.apt  | tr "\n" " ")
+    apt-get install -y $(grep -vE "^\s*#" /app/requirements.apt  | tr "\n" " ")
 
 # Requirements have to be pulled and installed here, otherwise caching won't work
-ADD ./requirements.txt /requirements.txt
-RUN pip install -r /requirements.txt
+ADD ./requirements.txt /app/requirements.txt
+RUN pip install -r /app/requirements.txt
+
+#ADD ./package.json /app/package.json
+#RUN
 
 RUN groupadd -r django && useradd -r -g django django
 ADD . /app
 RUN chown -R django /app
 
-COPY ./docker/gunicorn.sh ./docker/entrypoint.sh ./docker/celery-beat.sh ./docker/celery-worker.sh /
-
-RUN chmod +x /entrypoint.sh /gunicorn.sh /celery-beat.sh /celery-worker.sh && \
-    chown django /entrypoint.sh /gunicorn.sh /celery-beat.sh /celery-worker.sh
-
-WORKDIR /app
+RUN chmod +x /app/docker/entrypoint.sh /app/docker/gunicorn.sh /app/docker/celery-beat.sh /app/docker/celery-worker.sh
 
 RUN django-admin compilemessages
 
 USER django
 EXPOSE $GUNICORN_PORT
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/gunicorn.sh"]
+
+CMD ["/app/docker/gunicorn.sh"]
