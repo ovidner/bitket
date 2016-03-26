@@ -16,8 +16,10 @@ install:
 
 before_script:
   - docker-compose up -d postgres redis
+  - sleep 5  # Postgres needs a few seconds to start and Django hard crashes without it
 
-script: docker-compose run django django-admin test
+script:
+  - docker-compose run django django-admin test -t .
 
 after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
