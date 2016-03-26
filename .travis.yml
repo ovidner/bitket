@@ -1,17 +1,26 @@
 sudo: required
 services:
   - docker
+language: python
 
 env:
   global:
-    - DOCKER_REPO=ovidner/tickle
+    - COMPOSE_FILE=.travis.docker-compose.yml
     - COMMIT=${TRAVIS_COMMIT::7}
 
 before_install:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker build -t $DOCKER_REPO:$COMMIT .
+  - docker build -t $DOCKER_REPO:latest .
+  - echo $TRAVIS_TAG
+
+before_script:
+  - docker-compose up -d postgres redis
+
+script: docker-compose run django django-admin test
 
 after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-  - docker tag $DOCKER_REPO:$COMMIT $DOCKER_REPO:$TAG
-  - docker push $DOCKER_REPO
+  - docker tag $DOCKER_REPO:latest $DOCKER_REPO:$COMMIT
+  - docker tag $DOCKER_REPO:latest $DOCKER_REPO:$TAG
+  - docker push $DOCKER_REPO:$COMMIT
+  - docker push $DOCKER_REPO:$TAG
