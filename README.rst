@@ -1,5 +1,7 @@
 Tickle
 ==============================
+.. image:: https://travis-ci.com/ovidner/tickle.svg?token=cCwREForVWqyNkxrZsKE&branch=master
+    :target: https://travis-ci.com/ovidner/tickle
 
 A ticket platform for Linköping University
 
