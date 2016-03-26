@@ -10,8 +10,10 @@ env:
 
 before_install:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+
+install:
+  - docker pull $DOCKER_REPO:latest  # We assume at least some layers can be saved with this
   - docker build -t $DOCKER_REPO:latest .
-  - echo $TRAVIS_TAG
 
 before_script:
   - docker-compose up -d postgres redis
