@@ -5,8 +5,9 @@ Tickle
 
 A ticket platform for Linköping University
 
+LICENSE: MIT
 
-LICENSE: BSD
+**Please note that this documentation is largely outdated.**
 
 Settings
 ------------
