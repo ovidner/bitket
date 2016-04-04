@@ -20,11 +20,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='transaction',
             name='cart',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='products.Cart', verbose_name='cart'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='products.Cart', verbose_name='cart'),
         ),
         migrations.AddField(
             model_name='transaction',
             name='organizer',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='organizers.Organizer', verbose_name='organizer'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='organizers.Organizer', verbose_name='organizer'),
         ),
     ]

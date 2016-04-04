@@ -59,7 +59,7 @@ class Cart(Model):
             raise exceptions.EventProductLimitExceeded()
         self.purchased = now()
         self.save()
-        self.holdings.charge(self.person, stripe_token)
+        self.holdings.charge(self, stripe_token)
         self.holdings.email_ticket()
 
 

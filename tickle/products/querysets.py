@@ -67,7 +67,9 @@ class HoldingQuerySet(models.QuerySet):
                 ignore_limits=ignore_limits,
                 modify_history_allowed=modify_history_allowed)
 
-    def charge(self, person, stripe_token):
+    def charge(self, cart, stripe_token):
+        person = cart.person
+
         stripe_customer = stripe.Customer.create(
             source=stripe_token,
             description=person.get_full_name(),
@@ -79,15 +81,25 @@ class HoldingQuerySet(models.QuerySet):
             for organizer in self.products().events().organizers():
                 charge_amount = self.organized_by(organizer).purchased_total_cost()
 
-                charge = stripe.Charge.create(
+                stripe_organizer_person_token = stripe.Token.create(
                     customer=stripe_customer,
-                    amount=int(charge_amount*100), #Convert price from kr to ore.
+                    stripe_account=organizer.stripe_account_id
+                )
+
+                charge = stripe.Charge.create(
+                    source=stripe_organizer_person_token,
+                    amount=int(charge_amount*100),  # Convert price from kr to ore.
                     currency=settings.CURRENCY,
-                    destination=organizer.stripe_account_id
+                    stripe_account=organizer.stripe_account_id
                 )
                 if charge.status == "succeeded":
                     completed_charges.append(charge)
-                    Transaction.objects.create(amount=charge_amount, stripe_charge=charge.id)
+                    Transaction.objects.create(
+                        amount=charge_amount,
+                        stripe_charge=charge.id,
+                        organizer=organizer,
+                        cart=cart
+                    )
         except stripe.error.CardError as e:
             # The payment to the current organizer has failed.
             # Roll back the database transaction.

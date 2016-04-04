@@ -21,14 +21,11 @@ class Transaction(Model):
         verbose_name=_('Stripe charge'))
     cart = models.ForeignKey(
         'products.Cart',
-        null=True,  # todo: remove this
         verbose_name=_('cart'))
     organizer = models.ForeignKey(
         'organizers.Organizer',
-        null=True,  # todo: remove this
         verbose_name=_('organizer'))
 
     class Meta:
         verbose_name = _('transaction')
         verbose_name_plural = _('transactions')
-
