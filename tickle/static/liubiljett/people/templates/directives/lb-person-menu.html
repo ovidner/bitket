@@ -13,7 +13,7 @@
   <md-icon class="md-avatar-icon">power_settings_new</md-icon>
   <p>Logga ut</p>
 </md-list-item>
-<md-list-item ng-if="!person" ui-sref="liubiljett.auth.login.liu">
+<md-list-item ng-if="!person" ng-click="openLoginDialog()">
   <md-icon class="md-avatar-icon">power_settings_new</md-icon>
-  <p>Logga in (LiU-student)</p>
+  <p>Logga in/Skapa konto</p>
 </md-list-item>

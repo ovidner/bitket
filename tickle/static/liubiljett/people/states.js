@@ -34,6 +34,15 @@ angular.module('liubiljett.people.states', [])
         ]
       },
       {
+        name: 'liubiljett.auth.login.facebook',
+        url: 'auth/facebook/login/',
+        onEnter: ['redirectUrl',
+          function (redirectUrl) {
+            window.location = '/auth/facebook/login/?next=' + redirectUrl
+          }
+        ]
+      },
+      {
         name: 'liubiljett.auth.logout',
         url: 'logout/',
         onEnter: ['redirectUrl',

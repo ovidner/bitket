@@ -40,6 +40,7 @@ DJANGO_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     # Useful template tags:
     # 'django.contrib.humanize',
@@ -52,13 +53,16 @@ THIRD_PARTY_APPS = (
     'gunicorn',
     'rest_framework',
     'rest_framework.authtoken',
+
     'rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+
     'dry_rest_permissions',
     'raven.contrib.django.raven_compat',
     'django_extensions',
-    #'allauth',  # registration
-    #'allauth.account',  # registration
-    #'allauth.socialaccount',  # registration
     'opbeat.contrib.django',
 )
 
@@ -282,18 +286,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
     'tickle.people.saml.backends.LiuAdfsBackend',
 )
 
 # Some really nice defaults
+ACCOUNT_ADAPTER = 'tickle.people.adapters.AccountAdapter'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
+SOCIALACCOUNT_ADAPTER = 'tickle.people.adapters.SocialAccountAdapter'
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+SOCIALACCOUNT_QUERY_EMAIL = True
 
 # Custom user app defaults
 # Select the correct user model
 AUTH_USER_MODEL = 'people.Person'
-#LOGIN_REDIRECT_URL = 'users:redirect'
+LOGIN_REDIRECT_URL = 'client:home'
 #LOGIN_URL = 'account_login'
 
 REST_FRAMEWORK = {

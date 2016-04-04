@@ -27,7 +27,7 @@ django-model-utils==2.4
 
 # For user registration, either via email or social
 # Well-built with regular release cycles!
-# django-allauth==0.23.0
+django-allauth==0.25.2
 
 # For the persistence stores
 psycopg2==2.6.1

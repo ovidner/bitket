@@ -183,11 +183,6 @@ class Person(PidMixin, PasswordFieldMixin, AbstractBaseUser, PermissionsMixin,
         return self.get_full_name()
 
     @staticmethod
-    @unauthenticated_users
-    def has_create_permission(request):
-        return True
-
-    @staticmethod
     @authenticated_users
     def has_current_permission(request):
         return True

@@ -13,7 +13,6 @@ from tickle.organizers.views import (StripeConnectCallbackView,
 from tickle.common.routers import urlpatterns as api_router_urlpatterns
 
 api_urlpatterns = [
-    url(r'^auth/', include('rest_auth.urls')),
     url(r'^', include(api_router_urlpatterns))
 ]
 
@@ -25,6 +24,7 @@ client_urlpatterns = [
 
 urlpatterns = [
     url(r'^api/', include(api_urlpatterns)),
+    url(r'^auth/', include('allauth.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^stripe/connect/(?P<organizer>[\w-]+)/$', StripeConnectRequestView.as_view()),
