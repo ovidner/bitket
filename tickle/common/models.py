@@ -1,12 +1,21 @@
 from __future__ import absolute_import, unicode_literals
 
+import uuid
+
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from dry_rest_permissions.generics import (authenticated_users,
                                            allow_staff_or_superuser)
 
 
 class Model(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        verbose_name=_('ID'))
+
     class Meta:
         abstract = True
 
