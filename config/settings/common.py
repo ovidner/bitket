@@ -146,8 +146,8 @@ MAILGUN_SERVER_NAME = env.str('MAILGUN_SERVER_NAME', '')
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = [("""Tickle Admin""", address)
-          for address in env('DJANGO_ADMINS', list, [])]
+ADMINS = [("""liubiljett.se admin""", address)
+          for address in env('DJANGO_ADMINS', list, ['admin@liubiljett.se'])]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS

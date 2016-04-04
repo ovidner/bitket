@@ -4,14 +4,15 @@ logger = logging.getLogger(__name__)
 
 from decimal import Decimal
 
+from django.contrib.sites.models import Site
 from django.db import models
-from django.db import transaction as db_transaction
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+
 from dry_rest_permissions.generics import allow_staff_or_superuser
+from templated_email import send_templated_mail
 
 from tickle.common import exceptions
 from tickle.common.db.fields import MoneyField, NameField, SlugField, DescriptionField
@@ -19,7 +20,6 @@ from tickle.common.behaviors import NameMixin, NameSlugMixin, NameSlugDescriptio
 from tickle.modifiers.models import HoldingModifier
 from tickle.payments.models import Transaction
 from tickle.common.models import Model
-from tickle.common.utils.email import TemplatedEmail
 from tickle.organizers.models import Organizer
 from .exceptions import ConflictingProductVariationChoices, ExceedsLimit
 from .querysets import ProductQuerySet, HoldingQuerySet, CartQuerySet
@@ -160,15 +160,15 @@ class Holding(Model):
             count__gt=1).exists()
 
     def email_ticket(self):
-        msg = TemplatedEmail(
-            to=[self.person.pretty_email],
-            subject_template='email/litheblas-mail.subject.txt',
-            body_template_html='email/litheblas-mail.body.txt',
+        send_templated_mail(
+            template_name='holding',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[self.person.pretty_email],
             context={
+                'domain': Site.objects.get_current().domain,
                 'holding': self,
-            },
-            tags=['ticket'])
-        msg.send()
+            }
+        )
 
     def utilize(self):
         self.utilized = now()

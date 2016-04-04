@@ -1,1 +1,0 @@
-Biljett nr. {{ holding.pk }}

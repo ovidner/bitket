@@ -62,6 +62,7 @@ requests==2.8.1
 unicodecsv==0.14.1
 
 # Email
+git+https://github.com/BradWhittington/django-templated-email.git@eb0f6936fcd38b10c13496a09ad7f409e19c5729#egg=django_templated_email-master
 django-mailgun==0.8.0
 
 # Error reporting and performance monitoring
