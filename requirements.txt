@@ -2,7 +2,7 @@
 django==1.9.4
 
 django-localflavor==1.2
-git+https://github.com/ovidner/django-saml-service-provider.git@71bce932726ed932e9616594bfe744e072c6a16a#egg=django_saml_service_provider-master
+git+https://github.com/ovidner/django-saml-service-provider.git@4712d124d42e306f5a0383dcb7332607ae910b79#egg=django_saml_service_provider-master
 
 # REST Framework
 djangorestframework==3.3.3
