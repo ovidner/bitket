@@ -4,6 +4,7 @@ logger = logging.getLogger(__name__)
 
 from django.utils.translation import ugettext_lazy as _
 
+from dry_rest_permissions.generics import DRYPermissionsField
 from rest_framework import serializers
 import stripe
 
@@ -18,6 +19,7 @@ from .models import Cart, Holding, Product, ProductVariation, ProductVariationCh
 class HoldingSerializer(HyperlinkedModelSerializer):
     price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     product_name = serializers.SerializerMethodField()
+    permissions = DRYPermissionsField(actions=['utilize', 'unutilize'])
 
     class Meta:
         model = Holding
@@ -33,6 +35,7 @@ class HoldingSerializer(HyperlinkedModelSerializer):
             'price',
             'purchase_price',
             'utilized',
+            'permissions',
         ]
         extra_kwargs = {
             'product': {
