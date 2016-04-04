@@ -7,7 +7,7 @@ angular.module('liubiljett.events.states', [])
     [
       {
         name: 'liubiljett.organizer',
-        url: '{organizerId}/',
+        url: 'events/{organizerId}/',
         abstract: true
       },
       {
