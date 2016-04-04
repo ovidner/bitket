@@ -133,13 +133,15 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
 EMAIL_BACKEND = env.str('DJANGO_EMAIL_BACKEND',
-                        'djrill.mail.backends.djrill.DjrillBackend')
+                        'django_mailgun.MailgunBackend')
 DEFAULT_FROM_EMAIL = env.str('DJANGO_DEFAULT_FROM_EMAIL',
                              'liubiljett.se <info@liubiljett.se>')
 EMAIL_SUBJECT_PREFIX = env.str('DJANGO_EMAIL_SUBJECT_PREFIX',
                                '[liubiljett.se] ')
 SERVER_EMAIL = env.str('DJANGO_SERVER_EMAIL', DEFAULT_FROM_EMAIL)
-MANDRILL_API_KEY = env.str('MANDRILL_API_KEY', '')
+MAILGUN_ACCESS_KEY = env.str('MAILGUN_ACCESS_KEY', '')
+MAILGUN_SERVER_NAME = env.str('MAILGUN_SERVER_NAME', '')
+
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
