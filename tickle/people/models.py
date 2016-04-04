@@ -22,7 +22,7 @@ from tickle.common.utils.kobra import (KobraClient, StudentNotFound,
 from tickle.conditions.models import Condition
 
 
-class PidMixin(Model):
+class PidMixin(models.Model):
     birth_date = models.DateField(
         null=True,
         blank=True,

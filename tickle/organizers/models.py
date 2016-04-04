@@ -12,7 +12,7 @@ from tickle.common.db.fields import NameField, SlugField
 from tickle.common.models import Model
 
 
-class OrganizerStripeMixin(Model):
+class OrganizerStripeMixin(models.Model):
     stripe_authorized = models.DateTimeField(
         null=True,
         blank=True,
