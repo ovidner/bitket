@@ -4,7 +4,9 @@ from rest_framework.generics import UpdateAPIView
 from rest_framework.decorators import detail_route
 from rest_framework.filters import DjangoFilterBackend
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 
+from tickle.common.renderers import QrRenderer
 from tickle.common.routers import parent_lookups
 from tickle.common.views import ModelViewSet
 from .filters import (CartFilterBackend, HoldingFilterSet,
@@ -45,6 +47,11 @@ class HoldingViewSet(ModelViewSet):
     filter_backends = (HoldingPermissionFilterBackend, DjangoFilterBackend)
     filter_class = HoldingFilterSet
     parent_lookups = parent_lookups.HOLDING
+
+    @detail_route(['get'], renderer_classes=[QrRenderer])
+    def qr(self, request, pk=None):
+        url = reverse('client:holding-detail', kwargs={'pk': pk}, request=request)
+        return Response(url)
 
     @detail_route(['post', 'patch'])
     def utilize(self, request, pk=None):

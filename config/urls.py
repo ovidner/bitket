@@ -19,13 +19,13 @@ api_urlpatterns = [
 
 client_urlpatterns = [
     url(r'^$', ClientView.as_view(), name='home'),
+    url(r'^holdings/(?P<pk>[0-9a-fA-F-]{36})/', ClientView.as_view(), name='holding-detail'),
     url(r'^.*/$', ClientView.as_view())
 ]
 
 urlpatterns = [
     url(r'^api/', include(api_urlpatterns)),
 
-    # Django Admin
     url(r'^admin/', include(admin.site.urls)),
     url(r'^stripe/connect/(?P<organizer>[\w-]+)/$', StripeConnectRequestView.as_view()),
     url(r'^stripe/connect-callback/$', StripeConnectCallbackView.as_view()),
@@ -33,13 +33,7 @@ urlpatterns = [
     url(r'^_saml/', include('tickle.people.saml.urls', namespace='saml')),
     url(r'^logout/$', logout, name='logout'),
 
-    url(r'^', include(client_urlpatterns, namespace='client'))
-    # User management
-    #url(r'^accounts/', include('allauth.urls')),
-
-    # Your stuff: custom urls includes go here
-
-
+    url(r'^', include(client_urlpatterns, namespace='client')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

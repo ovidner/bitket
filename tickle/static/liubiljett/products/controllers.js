@@ -68,6 +68,13 @@ angular.module('liubiljett.products.controllers', [])
   }
 ])
 
+.controller('HoldingDetailController', ['holding',
+  function (holding) {
+    var ctrl = this
+    ctrl.holding = holding
+  }
+])
+
 .controller('ProductController', ['$state', '$mdToast', 'Money', 'SessionService', 'Holding',
   function ($state, $mdToast, Money, SessionService, Holding) {
     var ctrl = this

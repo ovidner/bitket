@@ -66,3 +66,7 @@ django-mailgun==0.8.0
 
 # Error reporting and performance monitoring
 opbeat==3.3
+
+# QR codes
+Pillow==3.2.0
+qrcode==5.2.2

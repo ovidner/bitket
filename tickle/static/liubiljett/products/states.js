@@ -26,6 +26,23 @@ angular.module('liubiljett.products.states', [])
         abstract: true
       },
       {
+        name: 'liubiljett.holding.detail',
+        url: 'holdings/{holdingId}/',
+        views: {
+          'main@': {
+            templateUrl: StaticFile('liubiljett/products/templates/holding.detail.main.html'),
+            controller: 'HoldingDetailController as ctrl'
+          }
+        },
+        resolve: {
+          holding: ['$stateParams', 'Restangular',
+            function ($stateParams, Restangular) {
+              return Restangular.one('holdings', $stateParams.holdingId).get()
+            }
+          ]
+        }
+      },
+      {
         name: 'liubiljett.holding.utilize',
         url: 'utilize/',
         views: {
