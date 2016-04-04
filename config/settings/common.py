@@ -81,10 +81,9 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # MIDDLEWARE CONFIGURATION
 # ------------------------------------------------------------------------------
 MIDDLEWARE_CLASSES = (
-    # Make sure djangosecure.middleware.SecurityMiddleware is listed first
+    'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
     'djangosecure.middleware.SecurityMiddleware',
-    'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',
-    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
+    'opbeat.contrib.django.middleware.Opbeat404CatchMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -312,16 +311,19 @@ RAVEN_CONFIG = {
     'CELERY_LOGLEVEL': env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
 }
 
+OPBEAT = {
+    'ORGANIZATION_ID': env.str('DJANGO_OPBEAT_ORGANIZATION_ID', ''),
+    'APP_ID': env.str('DJANGO_OPBEAT_APP_ID', ''),
+    'SECRET_TOKEN': env.str('DJANGO_OPBEAT_SECRET_TOKEN', ''),
+    'DEBUG': True
+}
+
 # LOGGING CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['console', 'sentry'],
-    },
     'formatters': {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s '
@@ -329,9 +331,9 @@ LOGGING = {
         },
     },
     'handlers': {
-        'sentry': {
+        'opbeat': {
             'level': 'ERROR',
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'class': 'opbeat.contrib.django.handlers.OpbeatHandler',
         },
         'console': {
             'level': 'DEBUG',
@@ -342,17 +344,17 @@ LOGGING = {
     'loggers': {
         'django.db.backends': {
             'level': 'ERROR',
+            'handlers': ['opbeat', 'console'],
+            'propagate': False,
+        },
+        'opbeat.errors': {
+            'level': 'ERROR',
             'handlers': ['console'],
             'propagate': False,
         },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
+        'tickle': {
+            'level': 'WARNING',
+            'handlers': ['opbeat'],
             'propagate': False,
         },
     },

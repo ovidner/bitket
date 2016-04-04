@@ -59,6 +59,8 @@ PyHamcrest==1.8.5
 django-debug-toolbar==1.4.0
 
 requests==2.8.1
-newrelic
 djrill==2.0
 unicodecsv==0.14.1
+
+# Error reporting and performance monitoring
+opbeat==3.3
