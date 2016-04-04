@@ -15,7 +15,12 @@ angular.module('liubiljett.people.states', [])
         resolve: {
           redirectUrl: ['$state',
             function ($state) {
-              return $state.href($state.current.name, $state.current.params)
+              var url = $state.href($state.current.name, $state.current.params)
+              if (url === null) {
+                return '/'
+              } else {
+                return url
+              }
             }
           ]
         }
