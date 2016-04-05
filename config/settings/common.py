@@ -336,6 +336,8 @@ OPBEAT = {
     'DEBUG': True
 }
 
+GOOGLE_ANALYTICS_ID = env.str('GOOGLE_ANALYTICS_ID', '')
+
 # LOGGING CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging

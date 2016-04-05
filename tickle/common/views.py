@@ -17,6 +17,7 @@ class ClientView(TemplateView):
         context = super(ClientView, self).get_context_data(**kwargs)
         context['stripe_public_key'] = settings.STRIPE_PUBLIC_KEY
         context['sentry_release'] = settings.RAVEN_CONFIG['release']
+        context['google_analytics_id'] = settings.GOOGLE_ANALYTICS_ID
         return context
 
 
