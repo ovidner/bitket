@@ -1,5 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
+from uuid import UUID
+
 from django.conf import settings
 from django.core import signing
 from django.core.exceptions import SuspiciousOperation
@@ -11,6 +13,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 from rest_framework.status import HTTP_400_BAD_REQUEST
+from six import text_type
 
 from tickle.common.views import ModelViewSet
 from .models import Organizer
@@ -18,6 +21,10 @@ from .serializers import OrganizerSerializer
 
 
 def sign_state(organizer_pk, session_key):
+    # Casts the UUID object to str
+    if isinstance(organizer_pk, UUID):
+        organizer_pk = text_type(organizer_pk)
+
     return signing.dumps([organizer_pk, session_key])
 
 
