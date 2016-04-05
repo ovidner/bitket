@@ -19,6 +19,7 @@ import stripe
 
 from tickle.people.saml.constants import claims
 
+
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
 APPS_DIR = ROOT_DIR.path('tickle')
 
@@ -52,9 +53,7 @@ THIRD_PARTY_APPS = (
     'djangosecure',
     'gunicorn',
     'rest_framework',
-    'rest_framework.authtoken',
 
-    'rest_auth',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
