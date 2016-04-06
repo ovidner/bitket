@@ -362,6 +362,10 @@ LOGGING = {
             'formatter': 'verbose'
         }
     },
+    'root': {
+        'level': 'ERROR',
+        'handlers': ['opbeat', 'console'],
+    },
     'loggers': {
         'django': {
             'level': 'ERROR',
