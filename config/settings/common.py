@@ -13,6 +13,8 @@ from __future__ import absolute_import, unicode_literals
 import logging
 import os
 
+from django.core.urlresolvers import reverse_lazy
+
 import environ
 import raven
 import stripe
@@ -305,7 +307,7 @@ SOCIALACCOUNT_QUERY_EMAIL = True
 # Custom user app defaults
 # Select the correct user model
 AUTH_USER_MODEL = 'people.Person'
-LOGIN_REDIRECT_URL = 'client:home'
+LOGIN_REDIRECT_URL = reverse_lazy('client:home')
 #LOGIN_URL = 'account_login'
 
 REST_FRAMEWORK = {
