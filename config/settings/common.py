@@ -362,7 +362,7 @@ LOGGING = {
         }
     },
     'loggers': {
-        'django.db.backends': {
+        'django': {
             'level': 'ERROR',
             'handlers': ['opbeat', 'console'],
             'propagate': False,
