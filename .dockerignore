@@ -1,4 +1,0 @@
-# Keep certain git files for release tracking
-.git/
-!.git/HEAD
-!.git/refs/heads/
