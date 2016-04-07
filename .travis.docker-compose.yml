@@ -1,5 +1,5 @@
 tests:
-  image: ovidner/tickle
+  image: quay.io/ovidner/tickle
   links:
     - postgres
     - redis
