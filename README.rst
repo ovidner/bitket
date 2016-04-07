@@ -1,7 +1,10 @@
 Tickle
 ==============================
-.. image:: https://travis-ci.com/ovidner/tickle.svg?token=cCwREForVWqyNkxrZsKE&branch=master
-    :target: https://travis-ci.com/ovidner/tickle
+.. image:: https://travis-ci.org/ovidner/tickle.svg?branch=master
+    :target: https://travis-ci.org/ovidner/tickle
+    
+.. image:: https://quay.io/repository/ovidner/tickle/status
+    :target: https://quay.io/repository/ovidner/tickle
 
 A ticket platform for Linköping University
 
