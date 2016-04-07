@@ -12,7 +12,8 @@ ADD ./requirements.apt /app/requirements.apt
 
 # See http://askubuntu.com/questions/252734/apt-get-mass-install-packages-from-a-file
 RUN apt-get update && \
-    apt-get install -y $(grep -vE "^\s*#" /app/requirements.apt  | tr "\n" " ")
+    apt-get install -y --no-install-recommends $(grep -vE "^\s*#" /app/requirements.apt  | tr "\n" " ") && \
+    rm -rf /var/lib/apt/lists/*
 
 # Requirements have to be pulled and installed here, otherwise caching won't work
 ADD ./requirements.txt /app/requirements.txt
