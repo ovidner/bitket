@@ -1,6 +1,6 @@
 FROM python:2.7
 ENV DEBIAN_FRONTEND=noninteractive \
-    DJANGO_SETTINGS_MODULE=config.settings.default \
+    DJANGO_SETTINGS_MODULE=tickle.settings.production \
     GUNICORN_PORT=8000 \
     PYTHONPATH=/app:$PYTHONPATH \
     PYTHONUNBUFFERED=true \

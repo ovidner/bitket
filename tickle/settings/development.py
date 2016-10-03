@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-Local settings
+from __future__ import absolute_import, unicode_literals
 
-- Add Django Debug Toolbar
-- Add django-extensions as app
-"""
-
-from .common import *  # noqa
+from . import *  # noqa
 
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
