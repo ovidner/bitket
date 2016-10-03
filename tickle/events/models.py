@@ -1,3 +1,5 @@
+from __future__ import absolute_import, unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
@@ -31,7 +33,7 @@ class MainEvent(Model):
 
     organizer = models.ForeignKey(
         'organizers.Organizer',
-        related_name='events',
+        related_name='main_events',
         verbose_name=_('organizer'))
 
     objects = EventQuerySet.as_manager()

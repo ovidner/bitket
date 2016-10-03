@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.contrib import admin
 
 from .models import Product, Holding, Cart, ProductVariation, ProductVariationChoice
-from tickle.modifiers.admin import HoldingModifierInline, ProductModifierInline
+from tickle.modifiers.admin import ModifierInline
 
 
 class ProductVariationChoiceInline(admin.TabularInline):
@@ -15,11 +15,11 @@ class CartAdmin(admin.ModelAdmin):
 
 
 class HoldingAdmin(admin.ModelAdmin):
-    inlines = [HoldingModifierInline]
+    pass
 
 
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductModifierInline]
+    pass
 
 
 class ProductVariationAdmin(admin.ModelAdmin):

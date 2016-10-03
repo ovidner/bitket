@@ -5,8 +5,7 @@ import uuid
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from dry_rest_permissions.generics import (authenticated_users,
-                                           allow_staff_or_superuser)
+from dry_rest_permissions.generics import allow_staff_or_superuser
 
 
 class Model(models.Model):

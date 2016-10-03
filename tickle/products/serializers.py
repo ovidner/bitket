@@ -8,17 +8,14 @@ from dry_rest_permissions.generics import DRYPermissionsField
 from rest_framework import serializers
 import stripe
 
-from tickle.common import exceptions
-from tickle.common.routers import parent_lookups
-from tickle.common.serializers import HyperlinkedModelSerializer, HyperlinkedRelatedField
-from tickle.events.models import MainEvent
-from tickle.modifiers.models import ProductModifier
+from ..common import exceptions
+from ..common.serializers import HyperlinkedModelSerializer
+from ..modifiers.models import Modifier
 from .models import Cart, Holding, Product, ProductVariation, ProductVariationChoice
 
 
 class HoldingSerializer(HyperlinkedModelSerializer):
     price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
-    product_name = serializers.SerializerMethodField()
     permissions = DRYPermissionsField(actions=['utilize', 'unutilize'])
 
     class Meta:
@@ -29,33 +26,20 @@ class HoldingSerializer(HyperlinkedModelSerializer):
             'cart',
             'person',
             'product',
-            'product_name',  # Bluuh! fixme!
             'product_variation_choices',
             'quantity',
             'price',
-            'purchase_price',
             'utilized',
             'permissions',
         ]
         extra_kwargs = {
-            'product': {
-                'lookup_field': 'slug',
-                'parent_lookups': parent_lookups.PRODUCT
-            },
             'product_variation_choices': {
                 'allow_empty': True,
-                'parent_lookups': parent_lookups.PRODUCT_VARIATION_CHOICE
             },
             'utilized': {
                 'read_only': True
             },
-            'purchase_price': {
-                'read_only': True
-            }
         }
-
-    def get_product_name(self, obj):
-        return obj.product.name
 
 
 class CartSerializer(HyperlinkedModelSerializer):
@@ -85,7 +69,7 @@ class CartPurchaseSerializer(serializers.ModelSerializer):
         stripe_token = validated_data.pop('stripe_token')
         try:
             instance.purchase(stripe_token)
-        except stripe.error.StripeError:
+        except stripe.error.StripeError as e:
             logger.warning('', exc_info=True)
             raise exceptions.PaymentDenied()
         return instance
@@ -97,14 +81,11 @@ class ProductVariationChoiceSerializer(HyperlinkedModelSerializer):
         fields = [
             'url',
             'id',
+            'variation',
             'name',
-            'delta_amount'
+            'delta_amount',
+            'order'
         ]
-        extra_kwargs = {
-            'url': {
-                'parent_lookups': parent_lookups.PRODUCT_VARIATION_CHOICE
-            }
-        }
 
 
 class ProductVariationSerializer(HyperlinkedModelSerializer):
@@ -113,12 +94,12 @@ class ProductVariationSerializer(HyperlinkedModelSerializer):
         fields = [
             'url',
             'id',
-            'name'
+            'product',
+            'name',
+            'choices'
         ]
-        extra_kwargs = {
-            'url': {
-                'parent_lookups': parent_lookups.PRODUCT_VARIATION
-            }
+        expandable_fields = {
+            'choices': ('tickle.products.serializers.ProductVariationChoiceSerializer', (), {'many': True})
         }
 
 
@@ -133,18 +114,13 @@ class _ProductVariationSerializer(ProductVariationSerializer):
             'name',
             'choices'
         ]
-        extra_kwargs = {
-            'url': {
-                'parent_lookups': parent_lookups.PRODUCT_VARIATION
-            }
-        }
 
 
 class ProductModifierSerializer(serializers.ModelSerializer):
     condition = serializers.SerializerMethodField()
 
     class Meta:
-        model = ProductModifier
+        model = Modifier
         fields = [
             'condition',
             'delta_amount'
@@ -156,7 +132,6 @@ class ProductModifierSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(HyperlinkedModelSerializer):
     modifiers = serializers.SerializerMethodField()
-    variations = _ProductVariationSerializer(many=True)
     is_available = serializers.SerializerMethodField()
 
     class Meta:
@@ -165,25 +140,24 @@ class ProductSerializer(HyperlinkedModelSerializer):
             'url',
             'slug',
             'name',
+            'main_event',
             'description',
-            'base_price',
+            'price',
             'is_available',
             'personal_limit',
             'modifiers',
             'variations',
         ]
-        extra_kwargs = {
-            'url': {
-                'lookup_field': 'slug',
-                'parent_lookups': parent_lookups.PRODUCT
-            }
+        expandable_fields = {
+            'main_event': ('tickle.events.serializers.MainEventSerializer', (), {}),
+            'variations': ('tickle.products.serializers.ProductVariationSerializer', (), {'many': True})
         }
 
     def get_person(self):
         return self.context['request'].user
 
     def get_modifiers(self, obj):
-        modifiers = obj.product_modifiers.eligible(self.get_person()).select_related('condition')
+        modifiers = obj.modifiers.eligible(self.get_person()).select_related('condition')
         serializer = ProductModifierSerializer(modifiers, read_only=True, many=True)
         return serializer.data
 

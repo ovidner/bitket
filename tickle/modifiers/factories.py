@@ -4,7 +4,7 @@ import factory, factory.fuzzy
 
 from tickle.conditions.factories import ConditionFactory
 from tickle.products.factories import HoldingFactory, ProductFactory
-from .models import ProductModifier, HoldingModifier
+from .models import Modifier, HoldingModifier
 
 
 class ProductModifierFactory(factory.DjangoModelFactory):
@@ -16,7 +16,7 @@ class ProductModifierFactory(factory.DjangoModelFactory):
     order = factory.Sequence(lambda x: x)
 
     class Meta:
-        model = ProductModifier
+        model = Modifier
 
 
 class HoldingModifierFactory(factory.DjangoModelFactory):

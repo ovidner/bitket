@@ -109,4 +109,3 @@ class StripeConnectCallbackView(StripeConnectPermissionMixin,
 class OrganizerViewSet(ModelViewSet):
     queryset = Organizer.objects.all()
     serializer_class = OrganizerSerializer
-    lookup_field = 'slug'

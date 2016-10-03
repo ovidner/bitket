@@ -11,6 +11,7 @@ from tickle.common.views import ClientView
 from tickle.organizers.views import (StripeConnectCallbackView,
                                      StripeConnectRequestView)
 from tickle.common.routers import urlpatterns as api_router_urlpatterns
+from tickle.people.views import FacebookLoginView
 
 api_urlpatterns = [
     url(r'^', include(api_router_urlpatterns))
@@ -18,7 +19,7 @@ api_urlpatterns = [
 
 client_urlpatterns = [
     url(r'^$', ClientView.as_view(), name='home'),
-    url(r'^holdings/(?P<pk>[0-9a-fA-F-]{36})/', ClientView.as_view(), name='holding-detail'),
+    url(r'^holdings/(?P<pk>[0-9a-fA-F-]{36})/$', ClientView.as_view(), name='holding-detail'),
     url(r'^.*/$', ClientView.as_view())
 ]
 

@@ -1,6 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 
-from rest_framework.generics import UpdateAPIView
 from rest_framework.decorators import detail_route
 from rest_framework.filters import DjangoFilterBackend
 from rest_framework.response import Response
@@ -71,17 +70,13 @@ class HoldingViewSet(ModelViewSet):
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.published()
     serializer_class = ProductSerializer
-    lookup_field = 'slug'
-    parent_lookups = parent_lookups.PRODUCT
 
 
 class ProductVariationViewSet(ModelViewSet):
     queryset = ProductVariation.objects.all()
     serializer_class = ProductVariationSerializer
-    parent_lookups = parent_lookups.PRODUCT_VARIATION
 
 
 class ProductVariationChoiceViewSet(ModelViewSet):
     queryset = ProductVariationChoice.objects.all()
     serializer_class = ProductVariationChoiceSerializer
-    parent_lookups = parent_lookups.PRODUCT_VARIATION_CHOICE

@@ -7,7 +7,7 @@ from dry_rest_permissions.generics import (DRYPermissions,
                                            DRYGlobalPermissions,
                                            DRYObjectPermissions)
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework_expandable import ExpandableViewMixin
 
 
 class ClientView(TemplateView):
@@ -21,7 +21,7 @@ class ClientView(TemplateView):
         return context
 
 
-class ModelViewSet(viewsets.ModelViewSet):
+class ModelViewSet(ExpandableViewMixin, viewsets.ModelViewSet):
     parent_lookups = {}
     permission_classes = (DRYPermissions,)
 

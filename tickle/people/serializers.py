@@ -9,11 +9,6 @@ from .models import Person, StudentUnion
 
 
 class PersonSerializer(HyperlinkedModelSerializer):
-    password = serializers.CharField(write_only=True, required=False)
-    default_cart = HyperlinkedRelatedField(
-        read_only=True,
-        view_name='cart-detail')
-
     class Meta:
         model = Person
         fields = [
@@ -25,13 +20,9 @@ class PersonSerializer(HyperlinkedModelSerializer):
             'liu_id',
             'liu_card_rfid',
             'student_union',
-            'password',
             'email',
-            'default_cart'
+            'carts'
         ]
-        extra_kwargs = {
-            'student_union': {'lookup_field': 'slug'}
-        }
 
 
 class StudentUnionSerializer(HyperlinkedModelSerializer):
@@ -39,11 +30,7 @@ class StudentUnionSerializer(HyperlinkedModelSerializer):
         model = StudentUnion
         fields = [
             'url',
+            'id',
             'slug',
             'name'
         ]
-        extra_kwargs = {
-            'url': {
-                'lookup_field': 'slug'
-            }
-        }

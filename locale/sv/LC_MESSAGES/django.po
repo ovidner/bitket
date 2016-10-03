@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-03 15:31+0100\n"
+"POT-Creation-Date: 2016-04-28 12:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: tickle/common/behaviors.py:29 tickle/products/models.py:266
+#: rest_framework_expandable/exceptions.py:10
+msgid "Some of the fields supplied does not allow expansion."
+msgstr ""
+
+#: rest_framework_expandable/serializers.py:41
+msgid "This endpoint does not allow field expansion."
+msgstr ""
+
+#: rest_framework_expandable/serializers.py:46
+#, python-brace-format
+msgid "The field {0} does not allow expansion."
+msgstr ""
+
+#: tickle/common/behaviors.py:29 tickle/products/models.py:339
 msgid "order"
 msgstr ""
 
@@ -26,7 +39,7 @@ msgstr ""
 msgid "description"
 msgstr ""
 
-#: tickle/common/db/fields.py:35 tickle/people/models.py:290
+#: tickle/common/db/fields.py:35 tickle/people/models.py:285
 msgid "name"
 msgstr ""
 
@@ -45,6 +58,22 @@ msgstr ""
 #: tickle/common/exceptions.py:19
 msgid "The payment was denied."
 msgstr "Betalningen nekades."
+
+#: tickle/common/exceptions.py:24
+msgid "Exceeding event quantity limit."
+msgstr ""
+
+#: tickle/common/exceptions.py:29
+msgid "Exceeding personal quantity limit."
+msgstr ""
+
+#: tickle/common/exceptions.py:34
+msgid "Exceeding total quantity limit."
+msgstr ""
+
+#: tickle/common/exceptions.py:39
+msgid "Modifies history."
+msgstr ""
 
 #: tickle/common/fields.py:79
 msgid "Enter a valid Swedish personal identity number or YYMMDD-0000."
@@ -70,6 +99,10 @@ msgstr ""
 msgid "Student LiU IDs are not allowed."
 msgstr ""
 
+#: tickle/common/models.py:16
+msgid "ID"
+msgstr ""
+
 #: tickle/conditions/models.py:16
 msgid "active"
 msgstr ""
@@ -83,7 +116,7 @@ msgstr ""
 msgid "Condition"
 msgstr ""
 
-#: tickle/conditions/models.py:25 tickle/modifiers/models.py:34
+#: tickle/conditions/models.py:25 tickle/modifiers/models.py:32
 msgid "condition"
 msgstr ""
 
@@ -92,7 +125,7 @@ msgid "conditions"
 msgstr ""
 
 #: tickle/conditions/models.py:43 tickle/people/models.py:146
-#: tickle/people/models.py:307
+#: tickle/people/models.py:302
 msgid "student union"
 msgstr "studentkår"
 
@@ -108,49 +141,33 @@ msgstr ""
 msgid "student union member conditions"
 msgstr ""
 
-#: tickle/events/models.py:35
+#: tickle/events/models.py:37
 msgid "organizer"
 msgstr "arrangör"
 
-#: tickle/events/models.py:46
+#: tickle/events/models.py:48
 msgid "event"
 msgstr ""
 
-#: tickle/events/models.py:47
+#: tickle/events/models.py:49
 msgid "events"
 msgstr ""
 
-#: tickle/modifiers/models.py:38 tickle/products/models.py:70
-#: tickle/products/models.py:227 tickle/products/models.py:250
-msgid "product"
-msgstr ""
-
-#: tickle/modifiers/models.py:41 tickle/products/models.py:269
+#: tickle/modifiers/models.py:35 tickle/products/models.py:342
 msgid "delta (amount)"
 msgstr ""
 
-#: tickle/modifiers/models.py:42 tickle/products/models.py:270
+#: tickle/modifiers/models.py:36 tickle/products/models.py:343
 msgid "For discount, enter a negative value."
 msgstr ""
 
-#: tickle/modifiers/models.py:51 tickle/modifiers/models.py:66
-msgid "product modifier"
+#: tickle/modifiers/models.py:41
+msgid "modifier"
 msgstr ""
 
-#: tickle/modifiers/models.py:52
-msgid "product modifiers"
-msgstr ""
-
-#: tickle/modifiers/models.py:70 tickle/products/models.py:97
-msgid "holding"
-msgstr ""
-
-#: tickle/modifiers/models.py:77
-msgid "holding modifier"
-msgstr ""
-
-#: tickle/modifiers/models.py:78
-msgid "holding modifiers"
+#: tickle/modifiers/models.py:42 tickle/products/models.py:47
+#: tickle/products/models.py:269
+msgid "modifiers"
 msgstr ""
 
 #: tickle/organizers/forms.py:15
@@ -169,51 +186,55 @@ msgstr ""
 msgid "Invalid request signature."
 msgstr ""
 
-#: tickle/organizers/models.py:20
+#: tickle/organizers/models.py:19
 msgid "Stripe authorization timestamp"
 msgstr ""
 
-#: tickle/organizers/models.py:24
+#: tickle/organizers/models.py:22
 msgid "Stripe live mode"
 msgstr ""
 
-#: tickle/organizers/models.py:29
+#: tickle/organizers/models.py:26
 msgid "Stripe account ID"
 msgstr ""
 
-#: tickle/organizers/models.py:34
+#: tickle/organizers/models.py:30
 msgid "Stripe refresh token"
 msgstr ""
 
-#: tickle/organizers/models.py:38
+#: tickle/organizers/models.py:34
 msgid "Stripe public key"
 msgstr ""
 
-#: tickle/organizers/models.py:42
+#: tickle/organizers/models.py:38
 msgid "Stripe secret key"
 msgstr ""
 
-#: tickle/organizers/models.py:45
+#: tickle/organizers/models.py:41
 msgid "Stripe read only access"
 msgstr ""
 
-#: tickle/organizers/models.py:51
+#: tickle/organizers/models.py:47
 msgid "Can manage Stripe for organizer"
 msgstr ""
 
-#: tickle/organizers/views.py:71
+#: tickle/organizers/models.py:80
+msgid "admins"
+msgstr ""
+
+#: tickle/organizers/views.py:78
 msgid "Invalid or expired request signature. Cannot connect account."
 msgstr ""
 
-#: tickle/organizers/views.py:76
+#: tickle/organizers/views.py:83
 msgid "Invalid session key in request. Cannot connect account."
 msgstr ""
 
-#: tickle/organizers/views.py:82
+#: tickle/organizers/views.py:89
 msgid "Cannot find organizer."
 msgstr ""
 
-#: tickle/organizers/views.py:92
+#: tickle/organizers/views.py:99
 msgid "Required parameters missing from request."
 msgstr ""
 
@@ -253,7 +274,7 @@ msgstr ""
 msgid "email address"
 msgstr ""
 
-#: tickle/people/models.py:156 tickle/people/models.py:295
+#: tickle/people/models.py:156 tickle/people/models.py:290
 msgid "special nutrition"
 msgstr ""
 
@@ -269,8 +290,8 @@ msgstr ""
 msgid "is staff"
 msgstr ""
 
-#: tickle/people/models.py:179 tickle/products/models.py:32
-#: tickle/products/models.py:66
+#: tickle/people/models.py:179 tickle/products/models.py:33
+#: tickle/products/models.py:132
 msgid "person"
 msgstr ""
 
@@ -278,99 +299,100 @@ msgstr ""
 msgid "people"
 msgstr ""
 
-#: tickle/people/models.py:296
+#: tickle/people/models.py:291
 msgid "special nutritions"
 msgstr ""
 
-#: tickle/people/models.py:308
+#: tickle/people/models.py:303
 msgid "student unions"
 msgstr "studentkårer"
 
-#: tickle/products/models.py:36
-msgid "purchased"
-msgstr ""
-
-#: tickle/products/models.py:41 tickle/products/models.py:82
-msgid "cart"
-msgstr ""
-
-#: tickle/products/models.py:42
-msgid "carts"
-msgstr ""
-
-#: tickle/products/models.py:74 tickle/products/models.py:282
-msgid "product variation choices"
-msgstr ""
-
-#: tickle/products/models.py:77
-msgid "quantity"
-msgstr ""
-
-#: tickle/products/models.py:87
-msgid "utilized"
-msgstr ""
-
-#: tickle/products/models.py:92
-msgid "purchase price"
-msgstr ""
-
-#: tickle/products/models.py:98
-msgid "holdings"
-msgstr ""
-
-#: tickle/products/models.py:107
-msgid "Holding has conflicting product variation choices."
-msgstr ""
-
-#: tickle/products/models.py:112
-msgid "This will change history of purchased objects. Denied."
-msgstr ""
-
-#: tickle/products/models.py:194
+#: tickle/products/models.py:37 tickle/products/models.py:262
 msgid "main event"
 msgstr ""
 
-#: tickle/products/models.py:197
-msgid "base price"
+#: tickle/products/models.py:41
+msgid "purchased"
 msgstr ""
 
-#: tickle/products/models.py:201
+#: tickle/products/models.py:52 tickle/products/models.py:148
+msgid "cart"
+msgstr ""
+
+#: tickle/products/models.py:53
+msgid "carts"
+msgstr ""
+
+#: tickle/products/models.py:136 tickle/products/models.py:299
+#: tickle/products/models.py:318
+msgid "product"
+msgstr ""
+
+#: tickle/products/models.py:140 tickle/products/models.py:357
+msgid "product variation choices"
+msgstr ""
+
+#: tickle/products/models.py:143
+msgid "quantity"
+msgstr ""
+
+#: tickle/products/models.py:153
+msgid "utilized"
+msgstr ""
+
+#: tickle/products/models.py:158
+msgid "holding"
+msgstr ""
+
+#: tickle/products/models.py:159
+msgid "holdings"
+msgstr ""
+
+#: tickle/products/models.py:168
+msgid "Holding has conflicting product variation choices."
+msgstr ""
+
+#: tickle/products/models.py:265
+msgid "price"
+msgstr ""
+
+#: tickle/products/models.py:273
 msgid "published"
 msgstr ""
 
-#: tickle/products/models.py:206
+#: tickle/products/models.py:278
 msgid "personal limit"
 msgstr ""
 
-#: tickle/products/models.py:207 tickle/products/models.py:212
+#: tickle/products/models.py:279 tickle/products/models.py:284
 msgid "Blank means no limit."
 msgstr ""
 
-#: tickle/products/models.py:211
+#: tickle/products/models.py:283
 msgid "total limit"
 msgstr ""
 
-#: tickle/products/models.py:215
+#: tickle/products/models.py:287
 msgid "transferable"
 msgstr ""
 
-#: tickle/products/models.py:216
+#: tickle/products/models.py:288
 msgid "If people should be able to transfer this product to other people."
 msgstr ""
 
-#: tickle/products/models.py:228
+#: tickle/products/models.py:300
 msgid "products"
 msgstr ""
 
-#: tickle/products/models.py:257 tickle/products/models.py:274
+#: tickle/products/models.py:325 tickle/products/models.py:347
 msgid "product variation"
 msgstr ""
 
-#: tickle/products/models.py:258
+#: tickle/products/models.py:326
 msgid "product variations"
 msgstr ""
 
-#: tickle/products/models.py:281
+#: tickle/products/models.py:356
 msgid "product variation choice"
 msgstr ""
 
@@ -560,16 +582,16 @@ msgstr ""
 msgid "Set Password"
 msgstr ""
 
-#: tickle/templates/account/signup.html:7
+#: tickle/templates/account/signup.html:6
 msgid "Signup"
 msgstr ""
 
-#: tickle/templates/account/signup.html:14
-#: tickle/templates/account/signup.html:24
+#: tickle/templates/account/signup.html:13
+#: tickle/templates/account/signup.html:23
 msgid "Sign Up"
 msgstr ""
 
-#: tickle/templates/account/signup.html:16
+#: tickle/templates/account/signup.html:15
 #, python-format
 msgid ""
 "Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>."

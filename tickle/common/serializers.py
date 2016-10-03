@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from rest_framework import serializers
+from rest_framework_expandable import ExpandableSerializerMixin
 
 from tickle.common.utils.general import get_double_underscore_attr
 
@@ -60,6 +61,6 @@ class HyperlinkedIdentityField(HyperlinkedRelatedField):
         super(HyperlinkedIdentityField, self).__init__(view_name, **kwargs)
 
 
-class HyperlinkedModelSerializer(serializers.HyperlinkedModelSerializer):
+class HyperlinkedModelSerializer(ExpandableSerializerMixin, serializers.HyperlinkedModelSerializer):
     serializer_url_field = HyperlinkedIdentityField
     serializer_related_field = HyperlinkedRelatedField

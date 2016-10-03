@@ -9,5 +9,3 @@ from .serializers import MainEventSerializer
 class MainEventViewSet(ModelViewSet):
     queryset = MainEvent.objects.all()
     serializer_class = MainEventSerializer
-    lookup_field = 'slug'
-    parent_lookups = parent_lookups.MAIN_EVENT

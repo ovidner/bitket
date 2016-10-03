@@ -1,6 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from dry_rest_permissions.generics import DRYPermissionFiltersBase
+from rest_auth.registration.views import SocialLoginView
 from rest_framework.status import HTTP_401_UNAUTHORIZED
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -9,6 +11,10 @@ from rest_framework.decorators import list_route
 from tickle.common.views import ModelViewSet
 from .models import Person, StudentUnion
 from .serializers import PersonSerializer, StudentUnionSerializer
+
+
+class FacebookLoginView(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
 
 
 class PersonFilterBackend(DRYPermissionFiltersBase):

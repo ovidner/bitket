@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
-from tickle.common.serializers import HyperlinkedModelSerializer
+from ..common.serializers import HyperlinkedModelSerializer
 from .models import Organizer
 
 
@@ -10,8 +10,9 @@ class OrganizerSerializer(HyperlinkedModelSerializer):
         fields = [
             'url',
             'name',
-            'slug'
+            'slug',
+            'main_events'
         ]
-        extra_kwargs = {
-            'url': {'lookup_field': 'slug'}
+        expandable_fields = {
+            'main_events': ('tickle.events.serializers.MainEventSerializer', (), {'many': True})
         }

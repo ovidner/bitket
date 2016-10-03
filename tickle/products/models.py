@@ -10,17 +10,17 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.db.utils import IntegrityError
 
 from dry_rest_permissions.generics import allow_staff_or_superuser
 from templated_email import send_templated_mail
 
-from tickle.common import exceptions
-from tickle.common.db.fields import MoneyField, NameField, SlugField, DescriptionField
-from tickle.common.behaviors import NameMixin, NameSlugMixin, NameSlugDescriptionMixin
-from tickle.modifiers.models import HoldingModifier
-from tickle.payments.models import Transaction
-from tickle.common.models import Model
-from tickle.organizers.models import Organizer
+from ..common import exceptions
+from ..common.db.fields import MoneyField, NameField, SlugField, DescriptionField
+from ..common.behaviors import NameMixin, NameSlugMixin, NameSlugDescriptionMixin
+from ..common.models import Model
+from ..organizers.models import Organizer
+from ..payments.models import Transaction
 from .exceptions import ConflictingProductVariationChoices, ExceedsLimit
 from .querysets import ProductQuerySet, HoldingQuerySet, CartQuerySet
 
@@ -31,10 +31,20 @@ class Cart(Model):
         'people.Person',
         related_name='carts',
         verbose_name=_('person'))
+    main_event = models.ForeignKey(
+        'events.MainEvent',
+        related_name='carts',
+        verbose_name=_('main event'))
     purchased = models.DateTimeField(
         null=True,
         blank=True,
         verbose_name=_('purchased'))
+
+    modifiers = models.ManyToManyField(
+        'modifiers.Modifier',
+        related_name='carts',
+        blank=True,
+        verbose_name=_('modifiers'))
 
     objects = CartQuerySet.as_manager()
 
@@ -45,6 +55,13 @@ class Cart(Model):
     def __str__(self):
         return '{}'.format(self.person)
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.modifiers and not self.purchased:
+            raise IntegrityError
+
+        super(Cart, self).save(force_insert, force_update, using, update_fields)
+
     @allow_staff_or_superuser
     def has_object_read_permission(self, request):
         return request.user == self.person
@@ -53,13 +70,57 @@ class Cart(Model):
         return request.user == self.person and not self.purchased
 
     def purchase(self, stripe_token):
+        def charge(self, cart, stripe_token):
+            person = cart.person
+
+            stripe_customer = stripe.Customer.create(
+                source=stripe_token,
+                description=person.get_full_name(),
+                email=person.email,
+                metadata={'liubiljett_person_id': person.pk}
+            )
+            try:
+                    charge_amount = self.organized_by(organizer).purchased_total_cost()
+
+                    stripe_organizer_person_token = stripe.Token.create(
+                        customer=stripe_customer,
+                        stripe_account=organizer.stripe_account_id
+                    )
+
+                    charge = stripe.Charge.create(
+                        source=stripe_organizer_person_token,
+                        amount=int(charge_amount*100),  # Convert price from kr to ore.
+                        currency=settings.CURRENCY,
+                        stripe_account=organizer.stripe_account_id
+                    )
+                    if charge.status == "succeeded":
+                        completed_charges.append(charge)
+                        Transaction.objects.create(
+                            amount=charge_amount,
+                            stripe_charge=charge.id,
+                            organizer=organizer,
+                            cart=cart
+                        )
+            except stripe.error.CardError as e:
+                # The payment to the current organizer has failed.
+                # Roll back the database transaction.
+                logger.exception("A charge failed.")
+                for charge in completed_charges:
+                    try:
+                        stripe.Refund.create(charge=charge.id)
+                    except stripe.error.StripeError:
+                        logger.exception("An error occured while refunding charges.")
+                raise e
+            finally:
+                stripe_customer.delete()
+
         self.holdings.prepare_for_purchase()
         # This is ugly. fixme!
         if self.person.holdings.quantity() > 1:
             raise exceptions.EventProductLimitExceeded()
         self.purchased = now()
         self.save()
-        self.holdings.charge(self, stripe_token)
+        charge()
         self.holdings.email_ticket()
 
 
@@ -90,11 +151,6 @@ class Holding(Model):
         null=True,
         blank=True,
         verbose_name=_('utilized'))
-
-    purchase_price = MoneyField(
-        null=True,
-        blank=True,
-        verbose_name=_('purchase price'))
 
     objects = HoldingQuerySet.as_manager()
 
@@ -176,14 +232,7 @@ class Holding(Model):
     def unutilize(self):
         self.utilized = None
 
-    #The final price of the holding.
-    #Should only be used when all ProducVariationChoices have been added properly
-    @property
-    def price(self):
-        return self.product.base_price + self.product.modifier_delta(self.person) + self.product_variation_choices.delta()
-
-    #Creates HoldingModifiers for the holding, and sets purchase_price
-    def prepare_for_purchase(self, ignore_limits=False, modify_history_allowed=False):
+    def is_purchasable(self, ignore_limits=False, modify_history_allowed=False):
         if not ignore_limits and self._will_exceed_total_limit():
             raise exceptions.TotalProductLimitExceeded()
         if not ignore_limits and self._will_exceed_personal_limit():
@@ -191,13 +240,7 @@ class Holding(Model):
         if not modify_history_allowed and self.is_purchased:
             raise exceptions.ModifiesHistory()
 
-        eligible_product_modifiers = self.product.product_modifiers.eligible(
-            self.person, force_reevaluation=True)
-        for product_modifier in eligible_product_modifiers:
-            HoldingModifier.objects.create(product_modifier=product_modifier,
-                                           holding=self)
-        self.purchase_price = self.price
-        self.save()
+        return True
 
     @property
     def is_purchased(self):
@@ -218,8 +261,12 @@ class Product(NameSlugDescriptionMixin, Model):
         related_name='products',
         verbose_name=_('main event'))
 
-    base_price = MoneyField(
-        verbose_name=_('base price'))
+    price = MoneyField(
+        verbose_name=_('price'))
+    modifiers = models.ManyToManyField(
+        'modifiers.Modifier',
+        related_name='products',
+        verbose_name=_('modifiers'))
 
     published = models.BooleanField(
         default=True,
@@ -257,9 +304,6 @@ class Product(NameSlugDescriptionMixin, Model):
         if self.total_limit is None:
             return True
         return self.holdings.purchased().quantity() < self.total_limit
-
-    def modifier_delta(self, person):
-        return self.product_modifiers.eligible(person).delta()
 
     def has_reached_limit(self):
         return self.limit and self.holdings.purchased().quantity() >= self.limit

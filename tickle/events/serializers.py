@@ -1,7 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
-from tickle.common.routers import parent_lookups
-from tickle.common.serializers import HyperlinkedModelSerializer
+from ..common.serializers import HyperlinkedModelSerializer
 from .models import MainEvent
 
 
@@ -10,14 +9,12 @@ class MainEventSerializer(HyperlinkedModelSerializer):
         model = MainEvent
         fields = [
             'url',
+            'id',
             'slug',
+            'organizer',
             'name',
             'description'
         ]
-        extra_kwargs = {
-            'url': {
-                'lookup_field': 'slug',
-                'parent_lookups': parent_lookups.MAIN_EVENT
-            }
+        expandable_fields = {
+            'organizer': ('tickle.organizers.serializers.OrganizerSerializer', (), {})
         }
-
