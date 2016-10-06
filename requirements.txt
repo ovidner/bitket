@@ -1,13 +1,13 @@
 # Bleeding edge Django
-django==1.9.4
+Django==1.10.*
 
 django-localflavor==1.2
 git+https://github.com/ovidner/django-saml-service-provider.git@4712d124d42e306f5a0383dcb7332607ae910b79#egg=django_saml_service_provider-master
 
 # REST Framework
-djangorestframework==3.3.3
+djangorestframework==3.4.*
 drf-nested-routers==0.11.1
-django-rest-auth==0.7.0
+django-rest-auth==0.8.*
 dry-rest-permissions==0.1.6
 django-filter==0.13.0
 
@@ -27,7 +27,7 @@ django-model-utils==2.4
 
 # For user registration, either via email or social
 # Well-built with regular release cycles!
-django-allauth==0.25.2
+django-allauth==0.27.*
 
 # For the persistence stores
 psycopg2==2.6.1
@@ -49,20 +49,20 @@ stripe==1.27.1
 coverage==4.0.3
 flake8==2.5.0
 Sphinx
-django-extensions==1.5.9
+django-extensions==1.7.*
 Werkzeug==0.11.2
 django-test-plus==1.0.11
 factory_boy==2.5.2
 PyHamcrest==1.8.5
 
 # django-debug-toolbar that works with Django 1.5+
-django-debug-toolbar==1.4.0
+django-debug-toolbar==1.5.*
 
 requests==2.8.1
 unicodecsv==0.14.1
 
 # Email
-git+https://github.com/BradWhittington/django-templated-email.git@eb0f6936fcd38b10c13496a09ad7f409e19c5729#egg=django_templated_email-master
+git+https://github.com/BradWhittington/django-templated-email.git@eb0f6936fcd38b10c13496a09ad7f409e19c5729#egg=django-templated-email
 django-mailgun==0.8.0
 
 # Error reporting and performance monitoring
