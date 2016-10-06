@@ -26,7 +26,7 @@ RUN groupadd -r django && useradd -r -g django django
 ADD . /app
 RUN chown -R django /app
 
-RUN chmod +x /app/run/django /app/run/celery-beat /app/run/celery-worker /app/run/tests
+RUN chmod +x /app/bin/run-django /app/bin/run-celery-beat /app/bin/run-celery-worker /app/bin/run-tests
 
 RUN django-admin compilemessages
 
