@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 
 import logging
 import os
+import warnings
 
 from django.core.urlresolvers import reverse_lazy
 
@@ -12,18 +13,15 @@ import stripe
 
 from tickle.people.saml.constants import claims
 
+env = environ.Env()
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
 APPS_DIR = ROOT_DIR.path('tickle')
 
-env = environ.Env()
-USING_ENV_FILE = False
-
-# Read env file if it exists
-ENV_FILE = str(ROOT_DIR.path(env.str('DJANGO_ENV_FILE', '.env')))
-if os.path.isfile(ENV_FILE):
-    env.read_env(ENV_FILE)
-    USING_ENV_FILE = True
+# https://docs.python.org/3/library/warnings.html#temporarily-suppressing-warnings
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore')
+    env.read_env(str(ROOT_DIR.path('.env')))
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -95,35 +93,13 @@ MIGRATION_MODULES = {
     'sites': 'tickle.contrib.sites.migrations'
 }
 
-# DEBUG
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = env.bool('DJANGO_DEBUG', False)
 ALLOWED_HOSTS = ["*"]
 
-# SECRET CONFIGURATION
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
-# Raises ImproperlyConfigured exception if DJANGO_SECRET_KEY not in os.environ
-SECRET_KEY = env('DJANGO_SECRET_KEY')
-
-# FIXTURE CONFIGURATION
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
-FIXTURE_DIRS = (
-    str(APPS_DIR.path('fixtures')),
-)
-
-# set this to 60 seconds and then to 518400 when you can prove it works
-SECURE_HSTS_SECONDS = env.int('DJANGO_SECURE_HSTS_SECONDS', 0)
-SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
-    'DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS', False)
 SECURE_FRAME_DENY = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
-SESSION_COOKIE_SECURE = env.bool('DJANGO_SESSION_COOKIE_SECURE', True)
+
 SESSION_COOKIE_HTTPONLY = True
-SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', True)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
@@ -152,7 +128,6 @@ MANAGERS = ADMINS
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
     'default': env.db('DJANGO_DATABASE_URL'),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
@@ -207,7 +182,7 @@ TEMPLATES = [
         ],
         'OPTIONS': {
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
-            'debug': DEBUG,
+            'debug': None,
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
             'loaders': [
@@ -337,42 +312,50 @@ GOOGLE_ANALYTICS_ID = env.str('GOOGLE_ANALYTICS_ID', '')
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
 LOGGING = {
     'version': 1,
+    # This is THE log config. This makes sense since we use a root logger.
     'disable_existing_loggers': True,
     'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s '
-                      '%(process)d %(thread)d %(message)s'
+        'default': {
+            'format': '%(levelname)s %(asctime)s %(name)s %(message)s'
+        },
+        # Used by the Django development server. Included from django.utils.log.
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[%(server_time)s] %(message)s',
         },
     },
     'handlers': {
-        'opbeat': {
-            'level': 'ERROR',
-            'class': 'opbeat.contrib.django.handlers.OpbeatHandler',
-        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+            'formatter': 'default'
+        },
+        # Used by the Django development server. Included from django.utils.log.
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
+        'opbeat': {
+            'level': 'WARNING',
+            'class': 'opbeat.contrib.django.handlers.OpbeatHandler',
         }
     },
-    'root': {
-        'level': 'ERROR',
-        'handlers': ['opbeat', 'console'],
-    },
     'loggers': {
-        'django': {
-            'level': 'ERROR',
-            'handlers': ['opbeat', 'console'],
-            'propagate': False,
-        },
-        'opbeat.errors': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'tickle': {
+        # Log everything of level WARNING or above to the console and to opbeat.
+        # This is to keep the log config as simple and as predictable as
+        # possible.
+        None: {
             'level': 'WARNING',
-            'handlers': ['opbeat'],
+            'handlers': ['console', 'opbeat']
+        },
+        # Exceptions to the above rule go here. Use propagate=False to prevent
+        # the root logger to also swallow the event.
+
+        # Used by the Django development server. Included from django.utils.log.
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
             'propagate': False,
         },
     },
@@ -399,7 +382,7 @@ SAML_SP_ACS_URL = env.str('SAML_SP_ACS_URL',
                           'https://www.liubiljett.se/_saml/login/complete/')
 SAML_SP_SLO_URL = env.str('SAML_SP_SLO_URL',
                           'https://www.liubiljett.se/_saml/logout/')
-SAML_DEBUG = env.bool('SAML_DEBUG', DEBUG)
+SAML_DEBUG = env.bool('SAML_DEBUG', False)
 SAML_STRICT = env.bool('SAML_STRICT', True)
 SAML_USER_ATTRIBUTE_MAPPINGS = {
     'email': claims.CLAIM_EMAIL,

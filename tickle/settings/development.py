@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
-
 from . import *  # noqa
+
+DEBUG = env.bool('DJANGO_DEBUG', True)
+TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
+
+SECRET_KEY = env.str('DJANGO_SECRET_KEY', 'dev')
+
+SESSION_COOKIE_SECURE = env.bool('DJANGO_SESSION_COOKIE_SECURE', False)
 
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
@@ -22,5 +27,3 @@ DEBUG_TOOLBAR_CONFIG = {
 # TESTING
 # ------------------------------------------------------------------------------
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
-
-# Your local stuff: Below this line define 3rd party library settings

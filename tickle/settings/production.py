@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
-
 from . import *  # noqa
+
+DEBUG = env.bool('DJANGO_DEBUG', False)
+TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
+
+SECRET_KEY = env.str('DJANGO_SECRET_KEY')
+
+SESSION_COOKIE_SECURE = env.bool('DJANGO_SESSION_COOKIE_SECURE', True)
