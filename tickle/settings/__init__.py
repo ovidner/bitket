@@ -1,17 +1,9 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
-
-import logging
-import os
 import warnings
 
 from django.core.urlresolvers import reverse_lazy
-
 import environ
-import raven
 import stripe
-
-from tickle.people.saml.constants import claims
 
 env = environ.Env()
 
@@ -25,53 +17,27 @@ with warnings.catch_warnings():
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
-DJANGO_APPS = (
-    # Default Django apps:
+INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-
-    # Useful template tags:
-    # 'django.contrib.humanize',
-
-    # Admin
     'django.contrib.admin',
-)
-THIRD_PARTY_APPS = (
+
     'djangosecure',
     'gunicorn',
     'rest_framework',
-
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
-
+    'social.apps.django_app.default',
+    'rest_social_auth',
     'dry_rest_permissions',
-    'raven.contrib.django.raven_compat',
     'django_extensions',
     'opbeat.contrib.django',
-)
 
-# Apps specific for this project go here.
-LOCAL_APPS = (
-    'tickle.common',
-    'tickle.common.celery',
-    'tickle.conditions',
-    'tickle.events',
-    'tickle.modifiers',
-    'tickle.organizers',
-    'tickle.payments',
-    'tickle.people',
-    'tickle.people.saml',
-    'tickle.products',
+    'tickle',
+    'tickle.celery',
 )
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 # MIDDLEWARE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -86,12 +52,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
-
-# MIGRATIONS CONFIGURATION
-# ------------------------------------------------------------------------------
-MIGRATION_MODULES = {
-    'sites': 'tickle.contrib.sites.migrations'
-}
 
 ALLOWED_HOSTS = ["*"]
 
@@ -253,22 +213,20 @@ WSGI_APPLICATION = 'tickle.wsgi.application'
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-    'tickle.people.saml.backends.LiuAdfsBackend',
+    'social.backends.facebook.FacebookOAuth2',
+    'tickle.adfs.ADFSOAuth2'
 )
 
-# Some really nice defaults
-ACCOUNT_ADAPTER = 'tickle.people.adapters.AccountAdapter'
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_USERNAME_REQUIRED = False
-SOCIALACCOUNT_ADAPTER = 'tickle.people.adapters.SocialAccountAdapter'
-SOCIALACCOUNT_AUTO_SIGNUP = True
-SOCIALACCOUNT_EMAIL_REQUIRED = False
-SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIAL_AUTH_USER_FIELDS = ['email', 'first_name', 'last_name']
+
+SOCIAL_AUTH_ADFS_HOST = 'adfs.lab.vidnet.io'
+SOCIAL_AUTH_ADFS_KEY = env.str('ADFS_CLIENT_ID', '')
+SOCIAL_AUTH_ADFS_SCOPE = ['https://www.liubiljett.se']
+SOCIAL_AUTH_ADFS_X509_CERT = env.str('ADFS_X509_CERT', '')
+
+SOCIAL_AUTH_FACEBOOK_KEY = env.str('FACEBOOK_CLIENT_ID', '')
+SOCIAL_AUTH_FACEBOOK_SECRET = env.str('FACEBOOK_CLIENT_SECRET', '')
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
 # Custom user app defaults
 # Select the correct user model
@@ -288,15 +246,6 @@ REST_FRAMEWORK = {
 
 # SLUGIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
-
-# Sentry Configuration
-# SENTRY_CLIENT = env('DJANGO_SENTRY_CLIENT')
-SENTRY_CELERY_LOGLEVEL = env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
-RAVEN_CONFIG = {
-    'dsn': env.str('DJANGO_SENTRY_DSN', 'https://a:b@dummydsn.com/1'),
-    'release': raven.fetch_git_sha(str(ROOT_DIR)),
-    'CELERY_LOGLEVEL': env.str('DJANGO_SENTRY_LOG_LEVEL', logging.INFO)
-}
 
 OPBEAT = {
     'ORGANIZATION_ID': env.str('DJANGO_OPBEAT_ORGANIZATION_ID', ''),
@@ -375,17 +324,3 @@ stripe.api_key = STRIPE_SECRET_KEY
 CURRENCY = 'SEK'
 
 CACHE_TIMEOUT_PERSON_CONDITIONS = 10 * 60
-
-SAML_SP_CERT = env.str('SAML_SP_CERT', '')
-SAML_SP_KEY = env.str('SAML_SP_KEY', '')
-SAML_SP_ACS_URL = env.str('SAML_SP_ACS_URL',
-                          'https://www.liubiljett.se/_saml/login/complete/')
-SAML_SP_SLO_URL = env.str('SAML_SP_SLO_URL',
-                          'https://www.liubiljett.se/_saml/logout/')
-SAML_DEBUG = env.bool('SAML_DEBUG', False)
-SAML_STRICT = env.bool('SAML_STRICT', True)
-SAML_USER_ATTRIBUTE_MAPPINGS = {
-    'email': claims.CLAIM_EMAIL,
-    'first_name': claims.CLAIM_GIVEN_NAME,
-    'last_name': claims.CLAIM_SURNAME,
-}

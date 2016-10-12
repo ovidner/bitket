@@ -1,6 +1,0 @@
-{% extends 'admin/change_list.html' %}
-{% load i18n crispy_forms_tags %}
-{% block result_list %}
-    <a href="{% url 'admin:invar_transaction_import_bgmax' %}">{% trans 'Import transactions from BgMax file' %}</a>
-    {{ block.super }}
-{% endblock %}

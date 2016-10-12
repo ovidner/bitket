@@ -2,7 +2,6 @@
 Django==1.10.*
 
 django-localflavor==1.2
-git+https://github.com/ovidner/django-saml-service-provider.git@4712d124d42e306f5a0383dcb7332607ae910b79#egg=django_saml_service_provider-master
 
 # REST Framework
 djangorestframework==3.4.*
@@ -28,6 +27,12 @@ django-model-utils==2.4
 # For user registration, either via email or social
 # Well-built with regular release cycles!
 django-allauth==0.27.*
+git+https://github.com/thenewguy/django-allauth-adfs.git@357553014b88ad75c8960b15dd918c3f10fd6a90#egg=django-allauth-adfs
+
+# Auth
+python-social-auth==0.2.*
+PyJWT==1.4.*
+cryptography==1.5.*
 
 # For the persistence stores
 psycopg2==2.6.1
@@ -53,12 +58,11 @@ django-extensions==1.7.*
 Werkzeug==0.11.2
 django-test-plus==1.0.11
 factory_boy==2.5.2
-PyHamcrest==1.8.5
 
 # django-debug-toolbar that works with Django 1.5+
 django-debug-toolbar==1.5.*
 
-requests==2.8.1
+requests==2.*
 unicodecsv==0.14.1
 
 # Email
@@ -71,3 +75,5 @@ opbeat==3.3
 # QR codes
 Pillow==3.2.0
 qrcode==5.2.2
+
+ipython
