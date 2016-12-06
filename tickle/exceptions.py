@@ -11,10 +11,6 @@ class DefaultException(APIException):
     pass
 
 
-class ClientErrorMixin(object):
-    status_code = status.HTTP_400_BAD_REQUEST
-
-
 class PaymentDenied(DefaultException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = _('The payment was denied.')
@@ -40,11 +36,21 @@ class ModifiesHistory(DefaultException):
     default_detail = _('Modifies history.')
 
 
+class MultipleOrganizations(DefaultException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = _('Tickets from multiple organizations ordered.')
+
+
+class ConflictingTicketTypes(DefaultException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = _('Conflicting ticket types selected.')
+
+
 class InvalidSession(Exception):
     pass
 
 
-class ConflictingProductVariationChoices(ValidationError):
+class InvalidVariationChoices(ValidationError):
     pass
 
 

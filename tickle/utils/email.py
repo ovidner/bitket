@@ -5,10 +5,8 @@ from django.template import Context
 from django.template.loader import render_to_string
 
 
-def generate_pretty_email(first_name, last_name, email):
-    return '"{0} {1}" <{2}>; '.format(first_name.replace('"', '\\"'),
-                                      last_name.replace('"', '\\"'),
-                                      email)
+def generate_pretty_email(name, email):
+    return '"{}" <{}>; '.format(name.replace('"', '\\"'), email)
 
 
 class TemplatedEmail(EmailMultiAlternatives):

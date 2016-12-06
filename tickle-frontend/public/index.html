@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     <!--
       Notice the use of %PUBLIC_URL% in the tag above.
@@ -13,19 +14,31 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <script>
+      // Typekit
+      (function(d) {
+        var config = {
+          kitId: 'cuj2pek',
+          scriptTimeout: 3000,
+          async: true
+        }, h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+      })(document);
+    </script>
+    <title>Bitket</title>
   </head>
   <body>
     <div id="root"></div>
+
     <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start`.
-      To create a production bundle, use `npm run build`.
+      Importing Opbeat makes Webpack complain. It's fine to load it here though.
+      We won't get error reporting going earlier anyway, since we're configuring
+      it in the bundle.
     -->
+    <script type="text/javascript" src="https://d3tvtfb6518e3e.cloudfront.net/3/opbeat.min.js"></script>
+
+    <!-- Stripe.js *must* be loaded from here. -->
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+
+    <!-- The bundle will be injected here. -->
   </body>
 </html>

@@ -1,0 +1,15 @@
+# Runtime dependencies
+ca-certificates
+python3
+py3-pip
+
+# Build dependencies
+gcc
+git
+jpeg-dev
+libffi-dev
+libpq
+musl-dev
+postgresql-dev
+python3-dev
+zlib-dev

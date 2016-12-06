@@ -1,79 +1,43 @@
-# Bleeding edge Django
-Django==1.10.*
+gunicorn==19.6.*
+stripe==1.*
+pytz
+requests==2.*
+ipython
+factory_boy==2.7.*
+unicodecsv==0.14.*
 
-django-localflavor==1.2
+# Django
+Django==1.10.*
+django-localflavor==1.3.*
+django-cors-headers==1.3.*
+psycopg2==2.6.*
+django-redis==4.3.*
+django-extensions==1.7.*
+django-model-utils==2.6.*
+django-environ==0.4.*
+django-secure==1.0.*
 
 # REST Framework
-djangorestframework==3.4.*
-drf-nested-routers==0.11.1
-django-rest-auth==0.8.*
-dry-rest-permissions==0.1.6
-django-filter==0.13.0
-
-# Configuration
-django-environ==0.4.0
-django-secure==1.0.1
-whitenoise==2.0.6
-
-gunicorn==19.4.5
-raven==5.11.1
-
-# Forms
-django-braces==1.8.1
-
-# Models
-django-model-utils==2.4
-
-# For user registration, either via email or social
-# Well-built with regular release cycles!
-django-allauth==0.27.*
-git+https://github.com/thenewguy/django-allauth-adfs.git@357553014b88ad75c8960b15dd918c3f10fd6a90#egg=django-allauth-adfs
+djangorestframework==3.5.*
+django-filter==0.15.*
 
 # Auth
 python-social-auth==0.2.*
-PyJWT==1.4.*
-cryptography==1.5.*
-
-# For the persistence stores
-psycopg2==2.6.1
+git+https://github.com/ovidner/python-social-auth-liu.git@0f875c0ec48a4c7a6684888068171a5e6cc69d67#egg=python-social-auth-liu
+git+https://github.com/st4lk/django-rest-social-auth.git@9ce7e6a5614b37da33718abc59aa9f75a27c9dd0#egg=rest-social-auth
+djangorestframework-jwt==1.8.*
 
 # Unicode slugification
-unicode-slugify==0.1.3
-django-autoslug==1.9.3
-
-# Time zones support
-pytz==2015.7
-
-# Redis support
-django-redis==4.3.0
-
-celery==3.1.19
-
-stripe==1.27.1
-
-coverage==4.0.3
-flake8==2.5.0
-Sphinx
-django-extensions==1.7.*
-Werkzeug==0.11.2
-django-test-plus==1.0.11
-factory_boy==2.5.2
-
-# django-debug-toolbar that works with Django 1.5+
-django-debug-toolbar==1.5.*
-
-requests==2.*
-unicodecsv==0.14.1
+unicode-slugify==0.1.*
+django-autoslug==1.9.*
 
 # Email
 git+https://github.com/BradWhittington/django-templated-email.git@eb0f6936fcd38b10c13496a09ad7f409e19c5729#egg=django-templated-email
 django-mailgun==0.8.0
 
 # Error reporting and performance monitoring
-opbeat==3.3
+opbeat==3.5.*
 
 # QR codes
-Pillow==3.2.0
-qrcode==5.2.2
-
-ipython
+Pillow==3.4.*
+qrcode==5.2.*

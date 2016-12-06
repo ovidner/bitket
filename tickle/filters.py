@@ -4,7 +4,7 @@ import logging
 from django.db.models import Q
 from dry_rest_permissions.generics import DRYPermissionFiltersBase
 
-from tickle.models import Holding
+from tickle.models import Ticket
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class HoldingFilterSet(django_filters.FilterSet):
     purchased = IsNotNullFilter(name='cart__purchased')
 
     class Meta:
-        model = Holding
+        model = Ticket
         fields = [
             'id',
             'liu_card',

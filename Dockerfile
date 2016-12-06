@@ -1,36 +1,21 @@
-FROM python:2.7
-ENV DEBIAN_FRONTEND=noninteractive \
-    DJANGO_SETTINGS_MODULE=tickle.settings.production \
-    GUNICORN_PORT=8000 \
-    PYTHONPATH=/app:$PYTHONPATH \
-    PYTHONUNBUFFERED=true \
-    PYTHONWARNINGS=ignore::DeprecationWarning
+FROM alpine:edge
 
+RUN mkdir /app
 WORKDIR /app
 
-ADD ./requirements.apt /app/requirements.apt
+ENV DJANGO_SETTINGS_MODULE=tickle.settings.production \
+    PYTHONPATH=/app/tickle:$PYTHONPATH \
+    PYTHONUNBUFFERED=true
 
-# See http://askubuntu.com/questions/252734/apt-get-mass-install-packages-from-a-file
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends $(grep -vE "^\s*#" /app/requirements.apt  | tr "\n" " ") && \
-    rm -rf /var/lib/apt/lists/*
+COPY ./requirements.alpine.txt /app/requirements.alpine.txt
+RUN apk add --no-cache $(grep -vE "^\s*#" /app/requirements.alpine.txt | tr "\n" " ") && \
+    ln -sf /usr/bin/python3 /usr/bin/python && \
+    pip3 install --no-cache-dir -U pip setuptools wheel
 
-# Requirements have to be pulled and installed here, otherwise caching won't work
-ADD ./requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
+COPY ./requirements.txt /app/requirements.txt
+RUN pip3 install --no-cache-dir -r /app/requirements.txt
 
-#ADD ./package.json /app/package.json
-#RUN
+COPY . /app
 
-RUN groupadd -r django && useradd -r -g django django
-ADD . /app
-RUN chown -R django /app
-
-RUN chmod +x /app/bin/run-django /app/bin/run-celery-beat /app/bin/run-celery-worker /app/bin/run-tests
-
-RUN django-admin compilemessages
-
-USER django
-EXPOSE $GUNICORN_PORT
-
-CMD ["/app/run/django"]
+EXPOSE 80
+CMD ["/app/run-django.sh"]

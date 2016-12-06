@@ -16,3 +16,5 @@ def get_dotted_attr(obj, attr, default=None):
 def get_double_underscore_attr(obj, attr, default=None):
     attr_list = attr.split('__')
     return get_nested_attr(obj, attr_list, default)
+
+

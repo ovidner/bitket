@@ -3,6 +3,7 @@ import warnings
 
 from django.core.urlresolvers import reverse_lazy
 import environ
+import psycopg2
 import stripe
 
 env = environ.Env()
@@ -26,6 +27,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
 
+    'corsheaders',
     'djangosecure',
     'gunicorn',
     'rest_framework',
@@ -45,6 +47,7 @@ MIDDLEWARE_CLASSES = (
     'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
     'djangosecure.middleware.SecurityMiddleware',
     'opbeat.contrib.django.middleware.Opbeat404CatchMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -54,6 +57,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 ALLOWED_HOSTS = ["*"]
+CORS_ORIGIN_WHITELIST = env.list('DJANGO_CORS_ORIGIN_WHITELIST', default=[])
 
 SECURE_FRAME_DENY = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -90,7 +94,15 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': env.db('DJANGO_DATABASE_URL'),
 }
-DATABASES['default']['ATOMIC_REQUESTS'] = True
+DATABASES['default']['CONN_MAX_AGE'] = 500
+
+READ_UNCOMMITTED_ISOLATION = 'default_read_uncommitted'
+
+# Copies the 'default' database and sets the isolation level
+DATABASES[READ_UNCOMMITTED_ISOLATION] = dict(DATABASES['default'].items())
+DATABASES[READ_UNCOMMITTED_ISOLATION]['OPTIONS'] = dict(
+    isolation_level=psycopg2.extensions.ISOLATION_LEVEL_READ_UNCOMMITTED
+)
 
 # CACHING
 # ------------------------------------------------------------------------------
@@ -99,7 +111,7 @@ CACHES = {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': env.str('DJANGO_REDIS_URL'),
         'OPTIONS': {
-            "CLIENT_CLASS": 'django_redis.client.DefaultClient',
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
 }
@@ -213,35 +225,92 @@ WSGI_APPLICATION = 'tickle.wsgi.application'
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'social_liu.LiuBackend',
     'social.backends.facebook.FacebookOAuth2',
-    'tickle.adfs.ADFSOAuth2'
+    'social.backends.google.GoogleOAuth2'
 )
 
-SOCIAL_AUTH_USER_FIELDS = ['email', 'first_name', 'last_name']
+# fullname is the identifier used by python-social-auth.
+SOCIAL_AUTH_USER_FIELDS = ['email', 'fullname']
+SOCIAL_AUTH_PIPELINE = (
+    # Get the information we can about the user and return it in a simple
+    # format to create the user instance later. On some cases the details are
+    # already part of the auth response from the provider, but sometimes this
+    # could hit a provider API.
+    'social.pipeline.social_auth.social_details',
 
-SOCIAL_AUTH_ADFS_HOST = 'adfs.lab.vidnet.io'
-SOCIAL_AUTH_ADFS_KEY = env.str('ADFS_CLIENT_ID', '')
-SOCIAL_AUTH_ADFS_SCOPE = ['https://www.liubiljett.se']
-SOCIAL_AUTH_ADFS_X509_CERT = env.str('ADFS_X509_CERT', '')
+    # Get the social uid from whichever service we're authing thru. The uid is
+    # the unique identifier of the given user in the provider.
+    'social.pipeline.social_auth.social_uid',
 
-SOCIAL_AUTH_FACEBOOK_KEY = env.str('FACEBOOK_CLIENT_ID', '')
-SOCIAL_AUTH_FACEBOOK_SECRET = env.str('FACEBOOK_CLIENT_SECRET', '')
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+    # Verifies that the current auth process is valid within the current
+    # project, this is where emails and domains whitelists are applied (if
+    # defined).
+    'social.pipeline.social_auth.auth_allowed',
 
-# Custom user app defaults
-# Select the correct user model
-AUTH_USER_MODEL = 'people.Person'
+    # Checks if the current social-account is already associated in the site.
+    'social.pipeline.social_auth.social_user',
+
+    # Make up a username for this person, appends a random string at the end if
+    # there's any collision.
+    'social.pipeline.user.get_username',
+
+    # Associates the current social details with another user account with
+    # a similar email address.
+    'social.pipeline.social_auth.associate_by_email',
+
+    # Create a user account if we haven't found one yet.
+    'social.pipeline.user.create_user',
+
+    # Create the record that associates the social account with the user.
+    'social.pipeline.social_auth.associate_user',
+
+    # Populate the extra_data field in the social record with the values
+    # specified by settings (and the default ones like access_token, etc).
+    'social.pipeline.social_auth.load_extra_data',
+
+    # Gets student union, if applicable
+    'tickle.models.social_get_union',
+
+    # Update the user record with any changed info from the auth service.
+    'social.pipeline.user.user_details',
+)
+
+SOCIAL_AUTH_FACEBOOK_KEY = env.str('AUTH_FACEBOOK_CLIENT_ID', '')
+SOCIAL_AUTH_FACEBOOK_SECRET = env.str('AUTH_FACEBOOK_CLIENT_SECRET', '')
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['public_profile']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'locale': 'en_US',
+    'fields': 'id, name, email'
+}
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str('AUTH_GOOGLE_CLIENT_ID', '')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str('AUTH_GOOGLE_CLIENT_SECRET', '')
+SOCIAL_AUTH_GOOGLE_OAUTH2_USE_UNIQUE_USER_ID = True
+
+SOCIAL_AUTH_LIU_HOST = env.str('AUTH_LIU_HOST', default='fs.liu.se')
+SOCIAL_AUTH_LIU_KEY = env.str('AUTH_LIU_CLIENT_ID', '')
+SOCIAL_AUTH_LIU_SCOPE = env.list('AUTH_LIU_RESOURCE', default=[])
+SOCIAL_AUTH_LIU_VERIFY_SSL = env.bool('AUTH_LIU_VERIFY_SSL', default=True)
+SOCIAL_AUTH_LIU_X509_CERT = env.str('AUTH_LIU_X509_CERT', default=None)
+
+AUTH_USER_MODEL = 'tickle.User'
 LOGIN_REDIRECT_URL = reverse_lazy('client:home')
-#LOGIN_URL = 'account_login'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer'
     )
+}
+JWT_AUTH = {
+    'JWT_ALGORITHM': 'HS512',
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_PAYLOAD_HANDLER': 'tickle.serializers.jwt_payload_handler'
 }
 
 # SLUGIFIER
@@ -310,8 +379,8 @@ LOGGING = {
     },
 }
 
-KOBRA_USER = env.str('KOBRA_USER', '')
-KOBRA_KEY = env.str('KOBRA_KEY', '')
+KOBRA_HOST = env.str('KOBRA_HOST', 'https://kobra.karservice.se')
+KOBRA_TOKEN = env.str('KOBRA_TOKEN', '')
 
 STRIPE_OAUTH_AUTHORIZE_URL = 'https://connect.stripe.com/oauth/authorize'
 STRIPE_OAUTH_TOKEN_URL = 'https://connect.stripe.com/oauth/token'

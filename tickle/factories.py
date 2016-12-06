@@ -4,9 +4,7 @@ import factory, factory.fuzzy
 from autoslug.utils import slugify
 from django.contrib.auth.hashers import make_password
 
-from tickle.models import Condition, StudentUnionMemberCondition, Organizer, \
-    MainEvent, ProductModifier, HoldingModifier, Person, StudentUnion, Cart, \
-    Product, Holding
+from . import models
 
 from .behaviors import NameSlugMixin, NameSlugDescriptionMixin
 
@@ -30,65 +28,63 @@ class NameSlugDescriptionFactoryMixin(NameSlugFactoryMixin):
 
 class ConditionFactory(factory.DjangoModelFactory):
     class Meta:
-        model = Condition
+        model = models.Condition
 
 
-class StudentUnionMemberConditionFactory(ConditionFactory):
-    student_union = factory.SubFactory(StudentUnionFactory)
-
-    class Meta:
-        model = StudentUnionMemberCondition
 
 
-class OrganizerFactory(NameSlugFactoryMixin, factory.DjangoModelFactory):
+
+class OrganizationFactory(factory.DjangoModelFactory):
+    name = factory.fuzzy.FuzzyText()
     stripe_account_id = 'acct_15UmhTBnmRVIEGOy'
     stripe_refresh_token = 'rt_7BKd3RoiAGmUTFinVXmDG7UtY2uiWdHWEqCHzjfbRAe6PIsc'
     stripe_public_key = 'pk_test_ylCgAtl19NyJSCvrH7hR75F0'
     stripe_secret_key = 'sk_test_b6ayEDgcfTYU9j5GxTZYclfl'
 
     class Meta:
-        model = Organizer
+        model = models.Organization
 
 
-class MainEventFactory(NameSlugFactoryMixin, factory.DjangoModelFactory):
-    organizer = factory.SubFactory(OrganizerFactory)
+class EventFactory(factory.DjangoModelFactory):
+    name = factory.fuzzy.FuzzyText()
+    slug = factory.LazyAttribute(lambda o: slugify(o.name))
+    organization = factory.SubFactory(OrganizationFactory)
 
     class Meta:
-        model = MainEvent
+        model = models.Event
 
 
-class ProductModifierFactory(factory.DjangoModelFactory):
+class TicketTypeFactory(factory.DjangoModelFactory):
+    name = factory.fuzzy.FuzzyText()
+    description = factory.fuzzy.FuzzyText(length=64)
+    event = factory.SubFactory(EventFactory)
+    price = factory.fuzzy.FuzzyDecimal(10, 1000)
+    total_limit = factory.fuzzy.FuzzyInteger(750, 1000)
+
+    class Meta:
+        model = models.TicketType
+
+
+class ModifierFactory(factory.DjangoModelFactory):
     condition = factory.SubFactory(ConditionFactory)
-    product = factory.SubFactory(ProductFactory)
+    ticket_type = factory.SubFactory(TicketTypeFactory)
 
-    delta_amount = factory.fuzzy.FuzzyInteger(-100, 40)
-
-    order = factory.Sequence(lambda x: x)
+    delta = factory.fuzzy.FuzzyInteger(-100, 40)
 
     class Meta:
-        model = ProductModifier
+        model = models.Modifier
 
 
-class HoldingModifierFactory(factory.DjangoModelFactory):
-    product_modifier = factory.SubFactory(ProductModifierFactory)
-    holding = factory.SubFactory(HoldingFactory)
-
-    class Meta:
-        model = HoldingModifier
-
-
-class PersonFactory(factory.DjangoModelFactory):
-    first_name = factory.fuzzy.FuzzyText()
-    last_name = factory.fuzzy.FuzzyText()
+class UserFactory(factory.DjangoModelFactory):
+    name = factory.fuzzy.FuzzyText()
 
     email = factory.LazyAttribute(
-        lambda o: '{}.{}@example.com'.format(o.first_name.strip(),
-                                             o.last_name.strip()))
+        lambda o: '{}@example.com'.format(o.name))
 
     password = factory.LazyAttribute(lambda o: make_password(None))
 
     class Meta:
-        model = Person
+        model = models.User
 
 
 class StudentUnionFactory(factory.DjangoModelFactory):
@@ -96,29 +92,21 @@ class StudentUnionFactory(factory.DjangoModelFactory):
     slug = factory.LazyAttribute(lambda o: slugify(o.name))
 
     class Meta:
-        model = StudentUnion
+        model = models.StudentUnion
 
 
-class CartFactory(factory.DjangoModelFactory):
-    person = factory.SubFactory(PersonFactory)
-
-    class Meta:
-        model = Cart
-
-
-class ProductFactory(NameSlugDescriptionFactoryMixin):
-    main_event = factory.SubFactory(MainEventFactory)
-    base_price = factory.fuzzy.FuzzyDecimal(10, 1000)
-    total_limit = factory.fuzzy.FuzzyInteger(750, 1000)
+class StudentUnionMemberConditionFactory(ConditionFactory):
+    student_union = factory.SubFactory(StudentUnionFactory)
 
     class Meta:
-        model = Product
+        model = models.StudentUnionMemberCondition
 
 
-class HoldingFactory(factory.DjangoModelFactory):
-    cart = factory.SubFactory(CartFactory)
-    person = factory.SubFactory(PersonFactory)
-    product = factory.SubFactory(ProductFactory)
+
+
+
+class TicketFactory(factory.DjangoModelFactory):
+    product = factory.SubFactory(TicketTypeFactory)
 
     class Meta:
-        model = Holding
+        model = models.Ticket

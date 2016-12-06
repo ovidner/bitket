@@ -1,5 +1,7 @@
 export { default as App } from './App'
 export { default as Footer } from './Footer'
-export { default as Layout } from './Layout'
+export { default as LogInForm } from './LogInForm'
 export { default as Navbar } from './Navbar'
 export { default as Page } from './Page'
+export { default as PaymentForm } from './PaymentForm'
+export { default as SelectTickets } from './SelectTickets'

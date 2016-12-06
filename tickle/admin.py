@@ -1,7 +1,5 @@
 from django.contrib import admin
 
-from tickle.models import HoldingModifier, ProductModifier, Transaction, \
-    ProductVariationChoice
 from . import models
 
 
@@ -10,50 +8,41 @@ class StudentUnionMemberConditionAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(models.MainEvent)
+@admin.register(models.Event)
 class MainEventAdmin(admin.ModelAdmin):
     pass
 
 
-class HoldingModifierInline(admin.TabularInline):
-    model = HoldingModifier
-
-
 class ProductModifierInline(admin.TabularInline):
-    model = ProductModifier
+    model = models.Modifier
 
 
-@admin.register(models.Organizer)
+@admin.register(models.Organization)
 class OrganizerAdmin(admin.ModelAdmin):
     filter_horizontal = ['admins']
 
 
 @admin.register(models.Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('amount', 'timestamp')
-    date_hierarchy = 'timestamp'
+    list_display = ('amount', 'created')
+    date_hierarchy = 'created'
 
 
 class ProductVariationChoiceInline(admin.TabularInline):
-    model = ProductVariationChoice
+    model = models.VariationChoice
 
 
-@admin.register(models.Cart)
-class CartAdmin(admin.ModelAdmin):
+@admin.register(models.Ticket)
+class TicketAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(models.Holding)
-class HoldingAdmin(admin.ModelAdmin):
-    inlines = [HoldingModifierInline]
-
-
-@admin.register(models.Product)
+@admin.register(models.TicketType)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductModifierInline]
 
 
-@admin.register(models.ProductVariation)
+@admin.register(models.Variation)
 class ProductVariationAdmin(admin.ModelAdmin):
     inlines = [ProductVariationChoiceInline]
 

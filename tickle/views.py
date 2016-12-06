@@ -4,72 +4,27 @@ from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 from django.conf import settings
 from django.core import signing
 from django.core.exceptions import SuspiciousOperation
+from django.core.signing import BadSignature
 from django.http import Http404
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, RedirectView
 from django.views.generic.detail import SingleObjectMixin
-from dry_rest_permissions.generics import (DRYPermissions,
-                                           DRYPermissionFiltersBase)
-from rest_framework import viewsets
-from rest_framework.decorators import list_route, detail_route
+
+from rest_framework import generics, views, viewsets, status, mixins
+from rest_framework.decorators import detail_route
 from rest_framework.filters import DjangoFilterBackend
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from tickle.organizers.serializers import OrganizerSerializer
-from tickle.organizers.views import unsign_state
+from rest_social_auth.views import JWTAuthMixin, BaseSocialAuthView
 
-from tickle.filters import CartFilterBackend, HoldingPermissionFilterBackend, \
-    HoldingFilterSet
-from tickle.models import MainEvent, Organizer, Person, StudentUnion, Cart, \
-    Holding, Product, ProductVariation, ProductVariationChoice
+from tickle.filters import HoldingPermissionFilterBackend, HoldingFilterSet
+from tickle.models import Event, Organization, Ticket, TicketType, Variation, \
+    VariationChoice
 from tickle.renderers import QrRenderer
-from tickle.routers import parent_lookups
-from tickle.serializers import MainEventSerializer, OrganizerSerializer, \
-    PersonSerializer, StudentUnionSerializer, CartSerializer, \
-    CartPurchaseSerializer, HoldingSerializer, ProductSerializer, \
-    ProductVariationSerializer, ProductVariationChoiceSerializer
-from tickle.utils import sign_state, unsign_state
+from tickle.utils.signing import sign_state, unsign_state
 
-
-class ClientView(TemplateView):
-    template_name = 'base.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(ClientView, self).get_context_data(**kwargs)
-        context['stripe_public_key'] = settings.STRIPE_PUBLIC_KEY
-        context['sentry_release'] = settings.RAVEN_CONFIG['release']
-        context['google_analytics_id'] = settings.GOOGLE_ANALYTICS_ID
-        return context
-
-
-class ModelViewSet(viewsets.ModelViewSet):
-    parent_lookups = {}
-    permission_classes = (DRYPermissions,)
-
-    def get_queryset(self):
-        queryset = super(ModelViewSet, self).get_queryset()
-        select_related_args = []
-        filter_kwargs = {}
-
-        for kwarg, orm_lookup in self.parent_lookups.iteritems():
-            try:
-                filter_kwargs[orm_lookup] = self.kwargs[kwarg]
-
-                # pk fields can't be select_related
-                select_related_args.append(orm_lookup.rstrip('__pk'))
-            except KeyError:
-                continue
-
-        return queryset.filter(**filter_kwargs).select_related(*select_related_args)
-
-
-class MainEventViewSet(ModelViewSet):
-    queryset = MainEvent.objects.all()
-    serializer_class = MainEventSerializer
-    lookup_field = 'slug'
-    parent_lookups = parent_lookups.MAIN_EVENT
+from . import models, serializers
 
 
 class StripeConnectPermissionMixin(LoginRequiredMixin,
@@ -79,7 +34,7 @@ class StripeConnectPermissionMixin(LoginRequiredMixin,
 
 class StripeConnectRequestView(StripeConnectPermissionMixin, SingleObjectMixin,
                                RedirectView):
-    model = Organizer
+    model = Organization
     slug_url_kwarg = 'organizer'
     permanent = False
 
@@ -97,7 +52,7 @@ class StripeConnectRequestView(StripeConnectPermissionMixin, SingleObjectMixin,
 
 class StripeConnectCallbackView(StripeConnectPermissionMixin,
                                 SingleObjectMixin, TemplateView):
-    model = Organizer
+    model = Organization
     template_name = 'dummy.html'
     http_method_names = ['get']
 
@@ -139,99 +94,55 @@ class StripeConnectCallbackView(StripeConnectPermissionMixin,
             request, *args, **kwargs)
 
 
-class OrganizerViewSet(ModelViewSet):
-    queryset = Organizer.objects.all()
-    serializer_class = OrganizerSerializer
-    lookup_field = 'slug'
+class EventViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = serializers.EventSerializer
 
 
-class PersonFilterBackend(DRYPermissionFiltersBase):
-    def filter_list_queryset(self, request, queryset, view):
-        return queryset.filter(pk=request.user.pk)
+class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Organization.objects.all()
+    serializer_class = serializers.OrganizationSerializer
 
 
-class PersonViewSet(ModelViewSet):
-    queryset = Person.objects.all()
-    serializer_class = PersonSerializer
-    filter_backends = (PersonFilterBackend,)
+class AccessCodeViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = models.AccessCode.objects.all()
+    serializer_class = serializers.AccessCodeSerializer
 
-    @list_route()
-    def current(self, request):
-        qs = self.filter_queryset(self.get_queryset())
-        obj = get_object_or_404(qs, pk=request.user.pk)
-        serializer = self.get_serializer(obj)
-        return Response(serializer.data)
+    lookup_field = 'token'
+    lookup_url_kwarg = 'token'
+    lookup_value_regex = '[^/]+'  # Same as default, just includes .
 
-
-class StudentUnionViewSet(ModelViewSet):
-    queryset = StudentUnion.objects.all()
-    serializer_class = StudentUnionSerializer
-    lookup_field = 'slug'
+    def get_object(self):
+        try:
+            return super().get_object()
+        except BadSignature as exc:
+            raise Http404
 
 
-class CartViewSet(ModelViewSet):
-    queryset = Cart.objects.all()
-    serializer_class = CartSerializer
-    filter_backends = (CartFilterBackend,)
-    parent_lookups = parent_lookups.CART
+class PurchaseView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.PurchaseSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-    def get_purchase_serializer(self, *args, **kwargs):
-        serializer_class = CartPurchaseSerializer
-        kwargs['context'] = self.get_serializer_context()
-        return serializer_class(*args, **kwargs)
-
-    @detail_route(['patch'])
-    def purchase(self, request, pk=None):
-        instance = self.get_object()
-        purchase_serializer = self.get_purchase_serializer(instance, data=request.data, partial=True)
-        purchase_serializer.is_valid(raise_exception=True)
-        self.perform_update(purchase_serializer)
-
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_207_MULTI_STATUS)
 
 
-class HoldingViewSet(ModelViewSet):
-    queryset = Holding.objects.all()
-    serializer_class = HoldingSerializer
-    filter_backends = (HoldingPermissionFilterBackend, DjangoFilterBackend)
-    filter_class = HoldingFilterSet
-    parent_lookups = parent_lookups.HOLDING
-
-    @detail_route(['get'], renderer_classes=[QrRenderer])
-    def qr(self, request, pk=None):
-        url = reverse('client:holding-detail', kwargs={'pk': pk}, request=request)
-        return Response(url)
-
-    @detail_route(['post', 'patch'])
-    def utilize(self, request, pk=None):
-        instance = self.get_object()
-        instance.utilize()
-        instance.save()
-        return self.retrieve(request, pk=pk)
-
-    @detail_route(['post', 'patch'])
-    def unutilize(self, request, pk=None):
-        instance = self.get_object()
-        instance.unutilize()
-        instance.save()
-        return self.retrieve(request, pk=pk)
+class TicketViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = serializers.TicketSerializer
 
 
-class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.published()
-    serializer_class = ProductSerializer
-    lookup_field = 'slug'
-    parent_lookups = parent_lookups.PRODUCT
+class TicketTypeViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = TicketType.objects.published()
+    serializer_class = serializers.TicketTypeSerializer
 
 
-class ProductVariationViewSet(ModelViewSet):
-    queryset = ProductVariation.objects.all()
-    serializer_class = ProductVariationSerializer
-    parent_lookups = parent_lookups.PRODUCT_VARIATION
+class VariationViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Variation.objects.all()
+    serializer_class = serializers.VariationSerializer
 
 
-class ProductVariationChoiceViewSet(ModelViewSet):
-    queryset = ProductVariationChoice.objects.all()
-    serializer_class = ProductVariationChoiceSerializer
-    parent_lookups = parent_lookups.PRODUCT_VARIATION_CHOICE
+class VariationChoiceViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = VariationChoice.objects.all()
+    serializer_class = serializers.VariationChoiceSerializer

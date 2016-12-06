@@ -1,10 +1,20 @@
 from __future__ import absolute_import, unicode_literals
+from uuid import uuid4
 
 from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from autoslug import AutoSlugField
+
+
+class IdField(models.UUIDField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('primary_key', True)
+        kwargs['default'] = kwargs.get('default', uuid4)
+        kwargs['editable'] = False
+        kwargs['verbose_name'] = kwargs.get('verbose_name', _('ID'))
+        super(IdField, self).__init__(*args, **kwargs)
 
 
 class StripValueMixin(object):

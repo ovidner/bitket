@@ -1,8 +1,0 @@
-<h1>{{ctrl.event.name}}</h1>
-<div marked="ctrl.event.description"></div>
-<div layout="row" layout-wrap>
-  <div ng-repeat="product in ctrl.event.products track by $index"
-       flex-sm="100" flex-md="50" flex-gt-md="50" flex-gt-lg="33">
-    <lb-product-card product="product"></lb-product-card>
-  </div>
-</div>
