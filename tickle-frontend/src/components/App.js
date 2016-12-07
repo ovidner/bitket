@@ -46,11 +46,12 @@ class App extends React.Component {
           this.props.variationsMeta._error || this.props.variationsMeta._isPending ||
           this.props.variationChoicesMeta._error || this.props.variationChoicesMeta._isPending
         ) ? (
-          <p>Loading...</p>
+          <Grid>
+            <p>Loading...</p>
+          </Grid>
         ) : (
           this.props.children
         )}
-
         <Footer/>
       </div>
     )
