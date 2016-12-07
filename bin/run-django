@@ -6,4 +6,4 @@ curl https://intake.opbeat.com/api/v1/organizations/${DJANGO_OPBEAT_ORGANIZATION
   -d branch=`git rev-parse --abbrev-ref HEAD` \
   -d machine=`hostname` \
   -d status=machine-completed
-gunicorn config.wsgi -c /app/config/gunicorn.py
+gunicorn config.wsgi -c /app/gunicorn_conf.py
