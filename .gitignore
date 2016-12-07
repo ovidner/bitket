@@ -31,4 +31,4 @@ node_modules/
 .env
 
 # Collected static files
-staticfiles/
+tickle/staticfiles/

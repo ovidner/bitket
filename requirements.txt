@@ -16,6 +16,7 @@ django-extensions==1.7.*
 django-model-utils==2.6.*
 django-environ==0.4.*
 django-secure==1.0.*
+whitenoise==3.2.*
 
 # REST Framework
 djangorestframework==3.5.*
