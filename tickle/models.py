@@ -329,7 +329,7 @@ class UserManager(models.Manager.from_queryset(UserQuerySet),
         Creates and saves a superuser with the given email, date of
         birth and password.
         """
-        user = self.create_user(email, name, password)
+        user = self.create_user(email=email, name=name, password=password)
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
