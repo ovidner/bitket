@@ -18,4 +18,4 @@ RUN pip3 install --no-cache-dir -r /app/requirements.txt
 COPY . /app
 
 EXPOSE 80
-CMD ["/app/run-django.sh"]
+CMD ["/app/bin/run-django"]
