@@ -1,8 +1,6 @@
 FROM nginx:alpine
 
-RUN mkdir -p /app/build && \
-    rm -rf /usr/share/nginx/html/ && \
-    ln -s /app/build /usr/share/nginx/html
+RUN mkdir -p /app/build
 WORKDIR /app
 
 COPY ./requirements.alpine.txt /app/requirements.alpine.txt
@@ -14,6 +12,7 @@ RUN yarn install && \
     yarn cache clean
 
 COPY . /app
+RUN cd /etc/nginx/conf.d && patch default.conf /app/nginx.vh.default.conf.patch
 
 ENTRYPOINT ["/app/bin/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
