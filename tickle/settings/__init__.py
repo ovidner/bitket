@@ -312,10 +312,9 @@ JWT_AUTH = {
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
 OPBEAT = {
-    'ORGANIZATION_ID': env.str('DJANGO_OPBEAT_ORGANIZATION_ID', ''),
-    'APP_ID': env.str('DJANGO_OPBEAT_APP_ID', ''),
-    'SECRET_TOKEN': env.str('DJANGO_OPBEAT_SECRET_TOKEN', ''),
-    'DEBUG': True
+    'ORGANIZATION_ID': env.str('OPBEAT_ORGANIZATION_ID', ''),
+    'APP_ID': env.str('OPBEAT_APP_ID', ''),
+    'SECRET_TOKEN': env.str('OPBEAT_SECRET_TOKEN', '')
 }
 
 GOOGLE_ANALYTICS_ID = env.str('GOOGLE_ANALYTICS_ID', '')
