@@ -11,17 +11,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, RedirectView
 from django.views.generic.detail import SingleObjectMixin
 
-from rest_framework import generics, views, viewsets, status, mixins
-from rest_framework.decorators import detail_route
-from rest_framework.filters import DjangoFilterBackend
+from rest_framework import views, viewsets, status, mixins
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
-from rest_social_auth.views import JWTAuthMixin, BaseSocialAuthView
 
-from tickle.filters import HoldingPermissionFilterBackend, HoldingFilterSet
 from tickle.models import Event, Organization, Ticket, TicketType, Variation, \
     VariationChoice
-from tickle.renderers import QrRenderer
 from tickle.utils.signing import sign_state, unsign_state
 
 from . import models, serializers

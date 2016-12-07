@@ -33,7 +33,6 @@ INSTALLED_APPS = (
     'rest_framework',
     'social.apps.django_app.default',
     'rest_social_auth',
-    'dry_rest_permissions',
     'django_extensions',
     'opbeat.contrib.django',
 

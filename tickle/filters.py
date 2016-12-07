@@ -2,7 +2,6 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 from django.db.models import Q
-from dry_rest_permissions.generics import DRYPermissionFiltersBase
 
 from tickle.models import Ticket
 
@@ -23,21 +22,6 @@ class IsNotNullFilter(IsNullFilter):
         if value is not None:
             value = not value
         return super(IsNotNullFilter, self).filter(qs, value)
-
-
-class CartFilterBackend(DRYPermissionFiltersBase):
-    def filter_list_queryset(self, request, queryset, view):
-        return queryset.filter(person=request.user)
-
-
-class HoldingPermissionFilterBackend(DRYPermissionFiltersBase):
-    def filter_list_queryset(self, request, queryset, view):
-        if request.user.is_anonymous():
-            return queryset.none()
-        return queryset.filter(
-            Q(person=request.user) |
-            Q(cart__person=request.user) |
-            Q(product__main_event__organizer__admins=request.user))
 
 
 class HoldingFilterSet(django_filters.FilterSet):
