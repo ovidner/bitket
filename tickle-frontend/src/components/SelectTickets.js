@@ -2,6 +2,7 @@ import React from 'react'
 import { Alert, Grid, ButtonGroup, Button, Row, Col, Popover, OverlayTrigger,
   FormGroup, Radio, ControlLabel, Panel, Table, FormControl } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
+import Markdown from 'react-markdown'
 import { connect } from 'react-redux'
 
 import * as actions from '../actions'
@@ -125,9 +126,7 @@ const SelectTickets = connect(mapStateToProps, mapDispatchToProps)((props) => (
                 </Alert>
               )}
               {/* DESCRIPTION */}
-              <p>
-                {ticketType.get('description')}
-              </p>
+              <Markdown source={ticketType.get('description')}/>
               {/* VARIATIONS */}
               <Row>
                 {variations.map((variation) => {
