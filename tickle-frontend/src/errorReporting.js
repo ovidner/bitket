@@ -8,7 +8,12 @@ const init = () => {
   })
 }
 
-const capture = (err) => {
+const setExtraContext = (extraContext) => {
+  window._opbeat('setExtraContext', extraContext)
+}
+
+const capture = (err, extraContext) => {
+  if (extraContext) setExtraContext(extraContext)
   window._opbeat('captureException', err)
 }
 
@@ -24,5 +29,6 @@ const setUserContext = ({id, email}) => {
 export {
   init,
   capture,
+  setExtraContext,
   setUserContext
 }

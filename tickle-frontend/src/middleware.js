@@ -11,9 +11,11 @@ const errorReportingMiddleware = (store) => (next) => (action) => {
   try {
     return next(action)
   } catch (error) {
-    error.action = action
-    error.state = store.getState()
-    capture(error)
+    capture(error, {
+      action: action,
+      state: store.getState()
+    })
+
     throw error
   }
 }
