@@ -175,7 +175,7 @@ const reducer = (state = initialState, action) => {
                   'general', item.availability.general,
                   'totalQuantity', item.availability.total_quantity
                 ),
-                'conflictsWith', item.conflicts_with,
+                'conflictsWith', fromJS(item.conflicts_with),
                 'index', item.index
               ))
             ), Map()))
