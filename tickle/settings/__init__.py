@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import warnings
 
+import certifi
 from django.core.urlresolvers import reverse_lazy
 import environ
 import psycopg2
@@ -282,6 +283,8 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str('AUTH_GOOGLE_CLIENT_ID', '')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str('AUTH_GOOGLE_CLIENT_SECRET', '')
 SOCIAL_AUTH_GOOGLE_OAUTH2_USE_UNIQUE_USER_ID = True
+# https://github.com/certifi/python-certifi/issues/32
+SOCIAL_AUTH_GOOGLE_OAUTH2_VERIFY_SSL = certifi.old_where()
 
 SOCIAL_AUTH_LIU_HOST = env.str('AUTH_LIU_HOST', default='fs.liu.se')
 SOCIAL_AUTH_LIU_KEY = env.str('AUTH_LIU_CLIENT_ID', '')
