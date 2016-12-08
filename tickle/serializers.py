@@ -284,7 +284,8 @@ class PurchaseSerializer(serializers.Serializer):
                         stripe_account=organization.stripe_account_id,
                         source=validated_data['payment']['payload'],
                         amount=int(charge_amount * 100),
-                        currency=settings.CURRENCY
+                        currency=settings.CURRENCY,
+                        receipt_email=user.email
                     )
                 except stripe.StripeError as exc:
                     raise exceptions.PaymentDenied()
