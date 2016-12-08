@@ -160,16 +160,7 @@ class PurchaseSerializer(serializers.Serializer):
         ).exists():
             raise exceptions.ConflictingTicketTypes()
 
-        # Use a transaction with weak isolation? Well, it was the only way I
-        # could come up with that guaranteed a fair creation order of tickets
-        # while still making sure that the only tickets committed to the
-        # database are the actual, purchased tickets. But most importantly, this
-        # should also save us from a few possible nasty race conditions, leading
-        # to too many sold tickets.
-        #
-        # The trick is to only perform actions on the tickets that have a clear
-        # destiny and to wait for the ones that does not have that.
-        with transaction.atomic():
+        with transaction.atomic(using=settings.SERIALIZABLE_ISOLATION):
             unclear_tickets = set()
             safe_tickets = set()
             lost_tickets = set()

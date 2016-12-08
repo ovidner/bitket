@@ -105,6 +105,15 @@ DATABASES[READ_UNCOMMITTED_ISOLATION]['OPTIONS'] = dict(
     isolation_level=psycopg2.extensions.ISOLATION_LEVEL_READ_UNCOMMITTED
 )
 
+SERIALIZABLE_ISOLATION = 'default_serializable'
+
+# Copies the 'default' database and sets the isolation level
+DATABASES[SERIALIZABLE_ISOLATION] = dict(DATABASES['default'].items())
+DATABASES[SERIALIZABLE_ISOLATION]['OPTIONS'] = dict(
+    isolation_level=psycopg2.extensions.ISOLATION_LEVEL_SERIALIZABLE
+)
+
+
 # CACHING
 # ------------------------------------------------------------------------------
 CACHES = {

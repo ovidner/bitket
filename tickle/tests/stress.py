@@ -74,7 +74,7 @@ class StressTests(APITransactionTestCase):
                 client.force_authenticate(user)
 
                 with CaptureQueriesContext(connections['default']) as cqc_1:
-                    with CaptureQueriesContext(connections['default_read_uncommitted']) as cqc_2:
+                    with CaptureQueriesContext(connections['default_serializable']) as cqc_2:
                         start_time = time()
                         response = client.post(url, data=get_request_data(), format='json')
                         end_time = time()
@@ -94,4 +94,4 @@ class StressTests(APITransactionTestCase):
         pprint(sorted(responses, key=lambda x: x[0]))
         self.assertEqual(models.Ticket.objects.pending().count(), 0)
         self.assertEqual(models.Ticket.objects.count(), 950)
-        self.assertEqual(models.Transaction.objects.count(), 950)
+        self.assertEqual(models.Transaction.objects.count(), 700)
