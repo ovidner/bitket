@@ -9,7 +9,7 @@ const authProviders = {
     backendId: 'facebook',
     authUrl: 'https://www.facebook.com/v2.7/dialog/oauth',
     clientId: process.env.REACT_APP_AUTH_FACEBOOK_CLIENT_ID,
-    scope: 'public_profile',
+    scope: 'public_profile,email',
     scopeParam: 'scope'
   },
   google: {

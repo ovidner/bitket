@@ -273,7 +273,7 @@ SOCIAL_AUTH_PIPELINE = (
 
 SOCIAL_AUTH_FACEBOOK_KEY = env.str('AUTH_FACEBOOK_CLIENT_ID', '')
 SOCIAL_AUTH_FACEBOOK_SECRET = env.str('AUTH_FACEBOOK_CLIENT_SECRET', '')
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['public_profile']
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['public_profile', 'email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'locale': 'en_US',
     'fields': 'id, name, email'
