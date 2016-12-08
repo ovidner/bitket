@@ -6,7 +6,7 @@ import { withRouter } from 'react-router'
 
 import * as actions from '../actions'
 import * as selectors from '../selectors'
-import { Footer, Navbar } from './'
+import { Footer, Navbar, PurchaseModal } from './'
 
 const mapStateToProps = (state, props) => ({
   eventsMeta: selectors.getAllEvents(state, true).toJS(),
@@ -53,6 +53,7 @@ class App extends React.Component {
           this.props.children
         )}
         <Footer/>
+        <PurchaseModal/>
       </div>
     )
   }

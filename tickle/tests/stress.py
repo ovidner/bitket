@@ -25,13 +25,13 @@ class StressTests(APITransactionTestCase):
             price=100,
             is_published=True,
             is_generally_available=True,
-            total_limit=700)
+            max_total_quantity=700)
         ticket_type_2 = factories.TicketTypeFactory(
             event=event,
             price=50,
             is_published=True,
             is_generally_available=True,
-            total_limit=250)
+            max_total_quantity=250)
 
         def get_request_data():
             stripe_token = stripe.Token.create(card={
@@ -59,6 +59,9 @@ class StressTests(APITransactionTestCase):
                     'type': 'stripe',
                     'payload': stripe_token.id,
                     'amount': '150.00'
+                },
+                'user': {
+                    'nin': '9011290799'
                 }
             }
 
@@ -89,5 +92,6 @@ class StressTests(APITransactionTestCase):
             thread.join()
 
         pprint(sorted(responses, key=lambda x: x[0]))
+        self.assertEqual(models.Ticket.objects.pending().count(), 0)
         self.assertEqual(models.Ticket.objects.count(), 950)
         self.assertEqual(models.Transaction.objects.count(), 950)

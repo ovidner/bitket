@@ -18,7 +18,7 @@ from tickle.models import Event, Organization, Ticket, TicketType, Variation, \
     VariationChoice
 from tickle.utils.signing import sign_state, unsign_state
 
-from . import models, serializers
+from . import filters, models, serializers
 
 
 class StripeConnectPermissionMixin(LoginRequiredMixin,
@@ -115,7 +115,8 @@ class AccessCodeViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 
 class PurchaseView(views.APIView):
     def post(self, request, *args, **kwargs):
-        serializer = serializers.PurchaseSerializer(data=request.data, context={'request': request})
+        serializer = serializers.PurchaseSerializer(
+            data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -125,6 +126,7 @@ class PurchaseView(views.APIView):
 class TicketViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = serializers.TicketSerializer
+    filter_backends = (filters.TicketPermissionFilter,)
 
 
 class TicketTypeViewSet(viewsets.ReadOnlyModelViewSet):

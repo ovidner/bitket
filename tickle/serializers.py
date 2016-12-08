@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 def jwt_payload_handler(user):
     payload = original_jwt_payload_handler(user)
     payload['name'] = user.get_full_name()
+    payload['nin'] = user.nin
     return payload
 
 
@@ -60,15 +61,18 @@ class PurchaseTicketSerializer(serializers.HyperlinkedModelSerializer):
             'ticket_type',
             'variation_choices'
         )
+        extra_kwargs = {
+            'ticket_type': {
+                # Don't filter on general availability! We might have access
+                # codes.
+                'queryset': models.TicketType.objects.published()
+            }
+        }
 
     def validate(self, attrs):
-        if attrs['ticket_type'].variations.exclude(choices__in=attrs['variation_choices']).exists():
-            raise exceptions.InvalidVariationChoices(_('At least one variation choice is missing.'))
-        if models.VariationChoice.objects.filter(id__in=attrs['variation_choices']).exclude(variation__ticket_type=attrs['ticket_type']).exists():
-            raise exceptions.InvalidVariationChoices(
-                _('At least one variation choice belongs to a variation of another ticket type than the one supplied.'))
-        if attrs['ticket_type'].variations.filter(choices__in=attrs['variation_choices']).distinct().count() != len(attrs['variation_choices']):
-            raise exceptions.InvalidVariationChoices(_('At least two variation choices belongs to the same variation.'))
+        if (list(models.Variation.objects.filter(choices__in=attrs['variation_choices']).distinct()) != list(attrs['ticket_type'].variations.all()) or len(attrs['variation_choices']) != attrs['ticket_type'].variations.count()):
+            raise exceptions.InvalidVariationChoices(_('Invalid variation choices.'))
+
         return attrs
 
 
@@ -78,6 +82,12 @@ class PurchaseTransactionSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'amount',
         )
+
+
+class PurchaseMessageSerializer(serializers.Serializer):
+    code = serializers.CharField()
+    text = serializers.CharField()
+    entity = serializers.CharField()
 
 
 class PurchaseUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -100,7 +110,7 @@ class PurchaseSerializer(serializers.Serializer):
         write_only=True,
         many=True,
         slug_field='token',
-        queryset=models.AccessCode.objects.all(),
+        queryset=models.AccessCode.objects.utilizable(),
         allow_empty=True)
     payment = PurchasePaymentSerializer(
         write_only=True)
@@ -108,9 +118,9 @@ class PurchaseSerializer(serializers.Serializer):
         write_only=True)
 
     # Response only
-    messages = serializers.ListField(
+    messages = PurchaseMessageSerializer(
         read_only=True,
-        child=serializers.CharField(),
+        many=True,
         allow_empty=True)
     transactions = PurchaseTransactionSerializer(
         read_only=True,
@@ -159,7 +169,7 @@ class PurchaseSerializer(serializers.Serializer):
         #
         # The trick is to only perform actions on the tickets that have a clear
         # destiny and to wait for the ones that does not have that.
-        with transaction.atomic(using=settings.READ_UNCOMMITTED_ISOLATION):
+        with transaction.atomic():
             unclear_tickets = set()
             safe_tickets = set()
             lost_tickets = set()
@@ -169,45 +179,32 @@ class PurchaseSerializer(serializers.Serializer):
             # on.
             for ticket_data in tickets_data:
                 for access_code in validated_data.get('access_codes'):
-                    if access_code and access_code.ticket_type == ticket_data.ticket_type:
+                    if access_code and access_code.ticket_type == ticket_data['ticket_type']:
                         ticket_data['access_code'] = access_code
+                # Keeping M2M until we have saved
+                variation_choices = ticket_data.pop('variation_choices')
                 ticket = models.Ticket.objects.create(pending=True, **ticket_data)
+                ticket.variation_choices.set(variation_choices)
                 models.TicketOwnership.objects.create(ticket=ticket, user=user)
                 unclear_tickets.add(ticket)
 
             while True:
                 for ticket in unclear_tickets:
-                    # Unpublished ticket type
-                    if not ticket.ticket_type.is_published:
-                        lost_tickets.add(ticket)
-                        response_data['messages'].append(OrderedDict((
-                            ('code', 'ticket_type_unpublished'),
-                            ('text', _("The ticket type {} is not published.".format(ticket.ticket_type.name))),
-                            ('entity', reverse('tickettype-detail', kwargs={'pk': ticket.ticket_type_id}))
-                        )))
-                        continue
-
                     if not ticket.ticket_type.is_generally_available:
                         # Ticket type not available for purchase
                         if not ticket.access_code:
                             lost_tickets.add(ticket)
-                            response_data['messages'].append(OrderedDict((
-                                ('code', 'ticket_type_unavailable'),
-                                ('text', _(
-                                    "The ticket type '{}' is not available for purchase.".format(
-                                        ticket.ticket_type.name))),
-                                ('entity', reverse('tickettype-detail', kwargs={
-                                    'pk': ticket.ticket_type_id}))
-                            )))
+                            response_data['messages'].append(dict(
+                                code='ticket_type_unavailable',
+                                text=_("The ticket type '{}' is not available for purchase.".format(
+                                        ticket.ticket_type.name)),
+                                entity=reverse('tickettype-detail', kwargs={
+                                    'pk': ticket.ticket_type_id})))
                             continue
 
                         # Access code is supplied, has an impact on availability
                         # and is utilized by a ticket before this one.
-                        if ticket.access_code and ticket.access_code.tickets.filter(
-                            # See below on how we determine positions.
-                            Q(created__lt=ticket.created) |
-                            Q(created__exact=ticket.created, pk__lt=ticket.pk)
-                        ).exists():
+                        if ticket.access_code and ticket.access_code.tickets.before_in_queue(ticket=ticket).exists():
                             lost_tickets.add(ticket)
                             response_data['messages'].append(OrderedDict((
                                 ('code', 'access_code_utilized'),
@@ -215,23 +212,29 @@ class PurchaseSerializer(serializers.Serializer):
                             )))
                             continue
 
+                    if models.Ticket.objects.filter(ticket_type__conflicts_with=ticket.ticket_type).before_in_queue(ticket=ticket).owned_by(user).exists():
+                        lost_tickets.add(ticket)
+                        response_data['messages'].append(dict(
+                            code='ticket_type_conflicting',
+                            text=_('The ticket type conflicts with another ticket of yours.'),
+                            entity=reverse('tickettype-detail', kwargs={'pk': ticket.ticket_type_id})
+                        ))
+                        continue
+
                     # No tickets left
                     if not ticket.ticket_type.within_max_total_quantity:
                         lost_tickets.add(ticket)
                         response_data['messages'].append(OrderedDict((
-                            ('code', 'ticket_type_quantitatively_unavailable'),
+                            ('code', 'ticket_type_max_total_quantity_exceeded'),
                             ('text', _("There are no tickets of the type '{}' left.".format(ticket.ticket_type.name))),
                             ('entity', reverse('tickettype-detail', kwargs={'pk': ticket.ticket_type_id}))
                         )))
                         continue
 
-                    if ticket.ticket_type.max_personal_quantity and ticket.ticket_type.tickets.filter(
-                        Q(created__lt=ticket.created) |
-                        Q(created__exact=ticket.created, pk__lt=ticket.pk)
-                    ).owned_by(user).count() >= ticket.ticket_type.max_personal_quantity:
+                    if ticket.ticket_type.max_personal_quantity and ticket.ticket_type.tickets.before_in_queue(ticket=ticket).owned_by(user).count() >= ticket.ticket_type.max_personal_quantity:
                         lost_tickets.add(ticket)
                         response_data['messages'].append(OrderedDict((
-                            ('code', 'ticket_type_personal_limit_reached'),
+                            ('code', 'ticket_type_max_personal_quantity_exceeded'),
                             ('text', _(
                                 "You have reached your personal limit for the ticket type '{}'.".format(
                                     ticket.ticket_type.name))),
@@ -240,20 +243,11 @@ class PurchaseSerializer(serializers.Serializer):
                         )))
                         continue
 
-                    # Get the ticket's position by purchase time. In the extreme
-                    # case of multiple tickets purchased in the same
-                    # *microsecond*, we let the id (and since we use random
-                    # UUIDs, luck) decide. Since the position is based on
-                    # creation time, it can never get higher during the
-                    # transaction, but it can get lower (if pending tickets
-                    # disappear due to failed payments).
-                    position = ticket.ticket_type.tickets.filter(
-                        Q(created__lt=ticket.created) |
-                        Q(created__exact=ticket.created, pk__lt=ticket.pk)
-                    ).count()
+                    position = ticket.ticket_type.tickets.before_in_queue(ticket=ticket).count()
 
                     # position is zero-indexed
-                    if position < ticket.ticket_type.total_limit:
+                    if (not ticket.ticket_type.max_total_quantity or
+                            position < ticket.ticket_type.max_total_quantity):
                         # Since the position never gets higher, we now know that
                         # this ticket is safe. Great!
                         safe_tickets.add(ticket)
@@ -280,12 +274,20 @@ class PurchaseSerializer(serializers.Serializer):
                     # There should be one ownership per ticket, hence get()
                     charge_amount += ticket.ownerships.get().price
 
-                charge = stripe.Charge.create(
-                    stripe_account=organization.stripe_account_id,
-                    source=validated_data['payment']['payload'],
-                    amount=int(charge_amount * 100),
-                    currency=settings.CURRENCY
-                )
+                assert charge_amount <= validated_data['payment']['amount']
+
+                user.nin = validated_data['user']['nin']
+                user.save()
+
+                try:
+                    charge = stripe.Charge.create(
+                        stripe_account=organization.stripe_account_id,
+                        source=validated_data['payment']['payload'],
+                        amount=int(charge_amount * 100),
+                        currency=settings.CURRENCY
+                    )
+                except stripe.StripeError as exc:
+                    raise exceptions.PaymentDenied()
 
                 purchase_transaction = models.Transaction.objects.create(
                     amount=charge_amount,
@@ -300,8 +302,7 @@ class PurchaseSerializer(serializers.Serializer):
                     ticket.save()
                     response_data['tickets'].append(ticket)
 
-        user.nin = validated_data.get('user').nin
-        user.save()
+
 
         return response_data
 
@@ -324,7 +325,8 @@ class VariationChoiceSerializer(serializers.HyperlinkedModelSerializer):
             'url',
             'variation',
             'name',
-            'delta'
+            'delta',
+            'index'
         ]
 
 
@@ -334,7 +336,8 @@ class VariationSerializer(serializers.HyperlinkedModelSerializer):
         fields = [
             'url',
             'ticket_type',
-            'name'
+            'name',
+            'index'
         ]
 
 
@@ -380,6 +383,7 @@ class TicketTypeSerializer(serializers.HyperlinkedModelSerializer):
             'modifiers',
             'availability',
             'conflicts_with',
+            'index'
         ]
 
     def get_availability(self, obj):

@@ -46,6 +46,9 @@ class TicketTypeQuerySet(models.QuerySet):
     def unpublished(self):
         return self.filter(is_published=False)
 
+    def generally_available(self):
+        return self.filter(is_generally_available=True)
+
 
 class TicketQuerySet(models.QuerySet):
     def pending(self):
@@ -65,6 +68,17 @@ class TicketQuerySet(models.QuerySet):
         return self.filter(
             ownerships__in=ownerships.filter(user=user)
         ).distinct()  # Buying, reselling and buying back would give duplicates
+
+    def before_in_queue(self, ticket):
+        # Get the ticket's position by purchase time. In the extreme
+        # case of multiple tickets purchased in the same
+        # *microsecond*, we let the id (and since we use random
+        # UUIDs, luck) decide. Since the position is based on
+        # creation time, it can never get higher during the
+        # transaction, but it can get lower (if pending tickets
+        # disappear due to failed payments).
+        return self.filter(Q(created__lt=ticket.created) |
+                           Q(created__exact=ticket.created, pk__lt=ticket.pk))
 
     def email_ticket(self):
         for i in self:
@@ -454,22 +468,6 @@ class Ticket(models.Model):
     def __str__(self):
         return '{0}'.format(self.ticket_type)
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if self._has_conflicting_product_variation_choices():
-            raise InvalidVariationChoices(
-                _('Ticket has conflicting variation choices.'))
-
-        super(Ticket, self).save(force_insert, force_update, using,
-                                 update_fields)
-
-    def _has_conflicting_product_variation_choices(self):
-        if not self.pk:
-            return False
-        return self.variation_choices.values(
-            'variation').annotate(count=models.Count('id')).order_by().filter(
-            count__gt=1).exists()
-
     def utilize(self):
         self.utilized = now()
 
@@ -560,6 +558,9 @@ class AccessCodeQuerySet(models.QuerySet):
     def get_by_token(self, token):
         return self.get(id=signing.loads(token, salt='access_code'))
 
+    def utilizable(self):
+        return self.filter(tickets__isnull=True)
+
 
 class AccessCode(models.Model):
     id = IdField()
@@ -572,6 +573,9 @@ class AccessCode(models.Model):
         verbose_name = _('access code')
         verbose_name_plural = _('access codes')
 
+    def __str__(self):
+        return self.token
+
     @property
     def token(self):
         return signing.dumps(self.id.hex, salt='access_code')
@@ -583,6 +587,7 @@ class AccessCode(models.Model):
 
 class TicketType(models.Model):
     id = IdField()
+    index = models.PositiveIntegerField(default=1)
 
     name = NameField()
     description = DescriptionField()
@@ -626,7 +631,7 @@ class TicketType(models.Model):
     objects = TicketTypeQuerySet.as_manager()
 
     class Meta:
-        ordering = ['name']
+        ordering = ('index', 'name')
         verbose_name = _('product')
         verbose_name_plural = _('products')
 
@@ -645,6 +650,7 @@ class TicketType(models.Model):
 
 class Variation(models.Model):
     id = IdField()
+    index = models.PositiveIntegerField(default=1)
     name = NameField()
 
     ticket_type = models.ForeignKey(
@@ -653,7 +659,7 @@ class Variation(models.Model):
         verbose_name=_('ticket type'))
 
     class Meta:
-        ordering = ['name']
+        ordering = ['index', 'name']
         unique_together = [
             ['name', 'ticket_type']
         ]
@@ -672,6 +678,7 @@ class VariationChoiceQuerySet(models.QuerySet):
 
 class VariationChoice(models.Model):
     id = IdField()
+    index = models.PositiveIntegerField(default=1)
     name = NameField()
     delta = MoneyField(
         default=0,
@@ -685,6 +692,7 @@ class VariationChoice(models.Model):
     objects = VariationChoiceQuerySet.as_manager()
 
     class Meta:
+        ordering = ('index',)
         unique_together = [
             ['name', 'variation']
         ]

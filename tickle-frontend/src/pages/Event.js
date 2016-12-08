@@ -1,6 +1,7 @@
 import React from 'react'
 import { Grid, Nav, NavItem, Row, Col, Well, FormControl, FormGroup, ControlLabel, Alert } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
+import Markdown from 'react-markdown'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 
@@ -11,7 +12,8 @@ import * as selectors from '../selectors'
 const mapStateToProps = (state, props) => ({
   authIsPending: selectors.authIsPending(state),
   event: selectors.getEventFromSlug(state, props.params.eventSlug),
-  isLoggedIn: selectors.isLoggedIn(state)
+  isLoggedIn: selectors.isLoggedIn(state),
+  getTotalAmountForEvent: (eventUrl) => selectors.getTotalAmountForEvent(state, eventUrl)
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -23,6 +25,7 @@ class _Event extends React.Component {
     return this.props.event ? (
       <Page>
         <h1>{this.props.event.get('name')}</h1>
+        <Markdown source={this.props.event.get('description')}/>
         <Row>
           <Col md={8}>
             <h2>Tickets</h2>
@@ -38,7 +41,7 @@ class _Event extends React.Component {
             <h2>Payment</h2>
             <hr/>
             <p className="lead">
-              Total amount: 500.00 SEK
+              Total amount: {this.props.getTotalAmountForEvent(this.props.event.get('url')).toRepr()} SEK
             </p>
 
             {this.props.isLoggedIn ? (

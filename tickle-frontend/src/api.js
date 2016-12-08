@@ -53,7 +53,7 @@ const fetchAction = ({actionType, url, options={}, extraMeta={}, useAuth=false})
         if (response.ok) {
           return dispatchSuccessful(payload)
         } else {
-          return dispatchFailed(response.statusText)
+          return dispatchFailed(payload.detail ? payload.detail : response.statusText)
         }
       })
     })

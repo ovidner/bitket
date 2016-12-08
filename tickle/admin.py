@@ -3,6 +3,11 @@ from django.contrib import admin
 from . import models
 
 
+@admin.register(models.AccessCode)
+class AccessCodeAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(models.StudentUnionMemberCondition)
 class StudentUnionMemberConditionAdmin(admin.ModelAdmin):
     pass
@@ -46,3 +51,7 @@ class ProductAdmin(admin.ModelAdmin):
 class ProductVariationAdmin(admin.ModelAdmin):
     inlines = [ProductVariationChoiceInline]
 
+
+@admin.register(models.User)
+class UserAdmin(admin.ModelAdmin):
+    pass

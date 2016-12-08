@@ -1,13 +1,12 @@
 from __future__ import absolute_import, unicode_literals
 import logging
 
-from django.db.models import Q
+import django_filters
+from rest_framework import filters
 
 from tickle.models import Ticket
 
 logger = logging.getLogger(__name__)
-
-import django_filters
 
 
 class IsNullFilter(django_filters.BooleanFilter):
@@ -37,3 +36,10 @@ class HoldingFilterSet(django_filters.FilterSet):
             'liu_id',
             'purchased'
         ]
+
+
+class TicketPermissionFilter(filters.BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        if request.user.is_anonymous:
+            return queryset.none()
+        return queryset.owned_by(user=request.user, only_current=False)

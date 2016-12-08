@@ -42,7 +42,7 @@ const PriceDelta = (props) => (
 const SelectTickets = connect(mapStateToProps, mapDispatchToProps)((props) => (
   <div>
     <Row>
-      {props.ticketTypes.map(ticketType => {
+      {props.ticketTypes.sortBy(i => i.get('index')).map(ticketType => {
         const variations = props.getVariationsOfTicketType(ticketType.get('url'))
         const selectedConflicts = props.getSelectedConflictsOfTicketType(ticketType.get('url'))
         const ticketTypeHasValidVariationChoiceSelection = props.ticketTypeHasValidVariationChoiceSelections(ticketType.get('url'))
@@ -114,23 +114,12 @@ const SelectTickets = connect(mapStateToProps, mapDispatchToProps)((props) => (
           <Col sm={6}>
             <Panel header={header}
                    bsStyle={ticketTypeIsSelected ? 'primary' : 'default'}>
-              {ticketType.getIn(['availability', 'general']) ? null : (
-                <Alert bsStyle="danger">
-                  This ticket type is not generally available. If you have an
-                  access code, you can try using it.
-                </Alert>
-              )}
-              {ticketType.getIn(['availability', 'totalQuantity']) ? null : (
-                <Alert bsStyle="danger">
-                  This ticket type has been sold out.
-                </Alert>
-              )}
               {/* DESCRIPTION */}
               <Markdown source={ticketType.get('description')}/>
               {/* VARIATIONS */}
               <Row>
                 {variations.map((variation) => {
-                  const choices = props.getVariationChoicesOfVariation(variation.get('url'))
+                  const choices = props.getVariationChoicesOfVariation(variation.get('url')).sortBy(i => i.get('index'))
                   return (
                     <Col xs={6}>
                       <FormGroup>
@@ -176,10 +165,20 @@ const SelectTickets = connect(mapStateToProps, mapDispatchToProps)((props) => (
                   <Icon className="text-info" name="question-circle"/>
                 </OverlayTrigger>
               </p>
+              {ticketType.getIn(['availability', 'general']) ? null : (
+                <Alert bsStyle="danger">
+                  This ticket type is not available for purchase at this time.
+                  If you have an access link, you can try using it.
+                </Alert>
+              )}
+              {ticketType.getIn(['availability', 'totalQuantity']) ? null : (
+                <Alert bsStyle="danger">
+                  This ticket type has been sold out.
+                </Alert>
+              )}
               {/* ACTIONS */}
-
               {ticketTypeIsSelected ? (
-                <Button block bsStyle="warning"
+                <Button block bsStyle="primary"
                         onClick={props.deselectTicketType(ticketType.get('url'))}>
                   <Icon name="remove" fixedWidth/>
                   Deselect

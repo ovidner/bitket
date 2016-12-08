@@ -59,7 +59,7 @@ class TicketTypeFactory(factory.DjangoModelFactory):
     description = factory.fuzzy.FuzzyText(length=64)
     event = factory.SubFactory(EventFactory)
     price = factory.fuzzy.FuzzyDecimal(10, 1000)
-    total_limit = factory.fuzzy.FuzzyInteger(750, 1000)
+    max_total_quantity = factory.fuzzy.FuzzyInteger(750, 1000)
 
     class Meta:
         model = models.TicketType

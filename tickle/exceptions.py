@@ -12,8 +12,8 @@ class DefaultException(APIException):
 
 
 class PaymentDenied(DefaultException):
-    status_code = status.HTTP_400_BAD_REQUEST
-    default_detail = _('The payment was denied.')
+    status_code = status.HTTP_402_PAYMENT_REQUIRED
+    default_detail = _('Your payment was denied.')
 
 
 class EventProductLimitExceeded(DefaultException):

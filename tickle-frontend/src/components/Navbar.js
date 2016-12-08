@@ -1,5 +1,5 @@
 import React from 'react'
-import { Nav, Navbar as BootstrapNavbar, NavDropdown, NavItem } from 'react-bootstrap'
+import { Nav, Navbar as BootstrapNavbar, NavDropdown, NavItem, Label } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { IndexLink } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -17,11 +17,12 @@ const mapDispatchToProps = (dispatch, props) => ({
 })
 
 const Navbar = connect(mapStateToProps, mapDispatchToProps)((props) => (
-  <BootstrapNavbar inverse fixedTop>
+  <BootstrapNavbar fixedTop>
     <BootstrapNavbar.Header>
       <BootstrapNavbar.Brand>
         <IndexLink to="/">
           <span className="bitket-brand">Bitket</span>
+          <sub className="text-info"><strong>beta</strong></sub>
         </IndexLink>
       </BootstrapNavbar.Brand>
       <BootstrapNavbar.Toggle />

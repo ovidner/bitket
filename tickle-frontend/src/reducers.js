@@ -1,4 +1,4 @@
-import { List, Map, Set, fromJS } from 'immutable'
+import { List, OrderedMap, Map, Set, fromJS } from 'immutable'
 
 import { actionTypes } from './actions'
 import * as api from './api'
@@ -7,87 +7,55 @@ import { Money } from './dataTypes'
 const initialState = Map.of(
   // Keys beginning with '_' are considered to be "meta" keys and are usually
   // filtered out by the selectors when getting the objects themselves.
+
+  // _isPending keys are initialized as null to hint if the related entities has
+  // even begun to load
   'session', Map.of(
     'auth', Map.of(
-      '_isPending', false,
+      '_isPending', null,
       '_error', null,
       'provider', null,
       'token', null
     ),
     'accessCodes', Map.of(
-      '_isPending', false,
+      '_isPending', null,
       '_error', null
     ),
     'selections', Map.of(
       'ticketTypes', Set.of(),
       'variationChoices', Map.of()
+    ),
+    'notes', Map.of(
+
     )
   ),
   'events', Map.of(
-    '_isPending', false,
+    '_isPending', null,
     '_error', null
   ),
   'organizations', Map.of(
-    '_isPending', false,
+    '_isPending', null,
     '_error', null
   ),
   'ticketTypes', Map.of(
-    '_isPending', false,
-    '_error', null,
-    'https://backend.bitket.se/v1/ticket-types/c6b86cc6-4f04-4651-bd64-6d50640fc7c4/', Map.of(
-      'url', 'https://backend.bitket.se/v1/ticket-types/c6b86cc6-4f04-4651-bd64-6d50640fc7c4/',
-      'id', 'c6b86cc6-4f04-4651-bd64-6d50640fc7c4',
-      'event', 'https://backend.bitket.se/v1/events/effad9ec-a50c-4484-af54-3df8288689be/',
-      'name', 'Entrance ticket',
-      'description', '',
-      'conflictsWith', List.of(
-        'https://backend.bitket.se/v1/ticket-types/4badfcb8-ed51-4ba7-9a5e-3898ef91af44/'
-      ),
-      'takesNotes', false,
-      'availability', Map.of(
-        'general', false,
-        'personal', false,
-        'quantity', true
-      ),
-      'price', Money('111.00'),
-      'modifiers', List.of(
-        Map.of(
-          'name', 'Student union discount: LinTek',
-          'delta', Money('-10.00')
-        )
-      )
-    ),
-    'https://backend.bitket.se/v1/ticket-types/4badfcb8-ed51-4ba7-9a5e-3898ef91af44/', Map.of(
-      'url', 'https://backend.bitket.se/v1/ticket-types/4badfcb8-ed51-4ba7-9a5e-3898ef91af44/',
-      'id', '4badfcb8-ed51-4ba7-9a5e-3898ef91af44',
-      'event', 'https://backend.bitket.se/v1/events/effad9ec-a50c-4484-af54-3df8288689be/',
-      'name', 'Christmas dinner + Entrance ticket',
-      'description', 'A paragraph.\n\nAnd this is also a paragraph.',
-      'conflictsWith', List.of(
-        'https://backend.bitket.se/v1/ticket-types/c6b86cc6-4f04-4651-bd64-6d50640fc7c4/'
-      ),
-      'takesNotes', true,
-      'availability', Map.of(
-        'general', false,
-        'personal', false,
-        'quantity', true
-      ),
-      'price', Money('333.00'),
-      'modifiers', List.of(
-        Map.of(
-          'name', 'Student union discount: LinTek',
-          'delta', Money('-10.00')
-        )
-      )
-    )
+    '_isPending', null,
+    '_error', null
   ),
   'variations', Map.of(
-    '_isPending', false,
+    '_isPending', null,
     '_error', null
   ),
   'variationChoices', Map.of(
-    '_isPending', false,
+    '_isPending', null,
     '_error', null
+  ),
+  'purchase', Map.of(
+    '_isOpen', false,
+    '_isPending', null,
+    '_error', null,
+    'messages', List.of(),
+    'tickets', List.of(),
+    'transactions', List.of()
   )
 )
 
@@ -207,7 +175,8 @@ const reducer = (state = initialState, action) => {
                   'general', item.availability.general,
                   'totalQuantity', item.availability.total_quantity
                 ),
-                'conflictsWith', item.conflicts_with
+                'conflictsWith', item.conflicts_with,
+                'index', item.index
               ))
             ), Map()))
         case api.actionErrorValues.FAILED:
@@ -233,6 +202,7 @@ const reducer = (state = initialState, action) => {
                 'url', item.url,
                 'ticketType', item.ticket_type,
                 'name', item.name,
+                'index', item.index
               ))
             ), Map()))
         case api.actionErrorValues.FAILED:
@@ -259,6 +229,7 @@ const reducer = (state = initialState, action) => {
                 'variation', item.variation,
                 'name', item.name,
                 'delta', Money(item.delta),
+                'index', item.index
               ))
             ), Map()))
         case api.actionErrorValues.FAILED:
@@ -268,6 +239,36 @@ const reducer = (state = initialState, action) => {
         default:
           return state
       }
+
+    case actionTypes.API.SUBMIT_PURCHASE:
+      switch (action.error) {
+        case api.actionErrorValues.PENDING:
+          return state
+            .set('purchase', initialState.get('purchase'))
+            .setIn(['purchase', '_isOpen'], true)
+            .setIn(['purchase', '_isPending'], true)
+            .setIn(['purchase', '_error'], null)
+        case api.actionErrorValues.SUCCESSFUL:
+          return state
+            .setIn(['purchase', '_isPending'], false)
+            .setIn(['purchase', '_error'], null)
+            .setIn(['purchase', 'messages'], fromJS(action.payload.messages))
+            .setIn(['purchase', 'tickets'], fromJS(action.payload.tickets.map((ticket) => Map.of(
+              'url', ticket.url,
+              'ticketType', ticket.ticket_type,
+              'variationChoices', ticket.variation_choices
+            ))))
+            .setIn(['purchase', 'transactions'], fromJS(action.payload.transactions))
+        case api.actionErrorValues.FAILED:
+          return state
+            .setIn(['purchase', '_isPending'], false)
+            .setIn(['purchase', '_error'], action.payload.message)
+        default:
+          return state
+      }
+
+    case actionTypes.DISMISS_PURCHASE:
+      return state.setIn(['purchase', '_isOpen'], false)
 
     case actionTypes.LOG_OUT:
       return state.set('session', initialState.get('session'))

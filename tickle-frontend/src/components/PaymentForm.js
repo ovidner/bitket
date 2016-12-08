@@ -10,25 +10,29 @@ import * as utils from '../utils'
 const mapStateToProps = (state, props) => {
   const event = selectors.getEvent(state, props.eventUrl)
   return ({
+    totalAmount:  selectors.getTotalAmountForEvent(state, props.eventUrl),
     user: selectors.getCurrentUser(state),
     organization: selectors.getOrganization(state, event.get('organization'))
   })
 }
 
 const mapDispatchToProps = (dispatch, props) => ({
-  performPurchase: (stripeToken) => dispatch(actions.performPurchase(stripeToken))
+  performPurchase: (stripeToken, nin) => dispatch(actions.performPurchase(props.eventUrl, stripeToken, nin))
 })
 
 class _PaymentForm extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
       cardNumber: '',
       cardExpMonth: '',
       cardExpYear: '',
       cardCode: '',
-      nin: '',
-      noNin: false
+      nin: props.user.nin || '',
+      noNin: false,
+      stripeError: null,
+      stripePending: null
     }
   }
 
@@ -61,27 +65,49 @@ class _PaymentForm extends React.Component {
     return (domEvent) => this.setState({nin: domEvent.target.value})
   }
 
-  validateCardNumber() {
-    if (this.state.cardNumber) {
-      return (window.Stripe.card.validateCardNumber(this.state.cardNumber)) ? 'success' : 'error'
-    }
-    return null
+  cardCodeIsValid() {
+    return window.Stripe.card.validateCVC(this.state.cardCode)
   }
 
-  validateNin() {
-    return (this.state.noNin || utils.ninIsValid(this.state.nin)) ? 'success' : 'error'
+  cardExpIsValid() {
+    return window.Stripe.card.validateExpiry(
+      this.state.cardExpMonth, this.state.cardExpYear)
+  }
+
+  cardNumberIsValid() {
+    return window.Stripe.card.validateCardNumber(this.state.cardNumber)
+  }
+
+  ninIsValid() {
+    return this.state.noNin || utils.ninIsValid(this.state.nin)
+  }
+
+  stripeResponseHandler(status, response) {
+    if (response.error) {
+      this.setState({stripeError: response.error})
+      this.setState({stripePending: false})
+    } else {
+      this.setState({stripeError: null})
+
+      this.props.performPurchase(response.id, this.state.noNin ? null : this.state.nin)
+      this.setState({stripePending: false})
+    }
   }
 
   startPurchase() {
     return (domEvent) => {
+      this.setState({stripeError: null})
+      this.setState({stripePending: true})
+
       window.Stripe.createToken({
         number: this.state.cardNumber,
         cvc: this.state.cardCode,
         exp_month: this.state.cardExpMonth,
         exp_year: this.state.cardExpYear
-      }, this.props.performPurchase)
+      }, this.stripeResponseHandler.bind(this))
 
       domEvent.preventDefault()
+      return false
     }
   }
 
@@ -108,11 +134,11 @@ class _PaymentForm extends React.Component {
           </Col>
         </Row>
 
-        <FormGroup validationState={this.validateNin()}>
+        <FormGroup validationState={(this.state.nin && !this.ninIsValid()) ? 'error' : null}>
           <ControlLabel>National identity number</ControlLabel>
-          <FormControl type="text" placeholder="YYMMDDXXXX" value={this.state.noNin ? '' : this.state.nin} onChange={this.setNin()} disabled={this.state.noNin}/>
+          <FormControl type="text" placeholder={this.state.noNin ? '—' : 'YYYYMMDDXXXX'} value={this.state.noNin ? '' : this.state.nin} onChange={this.setNin()} disabled={this.state.noNin}/>
           <HelpBlock>
-            Used to identify you at the event. Make sure this is correct!
+            Swedish <em>personnummer</em>. Used to identify you at the event. Make sure this is correct!
           </HelpBlock>
           <Checkbox checked={this.state.noNin} onChange={this.toggleNoNin()}>
             I don't have a Swedish national identity number
@@ -122,25 +148,25 @@ class _PaymentForm extends React.Component {
         <p>
           We accept VISA, MasterCard and American Express cards.
         </p>
-        <FormGroup>
+        <FormGroup validationState={(this.state.cardNumber && !this.cardNumberIsValid()) ? 'error' : null}>
           <ControlLabel>Card number</ControlLabel>
           <FormControl type="text" placeholder="●●●● ●●●● ●●●● ●●●●" value={this.state.cardNumber.replace(/\d{4}/g, '$& ').trim()} onChange={this.setCardNumber()}/>
         </FormGroup>
         <Row>
           <Col xs={3}>
-            <FormGroup>
+            <FormGroup validationState={(this.state.cardExpMonth && this.state.cardExpYear && !this.cardExpIsValid()) ? 'error' : null}>
               <ControlLabel>Month</ControlLabel>
               <FormControl type="text" placeholder="MM" value={this.state.cardExpMonth} onChange={this.setCardExpMonth()}/>
             </FormGroup>
           </Col>
           <Col xs={3}>
-            <FormGroup>
+            <FormGroup validationState={(this.state.cardExpMonth && this.state.cardExpYear && !this.cardExpIsValid()) ? 'error' : null}>
               <ControlLabel>Year</ControlLabel>
               <FormControl type="text" placeholder="YY" value={this.state.cardExpYear} onChange={this.setCardExpYear()}/>
             </FormGroup>
           </Col>
           <Col xs={6}>
-            <FormGroup>
+            <FormGroup validationState={(this.state.cardCode && !this.cardCodeIsValid()) ? 'error' : null}>
               <ControlLabel>Security code</ControlLabel>
               <FormControl type="text" placeholder="●●●" value={this.state.cardCode} onChange={this.setCardCode()}/>
             </FormGroup>
@@ -153,7 +179,7 @@ class _PaymentForm extends React.Component {
         </p>
         <p>
           Your payment is handled securely by Stripe. The amount will be
-          withdrawn immediately from your card.
+          withdrawn immediately from the card supplied above.
         </p>
         <p>
           Your purchase from {this.props.organization.get('name')} is protected
@@ -173,12 +199,15 @@ class _PaymentForm extends React.Component {
           </li>
         </ul>
         <p>
-          By proceeding with the purchase beneath this point (i.e. by paying),
-          you agree to these terms.
+          By paying, you agree to these terms.
         </p>
         <FormGroup>
-          <Button type="submit" bsSize="lg" bsStyle="success" block>Pay 500.00 SEK</Button>
+          <Button type="submit" bsSize="lg" bsStyle="success" block
+                  disabled={!(this.cardCodeIsValid() && this.cardExpIsValid() && this.cardNumberIsValid() && this.ninIsValid()) || this.state.stripePending}>
+            Pay {this.props.totalAmount.toRepr()} SEK
+          </Button>
         </FormGroup>
+
       </form>
     )
   }

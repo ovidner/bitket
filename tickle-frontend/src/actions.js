@@ -10,10 +10,12 @@ const actionTypes = {
     GET_EVENTS: 'API.GET_EVENTS',
     GET_ORGANIZATIONS: 'API.GET_ORGANIZATIONS',
     GET_TICKET_TYPES: 'API.GET_TICKET_TYPES',
+    GET_TICKETS: 'API.GET_TICKETS',
     GET_VARIATIONS: 'API.GET_VARIATIONS',
     GET_VARIATION_CHOICES: 'API.GET_VARIATION_CHOICES',
     SUBMIT_PURCHASE: 'API.SUBMIT_PURCHASE'
   },
+  DISMISS_PURCHASE: 'DISMISS_PURCHASE',
   LOG_OUT: 'LOG_OUT',
   SELECT_TICKET_TYPE: 'SELECT_TICKET_TYPE',
   SELECT_VARIATION_CHOICE: 'SELECT_VARIATION_CHOICE',
@@ -26,6 +28,10 @@ const addAccessCode = (accessCode) => api.fetchAction({
   extraMeta: {
     code: accessCode
   }
+})
+
+const dismissPurchase = () => ({
+  type: actionTypes.DISMISS_PURCHASE
 })
 
 const fetchAuthToken = (providerId, code) => api.fetchAction({
@@ -72,6 +78,12 @@ const fetchTicketTypes = () => api.fetchAction({
   useAuth: true
 })
 
+const fetchTickets = () => api.fetchAction({
+  actionType: actionTypes.API.GET_TICKETS,
+  url: `${apiRoot}/tickets/`,
+  useAuth: true
+})
+
 const fetchVariations = () => api.fetchAction({
   actionType: actionTypes.API.GET_VARIATIONS,
   url: `${apiRoot}/variations/`
@@ -86,13 +98,17 @@ const logOut = () => ({
   type: actionTypes.LOG_OUT
 })
 
-const performPurchase = (stripeToken) => (dispatch, getState) => {
+const performPurchase = (eventUrl, stripeToken, nin) => (dispatch, getState) => {
+  const body = JSON.stringify(selectors.makePurchaseBody(getState(), eventUrl, stripeToken, nin))
   return api.fetchAction({
     actionType: actionTypes.API.SUBMIT_PURCHASE,
     url: `${apiRoot}/purchases/`,
     options: {
       method: 'POST',
-      body: JSON.stringify(selectors.getPurchaseBody(getState(), stripeToken))
+      body
+    },
+    extraMeta: {
+      requestBody: body
     },
     useAuth: true
   })(dispatch, getState)
@@ -116,10 +132,12 @@ const selectVariationChoice = (variationUrl, variationChoiceUrl) => ({
 export {
   actionTypes,
   addAccessCode,
+  dismissPurchase,
   fetchAuthToken,
   fetchEvents,
   fetchOrganizations,
   fetchTicketTypes,
+  fetchTickets,
   fetchVariations,
   fetchVariationChoices,
   logOut,

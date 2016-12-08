@@ -1,3 +1,4 @@
+import { Map } from 'immutable'
 import jwtDecode from 'jwt-decode'
 
 import { sumMoney } from './dataTypes'
@@ -18,7 +19,7 @@ const getCurrentUser = (state) => {
 }
 
 const getAllAccessCodes = (state, meta=false) => state
-  .getIn(['sessions', 'accessCodes'])
+  .getIn(['session', 'accessCodes'])
   .filter(meta ? isMeta : isNotMeta)
 
 const getAllEvents = (state, meta=false) => state
@@ -44,13 +45,14 @@ const getAllVariationChoices = (state, meta=false) => state
 const getEvent = (state, eventUrl) => getAllEvents(state)
   .get(eventUrl)
 
-
-
 const getEventFromSlug = (state, slug) => getAllEvents(state)
   .find(e => e.get('slug') === slug)
 
 const getOrganization = (state, organizationUrl) => getAllOrganizations(state)
   .get(organizationUrl)
+
+const getTicketType = (state, ticketTypeUrl) => getAllTicketTypes(state)
+  .get(ticketTypeUrl)
 
 const getTicketTypesOfEvent = (state, eventUrl) => getAllTicketTypes(state)
   .filter(t => t.get('event') === eventUrl)
@@ -84,9 +86,6 @@ const getVariationChoicesOfVariation = (state, variationUrl) => getAllVariationC
 const getSelectedVariationChoicesOfTicketType = (state, ticketTypeUrl) => getSelectedVariationChoices(state)
   .filter((variationChoiceUrl, variationUrl) => getVariationsOfTicketType(state, ticketTypeUrl).has(variationUrl))
 
-const getTicketType = (state, ticketTypeUrl) => getAllTicketTypes(state)
-  .find(t => t.get('url') === ticketTypeUrl)
-
 const getSelectedConflictsOfTicketType = (state, ticketTypeUrl) => getAllTicketTypes(state)
   .filter((_, url) => getSelectedTicketTypes(state)
     .includes(url))
@@ -105,14 +104,31 @@ const getPriceOfTicketType = (state, ticketTypeUrl) => {
   return sumMoney(basePrice, ...modifierDeltas, ...variationChoiceDeltas)
 }
 
-const getPurchaseBody = (state, eventUrl, stripeToken) => {
+const getTotalAmountForEvent = (state, eventUrl) => {
+  const amounts = getSelectedTicketTypesOfEvent(state, eventUrl)
+    .map((ticketType) => getPriceOfTicketType(state, ticketType.get('url')))
+    .toList()
+
+  return sumMoney(...amounts)
+}
+
+const getPurchase = (state) => state.get('purchase')
+
+const makePurchaseBody = (state, eventUrl, stripeToken, nin) => {
 
   return {
-    accessCodes: [],
-    tickets: [],
+    access_codes: getAllAccessCodes(state).map(c => c.get('token')).toList().toJS(),
+    tickets: getSelectedTicketTypesOfEvent(state, eventUrl).map(ticketType => Map.of(
+      'ticket_type', ticketType.get('url'),
+      'variation_choices', getSelectedVariationChoicesOfTicketType(state, ticketType.get('url')).toList()
+    )).toList().toJS(),
     payment: {
       type: 'stripe',
-      payload: stripeToken
+      payload: stripeToken,
+      amount: getTotalAmountForEvent(state, eventUrl)
+    },
+    user: {
+      nin: nin
     }
   }
 }
@@ -159,12 +175,16 @@ export {
   getEventFromSlug,
   getOrganization,
   getPriceOfTicketType,
+  getPurchase,
+  makePurchaseBody,
   getSelectedConflictsOfTicketType,
   getSelectedTicketTypes,
   getSelectedVariationChoices,
   getSelectedVariationChoicesOfTicketType,
   getStateToPersist,
+  getTicketType,
   getTicketTypesOfEvent,
+  getTotalAmountForEvent,
   getVariationsOfTicketType,
   getVariationChoicesOfVariation,
   isLoggedIn,
