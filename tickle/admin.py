@@ -37,9 +37,16 @@ class ProductVariationChoiceInline(admin.TabularInline):
     model = models.VariationChoice
 
 
+class TicketOwnershipInline(admin.TabularInline):
+    model = models.TicketOwnership
+    raw_id_fields = ('user', 'transactions',)
+    extra = 0
+
+
 @admin.register(models.Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    pass
+    inlines = [TicketOwnershipInline]
+    raw_id_fields = ('access_code',)
 
 
 @admin.register(models.TicketType)
