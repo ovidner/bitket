@@ -709,14 +709,16 @@ def social_get_union(response, details, backend, *args, **kwargs):
         return
 
     # union is a dict of union details or None
-    union = requests.get(
+    kobra_response = requests.get(
         '{}/api/v1/students/{}/'.format(
             settings.KOBRA_HOST, response.get('nor_edu_person_lin')),
         params={'expand': 'union'},
         headers={'Authorization': 'Token {}'.format(settings.KOBRA_TOKEN)}
-    ).json()['union']
+    )
 
-    details['student_union'] = (StudentUnion.objects.get_or_create(name=union['name'])[0]
-                        if union else None)
+    if kobra_response.ok:
+        union = kobra_response.json()['union']
+        details['student_union'] = (StudentUnion.objects.get_or_create(name=union['name'])[0]
+                                    if union else None)
 
     return {'details': details}
