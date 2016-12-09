@@ -182,7 +182,7 @@ class _PaymentForm extends React.Component {
           withdrawn immediately from the card supplied above.
         </p>
         <p>
-          Your purchase from {this.props.organization.get('name')} is protected
+          Your purchase from {this.props.organization ? this.props.organization.get('name') : 'the event organizer'} is protected
           by applicable Swedish law, which (in conjunction with Bitket's terms)
           has the following important implications:
         </p>
