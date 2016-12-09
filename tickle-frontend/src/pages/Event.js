@@ -11,7 +11,8 @@ const mapStateToProps = (state, props) => ({
   authIsPending: selectors.authIsPending(state),
   event: selectors.getEventFromSlug(state, props.params.eventSlug),
   isLoggedIn: selectors.isLoggedIn(state),
-  getTotalAmountForEvent: (eventUrl) => selectors.getTotalAmountForEvent(state, eventUrl)
+  getTotalAmountForEvent: (eventUrl) => selectors.getTotalAmountForEvent(state, eventUrl),
+  accessCodesMeta: selectors.getAllAccessCodes(state, true)
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -28,6 +29,13 @@ class _Event extends React.Component {
           <Col md={8}>
             <h2>Tickets</h2>
             <hr/>
+            {this.props.accessCodesMeta.get('_error') ? (
+              <Alert bsStyle="danger">
+                There was an error trying to redeem your access code. It may be
+                incomplete or already used by someone else. Make sure that your
+                code or link has been copied properly.
+              </Alert>
+            ) : null}
             {this.props.isLoggedIn ? null : (
               <Alert bsStyle="warning">
                 Viewing base prices. Log in <span className="hidden-xs hidden-sm">to the right</span><span className="hidden-md hidden-lg">below</span> to see your personal prices.
