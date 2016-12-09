@@ -1,3 +1,4 @@
+import { capture } from './errorReporting'
 import { getAuthToken } from './selectors'
 
 const actionErrorValues = {
@@ -22,10 +23,10 @@ const fetchAction = ({actionType, url, options={}, extraMeta={}, useAuth=false})
     })
   )
 
-  const dispatchFailed = (message) => dispatch(
+  const dispatchFailed = (error) => dispatch(
     Object.assign({}, baseAction, {
       error: actionErrorValues.FAILED,
-      payload: new Error(message)
+      payload: error
     })
   )
 
@@ -53,13 +54,23 @@ const fetchAction = ({actionType, url, options={}, extraMeta={}, useAuth=false})
         if (response.ok) {
           return dispatchSuccessful(payload)
         } else {
-          return dispatchFailed(payload.detail ? payload.detail : response.statusText)
+          const err = new Error(payload.detail)
+          capture(err, {url, options, payload})
+          return dispatchFailed(err)
         }
+      }, (error) => {
+        // We've got something other than a JSON body. Just use the generic
+        // statusText in dispatch. error.message is probably more interesting
+        // technically, though.
+        capture(new Error(error.message), {url, options})
+        return dispatchFailed(new Error(response.statusText))
       })
-    })
-    .catch((response) => {
+    }, (error) => {
       // We have a communication problem. response is a TypeError.
-      return dispatchFailed(response.message)
+
+      // Opbeat really don't want a TypeError
+      capture(new Error(error.message), {error, url, options})
+      return dispatchFailed(error)
     })
 }
 
