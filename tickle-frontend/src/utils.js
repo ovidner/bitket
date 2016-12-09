@@ -5,6 +5,8 @@ import * as actions from './actions'
 import * as settings from './settings'
 import * as selectors from './selectors'
 
+const utcTimestamp = () => (new Date).getTime()
+
 const partialSubscribe = (store, select, onChange, fireNow = false) => {
   // Observes a Redux store. store should be a Redux store. select should be a
   // callback accepting the state as argument, returning a slice of the state to
@@ -32,10 +34,36 @@ const autoFetchUserDependentData = (store) => partialSubscribe(store,
   }, true)
 
 const autoPersistState = (store) => partialSubscribe(store, selectors.getStateToPersist, (partialState) => {
+  // Set a timestamp so we can determine if we want to read this state or
+  // discard it
+  window.localStorage.setItem(
+    settings.persistedStateTimestampKey,
+    utcTimestamp().toString()
+  )
   window.localStorage.setItem(
     settings.persistedStateKey,
     JSON.stringify(partialState.toJS()))
 })
+
+const mergePersistedState = (state) => {
+  // Checks the age of the state and destroys it if it is to old
+  const persistedStateTimestamp = window.localStorage.getItem(settings.persistedStateTimestampKey)
+  if (
+    !persistedStateTimestamp ||
+    Number(persistedStateTimestamp) <= settings.persistedStateTimestampThreshold
+  ) {
+    console.log('Persisted state is to old or has unset timestamp. Clearing localStorage.')
+    window.localStorage.clear()
+    return state
+  }
+
+  const persistedStateJson = window.localStorage.getItem(settings.persistedStateKey)
+  if (persistedStateJson) {
+    return state.mergeDeep(fromJS(JSON.parse(persistedStateJson)))
+  } else {
+    return state
+  }
+}
 
 const autoRefreshAuthToken = (store) => {
   let activeTimer = null
@@ -76,14 +104,7 @@ const getRedirectUri = (origin, providerId) => (
   `${origin}/log-in/${providerId}/`
 )
 
-const mergePersistedState = (state) => {
-  const persistedStateJson = window.localStorage.getItem(settings.persistedStateKey)
-  if (persistedStateJson) {
-    return state.mergeDeep(fromJS(JSON.parse(persistedStateJson)))
-  } else {
-    return state
-  }
-}
+
 
 // https://gist.github.com/peppelorum/5856691
 const ninIsValid = (input) => {

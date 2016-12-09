@@ -37,7 +37,12 @@ const opbeatAppId = process.env.REACT_APP_OPBEAT_APP_ID
 const opbeatOrgId = process.env.REACT_APP_OPBEAT_ORG_ID
 
 const persistedStateKey = 'state'
+const persistedStateTimestampKey = 'stateTimestamp'
+// The threshold for destroying persisted state. If the state is older than
+// this (or not set), it will be destroyed. UTC timestamp, use
+// (new Date).getTime()
+const persistedStateTimestampThreshold = 1481297428052
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
-export { apiRoot, authProviders, jwtRefreshMargin, opbeatAppId, opbeatOrgId, persistedStateKey, stripePublicKey }
+export { apiRoot, authProviders, jwtRefreshMargin, opbeatAppId, opbeatOrgId, persistedStateKey, persistedStateTimestampKey, persistedStateTimestampThreshold, stripePublicKey }
