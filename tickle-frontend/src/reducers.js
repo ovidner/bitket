@@ -73,8 +73,7 @@ const reducer = (state = initialState, action) => {
             .setIn(['session', 'accessCodes', '_error'], null)
             .mergeIn(['session', 'accessCodes', action.payload.token], Map.of(
               'token', action.payload.token,
-              'ticketType', action.payload.ticket_type,
-              'isUtilizable', action.payload.is_utilizable,
+              'ticketType', action.payload.ticket_type
             ))
         case api.actionErrorValues.FAILED:
           return state

@@ -353,7 +353,6 @@ class AccessCodeSerializer(serializers.HyperlinkedModelSerializer):
         fields = [
             'token',
             'ticket_type',
-            'is_utilizable'
         ]
 
     def get_token(self, obj):
