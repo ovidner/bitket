@@ -1,11 +1,9 @@
 import React from 'react'
-import { Grid, Nav, NavItem, Row, Col, Well, FormControl, FormGroup, ControlLabel, Alert } from 'react-bootstrap'
-import Icon from 'react-fontawesome'
+import { Row, Col, Well, Alert } from 'react-bootstrap'
 import Markdown from 'react-markdown'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 
-import * as actions from '../actions'
 import { Page, LogInForm, SelectTickets, PaymentForm } from '../components'
 import * as selectors from '../selectors'
 
