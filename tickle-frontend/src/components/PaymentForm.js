@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Col, ControlLabel, FormControl, FormGroup, Row, HelpBlock, Checkbox } from 'react-bootstrap'
+import { Alert, Button, Col, ControlLabel, FormControl, FormGroup, Row, HelpBlock, Checkbox } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 import { connect } from 'react-redux'
 
@@ -201,6 +201,12 @@ class _PaymentForm extends React.Component {
         <p>
           By paying, you agree to these terms.
         </p>
+        {this.state.stripeError ? (
+          <Alert bsStyle="danger">
+            {this.state.stripeError.message}
+          </Alert>
+        ) : null}
+
         <FormGroup>
           <Button type="submit" bsSize="lg" bsStyle="success" block
                   disabled={!(this.cardCodeIsValid() && this.cardExpIsValid() && this.cardNumberIsValid() && this.ninIsValid()) || this.state.stripePending}>
