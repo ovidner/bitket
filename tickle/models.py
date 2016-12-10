@@ -17,6 +17,7 @@ from model_utils.managers import InheritanceQuerySetMixin
 from templated_email import send_templated_mail
 from .behaviors import NameSlugMixin, NameSlugDescriptionMixin, \
     NameMixin
+from sesam import SesamError, SesamStudentNotFound
 
 from .utils import signing
 from tickle.db.fields import NameField, SlugField, DescriptionField, \
@@ -708,17 +709,17 @@ def social_get_union(response, details, backend, *args, **kwargs):
         # Just pass
         return
 
-    # union is a dict of union details or None
-    kobra_response = requests.get(
-        '{}/api/v1/students/{}/'.format(
-            settings.KOBRA_HOST, response.get('nor_edu_person_lin')),
-        params={'expand': 'union'},
-        headers={'Authorization': 'Token {}'.format(settings.KOBRA_TOKEN)}
-    )
+    union = None
 
-    if kobra_response.ok:
-        union = kobra_response.json()['union']
-        details['student_union'] = (StudentUnion.objects.get_or_create(name=union['name'])[0]
-                                    if union else None)
+    try:
+        union = settings.SESAM_STUDENT_SERVICE_CLIENT.get_student(
+            nor_edu_person_lin=response.get('nor_edu_person_lin')).union
+    except SesamStudentNotFound:
+        pass
+    except SesamError:
+        logger.warning('Sesam request failed', exc_info=True)
+
+    details['student_union'] = (StudentUnion.objects.get_or_create(name=union)[0]
+                                if union else None)
 
     return {'details': details}

@@ -44,3 +44,6 @@ opbeat==3.5.*
 # QR codes
 Pillow==3.4.*
 qrcode==5.2.*
+
+# Sesam
+git+https://github.com/ovidner/python-sesam.git@f42d92e9ddb1578deec3b79816a2ebf13edf289f#egg=sesam
