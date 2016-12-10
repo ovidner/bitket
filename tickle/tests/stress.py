@@ -16,8 +16,8 @@ from .. import factories, models
 
 class StressTests(APITransactionTestCase):
     def test_purchases(self):
-        num_threads = 75
-        num_per_thread = 10
+        num_threads = 10
+        num_per_thread = 75
         url = reverse('purchase-list')
         users = factories.UserFactory.create_batch(num_threads*num_per_thread)
         event = factories.EventFactory()
