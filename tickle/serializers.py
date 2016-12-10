@@ -103,7 +103,8 @@ class PurchaseUserSerializer(serializers.HyperlinkedModelSerializer):
 
 class PurchaseSerializer(serializers.Serializer):
     tickets = PurchaseTicketSerializer(
-        many=True)
+        many=True,
+        allow_empty=False)
 
     # Request only
     access_codes = serializers.SlugRelatedField(
