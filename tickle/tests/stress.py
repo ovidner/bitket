@@ -2,6 +2,7 @@ from pprint import pprint
 from threading import Thread
 from copy import deepcopy
 from time import time
+from random import randint
 
 from django.conf import settings
 from django.db import connections
@@ -34,8 +35,11 @@ class StressTests(APITransactionTestCase):
             max_total_quantity=250)
 
         def get_request_data():
+            card_number = ('4242424242424242'  # Normal card
+                           if randint(0, 100) <= 90
+                           else '4000000000000002')  # Declined card
             stripe_token = stripe.Token.create(card={
-                "number": '4242424242424242',
+                "number": card_number,
                 "exp_month": 12,
                 "exp_year": 2018,
                 "cvc": '123'
