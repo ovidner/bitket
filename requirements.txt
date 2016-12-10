@@ -26,7 +26,7 @@ django-filter==0.15.*
 
 # Auth
 python-social-auth==0.2.*
-git+https://github.com/ovidner/python-social-auth-liu.git@0f875c0ec48a4c7a6684888068171a5e6cc69d67#egg=python-social-auth-liu
+git+https://github.com/ovidner/python-social-auth-liu.git@cd6f77ad662892e24e0d9b9345b169f04bcec43a#egg=python-social-auth-liu
 git+https://github.com/st4lk/django-rest-social-auth.git@9ce7e6a5614b37da33718abc59aa9f75a27c9dd0#egg=rest-social-auth
 djangorestframework-jwt==1.8.*
 

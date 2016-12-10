@@ -298,6 +298,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_VERIFY_SSL = certifi.old_where()
 SOCIAL_AUTH_LIU_HOST = env.str('AUTH_LIU_HOST', default='fs.liu.se')
 SOCIAL_AUTH_LIU_KEY = env.str('AUTH_LIU_CLIENT_ID', '')
 SOCIAL_AUTH_LIU_SCOPE = env.list('AUTH_LIU_RESOURCE', default=[])
+SOCIAL_AUTH_LIU_VERIFY_IAT = env.bool('AUTH_LIU_VERIFY_IAT', default=True)
 SOCIAL_AUTH_LIU_VERIFY_SSL = env.bool('AUTH_LIU_VERIFY_SSL', default=True)
 SOCIAL_AUTH_LIU_X509_CERT = env.str('AUTH_LIU_X509_CERT', default=None)
 
