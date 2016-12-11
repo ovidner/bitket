@@ -30,7 +30,7 @@ const partialSubscribe = (store, select, onChange, fireNow = false) => {
 const autoFetchUserDependentData = (store) => partialSubscribe(store,
   selectors.getAuthToken, (authToken) => {
     store.dispatch(actions.fetchTicketTypes())
-    if (selectors.isLoggedIn(store.getState())) store.dispatch(actions.fetchTickets())
+    store.dispatch(actions.fetchTickets())
   }, true)
 
 const autoPersistState = (store) => partialSubscribe(store, selectors.getStateToPersist, (partialState) => {
