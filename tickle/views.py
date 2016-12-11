@@ -99,7 +99,7 @@ class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class AccessCodeViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    queryset = models.AccessCode.objects.all()
+    queryset = models.AccessCode.objects.utilizable()
     serializer_class = serializers.AccessCodeSerializer
 
     lookup_field = 'token'
