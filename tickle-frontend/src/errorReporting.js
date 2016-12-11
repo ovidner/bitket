@@ -13,6 +13,7 @@ const setExtraContext = (extraContext) => {
 }
 
 const capture = (err, extraContext) => {
+  if (err.extra) setExtraContext(err.extra)
   if (extraContext) setExtraContext(extraContext)
   window._opbeat('captureException', err)
 }
