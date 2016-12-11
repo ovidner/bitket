@@ -98,7 +98,7 @@ class PurchaseUserSerializer(serializers.HyperlinkedModelSerializer):
         )
 
     def validate_nin(self, value):
-        return SEPersonalIdentityNumberField(coordination_number=False).clean(value=value)
+        return SEPersonalIdentityNumberField(required=False, coordination_number=False).clean(value=value)
 
 
 class PurchaseSerializer(serializers.Serializer):
