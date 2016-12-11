@@ -1,3 +1,5 @@
+import 'es6-shim'
+
 // Initialize the error handler in an early stage
 import * as errorReporting from './errorReporting'
 errorReporting.init()
