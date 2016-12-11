@@ -5,7 +5,7 @@ errorReporting.init()
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { IndexRoute, Route, Router, browserHistory } from 'react-router'
+import { IndexRoute, Redirect, Route, Router, browserHistory } from 'react-router'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 
@@ -42,6 +42,7 @@ const router = (
       <Route path="log-in/:authProvider/" component={pages.CompleteLogIn}/>
       <Route path=":eventSlug/" component={pages.Event}/>
     </Route>
+    <Redirect from="/*" to="/*/"/>
   </Router>
 )
 
