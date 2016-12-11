@@ -7,11 +7,9 @@ import { authProviders } from '../settings'
 import { getRedirectUri } from '../utils'
 
 const LogInForm = (props) => {
-  const state = encodeURIComponent(window.location.pathname)
-
   const logIn = (providerId) => (domEvent) => {
     const redirectUri = encodeURIComponent(getRedirectUri(window.location.origin, providerId))
-    const nextUri = encodeURIComponent(props.nextUrl || window.location.pathname)
+    const nextUri = encodeURIComponent(props.nextUrl || window.location.pathname + window.location.search)
     window.location = `${authProviders[providerId].authUrl}?response_type=code&redirect_uri=${redirectUri}&client_id=${authProviders[providerId].clientId}&${authProviders[providerId].scopeParam}=${authProviders[providerId].scope}&state=${nextUri}`
   }
 

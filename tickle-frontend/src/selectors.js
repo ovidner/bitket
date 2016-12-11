@@ -72,8 +72,7 @@ const getStateToPersist = (state) => state
   .filter((value, key) => (
     key === 'session'
   ))
-  .deleteIn(['session', 'accessCodes', '_isPending'])
-  .deleteIn(['session', 'accessCodes', '_error'])
+  .deleteIn(['session', 'accessCodes'])
   .deleteIn(['session', 'auth', '_isPending'])
   .deleteIn(['session', 'auth', '_error'])
 

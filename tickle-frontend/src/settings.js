@@ -41,7 +41,7 @@ const persistedStateTimestampKey = 'stateTimestamp'
 // The threshold for destroying persisted state. If the state is older than
 // this (or not set), it will be destroyed. UTC timestamp, use
 // (new Date).getTime()
-const persistedStateTimestampThreshold = 1481297428052
+const persistedStateTimestampThreshold = 1481422195713
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
