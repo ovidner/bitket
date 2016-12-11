@@ -96,6 +96,9 @@ class PurchaseUserSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'nin',
         )
+        extra_kwargs = {
+            'nin': {'max_length': 13}  # Allow YYYYMMDD-XXXX
+        }
 
     def validate_nin(self, value):
         return SEPersonalIdentityNumberField(required=False, coordination_number=False).clean(value=value)
