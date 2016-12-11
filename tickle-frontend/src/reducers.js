@@ -41,6 +41,10 @@ const initialState = Map.of(
     '_isPending', null,
     '_error', null
   ),
+  'tickets', Map.of(
+    '_isPending', null,
+    '_error', null
+  ),
   'variations', Map.of(
     '_isPending', null,
     '_error', null
@@ -182,6 +186,32 @@ const reducer = (state = initialState, action) => {
           return state
             .setIn(['ticketTypes', '_isPending'], false)
             .setIn(['ticketTypes', '_error'], action.payload.message)
+        default:
+          return state
+      }
+
+    case actionTypes.API.GET_TICKETS:
+      switch (action.error) {
+        case api.actionErrorValues.PENDING:
+          return state
+            .setIn(['tickets', '_isPending'], true)
+            .setIn(['tickets', '_error'], null)
+        case api.actionErrorValues.SUCCESSFUL:
+          return state
+            .setIn(['tickets', '_isPending'], false)
+            .setIn(['tickets', '_error'], null)
+            .mergeIn(['tickets'], action.payload.reduce((collection, item) => (
+              collection.set(item.url, Map.of(
+                'url', item.url,
+                'ticketType', item.ticket_type,
+                'variationChoices', item.variation_choices,
+                'utilized', item.utilized
+              ))
+            ), Map()))
+        case api.actionErrorValues.FAILED:
+          return state
+            .setIn(['tickets', '_isPending'], false)
+            .setIn(['tickets', '_error'], action.payload.message)
         default:
           return state
       }

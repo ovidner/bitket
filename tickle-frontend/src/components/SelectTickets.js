@@ -15,6 +15,7 @@ const mapStateToProps = (state, props) => {
   return {
     selectedTicketTypes,
     accessCodes: selectors.getAllAccessCodes(state),
+    tickets: selectors.getAllTickets(state),
     ticketTypes: selectors.getTicketTypesOfEvent(state, props.eventUrl),
     ticketTypeHasValidVariationChoiceSelections: (ticketTypeUrl) => selectors.ticketTypeHasValidVariationChoiceSelections(state, ticketTypeUrl),
     ticketTypeIsSelected: (ticketTypeUrl) => selectedTicketTypes.includes(ticketTypeUrl),
@@ -44,6 +45,7 @@ const SelectTickets = connect(mapStateToProps, mapDispatchToProps)((props) => (
   <div>
     <Row>
       {props.ticketTypes.sortBy(i => i.get('index')).map(ticketType => {
+        const ownsTicket = props.tickets.some((ticket) => ticket.get('ticketType') === ticketType.get('url'))
         const ticketTypeHasAccessCode = props.accessCodes.some((accessCode) => accessCode.get('ticketType') === ticketType.get('url'))
         const variations = props.getVariationsOfTicketType(ticketType.get('url'))
         const selectedConflicts = props.getSelectedConflictsOfTicketType(ticketType.get('url'))
@@ -167,17 +169,26 @@ const SelectTickets = connect(mapStateToProps, mapDispatchToProps)((props) => (
                   <Icon className="text-info" name="question-circle"/>
                 </OverlayTrigger>
               </p>
-              {!(ticketType.getIn(['availability', 'general']) || ticketTypeHasAccessCode) ? (
-                <Alert bsStyle="danger">
-                  This ticket type is not available for purchase at this time.
-                  If you have an access link, you can try using it.
+              {ownsTicket ? (
+                <Alert bsStyle="success">
+                  You own this ticket.
                 </Alert>
-              ) : null}
-              {!ticketType.getIn(['availability', 'totalQuantity']) ? (
-                <Alert bsStyle="danger">
-                  This ticket type has been sold out.
-                </Alert>
-              ) : null}
+              ) : (
+                <div>
+                  {!(ticketType.getIn(['availability', 'general']) || ticketTypeHasAccessCode) ? (
+                    <Alert bsStyle="danger">
+                      This ticket type is not available for purchase at this time.
+                      If you have an access link, you can try using it.
+                    </Alert>
+                  ) : null}
+                  {!ticketType.getIn(['availability', 'totalQuantity']) ? (
+                    <Alert bsStyle="danger">
+                      This ticket type has been sold out.
+                    </Alert>
+                  ) : null}
+                </div>
+              )}
+
               {/* ACTIONS */}
               {ticketTypeIsSelected ? (
                 <Button block bsStyle="primary"
@@ -188,6 +199,7 @@ const SelectTickets = connect(mapStateToProps, mapDispatchToProps)((props) => (
               ) : (
                 <Button block bsStyle="primary"
                         disabled={
+                          ownsTicket ||
                           !selectedConflicts.isEmpty() ||
                           !ticketTypeHasValidVariationChoiceSelection ||
                           !ticketType.getIn(['availability', 'totalQuantity']) ||

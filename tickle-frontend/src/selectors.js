@@ -34,6 +34,10 @@ const getAllTicketTypes = (state, meta=false) => state
   .get('ticketTypes')
   .filter(meta ? isMeta : isNotMeta)
 
+const getAllTickets = (state, meta=false) => state
+  .get('tickets')
+  .filter(meta ? isMeta : isNotMeta)
+
 const getAllVariations = (state, meta=false) => state
   .get('variations')
   .filter(meta ? isMeta : isNotMeta)
@@ -167,6 +171,7 @@ export {
   getAllEvents,
   getAllOrganizations,
   getAllTicketTypes,
+  getAllTickets,
   getAllVariations,
   getAllVariationChoices,
   getAuthToken,
