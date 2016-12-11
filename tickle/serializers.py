@@ -239,18 +239,21 @@ class PurchaseSerializer(serializers.Serializer):
 
                     max_total_quantity = ticket.ticket_type.max_total_quantity
                     position = ticket.ticket_type.tickets.before_in_queue(ticket=ticket).count()
-                    # Everything above this position will be discarded.
-                    cutoff_position = 2 * max_total_quantity - ticket.ticket_type.tickets.unpending().count()
 
                     # position is zero-indexed
                     if not max_total_quantity or position < max_total_quantity:
                         # Since the position never gets higher, we now know that
                         # this ticket is safe. Great!
                         safe_tickets.add(ticket)
+                        continue
+
+                    # Everything above this position will be discarded.
+                    cutoff_position = 2 * max_total_quantity - ticket.ticket_type.tickets.unpending().count()
+
                     # Cutting off randomly (although weighted) up to the point
                     # where there are as many pending over the maximum quantity
-                    # as under it.
-                    elif random() <= (
+                    # as under it. (Beneath this point all are discarded)
+                    if random() <= (
                             (position - max_total_quantity) /
                             (cutoff_position - max_total_quantity)) ** 2:
                         lost_tickets.add(ticket)
@@ -262,6 +265,7 @@ class PurchaseSerializer(serializers.Serializer):
                             ('entity', reverse('tickettype-detail', kwargs={
                                 'pk': ticket.ticket_type_id}, request=request))
                         )))
+                        continue
 
                 unclear_tickets = unclear_tickets.difference(safe_tickets,
                                                              lost_tickets)
