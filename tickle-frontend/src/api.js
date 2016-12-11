@@ -7,6 +7,15 @@ const actionErrorValues = {
   FAILED: true
 }
 
+function BitketApiError(message, payload, extra) {
+  this.message = message
+  this.stack = (new Error()).stack
+  this.payload = payload
+  this.extra = extra
+}
+BitketApiError.prototype = new Error()
+BitketApiError.prototype.name = 'BitketApiError'
+
 const fetchAction = ({actionType, url, options={}, extraMeta={}, useAuth=false}) => (dispatch, getState) => {
   const baseAction = {
     type: actionType,
@@ -54,27 +63,29 @@ const fetchAction = ({actionType, url, options={}, extraMeta={}, useAuth=false})
         if (response.ok) {
           return dispatchSuccessful(payload)
         } else {
-          const err = new Error(payload.detail)
-          capture(err, {url, options, payload})
+          const err = new BitketApiError(payload.detail ? payload.detail : response.statusText, payload, {url, options})
+          capture(err)
           return dispatchFailed(err)
         }
       }, (error) => {
         // We've got something other than a JSON body. Just use the generic
         // statusText in dispatch. error.message is probably more interesting
         // technically, though.
-        capture(new Error(error.message), {url, options})
-        return dispatchFailed(new Error(response.statusText))
+        const bitketError = new BitketApiError(response.statusText, error, {url, options})
+        capture(bitketError)
+        return dispatchFailed(bitketError)
       })
     }, (error) => {
       // We have a communication problem. response is a TypeError.
-
+      const bitketError = new BitketApiError(error.message, error, {url, options})
       // Opbeat really don't want a TypeError
-      capture(new Error(error.message), {error, url, options})
-      return dispatchFailed(error)
+      capture(bitketError)
+      return dispatchFailed(bitketError)
     })
 }
 
 export {
   actionErrorValues,
+  BitketApiError,
   fetchAction
 }
