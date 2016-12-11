@@ -12,9 +12,9 @@ const setExtraContext = (extraContext) => {
   window._opbeat('setExtraContext', extraContext)
 }
 
-const capture = (err, extraContext) => {
-  if (err.extra) setExtraContext(err.extra)
-  if (extraContext) setExtraContext(extraContext)
+const capture = (err, extraContext = {}) => {
+  Object.assign(extraContext, {payload: err.payload}, err.extra)
+  setExtraContext(extraContext)
   window._opbeat('captureException', err)
 }
 
