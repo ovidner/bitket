@@ -10,7 +10,9 @@ const LogInForm = (props) => {
   const logIn = (providerId) => (domEvent) => {
     const redirectUri = encodeURIComponent(getRedirectUri(window.location.origin, providerId))
     const nextUri = encodeURIComponent(props.nextUrl || window.location.pathname + window.location.search)
-    window.location = `${authProviders[providerId].authUrl}?response_type=code&redirect_uri=${redirectUri}&client_id=${authProviders[providerId].clientId}&${authProviders[providerId].scopeParam}=${authProviders[providerId].scope}&state=${nextUri}`
+    const scope = encodeURIComponent(authProviders[providerId].scope)
+    const clientId = encodeURIComponent(authProviders[providerId].clientId)
+    window.location = `${authProviders[providerId].authUrl}?response_type=code&redirect_uri=${redirectUri}&client_id=${clientId}&${authProviders[providerId].scopeParam}=${scope}&state=${nextUri}`
   }
 
   return (
