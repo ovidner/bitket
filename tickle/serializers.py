@@ -255,7 +255,8 @@ class PurchaseSerializer(serializers.Serializer):
                     # as under it. (Beneath this point all are discarded)
                     if random() <= (
                             (position - max_total_quantity) /
-                            (cutoff_position - max_total_quantity)) ** 2:
+                            (cutoff_position - max_total_quantity or 0.001)  # Save us from ZeroDivisionError
+                            ) ** 3:  # Make it much harder near the cutoff
                         lost_tickets.add(ticket)
                         response_data['messages'].append(OrderedDict((
                             ('code', 'bad_queue_position'),
