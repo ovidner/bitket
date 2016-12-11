@@ -172,6 +172,12 @@ class _PaymentForm extends React.Component {
             </FormGroup>
           </Col>
         </Row>
+        <Alert bsStyle="warning">
+          <strong>Heads up, Nordea customers!</strong> Please make sure that you
+          have activated your card for online purchases before proceeding. Read
+          more and follow the instructions
+          at <a href="http://www.nordea.se/privat/vardagstjanster/kort/Internetkop.html" target="_blank">Nordea's website</a>.
+        </Alert>
         <h3>Terms <small>and other important stuff</small></h3>
         <p>
           Your tickets will be delivered electronically to your profile on this
