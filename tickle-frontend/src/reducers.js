@@ -143,7 +143,13 @@ const reducer = (state = initialState, action) => {
             .setIn(['organizations', '_isPending'], false)
             .setIn(['organizations', '_error'], null)
             .mergeIn(['organizations'], action.payload.reduce((collection, item) => (
-              collection.set(item.url, fromJS(item))
+              collection.set(item.url, Map.of(
+                'url', item.url,
+                'name', item.name,
+                'organizationNumber', item.organization_number.replace(/\d{4}$/, '-$&'),
+                'address', item.address,
+                'email', item.email
+              ))
             ), Map()))
         case api.actionErrorValues.FAILED:
           return state

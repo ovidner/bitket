@@ -146,7 +146,11 @@ class _PaymentForm extends React.Component {
         </FormGroup>
         <h3>Card details</h3>
         <p>
-          We accept VISA, MasterCard and American Express cards.
+          We accept VISA, MasterCard and American Express cards. The payment is
+          secured
+          by <a href="https://stripe.com/se" target="_blank">Stripe</a> and your
+          card details are never accessible by Bitket
+          or {this.props.organization ? this.props.organization.get('name') : 'the event organizer'}.
         </p>
         <FormGroup validationState={(this.state.cardNumber && !this.cardNumberIsValid()) ? 'error' : null}>
           <ControlLabel>Card number</ControlLabel>
@@ -178,48 +182,63 @@ class _PaymentForm extends React.Component {
           more and follow the instructions
           at <a href="http://www.nordea.se/privat/vardagstjanster/kort/Internetkop.html" target="_blank">Nordea's website</a>.
         </Alert>
-        <h3>Terms <small>and other important stuff</small></h3>
-        <p>
-          Your tickets will be delivered electronically to your profile on this
-          website within a few seconds from your purchase.
-        </p>
-        <p>
-          Your payment is handled securely by Stripe. The amount will be
-          withdrawn immediately from the card supplied above.
-        </p>
-        <p>
-          Your purchase from {this.props.organization ? this.props.organization.get('name') : 'the event organizer'} is protected
-          by applicable Swedish law, which (in conjunction with Bitket's terms)
-          has the following important implications:
-        </p>
-        <ul>
-          <li>
-            Once your tickets has been delivered to you, <strong>you cannot
-            withdraw your purchase</strong> unless it is resold to another
-            person.
-          </li>
-          <li>
-            Your tickets are personal, meaning that <strong>you may have to identify
-            yourself</strong> using valid passport, national identification card, driver's
-            license or student identification card in order to utilize the tickets.
-          </li>
-        </ul>
-        <p>
-          By paying, you agree to these terms.
-        </p>
-        {this.state.stripeError ? (
-          <Alert bsStyle="danger">
-            {this.state.stripeError.message}
-          </Alert>
+        <h3>Terms <small>and other important information</small></h3>
+        {this.props.organization ? (
+          <div>
+            <p>
+              Your tickets will be delivered electronically to your profile on this
+              website within a few seconds from your purchase.
+            </p>
+            <p>
+              The purchase amount will be withdrawn immediately from the card
+              supplied above.
+            </p>
+            <p>
+              Your purchase from (and agreement with) {this.props.organization.get('name')} is protected
+              by applicable Swedish law, which (in conjunction with Bitket's terms)
+              has the following important implications:
+            </p>
+            <ul>
+              <li>
+                Once your tickets has been delivered to you, <strong>you cannot
+                withdraw your purchase</strong> unless it is resold to another
+                person.
+              </li>
+              <li>
+                Your tickets are personal, meaning that <strong>you may have to identify
+                yourself</strong> using valid passport, national identification card, driver's
+                license or student identification card in order to utilize the tickets.
+              </li>
+            </ul>
+            <p>
+              Your counterpart in this agreement is:
+            </p>
+            <p>
+              {this.props.organization.get('name')} (org. nr. {this.props.organization.get('organizationNumber')})<br/>
+              {this.props.organization.get('address').split('\n', -1).map((item, key) => (
+                <span key={key}>
+              {item}
+                  <br/>
+            </span>
+              ))}
+              <a href={'mailto:' + this.props.organization.get('email')}>{this.props.organization.get('email')}</a>
+            </p>
+            <p>
+              By paying, you agree to these terms.
+            </p>
+            {this.state.stripeError ? (
+                <Alert bsStyle="danger">
+                  {this.state.stripeError.message}
+                </Alert>
+              ) : null}
+            <FormGroup>
+              <Button type="submit" bsSize="lg" bsStyle="success" block
+                      disabled={!(this.cardCodeIsValid() && this.cardExpIsValid() && this.cardNumberIsValid() && this.ninIsValid()) || this.state.stripePending}>
+                Pay {this.props.totalAmount.toRepr()} SEK
+              </Button>
+            </FormGroup>
+          </div>
         ) : null}
-
-        <FormGroup>
-          <Button type="submit" bsSize="lg" bsStyle="success" block
-                  disabled={!(this.cardCodeIsValid() && this.cardExpIsValid() && this.cardNumberIsValid() && this.ninIsValid()) || this.state.stripePending}>
-            Pay {this.props.totalAmount.toRepr()} SEK
-          </Button>
-        </FormGroup>
-
       </form>
     )
   }

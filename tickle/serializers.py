@@ -42,7 +42,10 @@ class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
         model = models.Organization
         fields = [
             'url',
-            'name'
+            'name',
+            'organization_number',
+            'address',
+            'email'
         ]
 
 

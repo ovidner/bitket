@@ -227,6 +227,16 @@ class Organization(models.Model):
         unique=True,
         populate_from='name')
 
+    organization_number = models.CharField(
+        max_length=12,
+        verbose_name=_('organization number'))
+
+    address = models.TextField(
+        verbose_name=_('address'))
+
+    email = models.EmailField(
+        verbose_name=_('email address'))
+
     admins = models.ManyToManyField(
         'User',
         related_name='admin_for_organizers',
