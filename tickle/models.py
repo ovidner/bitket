@@ -402,7 +402,7 @@ class User(AbstractBaseUser, PermissionsMixin, models.Model):
         verbose_name_plural = _('users')
 
     def __str__(self):
-        return self.get_full_name()
+        return '{} ({})'.format(self.get_full_name(), self.email)
 
     def get_full_name(self):
         return self.name
@@ -506,11 +506,13 @@ class TicketOwnership(models.Model):
     modifiers = models.ManyToManyField(
         'Modifier',
         related_name='ticket_ownerships',
+        blank=True,
         verbose_name=_('utilized modifiers'))
 
     transactions = models.ManyToManyField(
         'Transaction',
         related_name='ticket_ownerships',
+        blank=True,
         verbose_name=_('transactions'))
 
     created = models.DateTimeField(
@@ -643,8 +645,8 @@ class TicketType(models.Model):
 
     class Meta:
         ordering = ('index', 'name')
-        verbose_name = _('product')
-        verbose_name_plural = _('products')
+        verbose_name = _('ticket type')
+        verbose_name_plural = _('ticket types')
 
     def __str__(self):
         return self.name
@@ -674,8 +676,8 @@ class Variation(models.Model):
         unique_together = [
             ['name', 'ticket_type']
         ]
-        verbose_name = _('product variation')
-        verbose_name_plural = _('product variations')
+        verbose_name = _('variation')
+        verbose_name_plural = _('variations')
 
     def __str__(self):
         return self.name
@@ -707,8 +709,8 @@ class VariationChoice(models.Model):
         unique_together = [
             ['name', 'variation']
         ]
-        verbose_name = _('product variation choice')
-        verbose_name_plural = _('product variation choices')
+        verbose_name = _('variation choice')
+        verbose_name_plural = _('variation choices')
 
     def __str__(self):
         return self.name
