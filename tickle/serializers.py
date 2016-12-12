@@ -306,9 +306,9 @@ class PurchaseSerializer(serializers.Serializer):
                 # There should be one ownership per ticket, hence get()
                 charge_amount += ticket.ownerships.get().price
 
-            assert charge_amount <= validated_data['payment']['amount']
-
             try:
+                assert charge_amount <= validated_data['payment']['amount']
+
                 charge = stripe.Charge.create(
                     stripe_account=organization.stripe_account_id,
                     source=validated_data['payment']['payload'],
