@@ -45,8 +45,13 @@ class TicketOwnershipInline(admin.TabularInline):
 
 @admin.register(models.Ticket)
 class TicketAdmin(admin.ModelAdmin):
+    list_display = ('ticket_type', 'created', 'utilized', 'current_owner')
+    search_fields = ('ownerships__user__name','ownerships__user__email')
     inlines = [TicketOwnershipInline]
     raw_id_fields = ('access_code',)
+
+    def current_owner(self, obj):
+        return obj.ownerships.latest().user
 
 
 @admin.register(models.TicketType)
