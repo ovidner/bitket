@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 
 
 def generate_pretty_email(name, email):
-    return '"{}" <{}>; '.format(name.replace('"', '\\"'), email)
+    return '"{}" <{}>'.format(name.replace('"', '\\"'), email)
 
 
 class TemplatedEmail(EmailMultiAlternatives):
