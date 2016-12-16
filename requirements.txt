@@ -38,6 +38,7 @@ django-autoslug==1.9.*
 # Email
 django-templated-email==2.0.*
 django-mailgun==0.8.0
+html2text==2016.9.19
 
 # Error reporting and performance monitoring
 opbeat==3.5.*
