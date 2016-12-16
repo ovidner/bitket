@@ -1,6 +1,12 @@
 import logging
 import uuid
+from collections import OrderedDict
 from decimal import Decimal
+from os import urandom
+from binascii import hexlify
+import json
+from base64 import b64encode
+from six import BytesIO
 
 import requests
 from django.conf import settings
@@ -14,19 +20,25 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _, ugettext
 from model_utils.managers import InheritanceQuerySetMixin
-from templated_email import send_templated_mail
-from .behaviors import NameSlugMixin, NameSlugDescriptionMixin, \
-    NameMixin
+from templated_email import send_templated_mail, InlineImage
 from sesam import SesamError, SesamStudentNotFound
+import qrcode
 
 from .utils import signing
 from tickle.db.fields import NameField, SlugField, DescriptionField, \
     MoneyField, NullCharField, IdField
-from tickle.exceptions import InvalidVariationChoices
-from tickle.fields import PidField
 from tickle.utils.email import generate_pretty_email
 
 logger = logging.getLogger(__name__)
+
+
+def generate_code(length):
+    # Returns a random hex string, `length` characters long.
+    return hexlify(urandom(length // 2 + (length % 2 > 0)))[0:length].decode()
+
+
+def generate_ticket_ownership_code():
+    return generate_code(6)
 
 
 class ConditionQuerySet(InheritanceQuerySetMixin, models.QuerySet):
@@ -404,6 +416,10 @@ class User(AbstractBaseUser, PermissionsMixin, models.Model):
     def __str__(self):
         return '{} ({})'.format(self.get_full_name(), self.email)
 
+    @property
+    def is_liu_student(self):
+        return self.email.endswith('@student.liu.se')
+
     def get_full_name(self):
         return self.name
 
@@ -490,9 +506,10 @@ class TicketOwnership(models.Model):
     id = IdField()
 
     # This can be changed to invalidate generated switch links.
-    switch_code = models.UUIDField(
-        default=uuid.uuid4,
-        verbose_name=_('switch code'))
+    code = models.CharField(
+        max_length=16,
+        default=generate_ticket_ownership_code,
+        verbose_name=_('code'))
 
     ticket = models.ForeignKey(
         'Ticket',
@@ -549,16 +566,41 @@ class TicketOwnership(models.Model):
                 self.modifiers.delta() +
                 self.ticket.variation_choices.delta())
 
+    @property
+    def is_current(self):
+        return self == self.ticket.ownerships.latest()
+
+    @property
+    def resell_token(self):
+        return signing.dumps(OrderedDict((('id', str(self.id)), ('code', self.code))), salt='resell_token')
+
     def email_confirmation(self):
+        qr_inline = InlineImage(filename='qr.png', content=self.get_qr_raw())
         send_templated_mail(
-            template_name='holding',
+            template_name='ticket_ownership_new',
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[self.person.pretty_email],
+            recipient_list=[self.user.pretty_email],
             context={
                 'domain': Site.objects.get_current().domain,
-                'holding': self,
+                'ticket_ownership': self,
+                'qr': qr_inline
             }
         )
+
+    def get_qr_raw(self):
+        output_buffer = BytesIO()
+        qr_image = qrcode.make(
+            json.dumps(
+                OrderedDict((('id', str(self.id)), ('code', self.code)))),
+            error_correction=qrcode.ERROR_CORRECT_H,
+            box_size=6,
+            border=4  # The QR spec stipulates a border of 4
+        )
+        qr_image.save(output_buffer, format='png', optimize=True)
+        return output_buffer.getvalue()
+
+    def get_qr(self):
+        return b64encode(self.get_qr_raw())
 
 
 class AccessCodeQuerySet(models.QuerySet):
@@ -672,7 +714,7 @@ class Variation(models.Model):
         verbose_name=_('ticket type'))
 
     class Meta:
-        ordering = ['index', 'name']
+        ordering = ('index', 'name')
         unique_together = [
             ['name', 'ticket_type']
         ]

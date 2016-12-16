@@ -17,20 +17,6 @@ const LogInForm = (props) => {
 
   return (
     <div>
-      <p className="lead">
-        To see your personal price and to purchase tickets, identify yourself
-        by logging in. If you don't already have an account, it will be
-        created automatically.
-      </p>
-      <p>
-        By logging in, you accept that Bitket stores your name and email
-        address (and on occurrence local student identifier as well as student
-        union membership).
-      </p>
-      <p>
-        Please note that student union discounts can be utilized only when
-        logging in with LiU ID.
-      </p>
       <FormGroup>
         <Button onClick={logIn('liu')} bsStyle="info" bsSize="lg" block>
           Log in with LiU ID
@@ -47,6 +33,11 @@ const LogInForm = (props) => {
           Log in with Google
         </Button>
       </FormGroup>
+      <p>
+        By logging in, you accept that Bitket stores your name and email
+        address (and on occurrence local student identifier as well as student
+        union membership).
+      </p>
     </div>
   )
 }

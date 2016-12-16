@@ -10,7 +10,7 @@ const actionTypes = {
     GET_EVENTS: 'API.GET_EVENTS',
     GET_ORGANIZATIONS: 'API.GET_ORGANIZATIONS',
     GET_TICKET_TYPES: 'API.GET_TICKET_TYPES',
-    GET_TICKETS: 'API.GET_TICKETS',
+    GET_TICKET_OWNERSHIPS: 'API.GET_TICKET_OWNERSHIPS',
     GET_VARIATIONS: 'API.GET_VARIATIONS',
     GET_VARIATION_CHOICES: 'API.GET_VARIATION_CHOICES',
     SUBMIT_PURCHASE: 'API.SUBMIT_PURCHASE'
@@ -26,7 +26,7 @@ const addAccessCode = (accessCode) => api.fetchAction({
   actionType: actionTypes.ADD_ACCESS_CODE,
   url: `${apiRoot}/access-codes/${accessCode}/`,
   extraMeta: {
-    code: accessCode
+    token: accessCode
   }
 })
 
@@ -79,8 +79,8 @@ const fetchTicketTypes = () => api.fetchAction({
 })
 
 const fetchTickets = () => api.fetchAction({
-  actionType: actionTypes.API.GET_TICKETS,
-  url: `${apiRoot}/tickets/`,
+  actionType: actionTypes.API.GET_TICKET_OWNERSHIPS,
+  url: `${apiRoot}/ticket-ownerships/?expand=ticket`,
   useAuth: true
 })
 

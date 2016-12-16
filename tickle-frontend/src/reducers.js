@@ -1,4 +1,4 @@
-import { List, OrderedMap, Map, Set, fromJS } from 'immutable'
+import { List, Map, Set, fromJS } from 'immutable'
 
 import { actionTypes } from './actions'
 import * as api from './api'
@@ -196,28 +196,41 @@ const reducer = (state = initialState, action) => {
           return state
       }
 
-    case actionTypes.API.GET_TICKETS:
+    case actionTypes.API.GET_TICKET_OWNERSHIPS:
       switch (action.error) {
         case api.actionErrorValues.PENDING:
           return state
-            .setIn(['tickets', '_isPending'], true)
-            .setIn(['tickets', '_error'], null)
+            .setIn(['ticketOwnerships', '_isPending'], true)
+            .setIn(['ticketOwnerships', '_error'], null)
         case api.actionErrorValues.SUCCESSFUL:
           return state
-            .setIn(['tickets', '_isPending'], false)
-            .setIn(['tickets', '_error'], null)
+            .setIn(['ticketOwnerships', '_isPending'], false)
+            .setIn(['ticketOwnerships', '_error'], null)
             .mergeIn(['tickets'], action.payload.reduce((collection, item) => (
+              collection.set(item.ticket.url, Map.of(
+                'url', item.ticket.url,
+                'ticketType', item.ticket.ticket_type,
+                'variationChoices', item.ticket.variation_choices,
+                'utilized', item.ticket.utilized
+              ))
+            ), Map()))
+            .mergeIn(['ticketOwnerships'], action.payload.reduce((collection, item) => (
               collection.set(item.url, Map.of(
                 'url', item.url,
-                'ticketType', item.ticket_type,
-                'variationChoices', item.variation_choices,
-                'utilized', item.utilized
+                'id', item.id,
+                'ticket', item.ticket.url,
+                'code', item.code,
+                'qr', item.qr,
+                'price', Money(item.price),
+                'resellToken', item.resell_token,
+                'isResold', item.is_resold,
+
               ))
             ), Map()))
         case api.actionErrorValues.FAILED:
           return state
-            .setIn(['tickets', '_isPending'], false)
-            .setIn(['tickets', '_error'], action.payload.message)
+            .setIn(['ticketOwnerships', '_isPending'], false)
+            .setIn(['ticketOwnerships', '_error'], action.payload.message)
         default:
           return state
       }

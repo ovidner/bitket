@@ -20,7 +20,7 @@ const fetchAction = ({actionType, url, options={}, extraMeta={}, useAuth=false})
   const baseAction = {
     type: actionType,
     meta: {
-      url: url,
+      url,
       ...extraMeta
     }
   }

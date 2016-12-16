@@ -23,6 +23,7 @@ django-braces==1.10.*
 # REST Framework
 djangorestframework==3.5.*
 django-filter==0.15.*
+git+https://github.com/ovidner/django-rest-framework-expandable.git@cefb7b89bfbfb3d2da2d50205380013f8ee0ee1e#egg=django-rest-framework-expandable
 
 # Auth
 python-social-auth==0.2.*
@@ -35,7 +36,7 @@ unicode-slugify==0.1.*
 django-autoslug==1.9.*
 
 # Email
-git+https://github.com/BradWhittington/django-templated-email.git@eb0f6936fcd38b10c13496a09ad7f409e19c5729#egg=django-templated-email
+django-templated-email==2.0.*
 django-mailgun==0.8.0
 
 # Error reporting and performance monitoring
@@ -43,7 +44,7 @@ opbeat==3.5.*
 
 # QR codes
 Pillow==3.4.*
-qrcode==5.2.*
+qrcode==5.3.*
 
 # Sesam
 git+https://github.com/ovidner/python-sesam.git@f42d92e9ddb1578deec3b79816a2ebf13edf289f#egg=sesam

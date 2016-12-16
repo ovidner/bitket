@@ -38,6 +38,11 @@ const getAllTickets = (state, meta=false) => state
   .get('tickets')
   .filter(meta ? isMeta : isNotMeta)
 
+const getAllTicketOwnerships = (state) => state
+  .get('ticketOwnerships')
+  .filter(isNotMeta)
+  .map((ticketOwnership) => ticketOwnership.set('ticket', getAllTickets(state).get(ticketOwnership.get('ticket'))))
+
 const getAllVariations = (state, meta=false) => state
   .get('variations')
   .filter(meta ? isMeta : isNotMeta)
@@ -187,6 +192,7 @@ export {
   getSelectedVariationChoices,
   getSelectedVariationChoicesOfTicketType,
   getStateToPersist,
+  getAllTicketOwnerships,
   getTicketType,
   getTicketTypesOfEvent,
   getTotalAmountForEvent,

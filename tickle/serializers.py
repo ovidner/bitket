@@ -11,6 +11,7 @@ from localflavor.se.forms import SEPersonalIdentityNumberField
 import stripe
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+from rest_framework_expandable import ExpandableSerializerMixin
 from rest_framework_jwt.utils import jwt_payload_handler as original_jwt_payload_handler
 
 from tickle import exceptions, models
@@ -30,6 +31,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         model = models.Event
         fields = [
             'url',
+            'id',
             'slug',
             'name',
             'description',
@@ -42,6 +44,7 @@ class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
         model = models.Organization
         fields = [
             'url',
+            'id',
             'name',
             'organization_number',
             'address',
@@ -61,6 +64,7 @@ class PurchaseTicketSerializer(serializers.HyperlinkedModelSerializer):
         model = models.Ticket
         fields = (
             'url',
+            'id',
             'ticket_type',
             'variation_choices'
         )
@@ -337,15 +341,21 @@ class PurchaseSerializer(serializers.Serializer):
             )
             response_data['transactions'].append(purchase_transaction)
 
-            for ticket in safe_tickets:
-                ticket.pending = False
-                purchase_transaction.ticket_ownerships.add(
-                    ticket.ownerships.latest())
-                ticket.save()
-                response_data['tickets'].append(ticket)
-
+            # Must be done before sending the confirmation emails
             user.nin = validated_data['user']['nin']
             user.save()
+
+            for ticket in safe_tickets:
+                ticket.pending = False
+                ticket_ownership = ticket.ownerships.latest()
+                purchase_transaction.ticket_ownerships.add(ticket_ownership)
+                ticket.save()
+                response_data['tickets'].append(ticket)
+                try:
+                    ticket_ownership.email_confirmation()
+                except Exception as exc:
+                    # This should not stop us.
+                    logger.exception('Exception during mail send')
 
         return response_data
 
@@ -355,10 +365,55 @@ class TicketSerializer(serializers.HyperlinkedModelSerializer):
         model = models.Ticket
         fields = [
             'url',
+            'id',
             'ticket_type',
             'variation_choices',
             'utilized'
         ]
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.User
+        fields = [
+            'url',
+            'id',
+            'name',
+            'email'
+        ]
+
+
+class TicketOwnershipSerializer(ExpandableSerializerMixin,
+                                serializers.HyperlinkedModelSerializer):
+    resell_token = serializers.SerializerMethodField()
+    qr = serializers.SerializerMethodField()
+    price = serializers.DecimalField(max_digits=9, decimal_places=2)
+
+    class Meta:
+        model = models.TicketOwnership
+        fields = [
+            'url',
+            'id',
+            'ticket',
+            'user',
+            'code',
+            'qr',
+            'price',
+            'resell_token'
+        ]
+        expandable_fields = {
+            'ticket': (TicketSerializer, list(), dict())
+        }
+
+    def get_qr(self, obj):
+        if obj.is_current:
+            return b'data:image/png;base64,' + obj.get_qr()
+        return None
+
+    def get_resell_token(self, obj):
+        if self.context['request'].user != obj.user:
+            return None
+        return obj.resell_token
 
 
 class VariationChoiceSerializer(serializers.HyperlinkedModelSerializer):
@@ -366,6 +421,7 @@ class VariationChoiceSerializer(serializers.HyperlinkedModelSerializer):
         model = models.VariationChoice
         fields = [
             'url',
+            'id',
             'variation',
             'name',
             'delta',
@@ -378,6 +434,7 @@ class VariationSerializer(serializers.HyperlinkedModelSerializer):
         model = models.Variation
         fields = [
             'url',
+            'id',
             'ticket_type',
             'name',
             'index'
@@ -391,6 +448,7 @@ class _VariationSerializer(VariationSerializer):
         model = models.Variation
         fields = [
             'url',
+            'id',
             'name',
             'choices'
         ]
@@ -418,6 +476,7 @@ class TicketTypeSerializer(serializers.HyperlinkedModelSerializer):
         model = models.TicketType
         fields = [
             'url',
+            'id',
             'event',
             'name',
             'description',

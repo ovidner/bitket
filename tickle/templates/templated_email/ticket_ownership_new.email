@@ -1,0 +1,58 @@
+{% block subject %}{{ ticket_ownership.ticket.ticket_type.event.name }}: {{ ticket_ownership.ticket.ticket_type.name }} [{{ ticket_ownership.id }}]{% endblock %}
+
+{% block html %}
+  <p>
+    Hi {{ ticket_ownership.user.name }}!<br>
+    This email is to confirm your purchase of a ticket of the type
+    "{{ ticket_ownership.ticket.ticket_type.name }}". The ticket itself and its
+    full details (including the code below) can always be reviewed at your
+    <a href="https://www.bitket.se/profile/" target="_blank">Bitket profile</a>.
+    Please make sure you log in with the same account used to make the purchase
+    (it should have the email address {{ ticket_ownership.user.email }}).
+  </p>
+  <h1>At the event</h1>
+  <p>
+    You can use your ticket through <em>one</em> of the following methods (in order of
+    preference):
+  </p>
+  <ul>
+    {% if ticket_ownership.user.is_liu_student %}
+      <li>
+        <em>Blipp</em> (swipe) your LiU card. The ticket is already associated
+        with the card.
+      </li>
+    {% endif %}
+    {% if ticket_ownership.user.nin %}
+      <li>
+        Show your valid driver's license, passport or other official Swedish
+        photo ID. The ticket is already associated with your national
+        identification number.
+      </li>
+    {% endif %}
+    <li>
+      Show the QR code below and verify your identity using valid LiU card, driver's
+      license, passport or other official photo ID.
+      <img src="{{ qr }}" alt="Can't see the QR code? Head to your Bitket profile!">
+    </li>
+    <li>
+      Show the ticket code <code>{{ ticket_ownership.code }}</code> and verify
+      your identity using valid LiU card, driver's license, passport or other
+      official photo ID.
+    </li>
+  </ul>
+  <h1>Reselling the ticket</h1>
+  <p>
+    The ticket can be resold to another person. Go to your Bitket profile (see
+    above), click <em>Resell</em> and follow the instructions.
+  </p>
+  <p>
+    Please contact the event organizer
+    ({{ ticket_ownership.ticket.ticket_type.event.organization.name }}) at
+    {{ ticket_ownership.ticket.ticket_type.event.organization.email }} if you
+    have any questions.
+  </p>
+  <p>
+    Take care!<br>
+    // Bitket
+  </p>
+{% endblock %}

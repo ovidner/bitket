@@ -41,6 +41,10 @@ const Navbar = connect(mapStateToProps, mapDispatchToProps)((props) => (
       </Nav>
       <Nav pullRight>
         <NavDropdown title={props.user ? props.user.name : "Not logged in"} id="userMenu" disabled={!props.user}>
+          <LinkContainer to="/profile/">
+            <NavItem>Profile</NavItem>
+          </LinkContainer>
+
           <NavItem onClick={props.logOut}>Log out</NavItem>
         </NavDropdown>
       </Nav>

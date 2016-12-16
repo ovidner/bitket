@@ -10,9 +10,9 @@ from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, RedirectView
 from django.views.generic.detail import SingleObjectMixin
-
 from rest_framework import views, viewsets, status, mixins
 from rest_framework.response import Response
+from rest_framework_expandable import ExpandableViewMixin
 
 from tickle.models import Event, Organization, Ticket, TicketType, Variation, \
     VariationChoice
@@ -132,6 +132,19 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
 class TicketTypeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = TicketType.objects.published()
     serializer_class = serializers.TicketTypeSerializer
+
+
+class TicketOwnershipViewSet(ExpandableViewMixin,
+                             viewsets.ReadOnlyModelViewSet):
+    queryset = models.TicketOwnership.objects.all()
+    serializer_class = serializers.TicketOwnershipSerializer
+    filter_backends = (filters.TicketOwnershipPermissionFilter,)
+
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = models.User.objects.all()
+    serializer_class = serializers.UserSerializer
+    filter_backends = (filters.UserPermissionFilter,)
 
 
 class VariationViewSet(viewsets.ReadOnlyModelViewSet):

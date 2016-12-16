@@ -71,21 +71,17 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
-EMAIL_BACKEND = env.str('DJANGO_EMAIL_BACKEND',
-                        'django_mailgun.MailgunBackend')
 DEFAULT_FROM_EMAIL = env.str('DJANGO_DEFAULT_FROM_EMAIL',
-                             'liubiljett.se <info@liubiljett.se>')
+                             'Bitket <hello@bitket.se>')
 EMAIL_SUBJECT_PREFIX = env.str('DJANGO_EMAIL_SUBJECT_PREFIX',
-                               '[liubiljett.se] ')
+                               '[Bitket] ')
 SERVER_EMAIL = env.str('DJANGO_SERVER_EMAIL', DEFAULT_FROM_EMAIL)
-MAILGUN_ACCESS_KEY = env.str('MAILGUN_ACCESS_KEY', '')
-MAILGUN_SERVER_NAME = env.str('MAILGUN_SERVER_NAME', '')
 
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = [("""liubiljett.se admin""", address)
-          for address in env('DJANGO_ADMINS', list, ['admin@liubiljett.se'])]
+ADMINS = [("""Bitket admin""", address)
+          for address in env('DJANGO_ADMINS', list, ['admin@bitket.se'])]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS

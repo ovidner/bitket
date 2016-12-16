@@ -57,6 +57,15 @@ class _Event extends React.Component {
             ) : (
               <div>
                 <Well>
+                  <p className="lead">
+                    To see your personal price and to purchase tickets, identify yourself
+                    by logging in. If you don't already have an account, it will be
+                    created automatically.
+                  </p>
+                  <p>
+                    Please note that student union discounts can be utilized only when
+                    logging in with LiU ID.
+                  </p>
                   <LogInForm/>
                 </Well>
               </div>
