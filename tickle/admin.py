@@ -46,6 +46,7 @@ class TicketOwnershipInline(admin.TabularInline):
 @admin.register(models.Ticket)
 class TicketAdmin(admin.ModelAdmin):
     list_display = ('ticket_type', 'created', 'utilized', 'current_owner')
+    list_filter = ('variation_choices',)
     search_fields = ('ownerships__user__name','ownerships__user__email')
     inlines = [TicketOwnershipInline]
     raw_id_fields = ('access_code',)
