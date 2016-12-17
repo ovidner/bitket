@@ -23,7 +23,7 @@ django-braces==1.10.*
 # REST Framework
 djangorestframework==3.5.*
 django-filter==0.15.*
-git+https://github.com/ovidner/django-rest-framework-expandable.git@cefb7b89bfbfb3d2da2d50205380013f8ee0ee1e#egg=django-rest-framework-expandable
+git+https://github.com/ovidner/django-rest-framework-expandable.git@a476bd2fa4ae5ac72b8ccd95faef4cd5450fca95#egg=django-rest-framework-expandable
 
 # Auth
 python-social-auth==0.2.*
