@@ -1,6 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 import logging
+import json
 
+from django.conf import settings
 from django.db.models import Q
 import django_filters
 from rest_framework import filters
@@ -46,8 +48,38 @@ class TicketPermissionFilter(filters.BaseFilterBackend):
         return queryset.owned_by(user=request.user, only_current=False)
 
 
-class TicketOwnershipPermissionFilter(filters.BaseFilterBackend):
+class TicketOwnershipFilter(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
+        if view.action == 'search':
+            search_term = request.query_params['query'].strip()
+            query = (
+                Q(pk__icontains=search_term) |
+                Q(code__icontains=search_term) |
+                Q(user__nin__contains=search_term.replace('-', '')) |
+                Q(user__email__icontains=search_term)
+            )
+
+            if search_term.isdigit():
+                try:
+                    sesam_response = settings.SESAM_STUDENT_SERVICE_CLIENT.get_student(
+                        mifare_id=search_term)
+                except:
+                    pass
+                else:
+                    query |= Q(user__email=sesam_response.email)
+
+            if search_term.startswith('{'):
+                try:
+                    json_payload = json.loads(search_term)
+                    query = Q(id=json_payload['id'], code=json_payload['code'])
+                except:
+                    pass
+
+            return queryset.filter(query)
+
+        if request.user.is_staff:
+            return queryset
+
         if request.user.is_anonymous:
             return queryset.none()
 

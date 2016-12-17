@@ -24,6 +24,7 @@ from templated_email import send_templated_mail, InlineImage
 from sesam import SesamError, SesamStudentNotFound
 import qrcode
 
+from . import exceptions
 from .utils import signing
 from tickle.db.fields import NameField, SlugField, DescriptionField, \
     MoneyField, NullCharField, IdField
@@ -573,6 +574,21 @@ class TicketOwnership(models.Model):
     @property
     def resell_token(self):
         return signing.dumps(OrderedDict((('id', str(self.id)), ('code', self.code))), salt='resell_token')
+
+    def utilize(self):
+        if self.ticket.utilized:
+            raise exceptions.ValidationError(
+                _('This ticket ownership is already utilized.'))
+
+        if not self.is_current:
+            raise exceptions.ValidationError(_('This ticket ownership is not the current one.'))
+
+        self.ticket.utilize()
+        self.ticket.save()
+
+    def unutilize(self):
+        self.ticket.unutilize()
+        self.ticket.save()
 
     def email_confirmation(self):
         qr_inline = InlineImage(filename='qr.png', content=self.get_qr_raw())

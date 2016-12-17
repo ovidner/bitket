@@ -383,6 +383,18 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
+class PrivilegedUserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.User
+        fields = [
+            'url',
+            'id',
+            'name',
+            'nin',
+            'email'
+        ]
+
+
 class TicketOwnershipSerializer(ExpandableSerializerMixin,
                                 serializers.HyperlinkedModelSerializer):
     resell_token = serializers.SerializerMethodField()
@@ -399,10 +411,12 @@ class TicketOwnershipSerializer(ExpandableSerializerMixin,
             'code',
             'qr',
             'price',
-            'resell_token'
+            'resell_token',
+            'is_current'
         ]
         expandable_fields = {
-            'ticket': (TicketSerializer, list(), dict())
+            'ticket': (TicketSerializer, list(), dict()),
+            'user': (PrivilegedUserSerializer, list(), dict())
         }
 
     def get_qr(self, obj):

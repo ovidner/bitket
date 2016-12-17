@@ -43,6 +43,7 @@ const router = (
       <IndexRoute component={pages.Home}/>
       <Route path="log-in/:authProvider/" component={pages.CompleteLogIn}/>
       <Route path="profile/" component={pages.Profile}/>
+      <Route path="utilize/" component={pages.UtilizeTickets}/>
       <Route path=":eventSlug/" component={pages.Event}/>
     </Route>
     <Redirect from="/*" to="/*/"/>

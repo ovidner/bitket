@@ -5,12 +5,15 @@ from django.conf import settings
 from django.core import signing
 from django.core.exceptions import SuspiciousOperation
 from django.core.signing import BadSignature
+from django.db.models import Q
 from django.http import Http404
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView, RedirectView
 from django.views.generic.detail import SingleObjectMixin
 from rest_framework import views, viewsets, status, mixins
+from rest_framework.decorators import detail_route, list_route
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework_expandable import ExpandableViewMixin
 
@@ -138,7 +141,25 @@ class TicketOwnershipViewSet(ExpandableViewMixin,
                              viewsets.ReadOnlyModelViewSet):
     queryset = models.TicketOwnership.objects.all()
     serializer_class = serializers.TicketOwnershipSerializer
-    filter_backends = (filters.TicketOwnershipPermissionFilter,)
+    filter_backends = (filters.TicketOwnershipFilter,)
+    expandable_actions = ExpandableViewMixin.expandable_actions + ['search']
+
+    @detail_route(('post',), permission_classes=(IsAdminUser,))
+    def utilize(self, request, pk=None):
+        instance = self.get_object()
+        instance.utilize()
+        return self.retrieve(request=request, pk=pk)
+
+    @detail_route(('post',), permission_classes=(IsAdminUser,))
+    def unutilize(self, request, pk=None):
+        instance = self.get_object()
+        instance.unutilize()
+        return self.retrieve(request=request, pk=pk)
+
+    @list_route(('get',), permission_classes=(IsAdminUser,))
+    def search(self, request):
+        # We let the filter classes do the heavy lifting here
+        return self.list(request=request)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):

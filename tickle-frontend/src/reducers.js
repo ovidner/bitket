@@ -37,6 +37,13 @@ const initialState = Map.of(
     '_isPending', null,
     '_error', null
   ),
+  'ticketOwnerships', Map.of(
+    '_isPending', null,
+    '_error', null
+  ),
+  'ticketSearches', List.of(
+    // Map.of('query', '', 'results', List.of('https://ticket-ownership...'))
+  ),
   'ticketTypes', Map.of(
     '_isPending', null,
     '_error', null
@@ -60,6 +67,10 @@ const initialState = Map.of(
     'messages', List.of(),
     'tickets', List.of(),
     'transactions', List.of()
+  ),
+  'users', Map.of(
+    '_isPending', null,
+    '_error', null
   )
 )
 
@@ -320,6 +331,50 @@ const reducer = (state = initialState, action) => {
 
     case actionTypes.LOG_OUT:
       return state.set('session', initialState.get('session'))
+
+    case actionTypes.SEARCH_TICKETS:
+      switch (action.error) {
+        case api.actionErrorValues.PENDING:
+          return state
+        case api.actionErrorValues.SUCCESSFUL:
+          return state
+            .set('ticketSearches', state.get('ticketSearches').take(4).insert(0, Map.of(
+              'query', action.meta.query,
+              'results', fromJS(action.payload.map((result) => result.url)))))
+            .mergeIn(['tickets'], action.payload.reduce((collection, item) => (
+              collection.set(item.ticket.url, Map.of(
+                'url', item.ticket.url,
+                'ticketType', item.ticket.ticket_type,
+                'variationChoices', item.ticket.variation_choices,
+                'utilized', item.ticket.utilized
+              ))
+            ), Map()))
+            .mergeIn(['ticketOwnerships'], action.payload.reduce((collection, item) => (
+              collection.set(item.url, Map.of(
+                'url', item.url,
+                'id', item.id,
+                'ticket', item.ticket.url,
+                'user', item.user.url,
+                'code', item.code,
+                'qr', item.qr,
+                'price', Money(item.price),
+                'resellToken', item.resell_token,
+                'isCurrent', item.is_current
+              ))
+            ), Map()))
+            .mergeIn(['users'], action.payload.reduce((collection, item) => (
+              collection.set(item.user.url, Map.of(
+                'url', item.user.url,
+                'name', item.user.name,
+                'email', item.user.email,
+                'nin', item.user.nin
+              ))
+            ), Map()))
+        case api.actionErrorValues.FAILED:
+          return state
+        default:
+          return state
+      }
 
     case actionTypes.SELECT_TICKET_TYPE:
       return state.setIn(['session', 'selections', 'ticketTypes'],
