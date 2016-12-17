@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import warnings
+import datetime
 
 import certifi
 from django.core.urlresolvers import reverse_lazy
@@ -298,7 +299,8 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_ALGORITHM': 'HS512',
     'JWT_ALLOW_REFRESH': True,
-    'JWT_PAYLOAD_HANDLER': 'tickle.serializers.jwt_payload_handler'
+    'JWT_PAYLOAD_HANDLER': 'tickle.serializers.jwt_payload_handler',
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
 }
 
 # SLUGIFIER
