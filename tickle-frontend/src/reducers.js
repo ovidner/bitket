@@ -389,6 +389,19 @@ const reducer = (state = initialState, action) => {
       return state.setIn(['session', 'selections', 'ticketTypes'],
         state.getIn(['session', 'selections', 'ticketTypes']).delete(action.payload))
 
+    case actionTypes.UTILIZE_TICKET_OWNERSHIP:
+      switch (action.error) {
+        case api.actionErrorValues.PENDING:
+          return state
+        case api.actionErrorValues.SUCCESSFUL:
+          return state
+            .setIn(['tickets', action.payload.ticket, 'utilized'], action.payload.utilized)
+        case api.actionErrorValues.FAILED:
+          return state
+        default:
+          return state
+      }
+
     default:
       return state
   }

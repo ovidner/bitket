@@ -400,6 +400,7 @@ class TicketOwnershipSerializer(ExpandableSerializerMixin,
     resell_token = serializers.SerializerMethodField()
     qr = serializers.SerializerMethodField()
     price = serializers.DecimalField(max_digits=9, decimal_places=2)
+    utilized = serializers.SerializerMethodField()
 
     class Meta:
         model = models.TicketOwnership
@@ -412,7 +413,8 @@ class TicketOwnershipSerializer(ExpandableSerializerMixin,
             'qr',
             'price',
             'resell_token',
-            'is_current'
+            'is_current',
+            'utilized'
         ]
         expandable_fields = {
             'ticket': (TicketSerializer, list(), dict()),
@@ -429,6 +431,8 @@ class TicketOwnershipSerializer(ExpandableSerializerMixin,
             return None
         return obj.resell_token
 
+    def get_utilized(self, obj):
+        return obj.ticket.utilized
 
 class VariationChoiceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
