@@ -1,10 +1,16 @@
 import React from 'react'
 import { Alert, Button, Col, ControlLabel, FormControl, FormGroup, Row, Well } from 'react-bootstrap'
+import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
 
 import * as actions from '../actions'
 import { LogInForm, Page } from '../components'
 import * as selectors from '../selectors'
+
+const keys = /^[a-z0-9]$/
+// keyIdentifier represents a *key* and not a *character*. Therefore these are
+// Unicode IDs for numbers and uppercase letters.
+const keyIdentifiers = /^U\+00(3[0-9]|4[1-9A-F]|5[0-9A])$/
 
 const mapStateToProps = (state, props) => {
   const rawTicketSearches = selectors.getAllTicketSearches(state)
@@ -41,12 +47,46 @@ const UtilizeTickets = connect(mapStateToProps, mapDispatchToProps)(class extend
   constructor(props) {
     super(props)
 
+    this.createRefToInputField = this.createRefToInputField.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
     this.search = this.search.bind(this)
     this.setSearchQuery = this.setSearchQuery.bind(this)
 
     this.state = {
       searchQuery: ''
     }
+  }
+
+  handleKeyDown(domEvent) {
+    if (
+      (
+        // If this field is active already, we ignore this event.
+        window.document.activeElement !== this.inputField
+      ) && (
+        // If any modifier key is used, we ignore this event.
+        !(domEvent.altKey || domEvent.ctrlKey || domEvent.metaKey || domEvent.shiftKey)
+      ) && (
+        // Some browsers haven't managed to take step into the modern ages and
+        // still use the non-standardized way of keyIdentifiers, so we must
+        // check for both.
+        // (It's Safari.) ((Even IE 9 does it right.)) (((Yuck.)))
+        keys.test(domEvent.key) || keyIdentifiers.test(domEvent.keyIdentifier)
+      )
+    ) {
+      this.inputField.focus()
+    }
+  }
+
+  createRefToInputField(ref) {
+    this.inputField = findDOMNode(ref)
+  }
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown)
   }
 
   setSearchQuery(domEvent) {
@@ -69,7 +109,7 @@ const UtilizeTickets = connect(mapStateToProps, mapDispatchToProps)(class extend
                 <form onSubmit={this.search}>
                   <FormGroup>
                     <ControlLabel>Search term</ControlLabel>
-                    <FormControl type="text" value={this.state.searchQuery} onChange={this.setSearchQuery}/>
+                    <FormControl type="text" value={this.state.searchQuery} onChange={this.setSearchQuery} ref={this.createRefToInputField}/>
                   </FormGroup>
                   <Button type="submit" bsStyle="primary" block disabled={this.state.searchQuery.length < 3}>Search</Button>
                 </form>
