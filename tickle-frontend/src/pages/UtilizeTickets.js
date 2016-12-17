@@ -71,7 +71,7 @@ const UtilizeTickets = connect(mapStateToProps, mapDispatchToProps)(class extend
                     <ControlLabel>Search term</ControlLabel>
                     <FormControl type="text" value={this.state.searchQuery} onChange={this.setSearchQuery}/>
                   </FormGroup>
-                  <Button type="submit" bsStyle="primary" block>Search</Button>
+                  <Button type="submit" bsStyle="primary" block disabled={this.state.searchQuery.length < 3}>Search</Button>
                 </form>
               </Col>
               <Col xs={12}>
