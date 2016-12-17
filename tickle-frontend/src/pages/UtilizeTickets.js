@@ -34,7 +34,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => ({
   search: (query) => dispatch(actions.searchTickets(query)),
-  utilizeTicketOwnership: (ticketOwnershipUrl) => (domEvent) => dispatch(actions.utilizeTicketOwnership(ticketOwnershipUrl))
+  utilizeTicketOwnership: (ticketOwnershipId) => (domEvent) => dispatch(actions.utilizeTicketOwnership(ticketOwnershipId))
 })
 
 const UtilizeTickets = connect(mapStateToProps, mapDispatchToProps)(class extends React.Component {
@@ -110,9 +110,9 @@ const UtilizeTickets = connect(mapStateToProps, mapDispatchToProps)(class extend
                                 </Col>
                                 <Col sm={4}>
                                   {ticketOwnership.getIn(['ticket', 'utilized']) ? (
-                                      <Button block disabled style={{height: '6em'}} bsStyle="success" bsSize="lg" onClick={this.props.utilizeTicketOwnership(ticketOwnership.get('url'))}>Utilized</Button>
+                                      <Button block disabled style={{height: '6em'}} bsStyle="success" bsSize="lg">Utilized</Button>
                                     ) : (
-                                      <Button block disabled={!ticketOwnership.get('isCurrent')} style={{height: '6em'}} bsStyle="success" bsSize="lg" onClick={this.props.utilizeTicketOwnership(ticketOwnership.get('url'))}>Utilize</Button>
+                                      <Button block disabled={!ticketOwnership.get('isCurrent')} style={{height: '6em'}} bsStyle="success" bsSize="lg" onClick={this.props.utilizeTicketOwnership(ticketOwnership.get('id'))}>Utilize</Button>
                                     )}
                                   {ticketOwnership.get('isCurrent') ? null : (
                                       <Alert bsStyle="danger">

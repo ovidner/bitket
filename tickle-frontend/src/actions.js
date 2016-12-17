@@ -126,9 +126,9 @@ const searchTickets = (query) => api.fetchAction({
   useAuth: true
 })
 
-const utilizeTicketOwnership = (ticketOwnershipUrl) => api.fetchAction({
+const utilizeTicketOwnership = (ticketOwnershipId) => api.fetchAction({
   actionType: actionTypes.UTILIZE_TICKET_OWNERSHIP,
-  url: `${ticketOwnershipUrl}utilize/`,
+  url: `${apiRoot}/ticket-ownerships/${ticketOwnershipId}/utilize/`,
   options: {
     method: 'POST'
   },
