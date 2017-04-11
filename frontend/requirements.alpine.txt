@@ -1,5 +1,6 @@
 # Build dependencies
 build-base
+curl
 nodejs
 ## gyp (used by node-gyp, used by npm/yarn) is stuck on Python 2.
 python
