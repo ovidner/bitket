@@ -40,9 +40,9 @@ API, partly from services such as
 * LiU ADFS (OAuth2)
 * Stripe
 
-This data is then sent to the backend and/or presented in a meaningful way, 
-using mainly React and Redux. It is rebuilt on every code change (or deployment) 
-through `react-scripts` (i.e. Babel+Webpack).
+This (and user-created) data is then sent to the backend and/or presented in a 
+meaningful way, using mainly React and Redux. The frontend is rebuilt on every 
+code change (or deployment) through `react-scripts` (i.e. Babel+Webpack).
 
 Deployment is handled with Docker, including Compose. Docker builds are 
 performed by Gitlab CI.
