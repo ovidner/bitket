@@ -1,18 +1,26 @@
 image: docker:latest
 services:
   - docker:dind
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
 build-backend:
   stage: build
   script:
-    - export BACKEND_IMAGE_TAG=backend-$(echo -en $CI_BUILD_REF_NAME | tr -c '[:alnum:]_.-' '-')
-    - docker login -u "gitlab-ci-token" -p "$CI_BUILD_TOKEN" $CI_REGISTRY
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$BACKEND_IMAGE_TAG" .
-    - docker push "$CI_REGISTRY_IMAGE:$BACKEND_IMAGE_TAG"
+    - export COMMIT_TAG=backend-$CI_COMMIT_SHA
+    - export REF_TAG=backend-$CI_COMMIT_REF_SLUG
+    - docker build --pull -t $CI_REGISTRY_IMAGE:$COMMIT_TAG backend
+    - docker tag $CI_REGISTRY_IMAGE:$COMMIT_TAG $CI_REGISTRY_IMAGE:$REF_TAG
+    - docker push $CI_REGISTRY_IMAGE:$COMMIT_TAG
+    - docker push $CI_REGISTRY_IMAGE:$REF_TAG
 
 build-frontend:
   stage: build
   script:
-    - export FRONTEND_IMAGE_TAG=frontend-$(echo -en $CI_BUILD_REF_NAME | tr -c '[:alnum:]_.-' '-')
-    - docker login -u "gitlab-ci-token" -p "$CI_BUILD_TOKEN" $CI_REGISTRY
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$FRONTEND_IMAGE_TAG" tickle-frontend
-    - docker push "$CI_REGISTRY_IMAGE:$FRONTEND_IMAGE_TAG"
+    - export COMMIT_TAG=frontend-$CI_COMMIT_SHA
+    - export REF_TAG=frontend-$CI_COMMIT_REF_SLUG
+    - docker build --pull -t $CI_REGISTRY_IMAGE:$COMMIT_TAG frontend
+    - docker tag $CI_REGISTRY_IMAGE:$COMMIT_TAG $CI_REGISTRY_IMAGE:$REF_TAG
+    - docker push $CI_REGISTRY_IMAGE:$COMMIT_TAG
+    - docker push $CI_REGISTRY_IMAGE:$REF_TAG
