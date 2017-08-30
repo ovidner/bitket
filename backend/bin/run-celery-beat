@@ -1,2 +1,2 @@
 #!/bin/sh
-celery -A tickle.common.celery.apps beat -l WARNING
+celery -A bitket.common.celery.apps beat -l WARNING

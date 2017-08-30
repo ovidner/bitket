@@ -12,16 +12,16 @@ from django.urls import reverse
 from hamcrest import assert_that, calling, raises, not_, equal_to
 from rest_framework.test import APITestCase
 
-from tickle.db.fields import DescriptionField, MoneyField, NameField, \
+from ..db.fields import DescriptionField, MoneyField, NameField, \
     NullCharField, SlugField, PasswordField
-from tickle.factories import ProductModifierFactory, HoldingModifierFactory, \
+from ..factories import ProductModifierFactory, HoldingModifierFactory, \
     ConditionFactory, StudentUnionMemberConditionFactory, UserFactory, \
     StudentUnionFactory, TicketTypeFactory, TicketFactory, CartFactory
-from tickle.people.factories import StudentUnionFactory, PersonFactory
+from ..people.factories import StudentUnionFactory, PersonFactory
 
-from tickle.models import User, Ticket
-from tickle.products.factories import ProductFactory, HoldingFactory
-from tickle.utils import sign_state, unsign_state
+from ..models import User, Ticket
+from ..products.factories import ProductFactory, HoldingFactory
+from ..utils import sign_state, unsign_state
 
 
 class ProductModifierMethodTests(TestCase):

@@ -1,2 +1,2 @@
 #!/bin/sh
-gunicorn tickle.wsgi -c /app/gunicorn_conf.py
+gunicorn bitket.wsgi -c /app/gunicorn_conf.py

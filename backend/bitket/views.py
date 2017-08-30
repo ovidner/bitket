@@ -17,11 +17,8 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework_expandable import ExpandableViewMixin
 
-from tickle.models import Event, Organization, Ticket, TicketType, Variation, \
-    VariationChoice
-from tickle.utils.signing import sign_state, unsign_state
-
 from . import filters, models, serializers
+from .utils.signing import sign_state, unsign_state
 
 
 class StripeConnectPermissionMixin(LoginRequiredMixin,
@@ -31,7 +28,7 @@ class StripeConnectPermissionMixin(LoginRequiredMixin,
 
 class StripeConnectRequestView(StripeConnectPermissionMixin, SingleObjectMixin,
                                RedirectView):
-    model = Organization
+    model = models.Organization
     slug_url_kwarg = 'organizer'
     permanent = False
 
@@ -49,7 +46,7 @@ class StripeConnectRequestView(StripeConnectPermissionMixin, SingleObjectMixin,
 
 class StripeConnectCallbackView(StripeConnectPermissionMixin,
                                 SingleObjectMixin, TemplateView):
-    model = Organization
+    model = models.Organization
     template_name = 'dummy.html'
     http_method_names = ['get']
 
@@ -92,12 +89,12 @@ class StripeConnectCallbackView(StripeConnectPermissionMixin,
 
 
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Event.objects.all()
+    queryset = models.Event.objects.all()
     serializer_class = serializers.EventSerializer
 
 
 class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Organization.objects.all()
+    queryset = models.Organization.objects.all()
     serializer_class = serializers.OrganizationSerializer
 
 
@@ -127,13 +124,13 @@ class PurchaseView(views.APIView):
 
 
 class TicketViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Ticket.objects.all()
+    queryset = models.Ticket.objects.all()
     serializer_class = serializers.TicketSerializer
     filter_backends = (filters.TicketPermissionFilter,)
 
 
 class TicketTypeViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = TicketType.objects.published()
+    queryset = models.TicketType.objects.published()
     serializer_class = serializers.TicketTypeSerializer
 
 
@@ -169,10 +166,10 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class VariationViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Variation.objects.all()
+    queryset = models.Variation.objects.all()
     serializer_class = serializers.VariationSerializer
 
 
 class VariationChoiceViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = VariationChoice.objects.all()
+    queryset = models.VariationChoice.objects.all()
     serializer_class = serializers.VariationChoiceSerializer

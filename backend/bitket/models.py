@@ -26,9 +26,9 @@ import qrcode
 
 from . import exceptions
 from .utils import signing
-from tickle.db.fields import NameField, SlugField, DescriptionField, \
+from .db.fields import NameField, SlugField, DescriptionField, \
     MoneyField, NullCharField, IdField
-from tickle.utils.email import generate_pretty_email
+from .utils.email import generate_pretty_email
 
 logger = logging.getLogger(__name__)
 

@@ -3,8 +3,8 @@ FROM alpine:edge
 RUN mkdir /app
 WORKDIR /app
 
-ENV DJANGO_SETTINGS_MODULE=tickle.settings.production \
-    PYTHONPATH=/app/tickle:$PYTHONPATH \
+ENV DJANGO_SETTINGS_MODULE=bitket.settings.production \
+    PYTHONPATH=/app/bitket:$PYTHONPATH \
     PYTHONUNBUFFERED=true
 
 COPY ./requirements.alpine.txt /app/requirements.alpine.txt

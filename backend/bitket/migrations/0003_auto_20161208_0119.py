@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tickle', '0002_auto_20161208_0117'),
+        ('bitket', '0002_auto_20161208_0117'),
     ]
 
     operations = [

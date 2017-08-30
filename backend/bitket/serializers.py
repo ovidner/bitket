@@ -14,7 +14,7 @@ from rest_framework.reverse import reverse
 from rest_framework_expandable import ExpandableSerializerMixin
 from rest_framework_jwt.utils import jwt_payload_handler as original_jwt_payload_handler
 
-from tickle import exceptions, models
+from . import exceptions, models
 
 logger = logging.getLogger(__name__)
 

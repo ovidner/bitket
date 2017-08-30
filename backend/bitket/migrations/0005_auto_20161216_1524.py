@@ -3,13 +3,13 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import tickle.models
+import bitket.models
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tickle', '0004_auto_20161212_0235'),
+        ('bitket', '0004_auto_20161212_0235'),
     ]
 
     operations = [
@@ -32,16 +32,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ticketownership',
             name='code',
-            field=models.CharField(default=tickle.models.generate_ticket_ownership_code, max_length=16, verbose_name='code'),
+            field=models.CharField(default=bitket.models.generate_ticket_ownership_code, max_length=16, verbose_name='code'),
         ),
         migrations.AlterField(
             model_name='ticketownership',
             name='modifiers',
-            field=models.ManyToManyField(blank=True, related_name='ticket_ownerships', to='tickle.Modifier', verbose_name='utilized modifiers'),
+            field=models.ManyToManyField(blank=True, related_name='ticket_ownerships', to='bitket.Modifier', verbose_name='utilized modifiers'),
         ),
         migrations.AlterField(
             model_name='ticketownership',
             name='transactions',
-            field=models.ManyToManyField(blank=True, related_name='ticket_ownerships', to='tickle.Transaction', verbose_name='transactions'),
+            field=models.ManyToManyField(blank=True, related_name='ticket_ownerships', to='bitket.Transaction', verbose_name='transactions'),
         ),
     ]

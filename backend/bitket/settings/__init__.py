@@ -12,7 +12,7 @@ import sesam
 env = environ.Env()
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
-APPS_DIR = ROOT_DIR.path('tickle')
+APPS_DIR = ROOT_DIR.path('bitket')
 
 # https://docs.python.org/3/library/warnings.html#temporarily-suppressing-warnings
 with warnings.catch_warnings():
@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'opbeat.contrib.django',
 
-    'tickle',
+    'bitket',
 )
 
 # MIDDLEWARE CONFIGURATION
@@ -202,10 +202,10 @@ MEDIA_URL = '/media/'
 
 # URL Configuration
 # ------------------------------------------------------------------------------
-ROOT_URLCONF = 'tickle.urls'
+ROOT_URLCONF = 'bitket.urls'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
-WSGI_APPLICATION = 'tickle.wsgi.application'
+WSGI_APPLICATION = 'bitket.wsgi.application'
 
 # AUTHENTICATION CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -256,7 +256,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.load_extra_data',
 
     # Gets student union, if applicable
-    'tickle.models.social_get_union',
+    'bitket.models.social_get_union',
 
     # Update the user record with any changed info from the auth service.
     'social.pipeline.user.user_details',
@@ -283,7 +283,7 @@ SOCIAL_AUTH_LIU_VERIFY_IAT = env.bool('AUTH_LIU_VERIFY_IAT', default=True)
 SOCIAL_AUTH_LIU_VERIFY_SSL = env.bool('AUTH_LIU_VERIFY_SSL', default=True)
 SOCIAL_AUTH_LIU_X509_CERT = env.str('AUTH_LIU_X509_CERT', default=None)
 
-AUTH_USER_MODEL = 'tickle.User'
+AUTH_USER_MODEL = 'bitket.User'
 LOGIN_REDIRECT_URL = reverse_lazy('client:home')
 
 REST_FRAMEWORK = {
@@ -299,7 +299,7 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_ALGORITHM': 'HS512',
     'JWT_ALLOW_REFRESH': True,
-    'JWT_PAYLOAD_HANDLER': 'tickle.serializers.jwt_payload_handler',
+    'JWT_PAYLOAD_HANDLER': 'bitket.serializers.jwt_payload_handler',
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
 }
 

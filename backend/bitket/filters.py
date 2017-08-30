@@ -7,7 +7,7 @@ from django.db.models import Q
 import django_filters
 from rest_framework import filters
 
-from tickle.models import Ticket
+from .models import Ticket
 
 logger = logging.getLogger(__name__)
 
