@@ -99,7 +99,6 @@ class TicketQuerySet(models.QuerySet):
             i.email_ticket()
 
 
-@python_2_unicode_compatible
 class Condition(models.Model):
     id = IdField()
 
@@ -152,7 +151,6 @@ class EventQuerySet(models.QuerySet):
     pass
 
 
-@python_2_unicode_compatible
 class Event(models.Model):
     id = IdField()
 
@@ -374,7 +372,6 @@ class UserManager(models.Manager.from_queryset(UserQuerySet),
         return user
 
 
-@python_2_unicode_compatible
 class User(AbstractBaseUser, PermissionsMixin, models.Model):
     id = IdField()
 
@@ -453,7 +450,6 @@ class StudentUnion(models.Model):
         return self.name
 
 
-@python_2_unicode_compatible
 class Ticket(models.Model):
     id = IdField()
 

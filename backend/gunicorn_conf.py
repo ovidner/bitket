@@ -1,4 +1,3 @@
-from __future__ import absolute_import, unicode_literals
 from multiprocessing import cpu_count
 
 from environ import Env

@@ -1,6 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
-
 def get_nested_attr(obj, attr_list, default=None):
     obj = getattr(obj, attr_list.pop(0), default)
     if attr_list:

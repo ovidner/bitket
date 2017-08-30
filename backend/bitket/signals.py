@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in
 

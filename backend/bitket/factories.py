@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import factory, factory.fuzzy
 from autoslug.utils import slugify
 from django.contrib.auth.hashers import make_password
@@ -29,9 +27,6 @@ class NameSlugDescriptionFactoryMixin(NameSlugFactoryMixin):
 class ConditionFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Condition
-
-
-
 
 
 class OrganizationFactory(factory.DjangoModelFactory):
@@ -100,9 +95,6 @@ class StudentUnionMemberConditionFactory(ConditionFactory):
 
     class Meta:
         model = models.StudentUnionMemberCondition
-
-
-
 
 
 class TicketFactory(factory.DjangoModelFactory):
