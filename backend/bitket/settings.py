@@ -1,32 +1,37 @@
 # -*- coding: utf-8 -*-
 import warnings
 import datetime
+from os import path
 
 import certifi
 from django.core.urlresolvers import reverse_lazy
-import environ
 import psycopg2
 import stripe
 import sesam
 
-env = environ.Env()
+from .utils.settings import PrefixEnv
 
-ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
-APPS_DIR = ROOT_DIR.path('bitket')
 
-# https://docs.python.org/3/library/warnings.html#temporarily-suppressing-warnings
+env = PrefixEnv(prefix='BITKET_')
+
+# Build paths inside the project like this: path.join(ROOT_DIR, ...)
+ROOT_DIR = path.dirname(path.dirname(path.abspath(__file__)))  # /backend
+APPS_DIR = path.join(ROOT_DIR, 'bitket')  # /backend/bitket
+ENV_FILE = path.join(ROOT_DIR, env.str('ENV_FILE', default='.env'))
+
+# Ignores warnings if .env does not exist
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
-    env.read_env(str(ROOT_DIR.path('.env')))
+    env.read_env(ENV_FILE)
 
-# APP CONFIGURATION
-# ------------------------------------------------------------------------------
+DEBUG = env.bool('DEBUG', default=False)
+SECRET_KEY = env.str('SECRET_KEY')
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.admin',
@@ -43,14 +48,12 @@ INSTALLED_APPS = (
     'bitket',
 )
 
-# MIDDLEWARE CONFIGURATION
-# ------------------------------------------------------------------------------
 MIDDLEWARE_CLASSES = (
-    'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
     'djangosecure.middleware.SecurityMiddleware',
+    'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'opbeat.contrib.django.middleware.Opbeat404CatchMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,7 +63,10 @@ MIDDLEWARE_CLASSES = (
 )
 
 ALLOWED_HOSTS = ["*"]
-CORS_ORIGIN_WHITELIST = env.list('DJANGO_CORS_ORIGIN_WHITELIST', default=[])
+CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST', default=[])
+SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', True)
+CORS_ORIGIN_ALLOW_ALL = env.bool('CORS_ORIGIN_ALLOW_ALL', False)
+USE_X_FORWARDED_HOST = env.bool('USE_X_FORWARDED_HOST', True)
 
 SECURE_FRAME_DENY = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -69,38 +75,40 @@ SECURE_BROWSER_XSS_FILTER = True
 SESSION_COOKIE_HTTPONLY = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-
-# EMAIL CONFIGURATION
-# ------------------------------------------------------------------------------
-DEFAULT_FROM_EMAIL = env.str('DJANGO_DEFAULT_FROM_EMAIL',
+_EMAIL_CONFIG = env.email_url('EMAIL_URL')
+EMAIL_BACKEND = _EMAIL_CONFIG.get('EMAIL_BACKEND')
+EMAIL_HOST = _EMAIL_CONFIG.get('EMAIL_HOST')
+EMAIL_HOST_USER = _EMAIL_CONFIG.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = _EMAIL_CONFIG.get('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = _EMAIL_CONFIG.get('EMAIL_PORT')
+EMAIL_USE_TLS = _EMAIL_CONFIG.get('EMAIL_USE_TLS', True)
+DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL',
                              'Bitket <hello@bitket.se>')
-EMAIL_SUBJECT_PREFIX = env.str('DJANGO_EMAIL_SUBJECT_PREFIX',
+EMAIL_SUBJECT_ENV_PREFIX = env.str('EMAIL_SUBJECT_ENV_PREFIX',
                                '[Bitket] ')
-SERVER_EMAIL = env.str('DJANGO_SERVER_EMAIL', DEFAULT_FROM_EMAIL)
+SERVER_EMAIL = env.str('SERVER_EMAIL', DEFAULT_FROM_EMAIL)
 
-# MANAGER CONFIGURATION
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = [("""Bitket admin""", address)
-          for address in env('DJANGO_ADMINS', list, ['admin@bitket.se'])]
+ADMINS = tuple(
+    ("""Bitket admin""", address)
+    for address in
+    env.list('ADMINS', default=('admin@bitket.se',))
+)
 
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 
-# DATABASE CONFIGURATION
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
+# BACKING SERVICES
+# ----------------
 DATABASES = {
-    'default': env.db('DJANGO_DATABASE_URL'),
+    'default': env.db('DATABASE_URL'),
 }
 DATABASES['default']['CONN_MAX_AGE'] = 500
 
-# CACHING
-# ------------------------------------------------------------------------------
+REDIS_URL = env.url('REDIS_URL')
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': env.str('DJANGO_REDIS_URL'),
+        'LOCATION': str(REDIS_URL),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -109,27 +117,12 @@ CACHES = {
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
-# GENERAL CONFIGURATION
-# ------------------------------------------------------------------------------
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# In a Windows environment this must be set to your system time zone.
+
 TIME_ZONE = 'Europe/Stockholm'
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = 'en-us'
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
 USE_I18N = True
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
 USE_L10N = True
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
 
 # TEMPLATE CONFIGURATION
@@ -137,78 +130,41 @@ USE_TZ = True
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#templates
 TEMPLATES = [
     {
-        # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
         'DIRS': [
-            str(APPS_DIR.path('templates')),
+            path.join(APPS_DIR, 'templates'),
         ],
         'OPTIONS': {
-            # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
-            'debug': None,
-            # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
-            # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
+            'debug': DEBUG,
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
             ],
-            # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
-                # Your stuff: custom template context processors go here
             ],
         },
     },
 ]
 
-if env.bool('DJANGO_CACHE_TEMPLATES', True):
+if env.bool('CACHE_TEMPLATES', True):
     TEMPLATES[0]['OPTIONS']['loaders'] = [
         ('django.template.loaders.cached.Loader', TEMPLATES[0]['OPTIONS']['loaders']),
     ]
 
-# STATIC FILE CONFIGURATION
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(APPS_DIR('staticfiles'))
 
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
-
-# See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = ()
-
-# See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
-
+STATIC_ROOT = path.join(ROOT_DIR, 'collected-static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# MEDIA CONFIGURATION
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(APPS_DIR('media'))
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = '/media/'
-
-# URL Configuration
-# ------------------------------------------------------------------------------
 ROOT_URLCONF = 'bitket.urls'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = 'bitket.wsgi.application'
 
-# AUTHENTICATION CONFIGURATION
-# ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'social_liu.LiuBackend',
@@ -314,9 +270,6 @@ OPBEAT = {
 
 GOOGLE_ANALYTICS_ID = env.str('GOOGLE_ANALYTICS_ID', '')
 
-# LOGGING CONFIGURATION
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
 LOGGING = {
     'version': 1,
     # This is THE log config. This makes sense since we use a root logger.
@@ -368,8 +321,8 @@ LOGGING = {
     },
 }
 
-KOBRA_HOST = env.str('KOBRA_HOST', 'https://kobra.karservice.se')
-KOBRA_TOKEN = env.str('KOBRA_TOKEN', '')
+KOBRA_HOST = env.str('KOBRA_HOST', default='https://kobra.karservice.se')
+KOBRA_TOKEN = env.str('KOBRA_TOKEN', default='')
 
 SESAM_USERNAME = env.str('SESAM_USERNAME', default='')
 SESAM_PASSWORD = env.str('SESAM_PASSWORD', default='')
