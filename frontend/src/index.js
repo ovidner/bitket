@@ -10,6 +10,7 @@ import { Provider } from 'react-redux'
 import { IndexRoute, Redirect, Route, Router, browserHistory } from 'react-router'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
+import WebFont from 'webfontloader'
 
 import * as components from './components'
 import { errorReportingMiddleware, loggerMiddleware } from './middleware'
@@ -19,6 +20,12 @@ import * as settings from './settings'
 import * as utils from './utils'
 
 import './index.css'
+
+WebFont.load({
+  typekit: {
+    id: settings.typekitId
+  }
+})
 
 window.Stripe.setPublishableKey(settings.stripePublicKey)
 
