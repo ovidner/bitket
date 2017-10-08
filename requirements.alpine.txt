@@ -5,12 +5,16 @@ python3
 py3-pip
 
 # Build dependencies
+build-base
 gcc
 git
 jpeg-dev
 libffi-dev
 libpq
 musl-dev
+nodejs
 postgresql-dev
+## gyp (used by node-gyp, used by npm/yarn) is stuck on Python 2.
+python
 python3-dev
 zlib-dev
