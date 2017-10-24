@@ -1,7 +1,5 @@
 import React from 'react'
-import { Button, Col, FormGroup, Row } from 'react-bootstrap'
-import Icon from 'react-fontawesome'
-import { withRouter } from 'react-router'
+import { Button, FormGroup } from 'react-bootstrap'
 
 import { authProviders } from '../settings'
 import { getRedirectUri } from '../utils'

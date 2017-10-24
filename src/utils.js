@@ -5,7 +5,7 @@ import * as actions from './actions'
 import * as settings from './settings'
 import * as selectors from './selectors'
 
-const utcTimestamp = () => (new Date).getTime()
+const utcTimestamp = () => (new Date()).getTime()
 
 const partialSubscribe = (store, select, onChange, fireNow = false) => {
   // Observes a Redux store. store should be a Redux store. select should be a
@@ -118,7 +118,7 @@ const ninIsValid = (input) => {
       input = input.slice(0, 8) + "-" + input.slice(8)
     }
   }
-  if (!input.match(/^(\d{2})(\d{2})(\d{2})\-(\d{4})|(\d{4})(\d{2})(\d{2})\-(\d{4})$/)) { return false }
+  if (!input.match(/^(\d{2})(\d{2})(\d{2})-(\d{4})|(\d{4})(\d{2})(\d{2})-(\d{4})$/)) { return false }
 
   // Clean input
   input = input.replace('-', '')

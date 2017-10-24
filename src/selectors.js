@@ -155,28 +155,6 @@ const ticketTypeHasValidVariationChoiceSelections = (state, ticketTypeUrl) => (
     .every((_, url) => getSelectedVariationChoices(state).has(url))
 )
 
-const ticketTypeIsSelectable = (state, ticketTypeUrl) => {
-  const ticketType = getTicketType(state, ticketTypeUrl)
-
-  return ticketType.getIn(['availability', 'quantity']) && (
-    ticketType.getIn(['availability', 'general']) ||
-    getAllAccessCodes(state)
-      .some((accessCode) => (
-        accessCode.get('isUtilizable') &&
-        accessCode.get('ticketType') === ticketTypeUrl))
-    )
-}
-
-const eventHasValidSelections = (state, eventUrl) => {
-  const selectedTicketTypes = getSelectedTicketTypesOfEvent(state, eventUrl)
-
-  if (selectedTicketTypes.isEmpty()) return false
-
-  return selectedTicketTypes.every((ticketType) => (
-    ticketType.getIn(['availability', 'quantity']) && (ticketType.getIn(['availability', 'general']) || ticketType.getIn(['availability', 'personal']))
-  ))
-}
-
 export {
   authIsPending,
   getAllAccessCodes,

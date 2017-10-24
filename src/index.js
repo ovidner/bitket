@@ -1,9 +1,5 @@
 import 'es6-shim'
 
-// Initialize the error handler in an early stage
-import * as errorReporting from './errorReporting'
-errorReporting.init()
-
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
@@ -13,6 +9,7 @@ import thunkMiddleware from 'redux-thunk'
 import WebFont from 'webfontloader'
 
 import * as components from './components'
+import * as errorReporting from './errorReporting'
 import { errorReportingMiddleware, loggerMiddleware } from './middleware'
 import * as pages from './pages'
 import reducer, { initialState } from './reducers'
@@ -20,6 +17,9 @@ import * as settings from './settings'
 import * as utils from './utils'
 
 import './index.css'
+
+// Initialize the error handler in an early stage
+errorReporting.init()
 
 WebFont.load({
   typekit: {

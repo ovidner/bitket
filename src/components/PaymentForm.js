@@ -1,6 +1,5 @@
 import React from 'react'
 import { Alert, Button, Col, ControlLabel, FormControl, FormGroup, Row, HelpBlock, Checkbox } from 'react-bootstrap'
-import Icon from 'react-fontawesome'
 import { connect } from 'react-redux'
 
 import * as actions from '../actions'
@@ -148,7 +147,7 @@ class _PaymentForm extends React.Component {
         <p>
           We accept VISA, MasterCard and American Express cards. The payment is
           secured
-          by <a href="https://stripe.com/se" target="_blank">Stripe</a> and your
+          by <a href="https://stripe.com/se">Stripe</a> and your
           card details are never accessible by Bitket
           or {this.props.organization ? this.props.organization.get('name') : 'the event organizer'}.
         </p>
@@ -180,7 +179,7 @@ class _PaymentForm extends React.Component {
           <strong>Heads up, Nordea customers!</strong> Please make sure that you
           have activated your card for online purchases before proceeding. Read
           more and follow the instructions
-          at <a href="http://www.nordea.se/privat/vardagstjanster/kort/Internetkop.html" target="_blank">Nordea's website</a>.
+          at <a href="http://www.nordea.se/privat/vardagstjanster/kort/Internetkop.html">Nordea's website</a>.
         </Alert>
         <h3>Terms <small>and other important information</small></h3>
         {this.props.organization ? (

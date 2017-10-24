@@ -1,5 +1,5 @@
 import React from 'react'
-import { Nav, Navbar as BootstrapNavbar, NavDropdown, NavItem, Label } from 'react-bootstrap'
+import { Nav, Navbar as BootstrapNavbar, NavDropdown, NavItem } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { IndexLink } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'

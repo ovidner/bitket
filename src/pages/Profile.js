@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, Button, Col, ControlLabel, FormControl, FormGroup, HelpBlock, OverlayTrigger, Panel, Popover, Row } from 'react-bootstrap'
+import { Alert, Button, Col, ControlLabel, FormControl, FormGroup, OverlayTrigger, Panel, Popover, Row } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 import { connect } from 'react-redux'
 
@@ -39,10 +39,6 @@ const ResellPopover = (props) => (
 
 const Profile = connect(mapStateToProps, mapDispatchToProps)(
   class extends React.Component {
-    constructor(props) {
-      super(props)
-    }
-
     render() {
       return (
         <Page>
@@ -77,7 +73,7 @@ const Profile = connect(mapStateToProps, mapDispatchToProps)(
                             </FormGroup>
                             <FormGroup>
                               <ControlLabel>Entrance code</ControlLabel>
-                              <img src={ticket.get('qr')} style={{marginBottom: '0.5em', width: '100%'}} className="img-thumbnail"/><br/>
+                              <img src={ticket.get('qr')} alt={ticket.get('id')} style={{marginBottom: '0.5em', width: '100%'}} className="img-thumbnail"/><br/>
                               <small>
                                 <code>{ticket.get('id')}</code><br/>
                                 <code>{ticket.get('code').replace(/\w{2}/g, '$& ')}</code>
