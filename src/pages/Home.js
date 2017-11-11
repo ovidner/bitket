@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Alert, Panel } from 'react-bootstrap'
+import { Row, Col, Alert, Panel, Button } from 'react-bootstrap'
 import Markdown from 'react-markdown'
 import { Page } from '../components'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -27,7 +27,7 @@ const Home = connect(mapStateToProps)((props) => (
 
               <Markdown source={event.get('description')}/>
 
-              <strong>View more...</strong>
+              <Button bsStyle="primary" style={{marginBottom: 10}}>View more...</Button>
             </Panel>
           </Col>
         </LinkContainer>
