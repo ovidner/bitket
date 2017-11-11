@@ -47,6 +47,7 @@ class _PaymentForm extends React.Component {
 
   validate(stripeData) {
     this.setState({
+      stripeError: stripeData.error,
       cardIsValid: stripeData.complete
     })
   }

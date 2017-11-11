@@ -55,7 +55,7 @@ class _Event extends React.Component {
             {this.props.isLoggedIn ? (
               <div>
                 <StripeProvider apiKey={settings.stripePublicKey}>
-                  <Elements>
+                  <Elements locale='en'>
                     <PaymentForm eventUrl={this.props.event.get('url')}/>
                   </Elements>
                 </StripeProvider>
