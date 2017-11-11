@@ -79,16 +79,6 @@ const Profile = connect(mapStateToProps, mapDispatchToProps)(
                                 <code>{ticket.get('code').replace(/\w{2}/g, '$& ')}</code>
                               </small>
                             </FormGroup>
-                            <Alert bsStyle="warning">
-                              Reselling is temporarily disabled. We'll be back
-                              during the evening (Friday 16/12). Sorry for the
-                              inconvenience :(
-                            </Alert>
-                            <OverlayTrigger trigger="click" placement="top" rootClose overlay={ResellPopover({id: ticket.get('id'), resellToken: ticket.get('resellToken')})}>
-                              <Button block bsStyle="warning" disabled>
-                                <Icon name="share" fixedWidth/>Resell
-                              </Button>
-                            </OverlayTrigger>
                           </Panel>
                         </Col>
                       ) : null
