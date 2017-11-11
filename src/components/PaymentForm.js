@@ -122,12 +122,12 @@ class _PaymentForm extends React.Component {
 
         <CardElement onChange={this.validate.bind(this)} style={{base: {fontSize: '18px'}}} />
 
-        {/*<Alert bsStyle="warning">
+        <Alert bsStyle="warning" style={{marginTop: '20px'}}>
           <strong>Heads up, Nordea customers!</strong> Please make sure that you
           have activated your card for online purchases before proceeding. Read
           more and follow the instructions
           at <a href="http://www.nordea.se/privat/vardagstjanster/kort/Internetkop.html">Nordea's website</a>.
-        </Alert> */}
+        </Alert>
 
         <hr />
 
