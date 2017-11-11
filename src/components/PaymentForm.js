@@ -108,8 +108,11 @@ class _PaymentForm extends React.Component {
             I don't have a Swedish national identity number
           </Checkbox>
         </FormGroup>
+
+        <hr />
+
         <h3>Card details</h3>
-        <p>
+        <p style={{marginBottom: '20px'}}>
           We accept VISA, MasterCard and American Express cards. The payment is
           secured
           by <a href="https://stripe.com/se">Stripe</a> and your
@@ -125,6 +128,8 @@ class _PaymentForm extends React.Component {
           more and follow the instructions
           at <a href="http://www.nordea.se/privat/vardagstjanster/kort/Internetkop.html">Nordea's website</a>.
         </Alert> */}
+
+        <hr />
 
         <h3>Terms <small>and other important information</small></h3>
         {this.props.organization ? (

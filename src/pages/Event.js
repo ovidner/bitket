@@ -52,6 +52,8 @@ class _Event extends React.Component {
               Total amount: {this.props.getTotalAmountForEvent(this.props.event.get('url')).toRepr()} SEK
             </p>
 
+            <hr />
+
             {this.props.isLoggedIn ? (
               <div>
                 <StripeProvider apiKey={settings.stripePublicKey}>
