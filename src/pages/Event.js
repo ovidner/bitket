@@ -3,6 +3,8 @@ import { Row, Col, Well, Alert } from 'react-bootstrap'
 import Markdown from 'react-markdown'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
+import * as settings from '../settings'
+import { StripeProvider, Elements } from 'react-stripe-elements'
 
 import { Page, LogInForm, SelectTickets, PaymentForm } from '../components'
 import * as selectors from '../selectors'
@@ -52,7 +54,11 @@ class _Event extends React.Component {
 
             {this.props.isLoggedIn ? (
               <div>
-                <PaymentForm eventUrl={this.props.event.get('url')}/>
+                <StripeProvider apiKey={settings.stripePublicKey}>
+                  <Elements>
+                    <PaymentForm eventUrl={this.props.event.get('url')}/>
+                  </Elements>
+                </StripeProvider>
               </div>
             ) : (
               <div>

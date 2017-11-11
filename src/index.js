@@ -27,8 +27,6 @@ WebFont.load({
   }
 })
 
-window.Stripe.setPublishableKey(settings.stripePublicKey)
-
 const middleware = [
   // errorReportingMiddleware should always come first in the middleware chain
   errorReportingMiddleware,

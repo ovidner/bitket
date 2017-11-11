@@ -1,4 +1,5 @@
 import React from 'react'
+import { injectStripe, CardElement } from 'react-stripe-elements'
 import { Alert, Button, Col, ControlLabel, FormControl, FormGroup, Row, HelpBlock, Checkbox } from 'react-bootstrap'
 import { connect } from 'react-redux'
 
@@ -24,10 +25,7 @@ class _PaymentForm extends React.Component {
     super(props)
 
     this.state = {
-      cardNumber: '',
-      cardExpMonth: '',
-      cardExpYear: '',
-      cardCode: '',
+      cardIsValid: false,
       nin: props.user.nin || '',
       noNin: false,
       stripeError: null,
@@ -39,58 +37,18 @@ class _PaymentForm extends React.Component {
     return (domEvent) => this.setState({noNin: !this.state.noNin})
   }
 
-  setCardNumber() {
-    return (domEvent) => this.setState(
-      // Replaces all spaces with blank strings
-      {cardNumber: domEvent.target.value.replace(/\D/g, '')})
-  }
-
-  setCardExpMonth() {
-    return (domEvent) => this.setState(
-      {cardExpMonth: domEvent.target.value.replace(/\D/g, '').slice(0, 2)})
-  }
-
-  setCardExpYear() {
-  return (domEvent) => this.setState(
-    {cardExpYear: domEvent.target.value.replace(/\D/g, '').slice(0, 4)})
-  }
-
-  setCardCode() {
-    return (domEvent) => this.setState(
-      {cardCode: domEvent.target.value.replace(/\D/g, '').slice(0, 4)})
-  }
-
   setNin() {
     return (domEvent) => this.setState({nin: domEvent.target.value})
-  }
-
-  cardCodeIsValid() {
-    return window.Stripe.card.validateCVC(this.state.cardCode)
-  }
-
-  cardExpIsValid() {
-    return window.Stripe.card.validateExpiry(
-      this.state.cardExpMonth, this.state.cardExpYear)
-  }
-
-  cardNumberIsValid() {
-    return window.Stripe.card.validateCardNumber(this.state.cardNumber)
   }
 
   ninIsValid() {
     return this.state.noNin || utils.ninIsValid(this.state.nin)
   }
 
-  stripeResponseHandler(status, response) {
-    if (response.error) {
-      this.setState({stripeError: response.error})
-      this.setState({stripePending: false})
-    } else {
-      this.setState({stripeError: null})
-
-      this.props.performPurchase(response.id, this.state.noNin ? null : this.state.nin)
-      this.setState({stripePending: false})
-    }
+  validate(stripeData) {
+    this.setState({
+      cardIsValid: stripeData.complete
+    })
   }
 
   startPurchase() {
@@ -98,12 +56,18 @@ class _PaymentForm extends React.Component {
       this.setState({stripeError: null})
       this.setState({stripePending: true})
 
-      window.Stripe.createToken({
-        number: this.state.cardNumber,
-        cvc: this.state.cardCode,
-        exp_month: this.state.cardExpMonth,
-        exp_year: this.state.cardExpYear
-      }, this.stripeResponseHandler.bind(this))
+      this.props.stripe.createToken()
+        .then( ({token}) => {
+          this.setState({stripeError: null})
+
+          this.props.performPurchase(token.id, this.state.noNin ? null : this.state.nin)
+          this.setState({stripePending: false})
+        } )
+        .catch( ({error}) => {
+          console.log(error) // TODO Handle better, output the errors on bottom of page
+          this.setState({stripeError: error})
+          this.setState({stripePending: false})
+        } )
 
       domEvent.preventDefault()
       return false
@@ -151,36 +115,16 @@ class _PaymentForm extends React.Component {
           card details are never accessible by Bitket
           or {this.props.organization ? this.props.organization.get('name') : 'the event organizer'}.
         </p>
-        <FormGroup validationState={(this.state.cardNumber && !this.cardNumberIsValid()) ? 'error' : null}>
-          <ControlLabel>Card number</ControlLabel>
-          <FormControl type="text" placeholder="●●●● ●●●● ●●●● ●●●●" value={this.state.cardNumber.replace(/\d{4}/g, '$& ').trim()} onChange={this.setCardNumber()}/>
-        </FormGroup>
-        <Row>
-          <Col xs={3}>
-            <FormGroup validationState={(this.state.cardExpMonth && this.state.cardExpYear && !this.cardExpIsValid()) ? 'error' : null}>
-              <ControlLabel>Month</ControlLabel>
-              <FormControl type="text" placeholder="MM" value={this.state.cardExpMonth} onChange={this.setCardExpMonth()}/>
-            </FormGroup>
-          </Col>
-          <Col xs={3}>
-            <FormGroup validationState={(this.state.cardExpMonth && this.state.cardExpYear && !this.cardExpIsValid()) ? 'error' : null}>
-              <ControlLabel>Year</ControlLabel>
-              <FormControl type="text" placeholder="YY" value={this.state.cardExpYear} onChange={this.setCardExpYear()}/>
-            </FormGroup>
-          </Col>
-          <Col xs={6}>
-            <FormGroup validationState={(this.state.cardCode && !this.cardCodeIsValid()) ? 'error' : null}>
-              <ControlLabel>Security code</ControlLabel>
-              <FormControl type="text" placeholder="●●●" value={this.state.cardCode} onChange={this.setCardCode()}/>
-            </FormGroup>
-          </Col>
-        </Row>
-        <Alert bsStyle="warning">
+
+        <CardElement onChange={this.validate.bind(this)} style={{base: {fontSize: '18px'}}} />
+
+        {/*<Alert bsStyle="warning">
           <strong>Heads up, Nordea customers!</strong> Please make sure that you
           have activated your card for online purchases before proceeding. Read
           more and follow the instructions
           at <a href="http://www.nordea.se/privat/vardagstjanster/kort/Internetkop.html">Nordea's website</a>.
-        </Alert>
+        </Alert> */}
+
         <h3>Terms <small>and other important information</small></h3>
         {this.props.organization ? (
           <div>
@@ -232,7 +176,7 @@ class _PaymentForm extends React.Component {
               ) : null}
             <FormGroup>
               <Button type="submit" bsSize="lg" bsStyle="success" block
-                      disabled={!(this.cardCodeIsValid() && this.cardExpIsValid() && this.cardNumberIsValid() && this.ninIsValid()) || this.state.stripePending}>
+                      disabled={!(this.state.cardIsValid && this.ninIsValid()) || this.state.stripePending}>
                 Pay {this.props.totalAmount.toRepr()} SEK
               </Button>
             </FormGroup>
@@ -245,4 +189,4 @@ class _PaymentForm extends React.Component {
 
 const PaymentForm = connect(mapStateToProps, mapDispatchToProps)(_PaymentForm)
 
-export default PaymentForm
+export default injectStripe(PaymentForm);
