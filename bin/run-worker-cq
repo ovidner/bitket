@@ -1,0 +1,2 @@
+#!/bin/sh
+exec django-admin runworker --only-channels cq-tasks

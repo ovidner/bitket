@@ -11,22 +11,12 @@ services:
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
-build-backend:
+build:
   stage: build
   script:
-    - export COMMIT_TAG=backend-$CI_COMMIT_SHA
-    - export REF_TAG=backend-$CI_COMMIT_REF_SLUG
-    - docker build --pull -t $CI_REGISTRY_IMAGE:$COMMIT_TAG backend
-    - docker tag $CI_REGISTRY_IMAGE:$COMMIT_TAG $CI_REGISTRY_IMAGE:$REF_TAG
-    - docker push $CI_REGISTRY_IMAGE:$COMMIT_TAG
-    - docker push $CI_REGISTRY_IMAGE:$REF_TAG
-
-build-frontend:
-  stage: build
-  script:
-    - export COMMIT_TAG=frontend-$CI_COMMIT_SHA
-    - export REF_TAG=frontend-$CI_COMMIT_REF_SLUG
-    - docker build --pull -t $CI_REGISTRY_IMAGE:$COMMIT_TAG frontend
+    - export COMMIT_TAG=$CI_COMMIT_SHA
+    - export REF_TAG=$CI_COMMIT_REF_SLUG
+    - docker build --pull -t $CI_REGISTRY_IMAGE:$COMMIT_TAG .
     - docker tag $CI_REGISTRY_IMAGE:$COMMIT_TAG $CI_REGISTRY_IMAGE:$REF_TAG
     - docker push $CI_REGISTRY_IMAGE:$COMMIT_TAG
     - docker push $CI_REGISTRY_IMAGE:$REF_TAG

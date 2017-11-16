@@ -1,6 +1,9 @@
 # Runtime dependencies
 ca-certificates
 curl
+libpq
+libxml2
+libxslt
 python3
 py3-pip
 
@@ -10,11 +13,12 @@ gcc
 git
 jpeg-dev
 libffi-dev
-libpq
+libxml2-dev
+libxslt-dev
 musl-dev
-nodejs
 postgresql-dev
 ## gyp (used by node-gyp, used by npm/yarn) is stuck on Python 2.
 python
 python3-dev
+yarn
 zlib-dev

@@ -1,2 +1,0 @@
-#!/bin/sh
-celery -A bitket.common.celery.apps worker -l WARNING

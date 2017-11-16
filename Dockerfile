@@ -1,24 +1,30 @@
-FROM alpine:edge
+FROM alpine:3.6
 
-RUN mkdir /app
-WORKDIR /app
-
-ENV DJANGO_SETTINGS_MODULE=bitket.settings.production \
-    PYTHONPATH=/app/bitket:$PYTHONPATH \
+ENV APP_ROOT=/app
+# PIP_NO_CACHE_DIR=false actually means *no cache*
+ENV DJANGO_SETTINGS_MODULE=bitket.settings \
+    PATH=${APP_ROOT}/bin:${PATH} \
+    PIP_NO_CACHE_DIR=false \
+    PIPENV_DONT_LOAD_ENV=true \
     PYTHONUNBUFFERED=true
 
-COPY ./requirements.alpine.txt /app/requirements.alpine.txt
-RUN apk add --no-cache $(grep -vE "^\s*#" /app/requirements.alpine.txt | tr "\n" " ") && \
-    ln -sf /usr/bin/python3 /usr/bin/python && \
-    pip3 install --no-cache-dir -U pip setuptools wheel
+RUN mkdir ${APP_ROOT}
+WORKDIR ${APP_ROOT}
 
-COPY ./requirements.txt /app/requirements.txt
-RUN pip3 install --no-cache-dir -r /app/requirements.txt
+COPY apk-packages.txt ${APP_ROOT}/
+RUN apk add --no-cache $(grep -vE "^\s*#" ${APP_ROOT}/apk-packages.txt | tr "\r\n" " ") && \
+    pip3 install -U pip pipenv setuptools wheel
 
-COPY . /app
+COPY Pipfile Pipfile.lock ${APP_ROOT}/
+RUN pipenv install --system --deploy
 
-RUN DJANGO_SECRET_KEY=build DJANGO_DATABASE_URL=sqlite://// DJANGO_REDIS_URL=redis:// DJANGO_EMAIL_URL=consolemail:// django-admin collectstatic --no-input
+COPY package.json yarn.lock ${APP_ROOT}/
+RUN yarn install && yarn cache clean
+
+COPY . ${APP_ROOT}/
+
+RUN pipenv install --system . && \
+    yarn build && \
+    BITKET_DATABASE_URL=sqlite://// BITKET_EMAIL_URL=consolemail:// BITKET_REDIS_URL=redis:// BITKET_SECRET_KEY=build django-admin collectstatic --no-input
 
 EXPOSE 80
-ENTRYPOINT ["/app/bin/docker-entrypoint"]
-CMD ["/app/bin/run-django"]
