@@ -1,10 +1,11 @@
 {
-  "name": "bitket-frontend",
+  "name": "bitket",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "node-sass": "^3.11.2",
-    "react-scripts": "^0.8.3"
+    "node-sass": "^4.5.3",
+    "npm-run-all": "^4.1.1",
+    "react-scripts": "^1.0.13"
   },
   "dependencies": {
     "big.js": "^3.1.3",
@@ -29,11 +30,14 @@
     "webfontloader": "^1.6.28"
   },
   "scripts": {
+    "react-build": "react-scripts build",
+    "react-start": "react-scripts start",
     "sass-build": "node-sass src/index.scss --include-path node_modules/bootstrap-sass/assets/stylesheets --output src",
-    "sass-watch": "npm run sass-build && npm run sass-build -- --watch",
-    "start": "npm run sass-watch & react-scripts start",
-    "build": "npm run sass-build && react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
+    "sass-watch": "run-s 'sass-build' 'sass-build --watch'",
+    "build": "run-s 'sass-build' 'react-build'",
+    "start": "run-p 'sass-watch' 'react-start'",
+    "eject": "react-scripts eject",
+    "test": "react-scripts test --env=jsdom"
+  },
+  "proxy": "http://localhost:8000"
 }
