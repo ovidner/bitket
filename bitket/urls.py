@@ -37,4 +37,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^stripe/connect/(?P<organizer>[\w-]+)/$', views.StripeConnectRequestView.as_view()),
     url(r'^stripe/connect-callback/$', views.StripeConnectCallbackView.as_view()),
+    url(r'^', views.frontend_view),
 ]

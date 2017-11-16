@@ -158,6 +158,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            path.join(ROOT_DIR, 'build'),
             path.join(APPS_DIR, 'templates'),
         ],
         'OPTIONS': {
@@ -181,9 +182,11 @@ if env.bool('CACHE_TEMPLATES', True):
         ('django.template.loaders.cached.Loader', TEMPLATES[0]['OPTIONS']['loaders']),
     ]
 
-
 STATIC_URL = '/static/'
 STATIC_ROOT = path.join(ROOT_DIR, 'collected-static')
+STATICFILES_DIRS = [
+    path.join(ROOT_DIR, 'build', 'static')
+]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'bitket.urls'

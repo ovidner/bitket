@@ -10,6 +10,15 @@
     <div id="root"></div>
 
     <!--
+      The backend can inject environmental settings to the frontend application
+      through here. We'll do it the way OWASP recommends.
+      https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet#HTML_entity_encoding
+      As the Django template syntax will *not* constitute syntactically valid
+      JSON, the parsing script will stop if no environment has been injected.
+    -->
+    <div id="BACKEND_INJECTED_ENV" style="display: none">{{ FRONTEND_ENV|escape }}</div>
+
+    <!--
       Importing Opbeat makes Webpack complain. It's fine to load it here though.
       We won't get error reporting going earlier anyway, since we're configuring
       it in the bundle.
