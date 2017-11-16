@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6ce885e96d887ffdc98fbc102fa69ae56d1818fd1176c889d6ea220a22e1fe77"
+            "sha256": "f645ba2dc2ba3375e51811727221d1dab30b65bf89b0568467ddcf435f0a3961"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -84,10 +84,6 @@
                 "sha256:3c1fd04ecf08ac87b4dd3feae409542e9bf7827257097b2b6ed5692f69d6f6a8"
             ],
             "version": "==0.6.0"
-        },
-        "bitket": {
-            "editable": true,
-            "path": "."
         },
         "cached-property": {
             "hashes": [
@@ -337,33 +333,6 @@
             ],
             "version": "==0.8.7"
         },
-        "graphene": {
-            "hashes": [
-                "sha256:698543001858c908c5e3526ddf38ae1d13049c6c1313ec3bb0afad02c81bd242",
-                "sha256:0763563fdccb6817311f15d0f0a4d4fe820a46cbe5de022076f95cd99413fd0f"
-            ],
-            "version": "==2.0.1"
-        },
-        "graphene-django": {
-            "hashes": [
-                "sha256:5cabf46b59f242a533fe1df1912c87d5ad6606246937609be2e6c9086cfdf7a4",
-                "sha256:70d9358bc48c806b6a9458e8344f0a1211cd1f1ef923a092aa55e6bcacc2c3fc"
-            ],
-            "version": "==2.0.0"
-        },
-        "graphql-core": {
-            "hashes": [
-                "sha256:539355351343dede3ecb771e0d273a1b72405cb6d64f45bb8f92ecc4d7109af0",
-                "sha256:4830699be53f9154273fa15726fc8b0c90bc22bbb8fc7c932586503b3cb9330e"
-            ],
-            "version": "==2.0"
-        },
-        "graphql-relay": {
-            "hashes": [
-                "sha256:2716b7245d97091af21abf096fabafac576905096d21ba7118fba722596f65db"
-            ],
-            "version": "==0.4.5"
-        },
         "gunicorn": {
             "hashes": [
                 "sha256:75af03c99389535f218cc596c7de74df4763803f7b63eb09d77e92b3956b36c6",
@@ -411,14 +380,6 @@
                 "sha256:eb2e116e75ecef9d4d228fdc66af54269afa26ab4463042e33785b887c628ba8"
             ],
             "version": "==0.2.0"
-        },
-        "iso8601": {
-            "hashes": [
-                "sha256:210e0134677cc0d02f6028087fee1df1e1d76d372ee1db0bf30bf66c5c1c89a3",
-                "sha256:bbbae5fb4a7abfe71d4688fd64bff70b91bbd74ef6a99d964bab18f7fdf286dd",
-                "sha256:49c4b20e1f38aa5cf109ddcd39647ac419f928512c869dc01d5c7098eddede82"
-            ],
-            "version": "==0.1.12"
         },
         "isodate": {
             "hashes": [
@@ -587,13 +548,6 @@
             ],
             "version": "==4.3.0"
         },
-        "promise": {
-            "hashes": [
-                "sha256:0bca4ed933e3d50e3d18fb54fc1432fa84b0564838cd093e824abcd718ab9304",
-                "sha256:95506bac89df7a495e0b8c813fd782dd1ae590decb52f95248e316c6659ca49b"
-            ],
-            "version": "==2.1"
-        },
         "prompt-toolkit": {
             "hashes": [
                 "sha256:3f473ae040ddaa52b52f97f6b4a493cfa9f5920c255a12dc56a7d34397a398a4",
@@ -735,13 +689,6 @@
             ],
             "version": "==1.2.0"
         },
-        "rx": {
-            "hashes": [
-                "sha256:ad793d79843feba2ea25c0c01be245f3163d5d469418279d4019737b93d88c78",
-                "sha256:84ac6e140f2129266fd4c77a3d0903bbff0a761386079ea0cb99c8524695cac1"
-            ],
-            "version": "==1.6.0"
-        },
         "sesam": {
             "hashes": [
                 "sha256:f39d752afbc04fba0ed0b5748df67ceb35fac459d3cd409ed9b40d21748a1121",
@@ -754,13 +701,6 @@
                 "sha256:dc972e06094b9af5b855b3df4a646395e43d1c9d0d39ed345b7393560d0b9173"
             ],
             "version": "==0.8.1"
-        },
-        "singledispatch": {
-            "hashes": [
-                "sha256:833b46966687b3de7f438c761ac475213e53b306740f1abfaa86e1d1aae56aa8",
-                "sha256:5b06af87df13818d14f08a028e42f566640aef80805c3b50c5056b086e3c2b9c"
-            ],
-            "version": "==3.4.0.3"
         },
         "six": {
             "hashes": [
@@ -914,6 +854,10 @@
         }
     },
     "develop": {
+        "bitket": {
+            "editable": true,
+            "path": "."
+        },
         "certifi": {
             "hashes": [
                 "sha256:244be0d93b71e93fc0a0a479862051414d0e00e16435707e5bf5000f92e04694",
