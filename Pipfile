@@ -1,0 +1,64 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+
+[requires]
+
+python_version = "3.6"
+
+
+[packages]
+
+bitket = { path = ".", editable = true }
+asgi-redis = "*"
+certifi = "*"
+channels = "*"
+django = "*"
+django-autoslug = "*"
+django-braces = "*"
+django-cors-headers = "*"
+django-cq = "*"
+django-environ = "*"
+django-extensions = "*"
+django-filter = "*"
+django-localflavor = "*"
+django-model-utils = "*"
+django-redis = "*"
+django-secure = "*"
+django-templated-email = "*"
+djangorestframework = "*"
+djangorestframework-expandable = "*"
+djangorestframework-jwt = "*"
+factory-boy = "*"
+gunicorn = "*"
+"html2text" = "*"
+ipython = "*"
+opbeat = "*"
+pillow = "*"
+"psycopg2" = "*"
+pytz = "*"
+qrcode = "*"
+requests = "*"
+rest-social-auth = "*"
+sesam = "*"
+social-auth-app-django = "==1.*"
+social-auth-core = "*"
+social-auth-liu = "*"
+stripe = "*"
+unicode-slugify = "*"
+unicodecsv = "*"
+whitenoise = "*"
+"python3-openid" = "*"
+
+
+["dev-packages"]
+
+factory-boy = "*"
+pdbpp = "*"
+psutil = "*"
+pytest = "*"
+pytest-django = "*"
+pytest-services = "*"
+pytest-splinter = "*"
