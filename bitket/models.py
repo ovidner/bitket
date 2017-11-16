@@ -9,6 +9,7 @@ from base64 import b64encode
 from six import BytesIO
 
 import requests
+import sesam
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -21,7 +22,6 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _, ugettext
 from model_utils.managers import InheritanceQuerySetMixin
 from templated_email import send_templated_mail, InlineImage
-from sesam import SesamError, SesamStudentNotFound
 import qrcode
 
 from . import exceptions
@@ -31,6 +31,11 @@ from .db.fields import NameField, SlugField, DescriptionField, \
 from .utils.email import generate_pretty_email
 
 logger = logging.getLogger(__name__)
+
+sesam_student_service_client = sesam.StudentServiceClient(
+    username=settings.SESAM_USERNAME,
+    password=settings.SESAM_PASSWORD,
+)
 
 
 def generate_code(length):
@@ -778,11 +783,11 @@ def social_get_union(response, details, backend, *args, **kwargs):
     union = None
 
     try:
-        union = settings.SESAM_STUDENT_SERVICE_CLIENT.get_student(
+        union = sesam_student_service_client.get_student(
             nor_edu_person_lin=response.get('nor_edu_person_lin')).union
-    except SesamStudentNotFound:
+    except sesam.StudentNotFound:
         pass
-    except SesamError:
+    except sesam.Error:
         logger.warning('Sesam request failed', exc_info=True)
 
     details['student_union'] = (StudentUnion.objects.get_or_create(name=union)[0]

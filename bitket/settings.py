@@ -7,7 +7,6 @@ import certifi
 from django.core.urlresolvers import reverse_lazy
 import psycopg2
 import stripe
-import sesam
 
 from .utils.settings import PrefixEnv
 
@@ -355,10 +354,6 @@ KOBRA_TOKEN = env.str('KOBRA_TOKEN', default='')
 
 SESAM_USERNAME = env.str('SESAM_USERNAME', default='')
 SESAM_PASSWORD = env.str('SESAM_PASSWORD', default='')
-SESAM_STUDENT_SERVICE_CLIENT = sesam.SesamStudentServiceClient(
-    username=SESAM_USERNAME,
-    password=SESAM_PASSWORD
-)
 
 STRIPE_OAUTH_AUTHORIZE_URL = 'https://connect.stripe.com/oauth/authorize'
 STRIPE_OAUTH_TOKEN_URL = 'https://connect.stripe.com/oauth/token'
