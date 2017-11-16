@@ -11,7 +11,6 @@ python_version = "3.6"
 
 [packages]
 
-bitket = { path = ".", editable = true }
 asgi-redis = "*"
 certifi = "*"
 channels = "*"
@@ -55,6 +54,7 @@ whitenoise = "*"
 
 ["dev-packages"]
 
+bitket = { path = ".", editable = true }
 factory-boy = "*"
 pdbpp = "*"
 psutil = "*"
