@@ -22,19 +22,10 @@ from .utils.signing import sign_state, unsign_state
 
 
 def frontend_view(request):
-    context = dict(
-        FRONTEND_ENV=json.dumps(dict(
-            AUTH_FACEBOOK_AUTHORIZATION_URL=settings.SOCIAL_AUTH_FACEBOOK_AUTHORIZATION_URL,
-            AUTH_FACEBOOK_CLIENT_ID=settings.SOCIAL_AUTH_FACEBOOK_KEY,
-            AUTH_GOOGLE_AUTHORIZATION_URL=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_AUTHORIZATION_URL,
-            AUTH_GOOGLE_CLIENT_ID=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
-            AUTH_LIU_ADFS_HOST=settings.SOCIAL_AUTH_LIU_HOST,
-            AUTH_LIU_AUTHORIZATION_URL=settings.SOCIAL_AUTH_LIU_AUTHORIZATION_URL,
-            AUTH_LIU_CLIENT_ID=settings.SOCIAL_AUTH_LIU_KEY,
-        ))
-    )
+    return TemplateResponse(request, template='index.html', context=dict(
+        FRONTEND_ENV=json.dumps(settings.FRONTEND_SETTINGS),
+    ))
 
-    return TemplateResponse(request, 'index.html', context)
 
 
 class StripeConnectPermissionMixin(LoginRequiredMixin,
