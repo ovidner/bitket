@@ -1,32 +1,31 @@
-# -*- coding: utf-8 -*-
-import warnings
 import datetime
+import warnings
 from os import path
 
 import certifi
-from django.core.urlresolvers import reverse_lazy
 import psycopg2
 import stripe
+from django.core.urlresolvers import reverse_lazy
 
-from .utils.settings import PrefixEnv
-
+from bitket.utils.settings import PrefixEnv
 
 env = PrefixEnv(prefix='BITKET_')
+ROOT_DIR = path.dirname(path.dirname(path.abspath(__file__)))  # /
+APPS_DIR = path.join(ROOT_DIR, 'bitket')  # /bitket
 
-# Build paths inside the project like this: path.join(ROOT_DIR, ...)
-ROOT_DIR = path.dirname(path.dirname(path.abspath(__file__)))  # /backend
-APPS_DIR = path.join(ROOT_DIR, 'bitket')  # /backend/bitket
-ENV_FILE = path.join(ROOT_DIR, env.str('ENV_FILE', default='.env'))
+TEST_MODE = env.bool('TEST_MODE', default=False)
 
 # Ignores warnings if .env does not exist
 with warnings.catch_warnings():
     warnings.simplefilter('ignore')
-    env.read_env(ENV_FILE)
+    env.read_env(path.join(ROOT_DIR, '.env'))
+    if not TEST_MODE:
+        env.read_env(path.join(ROOT_DIR, '.env.local'))
 
 DEBUG = env.bool('DEBUG', default=False)
 SECRET_KEY = env.str('SECRET_KEY')
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -41,15 +40,17 @@ INSTALLED_APPS = (
     'djangosecure',
     'gunicorn',
     'rest_framework',
-    'social.apps.django_app.default',
+    'social_django',
     'rest_social_auth',
     'django_extensions',
     'opbeat.contrib.django',
 
     'bitket',
-)
+]
+if TEST_MODE:
+    INSTALLED_APPS += ['bitket.testing']
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'djangosecure.middleware.SecurityMiddleware',
     'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -61,7 +62,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 ALLOWED_HOSTS = ["*"]
 CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST', default=[])
@@ -104,12 +105,12 @@ DATABASES = {
 }
 DATABASES['default']['CONN_MAX_AGE'] = 500
 
-REDIS_URL = env.url('REDIS_URL')
+REDIS_URL = env.str('REDIS_URL')
 
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': str(REDIS_URL),
+        'LOCATION': REDIS_URL,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -121,14 +122,14 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'asgi_redis.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [str(REDIS_URL)],
+            'hosts': [REDIS_URL],
         },
         'ROUTING': 'bitket.routing.channel_routing',
     },
     'cq': {
         'BACKEND': 'asgi_redis.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [str(REDIS_URL)],
+            'hosts': [REDIS_URL],
             'expiry': 1800,
             'channel_capacity': {
                 'cq-tasks': 1000
@@ -175,6 +176,9 @@ TEMPLATES = [
         },
     },
 ]
+
+if TEST_MODE:
+    TEMPLATES[0]['DIRS'].append(path.join(APPS_DIR, 'testing', 'templates'))
 
 if env.bool('CACHE_TEMPLATES', True):
     TEMPLATES[0]['OPTIONS']['loaders'] = [
@@ -246,6 +250,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.user_details',
 )
 
+SOCIAL_AUTH_FACEBOOK_ACCESS_TOKEN_URL = None
+SOCIAL_AUTH_FACEBOOK_AUTHORIZATION_URL = None
 SOCIAL_AUTH_FACEBOOK_KEY = env.str('AUTH_FACEBOOK_CLIENT_ID', '')
 SOCIAL_AUTH_FACEBOOK_SECRET = env.str('AUTH_FACEBOOK_CLIENT_SECRET', '')
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['public_profile', 'email']
@@ -254,12 +260,16 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email'
 }
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_ACCESS_TOKEN_URL = None
+SOCIAL_AUTH_GOOGLE_OAUTH2_AUTHORIZATION_URL = None
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str('AUTH_GOOGLE_CLIENT_ID', '')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str('AUTH_GOOGLE_CLIENT_SECRET', '')
 SOCIAL_AUTH_GOOGLE_OAUTH2_USE_UNIQUE_USER_ID = True
 # https://github.com/certifi/python-certifi/issues/32
 SOCIAL_AUTH_GOOGLE_OAUTH2_VERIFY_SSL = certifi.old_where()
 
+SOCIAL_AUTH_LIU_ACCESS_TOKEN_URL = None
+SOCIAL_AUTH_LIU_AUTHORIZATION_URL = None
 SOCIAL_AUTH_LIU_HOST = env.str('AUTH_LIU_HOST', default='fs.liu.se')
 SOCIAL_AUTH_LIU_KEY = env.str('AUTH_LIU_CLIENT_ID', '')
 SOCIAL_AUTH_LIU_SCOPE = env.list('AUTH_LIU_RESOURCE', default=[])
@@ -355,7 +365,7 @@ KOBRA_TOKEN = env.str('KOBRA_TOKEN', default='')
 SESAM_USERNAME = env.str('SESAM_USERNAME', default='')
 SESAM_PASSWORD = env.str('SESAM_PASSWORD', default='')
 
-STRIPE_OAUTH_AUTHORIZE_URL = 'https://connect.stripe.com/oauth/authorize'
+STRIPE_OAUTH_AUTHORIZATION_URL = 'https://connect.stripe.com/oauth/authorize'
 STRIPE_OAUTH_TOKEN_URL = 'https://connect.stripe.com/oauth/token'
 STRIPE_OAUTH_SIGN_MAX_AGE = 5 * 60
 STRIPE_PUBLIC_KEY = env.str('STRIPE_PUBLIC_KEY', '')

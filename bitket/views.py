@@ -47,7 +47,7 @@ class StripeConnectRequestView(StripeConnectPermissionMixin, SingleObjectMixin,
             'scope': 'read_write',
             'state': sign_state(self.get_object().pk, session_key)
         }
-        return '{url}?{params}'.format(url=settings.STRIPE_OAUTH_AUTHORIZE_URL,
+        return '{url}?{params}'.format(url=settings.STRIPE_OAUTH_AUTHORIZATION_URL,
                                        params=urlencode(params))
 
 

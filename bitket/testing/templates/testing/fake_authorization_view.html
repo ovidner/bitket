@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Authorization</title>
+  </head>
+  <body>
+    <h1>Fake authorization provider</h1>
+    <h2>Keyword arguments</h2>
+    {% for key, value in kwargs.items %}
+      <p><code>{{ key }}={{ value }}</code></p>
+    {% endfor %}
+    <h2>GET parameters</h2>
+    {% for key, value in get_params.items %}
+      <p><code>{{ key }}={{ value }}</code></p>
+    {% endfor %}
+    <form method="POST">
+      {% csrf_token %}
+      {% for key, value in get_params.items %}
+        <input type="hidden" name="{{ key|escape }}" value="{{ value|escape }}">
+      {% endfor %}
+      <button type="submit" name="action" value="fail" id="failButton">Fail</button>
+      <button type="submit" name="action" value="succeed" id="succeedButton">Succeed</button>
+    </form>
+  </body>
+</html>
