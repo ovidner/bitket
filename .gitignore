@@ -29,6 +29,7 @@ node_modules/
 
 # virtual environments
 .env
+.env.local
 
 # Collected static files
 bitket/staticfiles/
@@ -37,6 +38,7 @@ bitket/staticfiles/
 node_modules
 
 # testing
+.cache
 coverage
 
 # production
@@ -48,3 +50,4 @@ build
 npm-debug.log
 
 src/index.css
+*.egg-info/
