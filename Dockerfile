@@ -27,3 +27,4 @@ RUN pip3 install -e ${APP_ROOT} && \
     BITKET_DATABASE_URL=sqlite://// BITKET_EMAIL_URL=consolemail:// BITKET_REDIS_URL=redis:// BITKET_SECRET_KEY=build django-admin collectstatic --no-input
 
 EXPOSE 80
+CMD ["bitket-interface-server"]
