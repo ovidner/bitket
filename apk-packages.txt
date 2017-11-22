@@ -17,8 +17,6 @@ libxml2-dev
 libxslt-dev
 musl-dev
 postgresql-dev
-## gyp (used by node-gyp, used by npm/yarn) is stuck on Python 2.
-python
 python3-dev
 yarn
 zlib-dev
