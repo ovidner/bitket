@@ -23,7 +23,7 @@ RUN yarn install && yarn cache clean
 
 COPY . ${APP_ROOT}/
 
-RUN pipenv install --system . && \
+RUN pip3 install -e ${APP_ROOT} && \
     yarn build && \
     BITKET_DATABASE_URL=sqlite://// BITKET_EMAIL_URL=consolemail:// BITKET_REDIS_URL=redis:// BITKET_SECRET_KEY=build django-admin collectstatic --no-input
 
