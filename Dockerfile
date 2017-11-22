@@ -1,9 +1,8 @@
 FROM alpine:3.6
 
-ENV APP_ROOT=/app
 # PIP_NO_CACHE_DIR=false actually means *no cache*
-ENV DJANGO_SETTINGS_MODULE=bitket.settings \
-    PATH=${APP_ROOT}/bin:${PATH} \
+ENV APP_ROOT=/app \
+    DJANGO_SETTINGS_MODULE=bitket.settings \
     PIP_NO_CACHE_DIR=false \
     PIPENV_DONT_LOAD_ENV=true \
     PYTHONUNBUFFERED=true
