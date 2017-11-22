@@ -1,0 +1,2 @@
+#!/bin/sh
+exec gunicorn bitket.wsgi -c ${APP_ROOT}/gunicorn_conf.py

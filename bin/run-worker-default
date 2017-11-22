@@ -1,2 +1,0 @@
-#!/bin/sh
-exec django-admin runworker --exclude-channels cq-tasks
