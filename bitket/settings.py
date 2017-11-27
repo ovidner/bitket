@@ -4,7 +4,6 @@ import warnings
 from os import path
 
 import certifi
-import psycopg2
 import django.http.request
 import stripe
 from django.core.urlresolvers import reverse_lazy
