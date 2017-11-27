@@ -242,8 +242,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_AUTHORIZATION_URL = 'https://accounts.google.com/o/oau
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str('AUTH_GOOGLE_CLIENT_ID', '')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str('AUTH_GOOGLE_CLIENT_SECRET', '')
 SOCIAL_AUTH_GOOGLE_OAUTH2_USE_UNIQUE_USER_ID = True
-# https://github.com/certifi/python-certifi/issues/32
-SOCIAL_AUTH_GOOGLE_OAUTH2_VERIFY_SSL = certifi.old_where()
 
 SOCIAL_AUTH_LIU_HOST = env.str('AUTH_LIU_HOST', default='fs.liu.se')
 SOCIAL_AUTH_LIU_AUTHORIZATION_URL = f'https://{SOCIAL_AUTH_LIU_HOST}/adfs/oauth2/authorize'
