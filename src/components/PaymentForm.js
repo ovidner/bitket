@@ -150,8 +150,8 @@ class _PaymentForm extends React.Component {
             <ul>
               <li>
                 Once your tickets has been delivered to you, <strong>you cannot
-                withdraw your purchase</strong> unless it is resold to another
-                person.
+                withdraw your purchase</strong>. You are free to resell or give
+                away the ticket, however.
               </li>
               <li>
                 Your tickets are personal, meaning that <strong>you may have to identify
