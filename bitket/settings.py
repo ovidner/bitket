@@ -1,13 +1,19 @@
 import datetime
+import re
 import warnings
 from os import path
 
 import certifi
 import psycopg2
+import django.http.request
 import stripe
 from django.core.urlresolvers import reverse_lazy
 
 from bitket.utils.settings import PrefixEnv
+
+# Monkey-patch for Django's unpragmatic approach to Host header validation.
+# https://code.djangoproject.com/ticket/19952
+django.http.request.host_validation_re = re.compile(r'^([a-z0-9._-]+|\[[a-f0-9]*:[a-f0-9\.:]+\])(:\d+)?$')
 
 env = PrefixEnv(prefix='BITKET_')
 ROOT_DIR = path.dirname(path.dirname(path.abspath(__file__)))  # /
@@ -64,7 +70,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST', default=[])
 SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', True)
 CORS_ORIGIN_ALLOW_ALL = env.bool('CORS_ORIGIN_ALLOW_ALL', False)
