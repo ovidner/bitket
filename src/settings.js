@@ -33,7 +33,7 @@ const env = Object.assign({}, {
 }, getBackendEnv() || {})
 
 // Without trailing slash
-const apiRoot = env.API_ROOT
+const apiRoot = env.API_ROOT || '/api'
 
 const authProviders = {
   facebook: {
