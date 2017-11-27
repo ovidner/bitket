@@ -784,7 +784,7 @@ def social_get_union(response, details, backend, *args, **kwargs):
 
     try:
         union = sesam_student_service_client.get_student(
-            nor_edu_person_lin=response.get('nor_edu_person_lin')).union
+            nor_edu_person_lin=response.get('nor_edu_person_lin')).main_union
     except sesam.StudentNotFound:
         pass
     except sesam.Error:
