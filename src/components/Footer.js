@@ -10,13 +10,8 @@ const Footer = (props) => (
         </p>
       </Col>
 
-      <Col md={8}>
-        <p className="text-muted" style={{ textAlign: 'right' }}>
-          Bitket is still under heavy development. Please forgive us if you hit any rough edges!
-        </p>
-      </Col>
+      <Col md={8}/>
     </Grid>
-
   </footer>
 )
 

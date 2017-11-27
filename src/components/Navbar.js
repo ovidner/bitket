@@ -22,7 +22,6 @@ const Navbar = connect(mapStateToProps, mapDispatchToProps)((props) => (
       <BootstrapNavbar.Brand>
         <IndexLink to="/">
           <span className="bitket-brand">Bitket</span>
-          <sub className="text-info"><strong>beta</strong></sub>
         </IndexLink>
       </BootstrapNavbar.Brand>
       <BootstrapNavbar.Toggle />
