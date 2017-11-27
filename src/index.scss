@@ -68,6 +68,10 @@ body {
   margin-bottom: $navbar-height;
 }
 
+.bitket-brand {
+  font-family: "Bungee", $font-family-sans-serif
+}
+
 .sticky-footer {
   position: absolute;
   bottom: 0;
