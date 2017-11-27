@@ -11,14 +11,11 @@ python_version = "3.6"
 
 [packages]
 
-asgi-redis = "*"
 certifi = "*"
-channels = "*"
 django = "*"
 django-autoslug = "*"
 django-braces = "*"
 django-cors-headers = "*"
-django-cq = "*"
 django-environ = "*"
 django-extensions = "*"
 django-filter = "*"

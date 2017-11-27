@@ -39,8 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.admin',
 
-    'channels',
-    'cq',
     'corsheaders',
     'djangosecure',
     'gunicorn',
@@ -121,30 +119,6 @@ CACHES = {
         }
     }
 }
-
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'asgi_redis.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [REDIS_URL],
-        },
-        'ROUTING': 'bitket.routing.channel_routing',
-    },
-    'cq': {
-        'BACKEND': 'asgi_redis.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [REDIS_URL],
-            'expiry': 1800,
-            'channel_capacity': {
-                'cq-tasks': 1000
-            }
-        },
-        'ROUTING': 'bitket.routing.channel_routing',
-    },
-}
-
-CQ_CHANNEL_LAYER = 'cq'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
