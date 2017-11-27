@@ -257,7 +257,7 @@ SOCIAL_AUTH_LIU_VERIFY_SSL = env.bool('AUTH_LIU_VERIFY_SSL', default=True)
 SOCIAL_AUTH_LIU_X509_CERT = env.str('AUTH_LIU_X509_CERT', default=None)
 
 AUTH_USER_MODEL = 'bitket.User'
-LOGIN_REDIRECT_URL = reverse_lazy('client:home')
+LOGIN_REDIRECT_URL = reverse_lazy('frontend')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
