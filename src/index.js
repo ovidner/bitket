@@ -1,4 +1,5 @@
 import 'es6-shim'
+import * as errorReporting from './errorReporting'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -6,10 +7,10 @@ import { Provider } from 'react-redux'
 import { IndexRoute, Redirect, Route, Router, browserHistory } from 'react-router'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
+import { wrapRouter } from 'opbeat-react'
 import WebFont from 'webfontloader'
 
 import * as components from './components'
-import * as errorReporting from './errorReporting'
 import { errorReportingMiddleware, loggerMiddleware } from './middleware'
 import * as pages from './pages'
 import reducer, { initialState } from './reducers'
@@ -28,13 +29,11 @@ WebFont.load({
 })
 
 const middleware = [
-  // errorReportingMiddleware should always come first in the middleware chain
+  thunkMiddleware,
+  ...(process.env.NODE_ENV === 'production' ? [] : [loggerMiddleware]),
+  // errorReportingMiddleware should always come last in the middleware chain
   errorReportingMiddleware,
-  thunkMiddleware
 ]
-if (process.env.NODE_ENV !== 'production') {
-  middleware.push(loggerMiddleware)
-}
 
 const store = createStore(
   reducer,
@@ -42,8 +41,10 @@ const store = createStore(
   applyMiddleware(...middleware)
 )
 
+const OpbeatRouter = wrapRouter(Router)
+
 const router = (
-  <Router history={browserHistory}>
+  <OpbeatRouter history={browserHistory}>
     <Route path="/" component={components.App}>
       <IndexRoute component={pages.Home}/>
       <Route path="log-in/:authProvider/" component={pages.CompleteLogIn}/>
@@ -52,7 +53,7 @@ const router = (
       <Route path=":eventSlug/" component={pages.Event}/>
     </Route>
     <Redirect from="/*" to="/*/"/>
-  </Router>
+  </OpbeatRouter>
 )
 
 const render = () => ReactDOM.render(
