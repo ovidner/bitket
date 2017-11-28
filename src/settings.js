@@ -31,6 +31,10 @@ const env = Object.assign({}, {
   TYPEKIT_ID: process.env.REACT_APP_TYPEKIT_ID
 }, getBackendEnv() || {})
 
+if (process.env.NODE_ENV !== 'production') {
+  console.log('Initializing settings', env)
+}
+
 // Without trailing slash
 const apiRoot = env.API_ROOT || '/api'
 
