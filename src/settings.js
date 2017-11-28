@@ -76,6 +76,6 @@ const persistedStateTimestampThreshold = 1481422195713
 
 const stripePublicKey = env.STRIPE_PUBLIC_KEY
 
-const typekitId = process.env.REACT_APP_TYPEKIT_ID
+const typekitId = env.TYPEKIT_ID
 
 export { apiRoot, authProviders, jwtRefreshMargin, opbeatAppId, opbeatOrgId, persistedStateKey, persistedStateTimestampKey, persistedStateTimestampThreshold, stripePublicKey, typekitId }
