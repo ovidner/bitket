@@ -96,7 +96,7 @@ class StripeConnectCallbackView(StripeConnectPermissionMixin,
 
 
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = models.Event.objects.all()
+    queryset = models.Event.objects.filter(published=True)
     serializer_class = serializers.EventSerializer
 
 
@@ -137,7 +137,7 @@ class TicketViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TicketTypeViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = models.TicketType.objects.published()
+    queryset = models.TicketType.objects.published().filter(event__published=True)
     serializer_class = serializers.TicketTypeSerializer
 
 
