@@ -10,6 +10,10 @@
     Please make sure you log in with the same account used to make the purchase
     (it should have the email address {{ ticket_ownership.user.email }}).
   </p>
+  <p>
+    Please note that the content of this email is also valid as a ticket. Keep
+    it secret.
+  </p>
   <h1>At the event</h1>
   <p>
     You can use your ticket through <em>one</em> of the following methods (in order of
@@ -22,6 +26,10 @@
         with the card.
       </li>
     {% endif %}
+    <li>
+      Show the QR code below.
+      <img src="{{ qr }}" alt="Can't see the QR code? Head to your Bitket profile!">
+    </li>
     {% if ticket_ownership.user.nin %}
       <li>
         Show your valid driver's license, passport or other official Swedish
@@ -30,20 +38,15 @@
       </li>
     {% endif %}
     <li>
-      Show the QR code below and verify your identity using valid LiU card, driver's
-      license, passport or other official photo ID.
-      <img src="{{ qr }}" alt="Can't see the QR code? Head to your Bitket profile!">
-    </li>
-    <li>
       Show the ticket code <code>{{ ticket_ownership.code }}</code> and verify
       your identity using valid LiU card, driver's license, passport or other
       official photo ID.
     </li>
   </ul>
-  <h1>Reselling the ticket</h1>
+  <h1>Reselling or giving away the ticket</h1>
   <p>
-    The ticket can be resold to another person. Go to your Bitket profile (see
-    above), click <em>Resell</em> and follow the instructions.
+    The ticket can be resold or given away to another person by forwarding this
+    email to the new owner.
   </p>
   <p>
     Please contact the event organizer
