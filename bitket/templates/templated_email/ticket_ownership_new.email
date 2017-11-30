@@ -28,7 +28,6 @@
     {% endif %}
     <li>
       Show the QR code below.
-      <img src="{{ qr }}" alt="Can't see the QR code? Head to your Bitket profile!">
     </li>
     {% if ticket_ownership.user.nin %}
       <li>
@@ -43,6 +42,7 @@
       official photo ID.
     </li>
   </ul>
+  <img src="{{ qr }}" alt="Can't see the QR code? Head to your Bitket profile!">
   <h1>Reselling or giving away the ticket</h1>
   <p>
     The ticket can be resold or given away to another person by forwarding this
