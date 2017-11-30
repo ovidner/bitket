@@ -33,12 +33,6 @@ const Home = connect(mapStateToProps)((props) => (
         </LinkContainer>
       )))}
     </Row>
-
-    <h2>Event organizer?</h2>
-    <p>
-      Contact us at <a href="mailto:hello@bitket.se">hello@bitket.se</a> if
-      you're interested in using Bitket for your event.
-    </p>
   </Page>
 ))
 
