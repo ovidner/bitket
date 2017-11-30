@@ -775,22 +775,28 @@ class VariationChoice(models.Model):
         return self.name
 
 
-def social_get_union(response, details, backend, *args, **kwargs):
+def social_get_union(strategy, backend, response, user=None, *args, **kwargs):
     if backend.name != 'liu':
         # Just pass
+        return
+
+    if not user:
         return
 
     union = None
 
     try:
         union = sesam_student_service_client.get_student(
-            nor_edu_person_lin=response.get('nor_edu_person_lin')).main_union
+            nor_edu_person_lin=response.get('nor_edu_person_lin'),
+        ).main_union
     except sesam.StudentNotFound:
         pass
     except sesam.Error:
         logger.warning('Sesam request failed', exc_info=True)
 
-    details['student_union'] = (StudentUnion.objects.get_or_create(name=union)[0]
-                                if union else None)
+    user.student_union = (
+        StudentUnion.objects.get_or_create(name=union)[0]
+        if union else None
+    )
 
-    return {'details': details}
+    strategy.storage.user.changed(user)
