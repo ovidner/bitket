@@ -600,10 +600,10 @@
         },
         "sesam": {
             "hashes": [
-                "sha256:f39d752afbc04fba0ed0b5748df67ceb35fac459d3cd409ed9b40d21748a1121",
-                "sha256:71215e6a68b15129f5118ad0a73e920f95077f665fed18cc5ed1ec026f023d2a"
+                "sha256:c2dcc4b1937edb0da2095c2939c457d4ef667c6932d8c8131ac8d1c7aef9b92c",
+                "sha256:923aa5323202fb18037d559ee5ad69931ec4cd788edd104a41e830a83b346e3e"
             ],
-            "version": "==2.0.0"
+            "version": "==2.1.0"
         },
         "simplegeneric": {
             "hashes": [
@@ -643,11 +643,11 @@
         },
         "stripe": {
             "hashes": [
-                "sha256:65ba67bd498d5818a675e62845a669090656877d0f60b99b6fdabb1b5833aa52",
-                "sha256:c2364bcf455c678d9acde6f2ebece1fc080e77bd303f8bbf3450a902798c8982",
-                "sha256:3a369c70d59cb1224f00e05e329fdad35683aba819ec8f778dee4dd1f51c660e"
+                "sha256:6239df834e67ab806cf96c23ac0f6b82d55a7e418a73a2842a701403286a1ddc",
+                "sha256:9e1471e5bb703126d2757623bc65bb3668bcf6901d778df6066305bb300b5961",
+                "sha256:1a5aba0599984adc05a7d027dcccdbfb8b2549b8df6979daee1d12d19467c1ac"
             ],
-            "version": "==1.75.0"
+            "version": "==1.75.1"
         },
         "text-unidecode": {
             "hashes": [
@@ -720,6 +720,13 @@
         }
     },
     "develop": {
+        "attrs": {
+            "hashes": [
+                "sha256:e7d51b70f19a4da5fe6b3c9938983e0af3b91e230edc504bd73c443d98037063",
+                "sha256:c78f53e32d7cf36d8597c8a2c7e3c0ad210f97b9509e152e4c37fa80869f823c"
+            ],
+            "version": "==17.3.0"
+        },
         "bitket": {
             "editable": true,
             "path": "."
@@ -771,6 +778,12 @@
             ],
             "version": "==0.9.2"
         },
+        "pluggy": {
+            "hashes": [
+                "sha256:7f8ae7f5bdf75671a718d2daf0a64b7885f74510bcd98b1a0bb420eb9a9d0cff"
+            ],
+            "version": "==0.6.0"
+        },
         "psutil": {
             "hashes": [
                 "sha256:7ef26ebe728ac821de17df23820e6ffcfd37c409fc865380e4d5ae1388f274a1",
@@ -801,10 +814,10 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:241d7e7798d79192a123ceaf64c602b4d233eacf6d6e42ae27caa97f498b7dc6",
-                "sha256:6d5bd4f7113b444c55a3bbb5c738a3dd80d43563d063fc42dcb0aaefbdd78b81"
+                "sha256:72186b294cc88322a4427225fdb9240c95e3f01cc53c1ea4f4f79ffe39ff1955",
+                "sha256:6db1c070aa412c30647b6aeb13c55670f900cf00fbafa003cdde560c3f4a8d76"
             ],
-            "version": "==3.2.5"
+            "version": "==3.3.0"
         },
         "pytest-django": {
             "hashes": [
