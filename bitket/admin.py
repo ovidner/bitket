@@ -14,57 +14,60 @@ class StudentUnionMemberConditionAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Event)
-class MainEventAdmin(admin.ModelAdmin):
+class EventAdmin(admin.ModelAdmin):
     pass
 
 
-class ProductModifierInline(admin.TabularInline):
+class ModifierInline(admin.TabularInline):
     model = models.Modifier
 
 
 @admin.register(models.Organization)
-class OrganizerAdmin(admin.ModelAdmin):
+class OrganizationAdmin(admin.ModelAdmin):
     filter_horizontal = ['admins']
 
 
 @admin.register(models.Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('amount', 'created')
+    list_display = ['amount', 'created']
     date_hierarchy = 'created'
 
 
-class ProductVariationChoiceInline(admin.TabularInline):
+class VariationChoiceInline(admin.TabularInline):
     model = models.VariationChoice
 
 
 class TicketOwnershipInline(admin.TabularInline):
     model = models.TicketOwnership
-    raw_id_fields = ('user', 'transactions',)
+    raw_id_fields = ['user', 'transactions']
     extra = 0
 
 
 @admin.register(models.Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ('ticket_type', 'created', 'utilized', 'current_owner')
-    list_filter = ('variation_choices',)
-    search_fields = ('ownerships__user__name','ownerships__user__email')
+    list_display = ['ticket_type', 'created', 'utilized', 'current_owner']
+    list_filter = ['ticket_type__event', 'ticket_type', 'variation_choices']
+    search_fields = ['ownerships__user__name', 'ownerships__user__email']
     inlines = [TicketOwnershipInline]
-    raw_id_fields = ('access_code',)
+    raw_id_fields = ['access_code']
+    ordering = ['-created']
 
     def current_owner(self, obj):
         return obj.ownerships.latest().user
 
 
 @admin.register(models.TicketType)
-class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductModifierInline]
+class TicketTypeAdmin(admin.ModelAdmin):
+    inlines = [ModifierInline]
 
 
 @admin.register(models.Variation)
-class ProductVariationAdmin(admin.ModelAdmin):
-    inlines = [ProductVariationChoiceInline]
+class VariationAdmin(admin.ModelAdmin):
+    inlines = [VariationChoiceInline]
 
 
 @admin.register(models.User)
 class UserAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['name', 'email']
+    list_filter = ['student_union', 'is_staff', 'is_superuser']
+    search_fields = ['name', 'email']

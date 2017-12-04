@@ -229,6 +229,9 @@ class Modifier(models.Model):
         verbose_name = _('modifier')
         verbose_name_plural = _('modifiers')
 
+    def __str__(self):
+        return f'{self.ticket_type} / {self.condition_subclass}: {self.delta}'
+
     @property
     def condition_subclass(self):
         return Condition.objects.get_subclass(id=self.condition_id)
