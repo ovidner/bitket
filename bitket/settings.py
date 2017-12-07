@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'djangosecure',
     'gunicorn',
     'rest_framework',
+    'rest_framework.authtoken',
     'social_django',
     'rest_social_auth',
     'django_extensions',
@@ -257,6 +258,7 @@ LOGIN_REDIRECT_URL = reverse_lazy('frontend')
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (

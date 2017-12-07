@@ -13,6 +13,9 @@ const authIsPending = (state) => state
 const getAuthToken = (state) => state
   .getIn(['session', 'auth', 'token'])
 
+const getServiceAuthToken = (state) => state
+  .getIn(['serviceAuth', 'token'])
+
 const getCurrentUser = (state) => {
   const token = getAuthToken(state)
   return token ? jwtDecode(token) : null
@@ -86,7 +89,7 @@ const getSelectedVariationChoices = (state) => state
 
 const getStateToPersist = (state) => state
   .filter((value, key) => (
-    key === 'session'
+    key === 'session' || key === 'serviceAuth'
   ))
   .deleteIn(['session', 'accessCodes'])
   .deleteIn(['session', 'auth', '_isPending'])
@@ -179,6 +182,7 @@ export {
   getSelectedTicketTypes,
   getSelectedVariationChoices,
   getSelectedVariationChoicesOfTicketType,
+  getServiceAuthToken,
   getStateToPersist,
   getTicketType,
   getTicketTypesOfEvent,

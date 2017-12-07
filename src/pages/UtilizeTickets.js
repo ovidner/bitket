@@ -1,7 +1,8 @@
 import React from 'react'
-import { Alert, Button, Col, ControlLabel, FormControl, FormGroup, Row, Well } from 'react-bootstrap'
+import { Alert, Button, Col, ControlLabel, FormControl, FormGroup, HelpBlock, Row, Well } from 'react-bootstrap'
 import { findDOMNode } from 'react-dom'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
 
 import * as actions from '../actions'
 import { LogInForm, Page } from '../components'
@@ -34,26 +35,33 @@ const mapStateToProps = (state, props) => {
   console.log('ticketSearches', ticketSearches.toJS())
   return {
     ticketSearches,
+    event: selectors.getEventFromSlug(state, props.params.eventSlug),
+    serviceAuthToken: selectors.getServiceAuthToken(state),
     currentUser: selectors.getCurrentUser(state)
   }
 }
 
 const mapDispatchToProps = (dispatch, props) => ({
-  search: (query) => dispatch(actions.searchTickets(query)),
+  search: (eventId, query) => dispatch(actions.searchTickets(eventId, query)),
+  setServiceAuthToken: (token) => dispatch(actions.setServiceAuthToken(token)),
   utilizeTicketOwnership: (ticketOwnershipId) => (domEvent) => dispatch(actions.utilizeTicketOwnership(ticketOwnershipId))
 })
 
-const UtilizeTickets = connect(mapStateToProps, mapDispatchToProps)(class extends React.Component {
+const UtilizeTickets = withRouter(connect(mapStateToProps, mapDispatchToProps)(class extends React.Component {
   constructor(props) {
     super(props)
 
     this.createRefToInputField = this.createRefToInputField.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.performSearch = this.performSearch.bind(this)
     this.search = this.search.bind(this)
     this.setSearchQuery = this.setSearchQuery.bind(this)
+    this.setSearchQueryValue = this.setSearchQueryValue.bind(this)
+    this.setServiceAuthToken = this.setServiceAuthToken.bind(this)
 
     this.state = {
-      searchQuery: ''
+      searchQuery: '',
+      serviceAuthToken: '',
     }
   }
 
@@ -83,33 +91,52 @@ const UtilizeTickets = connect(mapStateToProps, mapDispatchToProps)(class extend
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown)
+    window._bitketUtilizeSetSearchQuery = this.setSearchQueryValue
+    window._bitketUtilizeSearch = this.performSearch
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeyDown)
+    window._bitketUtilizeSetSearchQuery = undefined
+    window._bitketUtilizeSearch = undefined
   }
 
   setSearchQuery(domEvent) {
-    this.setState({searchQuery: domEvent.target.value})
+    this.setSearchQueryValue(domEvent.target.value)
+  }
+
+  setSearchQueryValue(value) {
+    this.setState({searchQuery: value})
+  }
+
+  setServiceAuthToken(domEvent) {
+    this.props.setServiceAuthToken(this.state.serviceAuthToken)
   }
 
   search(domEvent) {
-    this.props.search(this.state.searchQuery)
-    this.setState({searchQuery: ''})
+    this.performSearch()
     domEvent.preventDefault()
     return false
+  }
+
+  performSearch() {
+    this.props.search(this.props.event.get('id'), this.state.searchQuery)
+    this.setState({searchQuery: ''})
   }
 
   render() {
     return (
       <Page>
-        {this.props.currentUser ? (
+        {this.props.serviceAuthToken ? (
             <Row>
               <Col xs={12}>
                 <form onSubmit={this.search}>
                   <FormGroup>
                     <ControlLabel>Search term</ControlLabel>
                     <FormControl type="text" value={this.state.searchQuery} onChange={this.setSearchQuery} ref={this.createRefToInputField}/>
+                    <HelpBlock>
+                      Name, email, national identity number, LiU ID, LiU card number, ticket ID, ticket code or QR code. At most 10 search hits will be returned.
+                    </HelpBlock>
                   </FormGroup>
                   <Button type="submit" bsStyle="primary" block disabled={this.state.searchQuery.length < 3}>Search</Button>
                 </form>
@@ -169,14 +196,25 @@ const UtilizeTickets = connect(mapStateToProps, mapDispatchToProps)(class extend
                       )}
                   </div>
                 ))}
+                <hr/>
+                <p>
+                  <small className='text-muted'>Event: {this.props.event ? this.props.event.get('name') : '-'}</small><br/>
+                  <small className='text-muted'>Service auth token: {this.props.serviceAuthToken.slice(0, 8)}&hellip;</small>
+                </p>
               </Col>
             </Row>
         ) : (
-          <LogInForm/>
+          <form onSubmit={this.setServiceAuthToken}>
+            <FormGroup>
+              <ControlLabel>Service auth token</ControlLabel>
+              <FormControl type="text" value={this.state.serviceAuthToken} onChange={(domEvent) => this.setState({serviceAuthToken: domEvent.target.value})} />
+            </FormGroup>
+            <Button type="submit" bsStyle="primary" block>Set</Button>
+          </form>
         )}
       </Page>
     )
   }
-})
+}))
 
 export default UtilizeTickets

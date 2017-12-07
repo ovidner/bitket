@@ -29,6 +29,9 @@ const initialState = Map.of(
 
     )
   ),
+  'serviceAuth', Map.of(
+    'token', null,
+  ),
   'events', Map.of(
     '_isPending', null,
     '_error', null
@@ -76,6 +79,9 @@ const initialState = Map.of(
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.SET_SERVICE_AUTH_TOKEN:
+      return state.setIn(['serviceAuth', 'token'], action.payload)
+
     case actionTypes.ADD_ACCESS_CODE:
       switch (action.error) {
         case api.actionErrorValues.PENDING:

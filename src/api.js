@@ -1,5 +1,5 @@
 import { capture } from './errorReporting'
-import { getAuthToken } from './selectors'
+import { getAuthToken, getServiceAuthToken } from './selectors'
 
 const actionErrorValues = {
   PENDING: null,
@@ -16,7 +16,7 @@ function BitketApiError(message, payload, extra) {
 BitketApiError.prototype = new Error()
 BitketApiError.prototype.name = 'BitketApiError'
 
-const fetchAction = ({actionType, url, options={}, extraMeta={}, useAuth=false}) => (dispatch, getState) => {
+const fetchAction = ({actionType, url, options={}, extraMeta={}, useAuth=false, useServiceAuth=false}) => (dispatch, getState) => {
   const baseAction = {
     type: actionType,
     meta: {
@@ -45,8 +45,11 @@ const fetchAction = ({actionType, url, options={}, extraMeta={}, useAuth=false})
       'Content-Type': 'application/json'
     }
   }
+
   const authToken = getAuthToken(getState())
-  if (useAuth && authToken) {
+  if (useServiceAuth) {
+    defaultOptions.headers['Authorization'] = `Token ${getServiceAuthToken(getState())}`
+  } else if (useAuth && authToken) {
     defaultOptions.headers['Authorization'] = `JWT ${authToken}`
   }
 

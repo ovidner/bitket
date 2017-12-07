@@ -20,6 +20,7 @@ const actionTypes = {
   SEARCH_TICKETS: 'SEARCH_TICKETS',
   SELECT_TICKET_TYPE: 'SELECT_TICKET_TYPE',
   SELECT_VARIATION_CHOICE: 'SELECT_VARIATION_CHOICE',
+  SET_SERVICE_AUTH_TOKEN: 'SET_SERVICE_AUTH_TOKEN',
   DESELECT_TICKET_TYPE: 'DESELECT_TICKET_TYPE',
   UTILIZE_TICKET_OWNERSHIP: 'UTILIZE_TICKET_OWNERSHIP',
   UNUTILIZE_TICKET_OWNERSHIP: 'UNUTILIZE_TICKET_OWNERSHIP'
@@ -117,13 +118,13 @@ const performPurchase = (eventUrl, stripeToken, nin) => (dispatch, getState) => 
   })(dispatch, getState)
 }
 
-const searchTickets = (query) => api.fetchAction({
+const searchTickets = (eventId, query) => api.fetchAction({
   actionType: actionTypes.SEARCH_TICKETS,
-  url: `${apiRoot}/ticket-ownerships/search/?expand=ticket,user&query=${encodeURIComponent(query)}`,
+  url: `${apiRoot}/ticket-ownerships/search/?expand=ticket,user&event=${eventId}&query=${encodeURIComponent(query)}`,
   extraMeta: {
     query
   },
-  useAuth: true
+  useServiceAuth: true
 })
 
 const utilizeTicketOwnership = (ticketOwnershipId) => api.fetchAction({
@@ -132,7 +133,7 @@ const utilizeTicketOwnership = (ticketOwnershipId) => api.fetchAction({
   options: {
     method: 'POST'
   },
-  useAuth: true
+  useServiceAuth: true
 })
 
 const selectTicketType = (ticketTypeUrl) => ({
@@ -148,6 +149,11 @@ const deselectTicketType = (ticketTypeUrl) => ({
 const selectVariationChoice = (variationUrl, variationChoiceUrl) => ({
   type: actionTypes.SELECT_VARIATION_CHOICE,
   payload: {variationUrl, variationChoiceUrl}
+})
+
+const setServiceAuthToken = (value) => ({
+  type: actionTypes.SET_SERVICE_AUTH_TOKEN,
+  payload: value,
 })
 
 export {
@@ -167,6 +173,7 @@ export {
   searchTickets,
   selectTicketType,
   selectVariationChoice,
+  setServiceAuthToken,
   deselectTicketType,
   utilizeTicketOwnership
 }
