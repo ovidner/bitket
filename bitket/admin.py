@@ -45,7 +45,7 @@ class TicketOwnershipInline(admin.TabularInline):
 
 @admin.register(models.Ticket)
 class TicketAdmin(admin.ModelAdmin):
-    list_display = ['ticket_type', 'created', 'utilized', 'current_owner', 'variation_choices']
+    list_display = ['ticket_type', 'created', 'utilized', 'current_owner', 'variation_choices_str']
     list_filter = ['ticket_type__event', 'ticket_type', 'variation_choices']
     search_fields = ['ownerships__user__name', 'ownerships__user__email']
     inlines = [TicketOwnershipInline]
@@ -54,6 +54,12 @@ class TicketAdmin(admin.ModelAdmin):
 
     def current_owner(self, obj):
         return obj.ownerships.latest().user
+
+    def variation_choices_str(self, obj):
+        return ', '.join(
+            f'{c.variation.name}: {c.name}'
+            for c in obj.variation_choices.order_by('variation').select_related('variation')
+        )
 
 
 @admin.register(models.TicketType)
