@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
 # PIP_NO_CACHE_DIR=false actually means *no cache*
 ENV APP_ROOT=/app \
