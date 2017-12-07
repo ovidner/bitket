@@ -12,7 +12,7 @@ WORKDIR ${APP_ROOT}
 
 COPY apk-packages.txt ${APP_ROOT}/
 RUN apk add --no-cache $(grep -vE "^\s*#" ${APP_ROOT}/apk-packages.txt | tr "\r\n" " ") && \
-    pip3 install -U pip pipenv setuptools wheel
+    pip3 install -U pip "pipenv!=9.0.0" setuptools wheel
 
 COPY Pipfile Pipfile.lock ${APP_ROOT}/
 RUN pipenv install --system --deploy
